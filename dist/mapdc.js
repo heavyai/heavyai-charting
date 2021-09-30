@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 222);
+/******/ 	return __webpack_require__(__webpack_require__.s = 219);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1929,7 +1929,7 @@ return /******/ (function(modules) { // webpackBootstrap
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(244)("./" + name);
+                __webpack_require__(241)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4680,7 +4680,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(51)(module)))
 
 /***/ }),
 /* 1 */
@@ -4690,60 +4690,10 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["A"] = isEmpty;
-/* harmony export (immutable) */ __webpack_exports__["G"] = keys;
-/* harmony export (immutable) */ __webpack_exports__["U"] = values;
-/* harmony export (immutable) */ __webpack_exports__["J"] = mapValues;
-/* harmony export (immutable) */ __webpack_exports__["I"] = map;
-/* harmony export (immutable) */ __webpack_exports__["t"] = flatten;
-/* harmony export (immutable) */ __webpack_exports__["s"] = first;
-/* harmony export (immutable) */ __webpack_exports__["H"] = last;
-/* harmony export (immutable) */ __webpack_exports__["u"] = forEach;
-/* harmony export (immutable) */ __webpack_exports__["E"] = isString;
-/* harmony export (immutable) */ __webpack_exports__["F"] = isUndefined;
-/* harmony export (immutable) */ __webpack_exports__["B"] = isFunction;
-/* harmony export (immutable) */ __webpack_exports__["m"] = drop;
-/* harmony export (immutable) */ __webpack_exports__["n"] = dropRight;
-/* harmony export (immutable) */ __webpack_exports__["p"] = filter;
-/* harmony export (immutable) */ __webpack_exports__["P"] = reject;
-/* harmony export (immutable) */ __webpack_exports__["N"] = pick;
-/* harmony export (immutable) */ __webpack_exports__["w"] = has;
-/* harmony export (immutable) */ __webpack_exports__["j"] = contains;
-/* harmony export (immutable) */ __webpack_exports__["g"] = cloneArr;
-/* harmony export (immutable) */ __webpack_exports__["h"] = cloneObj;
-/* harmony export (immutable) */ __webpack_exports__["q"] = find;
-/* harmony export (immutable) */ __webpack_exports__["r"] = findAll;
-/* harmony export (immutable) */ __webpack_exports__["O"] = reduce;
-/* harmony export (immutable) */ __webpack_exports__["i"] = compact;
-/* harmony export (immutable) */ __webpack_exports__["T"] = uniq;
-/* unused harmony export partial */
-/* harmony export (immutable) */ __webpack_exports__["y"] = isArray;
-/* harmony export (immutable) */ __webpack_exports__["D"] = isRegExp;
-/* harmony export (immutable) */ __webpack_exports__["C"] = isObject;
-/* harmony export (immutable) */ __webpack_exports__["o"] = every;
-/* harmony export (immutable) */ __webpack_exports__["l"] = difference;
-/* harmony export (immutable) */ __webpack_exports__["Q"] = some;
-/* harmony export (immutable) */ __webpack_exports__["x"] = indexOf;
-/* unused harmony export sortBy */
-/* unused harmony export zipObject */
-/* harmony export (immutable) */ __webpack_exports__["f"] = assign;
-/* unused harmony export assignNoOverwrite */
-/* harmony export (immutable) */ __webpack_exports__["k"] = defaults;
-/* harmony export (immutable) */ __webpack_exports__["v"] = groupBy;
-/* harmony export (immutable) */ __webpack_exports__["K"] = merge;
-/* harmony export (immutable) */ __webpack_exports__["b"] = NOOP;
-/* harmony export (immutable) */ __webpack_exports__["a"] = IDENTITY;
-/* harmony export (immutable) */ __webpack_exports__["L"] = packArray;
-/* harmony export (immutable) */ __webpack_exports__["c"] = PRINT_ERROR;
-/* harmony export (immutable) */ __webpack_exports__["d"] = PRINT_WARNING;
-/* harmony export (immutable) */ __webpack_exports__["z"] = isES2015MapSupported;
-/* harmony export (immutable) */ __webpack_exports__["e"] = applyMixins;
-/* harmony export (immutable) */ __webpack_exports__["S"] = toFastProperties;
-/* harmony export (immutable) */ __webpack_exports__["M"] = peek;
-/* harmony export (immutable) */ __webpack_exports__["R"] = timer;
+
 /*
  Utils using lodash style API. (not necessarily 100% compliant) for functional and other utils.
  These utils should replace usage of lodash in the production code base. not because they are any better...
@@ -4753,15 +4703,25 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
  so writing several dozen utils which may be slower than the original lodash, does not matter as much
  considering they will not be invoked in hotspots...
  */
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toFastProperties = exports.timer = exports.peek = exports.isES2015MapSupported = exports.PRINT_WARNING = exports.PRINT_ERROR = exports.packArray = exports.IDENTITY = exports.NOOP = exports.merge = exports.groupBy = exports.defaults = exports.assignNoOverwrite = exports.assign = exports.zipObject = exports.sortBy = exports.indexOf = exports.some = exports.difference = exports.every = exports.isObject = exports.isRegExp = exports.isArray = exports.partial = exports.uniq = exports.compact = exports.reduce = exports.findAll = exports.find = exports.cloneObj = exports.cloneArr = exports.contains = exports.has = exports.pick = exports.reject = exports.filter = exports.dropRight = exports.drop = exports.isFunction = exports.isUndefined = exports.isString = exports.forEach = exports.last = exports.first = exports.flatten = exports.map = exports.mapValues = exports.values = exports.keys = exports.isEmpty = void 0;
+exports.upperFirst = void 0;
 function isEmpty(arr) {
     return arr && arr.length === 0;
 }
+exports.isEmpty = isEmpty;
 function keys(obj) {
     if (obj === undefined || obj === null) {
         return [];
     }
     return Object.keys(obj);
 }
+exports.keys = keys;
 function values(obj) {
     var vals = [];
     var keys = Object.keys(obj);
@@ -4770,6 +4730,7 @@ function values(obj) {
     }
     return vals;
 }
+exports.values = values;
 function mapValues(obj, callback) {
     var result = [];
     var objKeys = keys(obj);
@@ -4779,6 +4740,7 @@ function mapValues(obj, callback) {
     }
     return result;
 }
+exports.mapValues = mapValues;
 function map(arr, callback) {
     var result = [];
     for (var idx = 0; idx < arr.length; idx++) {
@@ -4786,6 +4748,7 @@ function map(arr, callback) {
     }
     return result;
 }
+exports.map = map;
 function flatten(arr) {
     var result = [];
     for (var idx = 0; idx < arr.length; idx++) {
@@ -4799,13 +4762,16 @@ function flatten(arr) {
     }
     return result;
 }
+exports.flatten = flatten;
 function first(arr) {
     return isEmpty(arr) ? undefined : arr[0];
 }
+exports.first = first;
 function last(arr) {
     var len = arr && arr.length;
     return len ? arr[len - 1] : undefined;
 }
+exports.last = last;
 function forEach(collection, iteratorCallback) {
     /* istanbul ignore else */
     if (Array.isArray(collection)) {
@@ -4825,23 +4791,29 @@ function forEach(collection, iteratorCallback) {
         throw Error("non exhaustive match");
     }
 }
+exports.forEach = forEach;
 function isString(item) {
     return typeof item === "string";
 }
+exports.isString = isString;
 function isUndefined(item) {
     return item === undefined;
 }
+exports.isUndefined = isUndefined;
 function isFunction(item) {
     return item instanceof Function;
 }
+exports.isFunction = isFunction;
 function drop(arr, howMuch) {
     if (howMuch === void 0) { howMuch = 1; }
     return arr.slice(howMuch, arr.length);
 }
+exports.drop = drop;
 function dropRight(arr, howMuch) {
     if (howMuch === void 0) { howMuch = 1; }
     return arr.slice(0, arr.length - howMuch);
 }
+exports.dropRight = dropRight;
 function filter(arr, predicate) {
     var result = [];
     if (Array.isArray(arr)) {
@@ -4854,9 +4826,11 @@ function filter(arr, predicate) {
     }
     return result;
 }
+exports.filter = filter;
 function reject(arr, predicate) {
     return filter(arr, function (item) { return !predicate(item); });
 }
+exports.reject = reject;
 function pick(obj, predicate) {
     var keys = Object.keys(obj);
     var result = {};
@@ -4869,15 +4843,18 @@ function pick(obj, predicate) {
     }
     return result;
 }
+exports.pick = pick;
 function has(obj, prop) {
     if (isObject(obj)) {
         return obj.hasOwnProperty(prop);
     }
     return false;
 }
+exports.has = has;
 function contains(arr, item) {
     return find(arr, function (currItem) { return currItem === item; }) !== undefined ? true : false;
 }
+exports.contains = contains;
 /**
  * shallow clone
  */
@@ -4888,6 +4865,7 @@ function cloneArr(arr) {
     }
     return newArr;
 }
+exports.cloneArr = cloneArr;
 /**
  * shallow clone
  */
@@ -4901,6 +4879,7 @@ function cloneObj(obj) {
     }
     return clonedObj;
 }
+exports.cloneObj = cloneObj;
 function find(arr, predicate) {
     for (var i = 0; i < arr.length; i++) {
         var item = arr[i];
@@ -4910,6 +4889,7 @@ function find(arr, predicate) {
     }
     return undefined;
 }
+exports.find = find;
 function findAll(arr, predicate) {
     var found = [];
     for (var i = 0; i < arr.length; i++) {
@@ -4920,6 +4900,7 @@ function findAll(arr, predicate) {
     }
     return found;
 }
+exports.findAll = findAll;
 function reduce(arrOrObj, iterator, initial) {
     var isArr = Array.isArray(arrOrObj);
     var vals = isArr ? arrOrObj : values(arrOrObj);
@@ -4930,9 +4911,11 @@ function reduce(arrOrObj, iterator, initial) {
     }
     return accumulator;
 }
+exports.reduce = reduce;
 function compact(arr) {
     return reject(arr, function (item) { return item === null || item === undefined; });
 }
+exports.compact = compact;
 function uniq(arr, identity) {
     if (identity === void 0) { identity = function (item) { return item; }; }
     var identities = [];
@@ -4947,6 +4930,7 @@ function uniq(arr, identity) {
         }
     }, []);
 }
+exports.uniq = uniq;
 function partial(func) {
     var restArgs = [];
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -4956,15 +4940,19 @@ function partial(func) {
     var allArgs = firstArg.concat(restArgs);
     return Function.bind.apply(func, allArgs);
 }
+exports.partial = partial;
 function isArray(obj) {
     return Array.isArray(obj);
 }
+exports.isArray = isArray;
 function isRegExp(obj) {
     return obj instanceof RegExp;
 }
+exports.isRegExp = isRegExp;
 function isObject(obj) {
     return obj instanceof Object;
 }
+exports.isObject = isObject;
 function every(arr, predicate) {
     for (var i = 0; i < arr.length; i++) {
         if (!predicate(arr[i], i)) {
@@ -4973,9 +4961,11 @@ function every(arr, predicate) {
     }
     return true;
 }
+exports.every = every;
 function difference(arr, values) {
     return reject(arr, function (item) { return contains(values, item); });
 }
+exports.difference = difference;
 function some(arr, predicate) {
     for (var i = 0; i < arr.length; i++) {
         if (predicate(arr[i])) {
@@ -4984,6 +4974,7 @@ function some(arr, predicate) {
     }
     return false;
 }
+exports.some = some;
 function indexOf(arr, value) {
     for (var i = 0; i < arr.length; i++) {
         if (arr[i] === value) {
@@ -4992,11 +4983,13 @@ function indexOf(arr, value) {
     }
     return -1;
 }
+exports.indexOf = indexOf;
 function sortBy(arr, orderFunc) {
     var result = cloneArr(arr);
     result.sort(function (a, b) { return orderFunc(a) - orderFunc(b); });
     return result;
 }
+exports.sortBy = sortBy;
 function zipObject(keys, values) {
     if (keys.length !== values.length) {
         throw Error("can't zipObject with different number of keys and values!");
@@ -5007,6 +5000,7 @@ function zipObject(keys, values) {
     }
     return result;
 }
+exports.zipObject = zipObject;
 /**
  * mutates! (and returns) target
  */
@@ -5025,6 +5019,7 @@ function assign(target) {
     }
     return target;
 }
+exports.assign = assign;
 /**
  * mutates! (and returns) target
  */
@@ -5035,9 +5030,6 @@ function assignNoOverwrite(target) {
     }
     for (var i = 0; i < sources.length; i++) {
         var curSource = sources[i];
-        if (isUndefined(curSource)) {
-            continue;
-        }
         var currSourceKeys = keys(curSource);
         for (var j = 0; j < currSourceKeys.length; j++) {
             var currKey = currSourceKeys[j];
@@ -5048,13 +5040,15 @@ function assignNoOverwrite(target) {
     }
     return target;
 }
+exports.assignNoOverwrite = assignNoOverwrite;
 function defaults() {
     var sources = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         sources[_i] = arguments[_i];
     }
-    return assignNoOverwrite.apply(null, [{}].concat(sources));
+    return assignNoOverwrite.apply(void 0, __spreadArray([{}], sources));
 }
+exports.defaults = defaults;
 function groupBy(arr, groupKeyFunc) {
     var result = {};
     forEach(arr, function (item) {
@@ -5069,6 +5063,7 @@ function groupBy(arr, groupKeyFunc) {
     });
     return result;
 }
+exports.groupBy = groupBy;
 /**
  * Merge obj2 into obj1.
  * Will overwrite existing properties with the same name
@@ -5083,10 +5078,13 @@ function merge(obj1, obj2) {
     }
     return result;
 }
+exports.merge = merge;
 function NOOP() { }
+exports.NOOP = NOOP;
 function IDENTITY(item) {
     return item;
 }
+exports.IDENTITY = IDENTITY;
 /**
  * Will return a new packed array with same values.
  */
@@ -5098,12 +5096,14 @@ function packArray(holeyArr) {
     }
     return result;
 }
+exports.packArray = packArray;
 function PRINT_ERROR(msg) {
     /* istanbul ignore else - can't override global.console in node.js */
     if (console && console.error) {
         console.error("Error: " + msg);
     }
 }
+exports.PRINT_ERROR = PRINT_ERROR;
 function PRINT_WARNING(msg) {
     /* istanbul ignore else - can't override global.console in node.js*/
     if (console && console.warn) {
@@ -5111,29 +5111,25 @@ function PRINT_WARNING(msg) {
         console.warn("Warning: " + msg);
     }
 }
+exports.PRINT_WARNING = PRINT_WARNING;
 function isES2015MapSupported() {
     return typeof Map === "function";
 }
-function applyMixins(derivedCtor, baseCtors) {
-    baseCtors.forEach(function (baseCtor) {
-        var baseProto = baseCtor.prototype;
-        Object.getOwnPropertyNames(baseProto).forEach(function (propName) {
-            if (propName === "constructor") {
-                return;
-            }
-            var basePropDescriptor = Object.getOwnPropertyDescriptor(baseProto, propName);
-            // Handle Accessors
-            if (basePropDescriptor &&
-                (basePropDescriptor.get || basePropDescriptor.set)) {
-                Object.defineProperty(derivedCtor.prototype, propName, basePropDescriptor);
-            }
-            else {
-                derivedCtor.prototype[propName] = baseCtor.prototype[propName];
-            }
-        });
-    });
+exports.isES2015MapSupported = isES2015MapSupported;
+function peek(arr) {
+    return arr[arr.length - 1];
 }
-// base on: https://github.com/petkaantonov/bluebird/blob/b97c0d2d487e8c5076e8bd897e0dcd4622d31846/src/util.js#L201-L216
+exports.peek = peek;
+/* istanbul ignore next - for performance tracing*/
+function timer(func) {
+    var start = new Date().getTime();
+    var val = func();
+    var end = new Date().getTime();
+    var total = end - start;
+    return { time: total, value: val };
+}
+exports.timer = timer;
+// based on: https://github.com/petkaantonov/bluebird/blob/b97c0d2d487e8c5076e8bd897e0dcd4622d31846/src/util.js#L201-L216
 function toFastProperties(toBecomeFast) {
     function FakeConstructor() { }
     // If our object is used as a constructor it would receive
@@ -5152,18 +5148,23 @@ function toFastProperties(toBecomeFast) {
     // tslint:disable-next-line
     eval(toBecomeFast);
 }
-function peek(arr) {
-    return arr[arr.length - 1];
+exports.toFastProperties = toFastProperties;
+function upperFirst(str) {
+    if (!str) {
+        return str;
+    }
+    var firstChar = getCharacterFromCodePointAt(str, 0);
+    return firstChar.toUpperCase() + str.substring(firstChar.length);
 }
-/* istanbul ignore next - for performance tracing*/
-function timer(func) {
-    var start = new Date().getTime();
-    var val = func();
-    var end = new Date().getTime();
-    var total = end - start;
-    return { time: total, value: val };
+exports.upperFirst = upperFirst;
+var surrogatePairPattern = /[\uD800-\uDBFF][\uDC00-\uDFFF]/;
+function getCharacterFromCodePointAt(str, idx) {
+    var surrogatePairCandidate = str.substring(idx, idx + 1);
+    return surrogatePairPattern.test(surrogatePairCandidate)
+        ? surrogatePairCandidate
+        : str[idx];
 }
-//# sourceMappingURL=utils.js.map
+//# sourceMappingURL=api.js.map
 
 /***/ }),
 /* 3 */
@@ -5587,13 +5588,13 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(225);
+var _mapdDataLayer = __webpack_require__(222);
 
 var _formattingHelpers = __webpack_require__(10);
 
-var _datesAndTimes = __webpack_require__(29);
+var _datesAndTimes = __webpack_require__(27);
 
-var _fastDeepEqual = __webpack_require__(181);
+var _fastDeepEqual = __webpack_require__(179);
 
 var _fastDeepEqual2 = _interopRequireDefault(_fastDeepEqual);
 
@@ -5693,7 +5694,7 @@ parser.registerParser({
 
 var dateFormat = exports.dateFormat = _d2.default.time.format.utc("%m/%d/%Y");
 
-var deepEquals = exports.deepEquals = __webpack_require__(181); // eslint-disable-line global-require
+var deepEquals = exports.deepEquals = __webpack_require__(179); // eslint-disable-line global-require
 
 var deepClone = exports.deepClone = function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -6492,285 +6493,6 @@ function resetState() {
 
 /***/ }),
 /* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractProduction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return NonTerminal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return Rule; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return Flat; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return Option; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return RepetitionMandatory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return RepetitionMandatoryWithSeparator; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return Repetition; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return RepetitionWithSeparator; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Alternation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return Terminal; });
-/* harmony export (immutable) */ __webpack_exports__["l"] = serializeGrammar;
-/* harmony export (immutable) */ __webpack_exports__["m"] = serializeProduction;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__ = __webpack_require__(17);
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-
-
-var AbstractProduction = /** @class */ (function () {
-    function AbstractProduction(definition) {
-        this.definition = definition;
-    }
-    AbstractProduction.prototype.accept = function (visitor) {
-        visitor.visit(this);
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(this.definition, function (prod) {
-            prod.accept(visitor);
-        });
-    };
-    return AbstractProduction;
-}());
-
-var NonTerminal = /** @class */ (function (_super) {
-    __extends(NonTerminal, _super);
-    function NonTerminal(options) {
-        var _this = _super.call(this, []) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    Object.defineProperty(NonTerminal.prototype, "definition", {
-        get: function () {
-            if (this.referencedRule !== undefined) {
-                return this.referencedRule.definition;
-            }
-            return [];
-        },
-        set: function (definition) {
-            // immutable
-        },
-        enumerable: true,
-        configurable: true
-    });
-    NonTerminal.prototype.accept = function (visitor) {
-        visitor.visit(this);
-        // don't visit children of a reference, we will get cyclic infinite loops if we do so
-    };
-    return NonTerminal;
-}(AbstractProduction));
-
-var Rule = /** @class */ (function (_super) {
-    __extends(Rule, _super);
-    function Rule(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.orgText = "";
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Rule;
-}(AbstractProduction));
-
-// TODO: is this only used in an Alternation?
-//       Perhaps `Flat` should be renamed to `Alternative`?
-var Flat = /** @class */ (function (_super) {
-    __extends(Flat, _super);
-    // A named Flat production is used to indicate a Nested Rule in an alternation
-    function Flat(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.ignoreAmbiguities = false;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Flat;
-}(AbstractProduction));
-
-var Option = /** @class */ (function (_super) {
-    __extends(Option, _super);
-    function Option(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Option;
-}(AbstractProduction));
-
-var RepetitionMandatory = /** @class */ (function (_super) {
-    __extends(RepetitionMandatory, _super);
-    function RepetitionMandatory(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return RepetitionMandatory;
-}(AbstractProduction));
-
-var RepetitionMandatoryWithSeparator = /** @class */ (function (_super) {
-    __extends(RepetitionMandatoryWithSeparator, _super);
-    function RepetitionMandatoryWithSeparator(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return RepetitionMandatoryWithSeparator;
-}(AbstractProduction));
-
-var Repetition = /** @class */ (function (_super) {
-    __extends(Repetition, _super);
-    function Repetition(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Repetition;
-}(AbstractProduction));
-
-var RepetitionWithSeparator = /** @class */ (function (_super) {
-    __extends(RepetitionWithSeparator, _super);
-    function RepetitionWithSeparator(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return RepetitionWithSeparator;
-}(AbstractProduction));
-
-var Alternation = /** @class */ (function (_super) {
-    __extends(Alternation, _super);
-    function Alternation(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        _this.ignoreAmbiguities = false;
-        _this.hasPredicates = false;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Alternation;
-}(AbstractProduction));
-
-var Terminal = /** @class */ (function () {
-    function Terminal(options) {
-        this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-    }
-    Terminal.prototype.accept = function (visitor) {
-        visitor.visit(this);
-    };
-    return Terminal;
-}());
-
-function serializeGrammar(topRules) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topRules, serializeProduction);
-}
-function serializeProduction(node) {
-    function convertDefinition(definition) {
-        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(definition, serializeProduction);
-    }
-    /* istanbul ignore else */
-    if (node instanceof NonTerminal) {
-        return {
-            type: "NonTerminal",
-            name: node.nonTerminalName,
-            idx: node.idx
-        };
-    }
-    else if (node instanceof Flat) {
-        return {
-            type: "Flat",
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Option) {
-        return {
-            type: "Option",
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof RepetitionMandatory) {
-        return {
-            type: "RepetitionMandatory",
-            name: node.name,
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof RepetitionMandatoryWithSeparator) {
-        return {
-            type: "RepetitionMandatoryWithSeparator",
-            name: node.name,
-            idx: node.idx,
-            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof RepetitionWithSeparator) {
-        return {
-            type: "RepetitionWithSeparator",
-            name: node.name,
-            idx: node.idx,
-            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Repetition) {
-        return {
-            type: "Repetition",
-            name: node.name,
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Alternation) {
-        return {
-            type: "Alternation",
-            name: node.name,
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Terminal) {
-        var serializedTerminal = {
-            type: "Terminal",
-            name: node.terminalType.name,
-            label: Object(__WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__["e" /* tokenLabel */])(node.terminalType),
-            idx: node.idx
-        };
-        var pattern = node.terminalType.PATTERN;
-        if (node.terminalType.PATTERN) {
-            serializedTerminal.pattern = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["D" /* isRegExp */])(pattern)
-                ? pattern.source
-                : pattern;
-        }
-        return serializedTerminal;
-    }
-    else if (node instanceof Rule) {
-        return {
-            type: "Rule",
-            name: node.name,
-            orgText: node.orgText,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else {
-        throw Error("non exhaustive match");
-    }
-}
-//# sourceMappingURL=gast_public.js.map
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6787,41 +6509,41 @@ var _core = __webpack_require__(3);
 
 var _coreAsync = __webpack_require__(5);
 
-var _asyncMixin = __webpack_require__(182);
+var _asyncMixin = __webpack_require__(180);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(246);
+var _legendMixin = __webpack_require__(243);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
-var _binningHelpers = __webpack_require__(22);
+var _binningHelpers = __webpack_require__(21);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _errors = __webpack_require__(37);
+var _errors = __webpack_require__(35);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(247);
+var _filterMixin = __webpack_require__(244);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(248);
+var _labelMixin = __webpack_require__(245);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
-var _logger = __webpack_require__(36);
+var _logger = __webpack_require__(34);
 
-var _multipleKeyAccessors = __webpack_require__(183);
+var _multipleKeyAccessors = __webpack_require__(181);
 
-var _multipleKeyLabelMixin = __webpack_require__(184);
+var _multipleKeyLabelMixin = __webpack_require__(182);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
-var _spinnerMixin = __webpack_require__(185);
+var _spinnerMixin = __webpack_require__(183);
 
 var _spinnerMixin2 = _interopRequireDefault(_spinnerMixin);
 
@@ -8632,14 +8354,14 @@ function baseMixin(_chart) {
 }
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bind = __webpack_require__(194);
-var isBuffer = __webpack_require__(277);
+var bind = __webpack_require__(192);
+var isBuffer = __webpack_require__(274);
 
 /*global toString:true*/
 
@@ -8973,77 +8695,347 @@ module.exports = {
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return END_OF_FILE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DEFAULT_PARSER_CONFIG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_RULE_CONFIG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return ParserDefinitionErrorType; });
-/* harmony export (immutable) */ __webpack_exports__["d"] = EMPTY_ALT;
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return Parser; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CstParser; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return EmbeddedActionsParser; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(325);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(219);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(329);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(331);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(332);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(333);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(334);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(335);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(336);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(337);
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.serializeProduction = exports.serializeGrammar = exports.Terminal = exports.Alternation = exports.RepetitionWithSeparator = exports.Repetition = exports.RepetitionMandatoryWithSeparator = exports.RepetitionMandatory = exports.Option = exports.Alternative = exports.Rule = exports.NonTerminal = exports.AbstractProduction = void 0;
+var utils_1 = __webpack_require__(2);
+var tokens_public_1 = __webpack_require__(17);
+var AbstractProduction = /** @class */ (function () {
+    function AbstractProduction(_definition) {
+        this._definition = _definition;
+    }
+    Object.defineProperty(AbstractProduction.prototype, "definition", {
+        get: function () {
+            return this._definition;
+        },
+        set: function (value) {
+            this._definition = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    AbstractProduction.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        utils_1.forEach(this.definition, function (prod) {
+            prod.accept(visitor);
+        });
+    };
+    return AbstractProduction;
+}());
+exports.AbstractProduction = AbstractProduction;
+var NonTerminal = /** @class */ (function (_super) {
+    __extends(NonTerminal, _super);
+    function NonTerminal(options) {
+        var _this = _super.call(this, []) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    Object.defineProperty(NonTerminal.prototype, "definition", {
+        get: function () {
+            if (this.referencedRule !== undefined) {
+                return this.referencedRule.definition;
+            }
+            return [];
+        },
+        set: function (definition) {
+            // immutable
+        },
+        enumerable: false,
+        configurable: true
+    });
+    NonTerminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        // don't visit children of a reference, we will get cyclic infinite loops if we do so
+    };
+    return NonTerminal;
+}(AbstractProduction));
+exports.NonTerminal = NonTerminal;
+var Rule = /** @class */ (function (_super) {
+    __extends(Rule, _super);
+    function Rule(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.orgText = "";
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Rule;
+}(AbstractProduction));
+exports.Rule = Rule;
+var Alternative = /** @class */ (function (_super) {
+    __extends(Alternative, _super);
+    function Alternative(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.ignoreAmbiguities = false;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Alternative;
+}(AbstractProduction));
+exports.Alternative = Alternative;
+var Option = /** @class */ (function (_super) {
+    __extends(Option, _super);
+    function Option(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Option;
+}(AbstractProduction));
+exports.Option = Option;
+var RepetitionMandatory = /** @class */ (function (_super) {
+    __extends(RepetitionMandatory, _super);
+    function RepetitionMandatory(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionMandatory;
+}(AbstractProduction));
+exports.RepetitionMandatory = RepetitionMandatory;
+var RepetitionMandatoryWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionMandatoryWithSeparator, _super);
+    function RepetitionMandatoryWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionMandatoryWithSeparator;
+}(AbstractProduction));
+exports.RepetitionMandatoryWithSeparator = RepetitionMandatoryWithSeparator;
+var Repetition = /** @class */ (function (_super) {
+    __extends(Repetition, _super);
+    function Repetition(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Repetition;
+}(AbstractProduction));
+exports.Repetition = Repetition;
+var RepetitionWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionWithSeparator, _super);
+    function RepetitionWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionWithSeparator;
+}(AbstractProduction));
+exports.RepetitionWithSeparator = RepetitionWithSeparator;
+var Alternation = /** @class */ (function (_super) {
+    __extends(Alternation, _super);
+    function Alternation(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        _this.ignoreAmbiguities = false;
+        _this.hasPredicates = false;
+        utils_1.assign(_this, utils_1.pick(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    Object.defineProperty(Alternation.prototype, "definition", {
+        get: function () {
+            return this._definition;
+        },
+        set: function (value) {
+            this._definition = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return Alternation;
+}(AbstractProduction));
+exports.Alternation = Alternation;
+var Terminal = /** @class */ (function () {
+    function Terminal(options) {
+        this.idx = 1;
+        utils_1.assign(this, utils_1.pick(options, function (v) { return v !== undefined; }));
+    }
+    Terminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+    };
+    return Terminal;
+}());
+exports.Terminal = Terminal;
+function serializeGrammar(topRules) {
+    return utils_1.map(topRules, serializeProduction);
+}
+exports.serializeGrammar = serializeGrammar;
+function serializeProduction(node) {
+    function convertDefinition(definition) {
+        return utils_1.map(definition, serializeProduction);
+    }
+    /* istanbul ignore else */
+    if (node instanceof NonTerminal) {
+        var serializedNonTerminal = {
+            type: "NonTerminal",
+            name: node.nonTerminalName,
+            idx: node.idx
+        };
+        if (utils_1.isString(node.label)) {
+            serializedNonTerminal.label = node.label;
+        }
+        return serializedNonTerminal;
+    }
+    else if (node instanceof Alternative) {
+        return {
+            type: "Alternative",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Option) {
+        return {
+            type: "Option",
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatory) {
+        return {
+            type: "RepetitionMandatory",
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatoryWithSeparator) {
+        return {
+            type: "RepetitionMandatoryWithSeparator",
+            idx: node.idx,
+            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionWithSeparator) {
+        return {
+            type: "RepetitionWithSeparator",
+            idx: node.idx,
+            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Repetition) {
+        return {
+            type: "Repetition",
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Alternation) {
+        return {
+            type: "Alternation",
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Terminal) {
+        var serializedTerminal = {
+            type: "Terminal",
+            name: node.terminalType.name,
+            label: tokens_public_1.tokenLabel(node.terminalType),
+            idx: node.idx
+        };
+        if (utils_1.isString(node.label)) {
+            serializedTerminal.terminalLabel = node.label;
+        }
+        var pattern = node.terminalType.PATTERN;
+        if (node.terminalType.PATTERN) {
+            serializedTerminal.pattern = utils_1.isRegExp(pattern)
+                ? pattern.source
+                : pattern;
+        }
+        return serializedTerminal;
+    }
+    else if (node instanceof Rule) {
+        return {
+            type: "Rule",
+            name: node.name,
+            orgText: node.orgText,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+exports.serializeProduction = serializeProduction;
+//# sourceMappingURL=gast_public.js.map
 
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-var END_OF_FILE = Object(__WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__["c" /* createTokenInstance */])(__WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__["a" /* EOF */], "", NaN, NaN, NaN, NaN, NaN, NaN);
-Object.freeze(END_OF_FILE);
-var DEFAULT_PARSER_CONFIG = Object.freeze({
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EmbeddedActionsParser = exports.CstParser = exports.Parser = exports.EMPTY_ALT = exports.ParserDefinitionErrorType = exports.DEFAULT_RULE_CONFIG = exports.DEFAULT_PARSER_CONFIG = exports.END_OF_FILE = void 0;
+var utils_1 = __webpack_require__(2);
+var follow_1 = __webpack_require__(323);
+var tokens_public_1 = __webpack_require__(17);
+var errors_public_1 = __webpack_require__(31);
+var gast_resolver_public_1 = __webpack_require__(325);
+var recoverable_1 = __webpack_require__(217);
+var looksahead_1 = __webpack_require__(327);
+var tree_builder_1 = __webpack_require__(328);
+var lexer_adapter_1 = __webpack_require__(331);
+var recognizer_api_1 = __webpack_require__(332);
+var recognizer_engine_1 = __webpack_require__(333);
+var error_handler_1 = __webpack_require__(334);
+var context_assist_1 = __webpack_require__(335);
+var gast_recorder_1 = __webpack_require__(336);
+var perf_tracer_1 = __webpack_require__(337);
+var apply_mixins_1 = __webpack_require__(338);
+exports.END_OF_FILE = tokens_public_1.createTokenInstance(tokens_public_1.EOF, "", NaN, NaN, NaN, NaN, NaN, NaN);
+Object.freeze(exports.END_OF_FILE);
+exports.DEFAULT_PARSER_CONFIG = Object.freeze({
     recoveryEnabled: false,
-    maxLookahead: 4,
-    ignoredIssues: {},
+    maxLookahead: 3,
     dynamicTokensEnabled: false,
     outputCst: true,
-    errorMessageProvider: __WEBPACK_IMPORTED_MODULE_4__errors_public__["c" /* defaultParserErrorProvider */],
+    errorMessageProvider: errors_public_1.defaultParserErrorProvider,
     nodeLocationTracking: "none",
     traceInitPerf: false,
     skipValidations: false
 });
-var DEFAULT_RULE_CONFIG = Object.freeze({
+exports.DEFAULT_RULE_CONFIG = Object.freeze({
     recoveryValueFunc: function () { return undefined; },
     resyncEnabled: true
 });
@@ -9059,22 +9051,19 @@ var ParserDefinitionErrorType;
     ParserDefinitionErrorType[ParserDefinitionErrorType["AMBIGUOUS_ALTS"] = 7] = "AMBIGUOUS_ALTS";
     ParserDefinitionErrorType[ParserDefinitionErrorType["CONFLICT_TOKENS_RULES_NAMESPACE"] = 8] = "CONFLICT_TOKENS_RULES_NAMESPACE";
     ParserDefinitionErrorType[ParserDefinitionErrorType["INVALID_TOKEN_NAME"] = 9] = "INVALID_TOKEN_NAME";
-    ParserDefinitionErrorType[ParserDefinitionErrorType["INVALID_NESTED_RULE_NAME"] = 10] = "INVALID_NESTED_RULE_NAME";
-    ParserDefinitionErrorType[ParserDefinitionErrorType["DUPLICATE_NESTED_NAME"] = 11] = "DUPLICATE_NESTED_NAME";
-    ParserDefinitionErrorType[ParserDefinitionErrorType["NO_NON_EMPTY_LOOKAHEAD"] = 12] = "NO_NON_EMPTY_LOOKAHEAD";
-    ParserDefinitionErrorType[ParserDefinitionErrorType["AMBIGUOUS_PREFIX_ALTS"] = 13] = "AMBIGUOUS_PREFIX_ALTS";
-    ParserDefinitionErrorType[ParserDefinitionErrorType["TOO_MANY_ALTS"] = 14] = "TOO_MANY_ALTS";
-})(ParserDefinitionErrorType || (ParserDefinitionErrorType = {}));
+    ParserDefinitionErrorType[ParserDefinitionErrorType["NO_NON_EMPTY_LOOKAHEAD"] = 10] = "NO_NON_EMPTY_LOOKAHEAD";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["AMBIGUOUS_PREFIX_ALTS"] = 11] = "AMBIGUOUS_PREFIX_ALTS";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["TOO_MANY_ALTS"] = 12] = "TOO_MANY_ALTS";
+})(ParserDefinitionErrorType = exports.ParserDefinitionErrorType || (exports.ParserDefinitionErrorType = {}));
 function EMPTY_ALT(value) {
     if (value === void 0) { value = undefined; }
     return function () {
         return value;
     };
 }
+exports.EMPTY_ALT = EMPTY_ALT;
 var Parser = /** @class */ (function () {
     function Parser(tokenVocabulary, config) {
-        if (config === void 0) { config = DEFAULT_PARSER_CONFIG; }
-        this.ignoredIssues = DEFAULT_PARSER_CONFIG.ignoredIssues;
         this.definitionErrors = [];
         this.selfAnalysisDone = false;
         var that = this;
@@ -9087,25 +9076,22 @@ var Parser = /** @class */ (function () {
         that.initContentAssist();
         that.initGastRecorder(config);
         that.initPerformanceTracer(config);
-        /* istanbul ignore if - complete over-kill to test this, we should only add a test when we actually hard deprecate it and throw an error... */
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "ignoredIssues") &&
-            config.ignoredIssues !== DEFAULT_PARSER_CONFIG.ignoredIssues) {
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["d" /* PRINT_WARNING */])("The <ignoredIssues> IParserConfig property is soft-deprecated and will be removed in future versions.\n\t" +
-                "Please use the <IGNORE_AMBIGUITIES> flag on the relevant DSL method instead.");
+        if (utils_1.has(config, "ignoredIssues")) {
+            throw new Error("The <ignoredIssues> IParserConfig property has been deprecated.\n\t" +
+                "Please use the <IGNORE_AMBIGUITIES> flag on the relevant DSL method instead.\n\t" +
+                "See: https://chevrotain.io/docs/guide/resolving_grammar_errors.html#IGNORING_AMBIGUITIES\n\t" +
+                "For further details.");
         }
-        this.ignoredIssues = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "ignoredIssues")
-            ? config.ignoredIssues
-            : DEFAULT_PARSER_CONFIG.ignoredIssues;
-        this.skipValidations = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "skipValidations")
+        this.skipValidations = utils_1.has(config, "skipValidations")
             ? config.skipValidations
-            : DEFAULT_PARSER_CONFIG.skipValidations;
+            : exports.DEFAULT_PARSER_CONFIG.skipValidations;
     }
     /**
      *  @deprecated use the **instance** method with the same name instead
      */
     Parser.performSelfAnalysis = function (parserInstance) {
-        ;
-        parserInstance.performSelfAnalysis();
+        throw Error("The **static** `performSelfAnalysis` method has been deprecated." +
+            "\t\nUse the **instance** method with the same name instead.");
     };
     Parser.prototype.performSelfAnalysis = function () {
         var _this = this;
@@ -9117,13 +9103,13 @@ var Parser = /** @class */ (function () {
                 // Without this voodoo magic the parser would be x3-x4 slower
                 // It seems it is better to invoke `toFastProperties` **before**
                 // Any manipulations of the `this` object done during the recording phase.
-                Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["S" /* toFastProperties */])(_this);
+                utils_1.toFastProperties(_this);
             });
             _this.TRACE_INIT("Grammar Recording", function () {
                 try {
                     _this.enableRecording();
                     // Building the GAST
-                    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(_this.definedRulesNames, function (currRuleName) {
+                    utils_1.forEach(_this.definedRulesNames, function (currRuleName) {
                         var wrappedRule = _this[currRuleName];
                         var originalGrammarAction = wrappedRule["originalGrammarAction"];
                         var recordedRuleGast = undefined;
@@ -9139,47 +9125,41 @@ var Parser = /** @class */ (function () {
             });
             var resolverErrors = [];
             _this.TRACE_INIT("Grammar Resolving", function () {
-                resolverErrors = Object(__WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__["b" /* resolveGrammar */])({
-                    rules: Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache)
+                resolverErrors = gast_resolver_public_1.resolveGrammar({
+                    rules: utils_1.values(_this.gastProductionsCache)
                 });
-                _this.definitionErrors.push.apply(_this.definitionErrors, resolverErrors); // mutability for the win?
+                _this.definitionErrors = _this.definitionErrors.concat(resolverErrors);
             });
             _this.TRACE_INIT("Grammar Validations", function () {
                 // only perform additional grammar validations IFF no resolving errors have occurred.
                 // as unresolved grammar may lead to unhandled runtime exceptions in the follow up validations.
-                if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(resolverErrors) && _this.skipValidations === false) {
-                    var validationErrors = Object(__WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__["c" /* validateGrammar */])({
-                        rules: Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache),
+                if (utils_1.isEmpty(resolverErrors) && _this.skipValidations === false) {
+                    var validationErrors = gast_resolver_public_1.validateGrammar({
+                        rules: utils_1.values(_this.gastProductionsCache),
                         maxLookahead: _this.maxLookahead,
-                        tokenTypes: Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.tokensMap),
-                        ignoredIssues: _this.ignoredIssues,
-                        errMsgProvider: __WEBPACK_IMPORTED_MODULE_4__errors_public__["b" /* defaultGrammarValidatorErrorProvider */],
+                        tokenTypes: utils_1.values(_this.tokensMap),
+                        errMsgProvider: errors_public_1.defaultGrammarValidatorErrorProvider,
                         grammarName: className
                     });
-                    _this.definitionErrors.push.apply(_this.definitionErrors, validationErrors); // mutability for the win?
+                    _this.definitionErrors = _this.definitionErrors.concat(validationErrors);
                 }
             });
             // this analysis may fail if the grammar is not perfectly valid
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(_this.definitionErrors)) {
+            if (utils_1.isEmpty(_this.definitionErrors)) {
                 // The results of these computations are not needed unless error recovery is enabled.
                 if (_this.recoveryEnabled) {
                     _this.TRACE_INIT("computeAllProdsFollows", function () {
-                        var allFollows = Object(__WEBPACK_IMPORTED_MODULE_1__grammar_follow__["a" /* computeAllProdsFollows */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache));
+                        var allFollows = follow_1.computeAllProdsFollows(utils_1.values(_this.gastProductionsCache));
                         _this.resyncFollows = allFollows;
                     });
                 }
                 _this.TRACE_INIT("ComputeLookaheadFunctions", function () {
-                    _this.preComputeLookaheadFunctions(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache));
+                    _this.preComputeLookaheadFunctions(utils_1.values(_this.gastProductionsCache));
                 });
             }
-            _this.TRACE_INIT("expandAllNestedRuleNames", function () {
-                // TODO: is this needed for EmbeddedActionsParser?
-                var cstAnalysisResult = Object(__WEBPACK_IMPORTED_MODULE_3__cst_cst__["d" /* expandAllNestedRuleNames */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache), _this.fullRuleNameToShort);
-                _this.allRuleNames = cstAnalysisResult.allRuleNames;
-            });
             if (!Parser.DEFER_DEFINITION_ERRORS_HANDLING &&
-                !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(_this.definitionErrors)) {
-                defErrorsMsgs = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(_this.definitionErrors, function (defError) { return defError.message; });
+                !utils_1.isEmpty(_this.definitionErrors)) {
+                defErrorsMsgs = utils_1.map(_this.definitionErrors, function (defError) { return defError.message; });
                 throw new Error("Parser Definition Errors detected:\n " + defErrorsMsgs.join("\n-------------------------------\n"));
             }
         });
@@ -9193,45 +9173,45 @@ var Parser = /** @class */ (function () {
     Parser.DEFER_DEFINITION_ERRORS_HANDLING = false;
     return Parser;
 }());
-
-Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["e" /* applyMixins */])(Parser, [
-    __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__["b" /* Recoverable */],
-    __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__["a" /* LooksAhead */],
-    __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__["a" /* TreeBuilder */],
-    __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__["a" /* LexerAdapter */],
-    __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__["a" /* RecognizerEngine */],
-    __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__["a" /* RecognizerApi */],
-    __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__["a" /* ErrorHandler */],
-    __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__["a" /* ContentAssist */],
-    __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__["a" /* GastRecorder */],
-    __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__["a" /* PerformanceTracer */]
+exports.Parser = Parser;
+apply_mixins_1.applyMixins(Parser, [
+    recoverable_1.Recoverable,
+    looksahead_1.LooksAhead,
+    tree_builder_1.TreeBuilder,
+    lexer_adapter_1.LexerAdapter,
+    recognizer_engine_1.RecognizerEngine,
+    recognizer_api_1.RecognizerApi,
+    error_handler_1.ErrorHandler,
+    context_assist_1.ContentAssist,
+    gast_recorder_1.GastRecorder,
+    perf_tracer_1.PerformanceTracer
 ]);
 var CstParser = /** @class */ (function (_super) {
     __extends(CstParser, _super);
     function CstParser(tokenVocabulary, config) {
-        if (config === void 0) { config = DEFAULT_PARSER_CONFIG; }
+        if (config === void 0) { config = exports.DEFAULT_PARSER_CONFIG; }
         var _this = this;
-        var configClone = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["h" /* cloneObj */])(config);
+        var configClone = utils_1.cloneObj(config);
         configClone.outputCst = true;
         _this = _super.call(this, tokenVocabulary, configClone) || this;
         return _this;
     }
     return CstParser;
 }(Parser));
-
+exports.CstParser = CstParser;
 var EmbeddedActionsParser = /** @class */ (function (_super) {
     __extends(EmbeddedActionsParser, _super);
     function EmbeddedActionsParser(tokenVocabulary, config) {
-        if (config === void 0) { config = DEFAULT_PARSER_CONFIG; }
+        if (config === void 0) { config = exports.DEFAULT_PARSER_CONFIG; }
         var _this = this;
-        var configClone = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["h" /* cloneObj */])(config);
+        var configClone = utils_1.cloneObj(config);
         configClone.outputCst = false;
         _this = _super.call(this, tokenVocabulary, configClone) || this;
         return _this;
     }
     return EmbeddedActionsParser;
 }(Parser));
-
+exports.EmbeddedActionsParser = EmbeddedActionsParser;
 //# sourceMappingURL=parser.js.map
 
 /***/ }),
@@ -9258,7 +9238,7 @@ exports.formatExtractValue = formatExtractValue;
 exports.normalizeFiltersArray = normalizeFiltersArray;
 exports.formatCache = formatCache;
 
-var _datesAndTimes = __webpack_require__(29);
+var _datesAndTimes = __webpack_require__(27);
 
 var _d = __webpack_require__(1);
 
@@ -9448,11 +9428,11 @@ function formatCache(_axis) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(226);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(227);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(228);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(224);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(225);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(236);
 
 
 
@@ -9773,11 +9753,11 @@ exports.default = coordinateGridMixin;
 
 var _core = __webpack_require__(3);
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(252);
+var _binningMixin = __webpack_require__(249);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
@@ -9791,9 +9771,9 @@ var _d2 = _interopRequireDefault(_d);
 
 var _events = __webpack_require__(15);
 
-var _filters = __webpack_require__(21);
+var _filters = __webpack_require__(20);
 
-var _lockAxisMixin = __webpack_require__(40);
+var _lockAxisMixin = __webpack_require__(38);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -11823,22 +11803,15 @@ function capMixin(_chart) {
 
 /***/ }),
 /* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["e"] = tokenLabel;
-/* harmony export (immutable) */ __webpack_exports__["g"] = tokenName;
-/* harmony export (immutable) */ __webpack_exports__["d"] = hasTokenLabel;
-/* harmony export (immutable) */ __webpack_exports__["b"] = createToken;
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EOF; });
-/* harmony export (immutable) */ __webpack_exports__["c"] = createTokenInstance;
-/* harmony export (immutable) */ __webpack_exports__["f"] = tokenMatcher;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(25);
 
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tokenMatcher = exports.createTokenInstance = exports.EOF = exports.createToken = exports.hasTokenLabel = exports.tokenName = exports.tokenLabel = void 0;
+var utils_1 = __webpack_require__(2);
+var lexer_public_1 = __webpack_require__(29);
+var tokens_1 = __webpack_require__(24);
 function tokenLabel(tokType) {
     if (hasTokenLabel(tokType)) {
         return tokType.LABEL;
@@ -11847,12 +11820,15 @@ function tokenLabel(tokType) {
         return tokType.name;
     }
 }
+exports.tokenLabel = tokenLabel;
 function tokenName(tokType) {
     return tokType.name;
 }
+exports.tokenName = tokenName;
 function hasTokenLabel(obj) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["E" /* isString */])(obj.LABEL) && obj.LABEL !== "";
+    return utils_1.isString(obj.LABEL) && obj.LABEL !== "";
 }
+exports.hasTokenLabel = hasTokenLabel;
 var PARENT = "parent";
 var CATEGORIES = "categories";
 var LABEL = "label";
@@ -11865,47 +11841,48 @@ var START_CHARS_HINT = "start_chars_hint";
 function createToken(config) {
     return createTokenInternal(config);
 }
+exports.createToken = createToken;
 function createTokenInternal(config) {
     var pattern = config.pattern;
     var tokenType = {};
     tokenType.name = config.name;
-    if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(pattern)) {
+    if (!utils_1.isUndefined(pattern)) {
         tokenType.PATTERN = pattern;
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, PARENT)) {
-        throw "The parent property is no longer supported.\n" +
-            "See: https://github.com/SAP/chevrotain/issues/564#issuecomment-349062346 for details.";
+    if (utils_1.has(config, PARENT)) {
+        throw ("The parent property is no longer supported.\n" +
+            "See: https://github.com/chevrotain/chevrotain/issues/564#issuecomment-349062346 for details.");
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, CATEGORIES)) {
+    if (utils_1.has(config, CATEGORIES)) {
         // casting to ANY as this will be fixed inside `augmentTokenTypes``
         tokenType.CATEGORIES = config[CATEGORIES];
     }
-    Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["a" /* augmentTokenTypes */])([tokenType]);
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, LABEL)) {
+    tokens_1.augmentTokenTypes([tokenType]);
+    if (utils_1.has(config, LABEL)) {
         tokenType.LABEL = config[LABEL];
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, GROUP)) {
+    if (utils_1.has(config, GROUP)) {
         tokenType.GROUP = config[GROUP];
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, POP_MODE)) {
+    if (utils_1.has(config, POP_MODE)) {
         tokenType.POP_MODE = config[POP_MODE];
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, PUSH_MODE)) {
+    if (utils_1.has(config, PUSH_MODE)) {
         tokenType.PUSH_MODE = config[PUSH_MODE];
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, LONGER_ALT)) {
+    if (utils_1.has(config, LONGER_ALT)) {
         tokenType.LONGER_ALT = config[LONGER_ALT];
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, LINE_BREAKS)) {
+    if (utils_1.has(config, LINE_BREAKS)) {
         tokenType.LINE_BREAKS = config[LINE_BREAKS];
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, START_CHARS_HINT)) {
+    if (utils_1.has(config, START_CHARS_HINT)) {
         tokenType.START_CHARS_HINT = config[START_CHARS_HINT];
     }
     return tokenType;
 }
-var EOF = createToken({ name: "EOF", pattern: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA });
-Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["a" /* augmentTokenTypes */])([EOF]);
+exports.EOF = createToken({ name: "EOF", pattern: lexer_public_1.Lexer.NA });
+tokens_1.augmentTokenTypes([exports.EOF]);
 function createTokenInstance(tokType, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn) {
     return {
         image: image,
@@ -11919,9 +11896,11 @@ function createTokenInstance(tokType, image, startOffset, endOffset, startLine, 
         tokenType: tokType
     };
 }
+exports.createTokenInstance = createTokenInstance;
 function tokenMatcher(token, tokType) {
-    return Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["d" /* tokenStructuredMatcher */])(token, tokType);
+    return tokens_1.tokenStructuredMatcher(token, tokType);
 }
+exports.tokenMatcher = tokenMatcher;
 //# sourceMappingURL=tokens_public.js.map
 
 /***/ }),
@@ -12015,7 +11994,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _wellknown = __webpack_require__(271);
+var _wellknown = __webpack_require__(268);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
 
@@ -12684,60 +12663,6 @@ function getRealLayers(layers) {
 
 /***/ }),
 /* 20 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GAstVisitor; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gast_public__ = __webpack_require__(6);
-
-var GAstVisitor = /** @class */ (function () {
-    function GAstVisitor() {
-    }
-    GAstVisitor.prototype.visit = function (node) {
-        var nodeAny = node;
-        switch (nodeAny.constructor) {
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["d" /* NonTerminal */]:
-                return this.visitNonTerminal(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["c" /* Flat */]:
-                return this.visitFlat(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["e" /* Option */]:
-                return this.visitOption(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["g" /* RepetitionMandatory */]:
-                return this.visitRepetitionMandatory(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["h" /* RepetitionMandatoryWithSeparator */]:
-                return this.visitRepetitionMandatoryWithSeparator(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["i" /* RepetitionWithSeparator */]:
-                return this.visitRepetitionWithSeparator(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["f" /* Repetition */]:
-                return this.visitRepetition(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["b" /* Alternation */]:
-                return this.visitAlternation(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["k" /* Terminal */]:
-                return this.visitTerminal(nodeAny);
-            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["j" /* Rule */]:
-                return this.visitRule(nodeAny);
-            /* istanbul ignore next */
-            default:
-                throw Error("non exhaustive match");
-        }
-    };
-    GAstVisitor.prototype.visitNonTerminal = function (node) { };
-    GAstVisitor.prototype.visitFlat = function (node) { };
-    GAstVisitor.prototype.visitOption = function (node) { };
-    GAstVisitor.prototype.visitRepetition = function (node) { };
-    GAstVisitor.prototype.visitRepetitionMandatory = function (node) { };
-    GAstVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) { };
-    GAstVisitor.prototype.visitRepetitionWithSeparator = function (node) { };
-    GAstVisitor.prototype.visitAlternation = function (node) { };
-    GAstVisitor.prototype.visitTerminal = function (node) { };
-    GAstVisitor.prototype.visitRule = function (node) { };
-    return GAstVisitor;
-}());
-
-//# sourceMappingURL=gast_visitor_public.js.map
-
-/***/ }),
-/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12884,7 +12809,7 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 };
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12897,7 +12822,7 @@ exports.getFirstNonNullDatumForAxis = exports.createBinParams = exports.BIN_INPU
 exports.autoBinParams = autoBinParams;
 exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
 
-var _datesAndTimes = __webpack_require__(29);
+var _datesAndTimes = __webpack_require__(27);
 
 var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
 
@@ -12993,7 +12918,7 @@ var getFirstNonNullDatumForAxis = exports.getFirstNonNullDatumForAxis = function
 };
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -30110,10 +30035,10 @@ var getFirstNonNullDatumForAxis = exports.getFirstNonNullDatumForAxis = function
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48), __webpack_require__(53)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(46), __webpack_require__(51)(module)))
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30212,27 +30137,14 @@ function conv4326To900913(out, coord) {
 }
 
 /***/ }),
-/* 25 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = tokenStructuredMatcher;
-/* harmony export (immutable) */ __webpack_exports__["e"] = tokenStructuredMatcherNoCategories;
-/* unused harmony export tokenShortNameIdx */
-/* unused harmony export tokenIdxToClass */
-/* harmony export (immutable) */ __webpack_exports__["a"] = augmentTokenTypes;
-/* unused harmony export expandCategories */
-/* unused harmony export assignTokenDefaultProps */
-/* unused harmony export assignCategoriesTokensProp */
-/* unused harmony export assignCategoriesMapProp */
-/* unused harmony export singleAssignCategoriesToksMap */
-/* harmony export (immutable) */ __webpack_exports__["b"] = hasShortKeyProperty;
-/* unused harmony export hasCategoriesProperty */
-/* unused harmony export hasExtendingTokensTypesProperty */
-/* unused harmony export hasExtendingTokensTypesMapProperty */
-/* harmony export (immutable) */ __webpack_exports__["c"] = isTokenType;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isTokenType = exports.hasExtendingTokensTypesMapProperty = exports.hasExtendingTokensTypesProperty = exports.hasCategoriesProperty = exports.hasShortKeyProperty = exports.singleAssignCategoriesToksMap = exports.assignCategoriesMapProp = exports.assignCategoriesTokensProp = exports.assignTokenDefaultProps = exports.expandCategories = exports.augmentTokenTypes = exports.tokenIdxToClass = exports.tokenShortNameIdx = exports.tokenStructuredMatcherNoCategories = exports.tokenStructuredMatcher = void 0;
+var utils_1 = __webpack_require__(2);
 function tokenStructuredMatcher(tokInstance, tokConstructor) {
     var instanceType = tokInstance.tokenTypeIdx;
     if (instanceType === tokConstructor.tokenTypeIdx) {
@@ -30243,13 +30155,15 @@ function tokenStructuredMatcher(tokInstance, tokConstructor) {
             tokConstructor.categoryMatchesMap[instanceType] === true);
     }
 }
+exports.tokenStructuredMatcher = tokenStructuredMatcher;
 // Optimized tokenMatcher in case our grammar does not use token categories
 // Being so tiny it is much more likely to be in-lined and this avoid the function call overhead
 function tokenStructuredMatcherNoCategories(token, tokType) {
     return token.tokenTypeIdx === tokType.tokenTypeIdx;
 }
-var tokenShortNameIdx = 1;
-var tokenIdxToClass = {};
+exports.tokenStructuredMatcherNoCategories = tokenStructuredMatcherNoCategories;
+exports.tokenShortNameIdx = 1;
+exports.tokenIdxToClass = {};
 function augmentTokenTypes(tokenTypes) {
     // collect the parent Token Types as well.
     var tokenTypesAndParents = expandCategories(tokenTypes);
@@ -30258,19 +30172,20 @@ function augmentTokenTypes(tokenTypes) {
     // fill up the categoryMatches
     assignCategoriesMapProp(tokenTypesAndParents);
     assignCategoriesTokensProp(tokenTypesAndParents);
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypesAndParents, function (tokType) {
+    utils_1.forEach(tokenTypesAndParents, function (tokType) {
         tokType.isParent = tokType.categoryMatches.length > 0;
     });
 }
+exports.augmentTokenTypes = augmentTokenTypes;
 function expandCategories(tokenTypes) {
-    var result = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["g" /* cloneArr */])(tokenTypes);
+    var result = utils_1.cloneArr(tokenTypes);
     var categories = tokenTypes;
     var searching = true;
     while (searching) {
-        categories = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["i" /* compact */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(categories, function (currTokType) { return currTokType.CATEGORIES; })));
-        var newCategories = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["l" /* difference */])(categories, result);
+        categories = utils_1.compact(utils_1.flatten(utils_1.map(categories, function (currTokType) { return currTokType.CATEGORIES; })));
+        var newCategories = utils_1.difference(categories, result);
         result = result.concat(newCategories);
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(newCategories)) {
+        if (utils_1.isEmpty(newCategories)) {
             searching = false;
         }
         else {
@@ -30279,15 +30194,16 @@ function expandCategories(tokenTypes) {
     }
     return result;
 }
+exports.expandCategories = expandCategories;
 function assignTokenDefaultProps(tokenTypes) {
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypes, function (currTokType) {
+    utils_1.forEach(tokenTypes, function (currTokType) {
         if (!hasShortKeyProperty(currTokType)) {
-            tokenIdxToClass[tokenShortNameIdx] = currTokType;
-            currTokType.tokenTypeIdx = tokenShortNameIdx++;
+            exports.tokenIdxToClass[exports.tokenShortNameIdx] = currTokType;
+            currTokType.tokenTypeIdx = exports.tokenShortNameIdx++;
         }
         // CATEGORIES? : TokenType | TokenType[]
         if (hasCategoriesProperty(currTokType) &&
-            !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(currTokType.CATEGORIES)
+            !utils_1.isArray(currTokType.CATEGORIES)
         // &&
         // !isUndefined(currTokType.CATEGORIES.PATTERN)
         ) {
@@ -30304,295 +30220,137 @@ function assignTokenDefaultProps(tokenTypes) {
         }
     });
 }
+exports.assignTokenDefaultProps = assignTokenDefaultProps;
 function assignCategoriesTokensProp(tokenTypes) {
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypes, function (currTokType) {
+    utils_1.forEach(tokenTypes, function (currTokType) {
         // avoid duplications
         currTokType.categoryMatches = [];
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currTokType.categoryMatchesMap, function (val, key) {
-            currTokType.categoryMatches.push(tokenIdxToClass[key].tokenTypeIdx);
+        utils_1.forEach(currTokType.categoryMatchesMap, function (val, key) {
+            currTokType.categoryMatches.push(exports.tokenIdxToClass[key].tokenTypeIdx);
         });
     });
 }
+exports.assignCategoriesTokensProp = assignCategoriesTokensProp;
 function assignCategoriesMapProp(tokenTypes) {
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypes, function (currTokType) {
+    utils_1.forEach(tokenTypes, function (currTokType) {
         singleAssignCategoriesToksMap([], currTokType);
     });
 }
+exports.assignCategoriesMapProp = assignCategoriesMapProp;
 function singleAssignCategoriesToksMap(path, nextNode) {
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(path, function (pathNode) {
+    utils_1.forEach(path, function (pathNode) {
         nextNode.categoryMatchesMap[pathNode.tokenTypeIdx] = true;
     });
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(nextNode.CATEGORIES, function (nextCategory) {
+    utils_1.forEach(nextNode.CATEGORIES, function (nextCategory) {
         var newPath = path.concat(nextNode);
         // avoids infinite loops due to cyclic categories.
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(newPath, nextCategory)) {
+        if (!utils_1.contains(newPath, nextCategory)) {
             singleAssignCategoriesToksMap(newPath, nextCategory);
         }
     });
 }
+exports.singleAssignCategoriesToksMap = singleAssignCategoriesToksMap;
 function hasShortKeyProperty(tokType) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "tokenTypeIdx");
+    return utils_1.has(tokType, "tokenTypeIdx");
 }
+exports.hasShortKeyProperty = hasShortKeyProperty;
 function hasCategoriesProperty(tokType) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "CATEGORIES");
+    return utils_1.has(tokType, "CATEGORIES");
 }
+exports.hasCategoriesProperty = hasCategoriesProperty;
 function hasExtendingTokensTypesProperty(tokType) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "categoryMatches");
+    return utils_1.has(tokType, "categoryMatches");
 }
+exports.hasExtendingTokensTypesProperty = hasExtendingTokensTypesProperty;
 function hasExtendingTokensTypesMapProperty(tokType) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "categoryMatchesMap");
+    return utils_1.has(tokType, "categoryMatchesMap");
 }
+exports.hasExtendingTokensTypesMapProperty = hasExtendingTokensTypesMapProperty;
 function isTokenType(tokType) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "tokenTypeIdx");
+    return utils_1.has(tokType, "tokenTypeIdx");
 }
+exports.isTokenType = isTokenType;
 //# sourceMappingURL=tokens.js.map
 
 /***/ }),
-/* 26 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["f"] = isSequenceProd;
-/* harmony export (immutable) */ __webpack_exports__["e"] = isOptionalProd;
-/* harmony export (immutable) */ __webpack_exports__["d"] = isBranchingProd;
-/* harmony export (immutable) */ __webpack_exports__["c"] = getProductionDslName;
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DslMethodsCollectorVisitor; });
-/* harmony export (immutable) */ __webpack_exports__["b"] = collectMethods;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_visitor_public__ = __webpack_require__(20);
-var __extends = (this && this.__extends) || (function () {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GAstVisitor = void 0;
+var gast_public_1 = __webpack_require__(8);
+var GAstVisitor = /** @class */ (function () {
+    function GAstVisitor() {
+    }
+    GAstVisitor.prototype.visit = function (node) {
+        var nodeAny = node;
+        switch (nodeAny.constructor) {
+            case gast_public_1.NonTerminal:
+                return this.visitNonTerminal(nodeAny);
+            case gast_public_1.Alternative:
+                return this.visitAlternative(nodeAny);
+            case gast_public_1.Option:
+                return this.visitOption(nodeAny);
+            case gast_public_1.RepetitionMandatory:
+                return this.visitRepetitionMandatory(nodeAny);
+            case gast_public_1.RepetitionMandatoryWithSeparator:
+                return this.visitRepetitionMandatoryWithSeparator(nodeAny);
+            case gast_public_1.RepetitionWithSeparator:
+                return this.visitRepetitionWithSeparator(nodeAny);
+            case gast_public_1.Repetition:
+                return this.visitRepetition(nodeAny);
+            case gast_public_1.Alternation:
+                return this.visitAlternation(nodeAny);
+            case gast_public_1.Terminal:
+                return this.visitTerminal(nodeAny);
+            case gast_public_1.Rule:
+                return this.visitRule(nodeAny);
+            /* istanbul ignore next */
+            default:
+                throw Error("non exhaustive match");
+        }
+    };
+    GAstVisitor.prototype.visitNonTerminal = function (node) { };
+    GAstVisitor.prototype.visitAlternative = function (node) { };
+    GAstVisitor.prototype.visitOption = function (node) { };
+    GAstVisitor.prototype.visitRepetition = function (node) { };
+    GAstVisitor.prototype.visitRepetitionMandatory = function (node) { };
+    GAstVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) { };
+    GAstVisitor.prototype.visitRepetitionWithSeparator = function (node) { };
+    GAstVisitor.prototype.visitAlternation = function (node) { };
+    GAstVisitor.prototype.visitTerminal = function (node) { };
+    GAstVisitor.prototype.visitRule = function (node) { };
+    return GAstVisitor;
+}());
+exports.GAstVisitor = GAstVisitor;
+//# sourceMappingURL=gast_visitor_public.js.map
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/* istanbul ignore next */ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
-
-
-function isSequenceProd(prod) {
-    return (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["c" /* Flat */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["e" /* Option */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["f" /* Repetition */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["g" /* RepetitionMandatory */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["h" /* RepetitionMandatoryWithSeparator */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["i" /* RepetitionWithSeparator */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["k" /* Terminal */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["j" /* Rule */]);
-}
-function isOptionalProd(prod, alreadyVisited) {
-    if (alreadyVisited === void 0) { alreadyVisited = []; }
-    var isDirectlyOptional = prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["e" /* Option */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["f" /* Repetition */] ||
-        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["i" /* RepetitionWithSeparator */];
-    if (isDirectlyOptional) {
-        return true;
-    }
-    // note that this can cause infinite loop if one optional empty TOP production has a cyclic dependency with another
-    // empty optional top rule
-    // may be indirectly optional ((A?B?C?) | (D?E?F?))
-    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["b" /* Alternation */]) {
-        // for OR its enough for just one of the alternatives to be optional
-        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["Q" /* some */])(prod.definition, function (subProd) {
-            return isOptionalProd(subProd, alreadyVisited);
-        });
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["d" /* NonTerminal */] && Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(alreadyVisited, prod)) {
-        // avoiding stack overflow due to infinite recursion
-        return false;
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["a" /* AbstractProduction */]) {
-        if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["d" /* NonTerminal */]) {
-            alreadyVisited.push(prod);
-        }
-        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(prod.definition, function (subProd) {
-            return isOptionalProd(subProd, alreadyVisited);
-        });
-    }
-    else {
-        return false;
-    }
-}
-function isBranchingProd(prod) {
-    return prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["b" /* Alternation */];
-}
-function getProductionDslName(prod) {
-    /* istanbul ignore else */
-    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["d" /* NonTerminal */]) {
-        return "SUBRULE";
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["e" /* Option */]) {
-        return "OPTION";
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["b" /* Alternation */]) {
-        return "OR";
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["g" /* RepetitionMandatory */]) {
-        return "AT_LEAST_ONE";
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
-        return "AT_LEAST_ONE_SEP";
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["i" /* RepetitionWithSeparator */]) {
-        return "MANY_SEP";
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["f" /* Repetition */]) {
-        return "MANY";
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["k" /* Terminal */]) {
-        return "CONSUME";
-    }
-    else {
-        throw Error("non exhaustive match");
-    }
-}
-var DslMethodsCollectorVisitor = /** @class */ (function (_super) {
-    __extends(DslMethodsCollectorVisitor, _super);
-    function DslMethodsCollectorVisitor() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        // A minus is never valid in an identifier name
-        _this.separator = "-";
-        _this.dslMethods = {
-            option: [],
-            alternation: [],
-            repetition: [],
-            repetitionWithSeparator: [],
-            repetitionMandatory: [],
-            repetitionMandatoryWithSeparator: []
-        };
-        return _this;
-    }
-    DslMethodsCollectorVisitor.prototype.reset = function () {
-        this.dslMethods = {
-            option: [],
-            alternation: [],
-            repetition: [],
-            repetitionWithSeparator: [],
-            repetitionMandatory: [],
-            repetitionMandatoryWithSeparator: []
-        };
-    };
-    DslMethodsCollectorVisitor.prototype.visitTerminal = function (terminal) {
-        var key = terminal.terminalType.name + this.separator + "Terminal";
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(this.dslMethods, key)) {
-            this.dslMethods[key] = [];
-        }
-        this.dslMethods[key].push(terminal);
-    };
-    DslMethodsCollectorVisitor.prototype.visitNonTerminal = function (subrule) {
-        var key = subrule.nonTerminalName + this.separator + "Terminal";
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(this.dslMethods, key)) {
-            this.dslMethods[key] = [];
-        }
-        this.dslMethods[key].push(subrule);
-    };
-    DslMethodsCollectorVisitor.prototype.visitOption = function (option) {
-        this.dslMethods.option.push(option);
-    };
-    DslMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (manySep) {
-        this.dslMethods.repetitionWithSeparator.push(manySep);
-    };
-    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (atLeastOne) {
-        this.dslMethods.repetitionMandatory.push(atLeastOne);
-    };
-    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
-        this.dslMethods.repetitionMandatoryWithSeparator.push(atLeastOneSep);
-    };
-    DslMethodsCollectorVisitor.prototype.visitRepetition = function (many) {
-        this.dslMethods.repetition.push(many);
-    };
-    DslMethodsCollectorVisitor.prototype.visitAlternation = function (or) {
-        this.dslMethods.alternation.push(or);
-    };
-    return DslMethodsCollectorVisitor;
-}(__WEBPACK_IMPORTED_MODULE_2__gast_visitor_public__["a" /* GAstVisitor */]));
-
-var collectorVisitor = new DslMethodsCollectorVisitor();
-function collectMethods(rule) {
-    collectorVisitor.reset();
-    rule.accept(collectorVisitor);
-    var dslMethods = collectorVisitor.dslMethods;
-    // avoid uncleaned references
-    collectorVisitor.reset();
-    return dslMethods;
-}
-//# sourceMappingURL=gast.js.map
-
-/***/ }),
-/* 27 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return BITS_FOR_METHOD_TYPE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return BITS_FOR_OCCURRENCE_IDX; });
-/* unused harmony export BITS_FOR_RULE_IDX */
-/* unused harmony export BITS_FOR_ALT_IDX */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return OR_IDX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return OPTION_IDX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return MANY_IDX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AT_LEAST_ONE_IDX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return MANY_SEP_IDX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return AT_LEAST_ONE_SEP_IDX; });
-/* harmony export (immutable) */ __webpack_exports__["j"] = getKeyForAutomaticLookahead;
-/* harmony export (immutable) */ __webpack_exports__["i"] = getKeyForAltIndex;
-// Lookahead keys are 32Bit integers in the form
-// TTTTTTTT-ZZZZZZZZZZZZ-YYYY-XXXXXXXX
-// XXXX -> Occurrence Index bitmap.
-// YYYY -> DSL Method Type bitmap.
-// ZZZZZZZZZZZZZZZ -> Rule short Index bitmap.
-// TTTTTTTTT -> alternation alternative index bitmap
-var BITS_FOR_METHOD_TYPE = 4;
-var BITS_FOR_OCCURRENCE_IDX = 8;
-var BITS_FOR_RULE_IDX = 12;
-// TODO: validation, this means that there may at most 2^8 --> 256 alternatives for an alternation.
-var BITS_FOR_ALT_IDX = 8;
-// short string used as part of mapping keys.
-// being short improves the performance when composing KEYS for maps out of these
-// The 5 - 8 bits (16 possible values, are reserved for the DSL method indices)
-/* tslint:disable */
-var OR_IDX = 1 << BITS_FOR_OCCURRENCE_IDX;
-var OPTION_IDX = 2 << BITS_FOR_OCCURRENCE_IDX;
-var MANY_IDX = 3 << BITS_FOR_OCCURRENCE_IDX;
-var AT_LEAST_ONE_IDX = 4 << BITS_FOR_OCCURRENCE_IDX;
-var MANY_SEP_IDX = 5 << BITS_FOR_OCCURRENCE_IDX;
-var AT_LEAST_ONE_SEP_IDX = 6 << BITS_FOR_OCCURRENCE_IDX;
-/* tslint:enable */
-// this actually returns a number, but it is always used as a string (object prop key)
-function getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) {
-    /* tslint:disable */
-    return occurrence | dslMethodIdx | ruleIdx;
-    /* tslint:enable */
-}
-var BITS_START_FOR_ALT_IDX = 32 - BITS_FOR_ALT_IDX;
-function getKeyForAltIndex(ruleIdx, dslMethodIdx, occurrence, altIdx) {
-    /* tslint:disable */
-    // alternative indices are zero based, thus must always add one (turn on one bit) to guarantee uniqueness.
-    var altIdxBitMap = (altIdx + 1) << BITS_START_FOR_ALT_IDX;
-    return (getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) |
-        altIdxBitMap);
-    /* tslint:enable */
-}
-//# sourceMappingURL=keys.js.map
-
-/***/ }),
-/* 28 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["e"] = isRecognitionException;
-/* harmony export (immutable) */ __webpack_exports__["b"] = MismatchedTokenException;
-/* harmony export (immutable) */ __webpack_exports__["c"] = NoViableAltException;
-/* harmony export (immutable) */ __webpack_exports__["d"] = NotAllInputParsedException;
-/* harmony export (immutable) */ __webpack_exports__["a"] = EarlyExitException;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EarlyExitException = exports.NotAllInputParsedException = exports.NoViableAltException = exports.MismatchedTokenException = exports.isRecognitionException = void 0;
+var utils_1 = __webpack_require__(2);
 var MISMATCHED_TOKEN_EXCEPTION = "MismatchedTokenException";
 var NO_VIABLE_ALT_EXCEPTION = "NoViableAltException";
 var EARLY_EXIT_EXCEPTION = "EarlyExitException";
@@ -30607,45 +30365,73 @@ Object.freeze(RECOGNITION_EXCEPTION_NAMES);
 // hacks to bypass no support for custom Errors in javascript/typescript
 function isRecognitionException(error) {
     // can't do instanceof on hacked custom js exceptions
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(RECOGNITION_EXCEPTION_NAMES, error.name);
+    return utils_1.contains(RECOGNITION_EXCEPTION_NAMES, error.name);
 }
-function MismatchedTokenException(message, token, previousToken) {
-    this.name = MISMATCHED_TOKEN_EXCEPTION;
-    this.message = message;
-    this.token = token;
-    this.previousToken = previousToken;
-    this.resyncedTokens = [];
-}
-// must use the "Error.prototype" instead of "new Error"
-// because the stack trace points to where "new Error" was invoked"
-MismatchedTokenException.prototype = Error.prototype;
-function NoViableAltException(message, token, previousToken) {
-    this.name = NO_VIABLE_ALT_EXCEPTION;
-    this.message = message;
-    this.token = token;
-    this.previousToken = previousToken;
-    this.resyncedTokens = [];
-}
-NoViableAltException.prototype = Error.prototype;
-function NotAllInputParsedException(message, token) {
-    this.name = NOT_ALL_INPUT_PARSED_EXCEPTION;
-    this.message = message;
-    this.token = token;
-    this.resyncedTokens = [];
-}
-NotAllInputParsedException.prototype = Error.prototype;
-function EarlyExitException(message, token, previousToken) {
-    this.name = EARLY_EXIT_EXCEPTION;
-    this.message = message;
-    this.token = token;
-    this.previousToken = previousToken;
-    this.resyncedTokens = [];
-}
-EarlyExitException.prototype = Error.prototype;
+exports.isRecognitionException = isRecognitionException;
+var RecognitionException = /** @class */ (function (_super) {
+    __extends(RecognitionException, _super);
+    function RecognitionException(message, token) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, message) /* istanbul ignore next */ || this;
+        _this.token = token;
+        _this.resyncedTokens = [];
+        // fix prototype chain when typescript target is ES5
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        /* istanbul ignore next - V8 workaround to remove constructor from stacktrace when typescript target is ES5 */
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(_this, _this.constructor);
+        }
+        return _this;
+    }
+    return RecognitionException;
+}(Error));
+var MismatchedTokenException = /** @class */ (function (_super) {
+    __extends(MismatchedTokenException, _super);
+    function MismatchedTokenException(message, token, previousToken) {
+        var _this = _super.call(this, message, token) /* istanbul ignore next */ || this;
+        _this.previousToken = previousToken;
+        _this.name = MISMATCHED_TOKEN_EXCEPTION;
+        return _this;
+    }
+    return MismatchedTokenException;
+}(RecognitionException));
+exports.MismatchedTokenException = MismatchedTokenException;
+var NoViableAltException = /** @class */ (function (_super) {
+    __extends(NoViableAltException, _super);
+    function NoViableAltException(message, token, previousToken) {
+        var _this = _super.call(this, message, token) /* istanbul ignore next */ || this;
+        _this.previousToken = previousToken;
+        _this.name = NO_VIABLE_ALT_EXCEPTION;
+        return _this;
+    }
+    return NoViableAltException;
+}(RecognitionException));
+exports.NoViableAltException = NoViableAltException;
+var NotAllInputParsedException = /** @class */ (function (_super) {
+    __extends(NotAllInputParsedException, _super);
+    function NotAllInputParsedException(message, token) {
+        var _this = _super.call(this, message, token) /* istanbul ignore next */ || this;
+        _this.name = NOT_ALL_INPUT_PARSED_EXCEPTION;
+        return _this;
+    }
+    return NotAllInputParsedException;
+}(RecognitionException));
+exports.NotAllInputParsedException = NotAllInputParsedException;
+var EarlyExitException = /** @class */ (function (_super) {
+    __extends(EarlyExitException, _super);
+    function EarlyExitException(message, token, previousToken) {
+        var _this = _super.call(this, message, token) /* istanbul ignore next */ || this;
+        _this.previousToken = previousToken;
+        _this.name = EARLY_EXIT_EXCEPTION;
+        return _this;
+    }
+    return EarlyExitException;
+}(RecognitionException));
+exports.EarlyExitException = EarlyExitException;
 //# sourceMappingURL=exceptions_public.js.map
 
 /***/ }),
-/* 29 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30691,11 +30477,11 @@ var TIME_LABEL_TO_SECONDS = exports.TIME_LABEL_TO_SECONDS = {
 };
 
 /***/ }),
-/* 30 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(41);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x) {
@@ -30704,22 +30490,18 @@ var TIME_LABEL_TO_SECONDS = exports.TIME_LABEL_TO_SECONDS = {
 
 
 /***/ }),
-/* 31 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LexerDefinitionErrorType; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lexer; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(46);
 
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Lexer = exports.LexerDefinitionErrorType = void 0;
+var lexer_1 = __webpack_require__(212);
+var utils_1 = __webpack_require__(2);
+var tokens_1 = __webpack_require__(24);
+var lexer_errors_public_1 = __webpack_require__(213);
+var reg_exp_parser_1 = __webpack_require__(44);
 var LexerDefinitionErrorType;
 (function (LexerDefinitionErrorType) {
     LexerDefinitionErrorType[LexerDefinitionErrorType["MISSING_PATTERN"] = 0] = "MISSING_PATTERN";
@@ -30739,7 +30521,7 @@ var LexerDefinitionErrorType;
     LexerDefinitionErrorType[LexerDefinitionErrorType["UNREACHABLE_PATTERN"] = 14] = "UNREACHABLE_PATTERN";
     LexerDefinitionErrorType[LexerDefinitionErrorType["IDENTIFY_TERMINATOR"] = 15] = "IDENTIFY_TERMINATOR";
     LexerDefinitionErrorType[LexerDefinitionErrorType["CUSTOM_LINE_BREAK"] = 16] = "CUSTOM_LINE_BREAK";
-})(LexerDefinitionErrorType || (LexerDefinitionErrorType = {}));
+})(LexerDefinitionErrorType = exports.LexerDefinitionErrorType || (exports.LexerDefinitionErrorType = {}));
 var DEFAULT_LEXER_CONFIG = {
     deferDefinitionErrorsHandling: false,
     positionTracking: "full",
@@ -30747,7 +30529,7 @@ var DEFAULT_LEXER_CONFIG = {
     lineTerminatorCharacters: ["\n", "\r"],
     ensureOptimizations: false,
     safeMode: false,
-    errorMessageProvider: __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__["a" /* defaultLexerErrorProvider */],
+    errorMessageProvider: lexer_errors_public_1.defaultLexerErrorProvider,
     traceInitPerf: false,
     skipValidations: false
 };
@@ -30773,7 +30555,7 @@ var Lexer = /** @class */ (function () {
                 "a boolean 2nd argument is no longer supported");
         }
         // todo: defaults func?
-        this.config = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["K" /* merge */])(DEFAULT_LEXER_CONFIG, config);
+        this.config = utils_1.merge(DEFAULT_LEXER_CONFIG, config);
         var traceInitVal = this.config.traceInitPerf;
         if (traceInitVal === true) {
             this.traceInitMaxIdent = Infinity;
@@ -30791,13 +30573,13 @@ var Lexer = /** @class */ (function () {
                 if (_this.config.lineTerminatorsPattern ===
                     DEFAULT_LEXER_CONFIG.lineTerminatorsPattern) {
                     // optimized built-in implementation for the defaults definition of lineTerminators
-                    _this.config.lineTerminatorsPattern = __WEBPACK_IMPORTED_MODULE_0__lexer__["b" /* LineTerminatorOptimizedTester */];
+                    _this.config.lineTerminatorsPattern = lexer_1.LineTerminatorOptimizedTester;
                 }
                 else {
                     if (_this.config.lineTerminatorCharacters ===
                         DEFAULT_LEXER_CONFIG.lineTerminatorCharacters) {
                         throw Error("Error: Missing <lineTerminatorCharacters> property on the Lexer config.\n" +
-                            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#MISSING_LINE_TERM_CHARS");
+                            "\tFor details See: https://chevrotain.io/docs/guide/resolving_lexer_errors.html#MISSING_LINE_TERM_CHARS");
                     }
                 }
                 if (config.safeMode && config.ensureOptimizations) {
@@ -30806,23 +30588,23 @@ var Lexer = /** @class */ (function () {
                 _this.trackStartLines = /full|onlyStart/i.test(_this.config.positionTracking);
                 _this.trackEndLines = /full/i.test(_this.config.positionTracking);
                 // Convert SingleModeLexerDefinition into a IMultiModeLexerDefinition.
-                if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["y" /* isArray */])(lexerDefinition)) {
+                if (utils_1.isArray(lexerDefinition)) {
                     actualDefinition = { modes: {} };
-                    actualDefinition.modes[__WEBPACK_IMPORTED_MODULE_0__lexer__["a" /* DEFAULT_MODE */]] = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(lexerDefinition);
-                    actualDefinition[__WEBPACK_IMPORTED_MODULE_0__lexer__["a" /* DEFAULT_MODE */]] = __WEBPACK_IMPORTED_MODULE_0__lexer__["a" /* DEFAULT_MODE */];
+                    actualDefinition.modes[lexer_1.DEFAULT_MODE] = utils_1.cloneArr(lexerDefinition);
+                    actualDefinition[lexer_1.DEFAULT_MODE] = lexer_1.DEFAULT_MODE;
                 }
                 else {
                     // no conversion needed, input should already be a IMultiModeLexerDefinition
                     hasOnlySingleMode = false;
-                    actualDefinition = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["h" /* cloneObj */])((lexerDefinition));
+                    actualDefinition = utils_1.cloneObj(lexerDefinition);
                 }
             });
             if (_this.config.skipValidations === false) {
                 _this.TRACE_INIT("performRuntimeChecks", function () {
-                    _this.lexerDefinitionErrors = _this.lexerDefinitionErrors.concat(Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["h" /* performRuntimeChecks */])(actualDefinition, _this.trackStartLines, _this.config.lineTerminatorCharacters));
+                    _this.lexerDefinitionErrors = _this.lexerDefinitionErrors.concat(lexer_1.performRuntimeChecks(actualDefinition, _this.trackStartLines, _this.config.lineTerminatorCharacters));
                 });
                 _this.TRACE_INIT("performWarningRuntimeChecks", function () {
-                    _this.lexerDefinitionWarning = _this.lexerDefinitionWarning.concat(Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["i" /* performWarningRuntimeChecks */])(actualDefinition, _this.trackStartLines, _this.config.lineTerminatorCharacters));
+                    _this.lexerDefinitionWarning = _this.lexerDefinitionWarning.concat(lexer_1.performWarningRuntimeChecks(actualDefinition, _this.trackStartLines, _this.config.lineTerminatorCharacters));
                 });
             }
             // for extra robustness to avoid throwing an none informative error message
@@ -30831,26 +30613,26 @@ var Lexer = /** @class */ (function () {
                 : {};
             // an error of undefined TokenTypes will be detected in "performRuntimeChecks" above.
             // this transformation is to increase robustness in the case of partially invalid lexer definition.
-            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(actualDefinition.modes, function (currModeValue, currModeName) {
-                actualDefinition.modes[currModeName] = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["P" /* reject */])(currModeValue, function (currTokType) { return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(currTokType); });
+            utils_1.forEach(actualDefinition.modes, function (currModeValue, currModeName) {
+                actualDefinition.modes[currModeName] = utils_1.reject(currModeValue, function (currTokType) { return utils_1.isUndefined(currTokType); });
             });
-            var allModeNames = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["G" /* keys */])(actualDefinition.modes);
-            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(actualDefinition.modes, function (currModDef, currModName) {
+            var allModeNames = utils_1.keys(actualDefinition.modes);
+            utils_1.forEach(actualDefinition.modes, function (currModDef, currModName) {
                 _this.TRACE_INIT("Mode: <" + currModName + "> processing", function () {
                     _this.modes.push(currModName);
                     if (_this.config.skipValidations === false) {
                         _this.TRACE_INIT("validatePatterns", function () {
-                            _this.lexerDefinitionErrors = _this.lexerDefinitionErrors.concat(Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["j" /* validatePatterns */])(currModDef, allModeNames));
+                            _this.lexerDefinitionErrors = _this.lexerDefinitionErrors.concat(lexer_1.validatePatterns(currModDef, allModeNames));
                         });
                     }
                     // If definition errors were encountered, the analysis phase may fail unexpectedly/
                     // Considering a lexer with definition errors may never be used, there is no point
                     // to performing the analysis anyhow...
-                    if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(_this.lexerDefinitionErrors)) {
-                        Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["a" /* augmentTokenTypes */])(currModDef);
+                    if (utils_1.isEmpty(_this.lexerDefinitionErrors)) {
+                        tokens_1.augmentTokenTypes(currModDef);
                         var currAnalyzeResult_1;
                         _this.TRACE_INIT("analyzeTokenTypes", function () {
-                            currAnalyzeResult_1 = Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["d" /* analyzeTokenTypes */])(currModDef, {
+                            currAnalyzeResult_1 = lexer_1.analyzeTokenTypes(currModDef, {
                                 lineTerminatorCharacters: _this.config
                                     .lineTerminatorCharacters,
                                 positionTracking: config.positionTracking,
@@ -30863,48 +30645,46 @@ var Lexer = /** @class */ (function () {
                             currAnalyzeResult_1.patternIdxToConfig;
                         _this.charCodeToPatternIdxToConfig[currModName] =
                             currAnalyzeResult_1.charCodeToPatternIdxToConfig;
-                        _this.emptyGroups = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["K" /* merge */])(_this.emptyGroups, currAnalyzeResult_1.emptyGroups);
-                        _this.hasCustom =
-                            currAnalyzeResult_1.hasCustom || _this.hasCustom;
+                        _this.emptyGroups = utils_1.merge(_this.emptyGroups, currAnalyzeResult_1.emptyGroups);
+                        _this.hasCustom = currAnalyzeResult_1.hasCustom || _this.hasCustom;
                         _this.canModeBeOptimized[currModName] =
                             currAnalyzeResult_1.canBeOptimized;
                     }
                 });
             });
             _this.defaultMode = actualDefinition.defaultMode;
-            if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(_this.lexerDefinitionErrors) &&
+            if (!utils_1.isEmpty(_this.lexerDefinitionErrors) &&
                 !_this.config.deferDefinitionErrorsHandling) {
-                var allErrMessages = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(_this.lexerDefinitionErrors, function (error) {
+                var allErrMessages = utils_1.map(_this.lexerDefinitionErrors, function (error) {
                     return error.message;
                 });
                 var allErrMessagesString = allErrMessages.join("-----------------------\n");
-                throw new Error("Errors detected in definition of Lexer:\n" +
-                    allErrMessagesString);
+                throw new Error("Errors detected in definition of Lexer:\n" + allErrMessagesString);
             }
             // Only print warning if there are no errors, This will avoid pl
-            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(_this.lexerDefinitionWarning, function (warningDescriptor) {
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["d" /* PRINT_WARNING */])(warningDescriptor.message);
+            utils_1.forEach(_this.lexerDefinitionWarning, function (warningDescriptor) {
+                utils_1.PRINT_WARNING(warningDescriptor.message);
             });
             _this.TRACE_INIT("Choosing sub-methods implementations", function () {
                 // Choose the relevant internal implementations for this specific parser.
                 // These implementations should be in-lined by the JavaScript engine
                 // to provide optimal performance in each scenario.
-                if (__WEBPACK_IMPORTED_MODULE_0__lexer__["c" /* SUPPORT_STICKY */]) {
-                    _this.chopInput = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["a" /* IDENTITY */];
+                if (lexer_1.SUPPORT_STICKY) {
+                    _this.chopInput = utils_1.IDENTITY;
                     _this.match = _this.matchWithTest;
                 }
                 else {
-                    _this.updateLastIndex = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    _this.updateLastIndex = utils_1.NOOP;
                     _this.match = _this.matchWithExec;
                 }
                 if (hasOnlySingleMode) {
-                    _this.handleModes = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    _this.handleModes = utils_1.NOOP;
                 }
                 if (_this.trackStartLines === false) {
-                    _this.computeNewColumn = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["a" /* IDENTITY */];
+                    _this.computeNewColumn = utils_1.IDENTITY;
                 }
                 if (_this.trackEndLines === false) {
-                    _this.updateTokenEndLineColumnLocation = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    _this.updateTokenEndLineColumnLocation = utils_1.NOOP;
                 }
                 if (/full/i.test(_this.config.positionTracking)) {
                     _this.createTokenInstance = _this.createFullToken;
@@ -30928,30 +30708,30 @@ var Lexer = /** @class */ (function () {
                 }
             });
             _this.TRACE_INIT("Failed Optimization Warnings", function () {
-                var unOptimizedModes = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["O" /* reduce */])(_this.canModeBeOptimized, function (cannotBeOptimized, canBeOptimized, modeName) {
+                var unOptimizedModes = utils_1.reduce(_this.canModeBeOptimized, function (cannotBeOptimized, canBeOptimized, modeName) {
                     if (canBeOptimized === false) {
                         cannotBeOptimized.push(modeName);
                     }
                     return cannotBeOptimized;
                 }, []);
-                if (config.ensureOptimizations && !Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(unOptimizedModes)) {
+                if (config.ensureOptimizations && !utils_1.isEmpty(unOptimizedModes)) {
                     throw Error("Lexer Modes: < " + unOptimizedModes.join(", ") + " > cannot be optimized.\n" +
                         '\t Disable the "ensureOptimizations" lexer config flag to silently ignore this and run the lexer in an un-optimized mode.\n' +
                         "\t Or inspect the console log for details on how to resolve these issues.");
                 }
             });
             _this.TRACE_INIT("clearRegExpParserCache", function () {
-                Object(__WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__["a" /* clearRegExpParserCache */])();
+                reg_exp_parser_1.clearRegExpParserCache();
             });
             _this.TRACE_INIT("toFastProperties", function () {
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["S" /* toFastProperties */])(_this);
+                utils_1.toFastProperties(_this);
             });
         });
     }
     Lexer.prototype.tokenize = function (text, initialMode) {
         if (initialMode === void 0) { initialMode = this.defaultMode; }
-        if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.lexerDefinitionErrors)) {
-            var allErrMessages = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.lexerDefinitionErrors, function (error) {
+        if (!utils_1.isEmpty(this.lexerDefinitionErrors)) {
+            var allErrMessages = utils_1.map(this.lexerDefinitionErrors, function (error) {
                 return error.message;
             });
             var allErrMessagesString = allErrMessages.join("-----------------------\n");
@@ -30981,7 +30761,7 @@ var Lexer = /** @class */ (function () {
         var errors = [];
         var line = this.trackStartLines ? 1 : undefined;
         var column = this.trackStartLines ? 1 : undefined;
-        var groups = Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["f" /* cloneEmptyGroups */])(this.emptyGroups);
+        var groups = lexer_1.cloneEmptyGroups(this.emptyGroups);
         var trackLines = this.trackStartLines;
         var lineTerminatorPattern = this.config.lineTerminatorsPattern;
         var currModePatternsLength = 0;
@@ -30995,7 +30775,7 @@ var Lexer = /** @class */ (function () {
             return patternIdxToConfig;
         }
         function getPossiblePatternsOptimized(charCode) {
-            var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["e" /* charCodeToOptimizedIndex */])(charCode);
+            var optimizedCharIdx = lexer_1.charCodeToOptimizedIndex(charCode);
             var possiblePatterns = currCharCodeToPatternIdxToConfig[optimizedCharIdx];
             if (possiblePatterns === undefined) {
                 return emptyArray;
@@ -31015,9 +30795,7 @@ var Lexer = /** @class */ (function () {
                 var msg_1 = _this.config.errorMessageProvider.buildUnableToPopLexerModeMessage(popToken);
                 errors.push({
                     offset: popToken.startOffset,
-                    line: popToken.startLine !== undefined
-                        ? popToken.startLine
-                        : undefined,
+                    line: popToken.startLine !== undefined ? popToken.startLine : undefined,
                     column: popToken.startColumn !== undefined
                         ? popToken.startColumn
                         : undefined,
@@ -31027,13 +30805,11 @@ var Lexer = /** @class */ (function () {
             }
             else {
                 modeStack.pop();
-                var newMode = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["H" /* last */])(modeStack);
+                var newMode = utils_1.last(modeStack);
                 patternIdxToConfig = _this.patternIdxToConfig[newMode];
-                currCharCodeToPatternIdxToConfig = _this
-                    .charCodeToPatternIdxToConfig[newMode];
+                currCharCodeToPatternIdxToConfig = _this.charCodeToPatternIdxToConfig[newMode];
                 currModePatternsLength = patternIdxToConfig.length;
-                var modeCanBeOptimized = _this.canModeBeOptimized[newMode] &&
-                    _this.config.safeMode === false;
+                var modeCanBeOptimized = _this.canModeBeOptimized[newMode] && _this.config.safeMode === false;
                 if (currCharCodeToPatternIdxToConfig && modeCanBeOptimized) {
                     getPossiblePatterns = getPossiblePatternsOptimized;
                 }
@@ -31044,13 +30820,11 @@ var Lexer = /** @class */ (function () {
         };
         function push_mode(newMode) {
             modeStack.push(newMode);
-            currCharCodeToPatternIdxToConfig = this
-                .charCodeToPatternIdxToConfig[newMode];
+            currCharCodeToPatternIdxToConfig = this.charCodeToPatternIdxToConfig[newMode];
             patternIdxToConfig = this.patternIdxToConfig[newMode];
             currModePatternsLength = patternIdxToConfig.length;
             currModePatternsLength = patternIdxToConfig.length;
-            var modeCanBeOptimized = this.canModeBeOptimized[newMode] &&
-                this.config.safeMode === false;
+            var modeCanBeOptimized = this.canModeBeOptimized[newMode] && this.config.safeMode === false;
             if (currCharCodeToPatternIdxToConfig && modeCanBeOptimized) {
                 getPossiblePatterns = getPossiblePatternsOptimized;
             }
@@ -31123,8 +30897,7 @@ var Lexer = /** @class */ (function () {
                             this.updateLastIndex(longerAltPattern, offset);
                             matchAltImage = this.match(longerAltPattern, text, offset);
                         }
-                        if (matchAltImage &&
-                            matchAltImage.length > matchedImage.length) {
+                        if (matchAltImage && matchAltImage.length > matchedImage.length) {
                             matchedImage = matchAltImage;
                             payload = altPayload;
                             currConfig = longerAltConfig;
@@ -31155,8 +30928,7 @@ var Lexer = /** @class */ (function () {
                 offset = offset + imageLength;
                 // TODO: with newlines the column may be assigned twice
                 column = this.computeNewColumn(column, imageLength);
-                if (trackLines === true &&
-                    currConfig.canLineTerminator === true) {
+                if (trackLines === true && currConfig.canLineTerminator === true) {
                     var numOfLTsInMatch = 0;
                     var foundTerminator = void 0;
                     var lastLTEndOffset = void 0;
@@ -31164,8 +30936,7 @@ var Lexer = /** @class */ (function () {
                     do {
                         foundTerminator = lineTerminatorPattern.test(matchedImage);
                         if (foundTerminator === true) {
-                            lastLTEndOffset =
-                                lineTerminatorPattern.lastIndex - 1;
+                            lastLTEndOffset = lineTerminatorPattern.lastIndex - 1;
                             numOfLTsInMatch++;
                         }
                     } while (foundTerminator === true);
@@ -31203,7 +30974,8 @@ var Lexer = /** @class */ (function () {
                         }
                         else if (currConfig_1.isCustom === true) {
                             foundResyncPoint =
-                                currPattern.exec(orgText, offset, matchedTokens, groups) !== null;
+                                currPattern.exec(orgText, offset, matchedTokens, groups) !==
+                                    null;
                         }
                         else {
                             this.updateLastIndex(currPattern, offset);
@@ -31367,7 +31139,7 @@ var Lexer = /** @class */ (function () {
             if (this.traceInitIndent < this.traceInitMaxIdent) {
                 console.log(indent + "--> <" + phaseDesc + ">");
             }
-            var _a = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["R" /* timer */])(phaseImpl), time = _a.time, value = _a.value;
+            var _a = utils_1.timer(phaseImpl), time = _a.time, value = _a.value;
             /* istanbul ignore next - Difficult to reproduce specific performance behavior (>10ms) in tests */
             var traceMethod = time > 10 ? console.warn : console.log;
             if (this.traceInitIndent < this.traceInitMaxIdent) {
@@ -31385,59 +31157,230 @@ var Lexer = /** @class */ (function () {
     Lexer.NA = /NOT_APPLICABLE/;
     return Lexer;
 }());
-
+exports.Lexer = Lexer;
 //# sourceMappingURL=lexer_public.js.map
 
 /***/ }),
-/* 32 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return defaultParserErrorProvider; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return defaultGrammarResolverErrorProvider; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return defaultGrammarValidatorErrorProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(33);
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.collectMethods = exports.DslMethodsCollectorVisitor = exports.getProductionDslName = exports.isBranchingProd = exports.isOptionalProd = exports.isSequenceProd = void 0;
+var utils_1 = __webpack_require__(2);
+var gast_public_1 = __webpack_require__(8);
+var gast_visitor_public_1 = __webpack_require__(25);
+function isSequenceProd(prod) {
+    return (prod instanceof gast_public_1.Alternative ||
+        prod instanceof gast_public_1.Option ||
+        prod instanceof gast_public_1.Repetition ||
+        prod instanceof gast_public_1.RepetitionMandatory ||
+        prod instanceof gast_public_1.RepetitionMandatoryWithSeparator ||
+        prod instanceof gast_public_1.RepetitionWithSeparator ||
+        prod instanceof gast_public_1.Terminal ||
+        prod instanceof gast_public_1.Rule);
+}
+exports.isSequenceProd = isSequenceProd;
+function isOptionalProd(prod, alreadyVisited) {
+    if (alreadyVisited === void 0) { alreadyVisited = []; }
+    var isDirectlyOptional = prod instanceof gast_public_1.Option ||
+        prod instanceof gast_public_1.Repetition ||
+        prod instanceof gast_public_1.RepetitionWithSeparator;
+    if (isDirectlyOptional) {
+        return true;
+    }
+    // note that this can cause infinite loop if one optional empty TOP production has a cyclic dependency with another
+    // empty optional top rule
+    // may be indirectly optional ((A?B?C?) | (D?E?F?))
+    if (prod instanceof gast_public_1.Alternation) {
+        // for OR its enough for just one of the alternatives to be optional
+        return utils_1.some(prod.definition, function (subProd) {
+            return isOptionalProd(subProd, alreadyVisited);
+        });
+    }
+    else if (prod instanceof gast_public_1.NonTerminal && utils_1.contains(alreadyVisited, prod)) {
+        // avoiding stack overflow due to infinite recursion
+        return false;
+    }
+    else if (prod instanceof gast_public_1.AbstractProduction) {
+        if (prod instanceof gast_public_1.NonTerminal) {
+            alreadyVisited.push(prod);
+        }
+        return utils_1.every(prod.definition, function (subProd) {
+            return isOptionalProd(subProd, alreadyVisited);
+        });
+    }
+    else {
+        return false;
+    }
+}
+exports.isOptionalProd = isOptionalProd;
+function isBranchingProd(prod) {
+    return prod instanceof gast_public_1.Alternation;
+}
+exports.isBranchingProd = isBranchingProd;
+function getProductionDslName(prod) {
+    /* istanbul ignore else */
+    if (prod instanceof gast_public_1.NonTerminal) {
+        return "SUBRULE";
+    }
+    else if (prod instanceof gast_public_1.Option) {
+        return "OPTION";
+    }
+    else if (prod instanceof gast_public_1.Alternation) {
+        return "OR";
+    }
+    else if (prod instanceof gast_public_1.RepetitionMandatory) {
+        return "AT_LEAST_ONE";
+    }
+    else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
+        return "AT_LEAST_ONE_SEP";
+    }
+    else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
+        return "MANY_SEP";
+    }
+    else if (prod instanceof gast_public_1.Repetition) {
+        return "MANY";
+    }
+    else if (prod instanceof gast_public_1.Terminal) {
+        return "CONSUME";
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+exports.getProductionDslName = getProductionDslName;
+var DslMethodsCollectorVisitor = /** @class */ (function (_super) {
+    __extends(DslMethodsCollectorVisitor, _super);
+    function DslMethodsCollectorVisitor() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        // A minus is never valid in an identifier name
+        _this.separator = "-";
+        _this.dslMethods = {
+            option: [],
+            alternation: [],
+            repetition: [],
+            repetitionWithSeparator: [],
+            repetitionMandatory: [],
+            repetitionMandatoryWithSeparator: []
+        };
+        return _this;
+    }
+    DslMethodsCollectorVisitor.prototype.reset = function () {
+        this.dslMethods = {
+            option: [],
+            alternation: [],
+            repetition: [],
+            repetitionWithSeparator: [],
+            repetitionMandatory: [],
+            repetitionMandatoryWithSeparator: []
+        };
+    };
+    DslMethodsCollectorVisitor.prototype.visitTerminal = function (terminal) {
+        var key = terminal.terminalType.name + this.separator + "Terminal";
+        if (!utils_1.has(this.dslMethods, key)) {
+            this.dslMethods[key] = [];
+        }
+        this.dslMethods[key].push(terminal);
+    };
+    DslMethodsCollectorVisitor.prototype.visitNonTerminal = function (subrule) {
+        var key = subrule.nonTerminalName + this.separator + "Terminal";
+        if (!utils_1.has(this.dslMethods, key)) {
+            this.dslMethods[key] = [];
+        }
+        this.dslMethods[key].push(subrule);
+    };
+    DslMethodsCollectorVisitor.prototype.visitOption = function (option) {
+        this.dslMethods.option.push(option);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.dslMethods.repetitionWithSeparator.push(manySep);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.dslMethods.repetitionMandatory.push(atLeastOne);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.dslMethods.repetitionMandatoryWithSeparator.push(atLeastOneSep);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetition = function (many) {
+        this.dslMethods.repetition.push(many);
+    };
+    DslMethodsCollectorVisitor.prototype.visitAlternation = function (or) {
+        this.dslMethods.alternation.push(or);
+    };
+    return DslMethodsCollectorVisitor;
+}(gast_visitor_public_1.GAstVisitor));
+exports.DslMethodsCollectorVisitor = DslMethodsCollectorVisitor;
+var collectorVisitor = new DslMethodsCollectorVisitor();
+function collectMethods(rule) {
+    collectorVisitor.reset();
+    rule.accept(collectorVisitor);
+    var dslMethods = collectorVisitor.dslMethods;
+    // avoid uncleaned references
+    collectorVisitor.reset();
+    return dslMethods;
+}
+exports.collectMethods = collectMethods;
+//# sourceMappingURL=gast.js.map
 
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-
-
-var defaultParserErrorProvider = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.defaultGrammarValidatorErrorProvider = exports.defaultGrammarResolverErrorProvider = exports.defaultParserErrorProvider = void 0;
+var tokens_public_1 = __webpack_require__(17);
+var utils = __webpack_require__(2);
+var utils_1 = __webpack_require__(2);
+var gast_public_1 = __webpack_require__(8);
+var gast_1 = __webpack_require__(30);
+exports.defaultParserErrorProvider = {
     buildMismatchTokenMessage: function (_a) {
         var expected = _a.expected, actual = _a.actual, previous = _a.previous, ruleName = _a.ruleName;
-        var hasLabel = Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["d" /* hasTokenLabel */])(expected);
+        var hasLabel = tokens_public_1.hasTokenLabel(expected);
         var expectedMsg = hasLabel
-            ? "--> " + Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(expected) + " <--"
+            ? "--> " + tokens_public_1.tokenLabel(expected) + " <--"
             : "token of type --> " + expected.name + " <--";
         var msg = "Expecting " + expectedMsg + " but found --> '" + actual.image + "' <--";
         return msg;
     },
     buildNotAllInputParsedMessage: function (_a) {
         var firstRedundant = _a.firstRedundant, ruleName = _a.ruleName;
-        return ("Redundant input, expecting EOF but found: " + firstRedundant.image);
+        return "Redundant input, expecting EOF but found: " + firstRedundant.image;
     },
     buildNoViableAltMessage: function (_a) {
         var expectedPathsPerAlt = _a.expectedPathsPerAlt, actual = _a.actual, previous = _a.previous, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
         var errPrefix = "Expecting: ";
         // TODO: issue: No Viable Alternative Error may have incomplete details. #502
-        var actualText = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(actual).image;
+        var actualText = utils_1.first(actual).image;
         var errSuffix = "\nbut found: '" + actualText + "'";
         if (customUserDescription) {
             return errPrefix + customUserDescription + errSuffix;
         }
         else {
-            var allLookAheadPaths = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["O" /* reduce */])(expectedPathsPerAlt, function (result, currAltPaths) { return result.concat(currAltPaths); }, []);
-            var nextValidTokenSequences = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(allLookAheadPaths, function (currPath) {
-                return "[" + Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(currPath, function (currTokenType) {
-                    return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currTokenType);
-                }).join(", ") + "]";
+            var allLookAheadPaths = utils_1.reduce(expectedPathsPerAlt, function (result, currAltPaths) { return result.concat(currAltPaths); }, []);
+            var nextValidTokenSequences = utils_1.map(allLookAheadPaths, function (currPath) {
+                return "[" + utils_1.map(currPath, function (currTokenType) { return tokens_public_1.tokenLabel(currTokenType); }).join(", ") + "]";
             });
-            var nextValidSequenceItems = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(nextValidTokenSequences, function (itemMsg, idx) { return "  " + (idx + 1) + ". " + itemMsg; });
+            var nextValidSequenceItems = utils_1.map(nextValidTokenSequences, function (itemMsg, idx) { return "  " + (idx + 1) + ". " + itemMsg; });
             var calculatedDescription = "one of these possible Token sequences:\n" + nextValidSequenceItems.join("\n");
             return errPrefix + calculatedDescription + errSuffix;
         }
@@ -31446,16 +31389,14 @@ var defaultParserErrorProvider = {
         var expectedIterationPaths = _a.expectedIterationPaths, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
         var errPrefix = "Expecting: ";
         // TODO: issue: No Viable Alternative Error may have incomplete details. #502
-        var actualText = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(actual).image;
+        var actualText = utils_1.first(actual).image;
         var errSuffix = "\nbut found: '" + actualText + "'";
         if (customUserDescription) {
             return errPrefix + customUserDescription + errSuffix;
         }
         else {
-            var nextValidTokenSequences = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(expectedIterationPaths, function (currPath) {
-                return "[" + Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(currPath, function (currTokenType) {
-                    return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currTokenType);
-                }).join(",") + "]";
+            var nextValidTokenSequences = utils_1.map(expectedIterationPaths, function (currPath) {
+                return "[" + utils_1.map(currPath, function (currTokenType) { return tokens_public_1.tokenLabel(currTokenType); }).join(",") + "]";
             });
             var calculatedDescription = "expecting at least one iteration which starts with one of these possible Token sequences::\n  " +
                 ("<" + nextValidTokenSequences.join(" ,") + ">");
@@ -31463,8 +31404,8 @@ var defaultParserErrorProvider = {
         }
     }
 };
-Object.freeze(defaultParserErrorProvider);
-var defaultGrammarResolverErrorProvider = {
+Object.freeze(exports.defaultParserErrorProvider);
+exports.defaultGrammarResolverErrorProvider = {
     buildRuleNotFoundError: function (topLevelRule, undefinedRule) {
         var msg = "Invalid grammar, reference to a rule which is not defined: ->" +
             undefinedRule.nonTerminalName +
@@ -31475,13 +31416,13 @@ var defaultGrammarResolverErrorProvider = {
         return msg;
     }
 };
-var defaultGrammarValidatorErrorProvider = {
+exports.defaultGrammarValidatorErrorProvider = {
     buildDuplicateFoundError: function (topLevelRule, duplicateProds) {
         function getExtraProductionArgument(prod) {
-            if (prod instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["k" /* Terminal */]) {
+            if (prod instanceof gast_public_1.Terminal) {
                 return prod.terminalType.name;
             }
-            else if (prod instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["d" /* NonTerminal */]) {
+            else if (prod instanceof gast_public_1.NonTerminal) {
                 return prod.nonTerminalName;
             }
             else {
@@ -31489,28 +31430,16 @@ var defaultGrammarValidatorErrorProvider = {
             }
         }
         var topLevelName = topLevelRule.name;
-        var duplicateProd = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(duplicateProds);
+        var duplicateProd = utils_1.first(duplicateProds);
         var index = duplicateProd.idx;
-        var dslName = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__["c" /* getProductionDslName */])(duplicateProd);
+        var dslName = gast_1.getProductionDslName(duplicateProd);
         var extraArgument = getExtraProductionArgument(duplicateProd);
         var hasExplicitIndex = index > 0;
-        var msg = "->" + dslName + (hasExplicitIndex ? index : "") + "<- " + (extraArgument ? "with argument: ->" + extraArgument + "<-" : "") + "\n                  appears more than once (" + duplicateProds.length + " times) in the top level rule: ->" + topLevelName + "<-.                  \n                  For further details see: https://sap.github.io/chevrotain/docs/FAQ.html#NUMERICAL_SUFFIXES \n                  ";
+        var msg = "->" + dslName + (hasExplicitIndex ? index : "") + "<- " + (extraArgument ? "with argument: ->" + extraArgument + "<-" : "") + "\n                  appears more than once (" + duplicateProds.length + " times) in the top level rule: ->" + topLevelName + "<-.                  \n                  For further details see: https://chevrotain.io/docs/FAQ.html#NUMERICAL_SUFFIXES \n                  ";
         // white space trimming time! better to trim afterwards as it allows to use WELL formatted multi line template strings...
         msg = msg.replace(/[ \t]+/g, " ");
         msg = msg.replace(/\s\s+/g, "\n");
         return msg;
-    },
-    buildInvalidNestedRuleNameError: function (topLevelRule, nestedProd) {
-        var msg = "Invalid nested rule name: ->" + nestedProd.name + "<- inside rule: ->" + topLevelRule.name + "<-\n" +
-            ("it must match the pattern: ->" + __WEBPACK_IMPORTED_MODULE_4__grammar_checks__["a" /* validNestedRuleName */].toString() + "<-.\n") +
-            "Note that this means a nested rule name must start with the '$'(dollar) sign.";
-        return msg;
-    },
-    buildDuplicateNestedRuleNameError: function (topLevelRule, nestedProd) {
-        var duplicateName = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(nestedProd).name;
-        var errMsg = "Duplicate nested rule name: ->" + duplicateName + "<- inside rule: ->" + topLevelRule.name + "<-\n" +
-            "A nested name must be unique in the scope of a top level grammar rule.";
-        return errMsg;
     },
     buildNamespaceConflictError: function (rule) {
         var errMsg = "Namespace conflict found in grammar.\n" +
@@ -31521,20 +31450,20 @@ var defaultGrammarValidatorErrorProvider = {
         return errMsg;
     },
     buildAlternationPrefixAmbiguityError: function (options) {
-        var pathMsg = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(options.prefixPath, function (currTok) {
-            return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currTok);
+        var pathMsg = utils_1.map(options.prefixPath, function (currTok) {
+            return tokens_public_1.tokenLabel(currTok);
         }).join(", ");
         var occurrence = options.alternation.idx === 0 ? "" : options.alternation.idx;
         var errMsg = "Ambiguous alternatives: <" + options.ambiguityIndices.join(" ,") + "> due to common lookahead prefix\n" +
             ("in <OR" + occurrence + "> inside <" + options.topLevelRule.name + "> Rule,\n") +
             ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n") +
-            "See: https://sap.github.io/chevrotain/docs/guide/resolving_grammar_errors.html#COMMON_PREFIX\n" +
+            "See: https://chevrotain.io/docs/guide/resolving_grammar_errors.html#COMMON_PREFIX\n" +
             "For Further details.";
         return errMsg;
     },
     buildAlternationAmbiguityError: function (options) {
-        var pathMsg = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(options.prefixPath, function (currtok) {
-            return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currtok);
+        var pathMsg = utils_1.map(options.prefixPath, function (currtok) {
+            return tokens_public_1.tokenLabel(currtok);
         }).join(", ");
         var occurrence = options.alternation.idx === 0 ? "" : options.alternation.idx;
         var currMessage = "Ambiguous Alternatives Detected: <" + options.ambiguityIndices.join(" ,") + "> in <OR" + occurrence + ">" +
@@ -31542,12 +31471,12 @@ var defaultGrammarValidatorErrorProvider = {
             ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n");
         currMessage =
             currMessage +
-                "See: https://sap.github.io/chevrotain/docs/guide/resolving_grammar_errors.html#AMBIGUOUS_ALTERNATIVES\n" +
+                "See: https://chevrotain.io/docs/guide/resolving_grammar_errors.html#AMBIGUOUS_ALTERNATIVES\n" +
                 "For Further details.";
         return currMessage;
     },
     buildEmptyRepetitionError: function (options) {
-        var dslName = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__["c" /* getProductionDslName */])(options.repetition);
+        var dslName = gast_1.getProductionDslName(options.repetition);
         if (options.repetition.idx !== 0) {
             dslName += options.repetition.idx;
         }
@@ -31555,10 +31484,11 @@ var defaultGrammarValidatorErrorProvider = {
             "This could lead to an infinite loop.";
         return errMsg;
     },
+    // TODO: remove - `errors_public` from nyc.config.js exclude
+    //       once this method is fully removed from this file
     buildTokenNameError: function (options) {
-        var tokTypeName = options.tokenType.name;
-        var errMsg = "Invalid Grammar Token name: ->" + tokTypeName + "<- it must match the pattern: ->" + options.expectedPattern.toString() + "<-";
-        return errMsg;
+        /* istanbul ignore next */
+        return "deprecated";
     },
     buildEmptyAlternationError: function (options) {
         var errMsg = "Ambiguous empty alternative: <" + (options.emptyChoiceIdx + 1) + ">" +
@@ -31568,13 +31498,12 @@ var defaultGrammarValidatorErrorProvider = {
     },
     buildTooManyAlternativesError: function (options) {
         var errMsg = "An Alternation cannot have more than 256 alternatives:\n" +
-            ("<OR" + options.alternation.idx + "> inside <" + options.topLevelRule.name + "> Rule.\n has " + (options.alternation.definition.length +
-                1) + " alternatives.");
+            ("<OR" + options.alternation.idx + "> inside <" + options.topLevelRule.name + "> Rule.\n has " + (options.alternation.definition.length + 1) + " alternatives.");
         return errMsg;
     },
     buildLeftRecursionError: function (options) {
         var ruleName = options.topLevelRule.name;
-        var pathNames = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */](options.leftRecursionPath, function (currRule) { return currRule.name; });
+        var pathNames = utils.map(options.leftRecursionPath, function (currRule) { return currRule.name; });
         var leftRecursivePath = ruleName + " --> " + pathNames
             .concat([ruleName])
             .join(" --> ");
@@ -31585,15 +31514,15 @@ var defaultGrammarValidatorErrorProvider = {
             "see: https://en.wikipedia.org/wiki/LL_parser#Left_Factoring.";
         return errMsg;
     },
+    // TODO: remove - `errors_public` from nyc.config.js exclude
+    //       once this method is fully removed from this file
     buildInvalidRuleNameError: function (options) {
-        var ruleName = options.topLevelRule.name;
-        var expectedPatternString = options.expectedPattern.toString();
-        var errMsg = "Invalid grammar rule name: ->" + ruleName + "<- it must match the pattern: ->" + expectedPatternString + "<-";
-        return errMsg;
+        /* istanbul ignore next */
+        return "deprecated";
     },
     buildDuplicateRuleNameError: function (options) {
         var ruleName;
-        if (options.topLevelRule instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["j" /* Rule */]) {
+        if (options.topLevelRule instanceof gast_public_1.Rule) {
             ruleName = options.topLevelRule.name;
         }
         else {
@@ -31606,653 +31535,34 @@ var defaultGrammarValidatorErrorProvider = {
 //# sourceMappingURL=errors_public.js.map
 
 /***/ }),
-/* 33 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["c"] = validateGrammar;
-/* unused harmony export identifyProductionForDuplicates */
-/* unused harmony export OccurrenceValidationCollector */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return validTermsPattern; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return validNestedRuleName; });
-/* unused harmony export validateRuleName */
-/* unused harmony export validateNestedRuleName */
-/* unused harmony export validateTokenName */
-/* unused harmony export validateRuleDoesNotAlreadyExist */
-/* harmony export (immutable) */ __webpack_exports__["d"] = validateRuleIsOverridden;
-/* unused harmony export validateNoLeftRecursion */
-/* unused harmony export getFirstNoneTerminal */
-/* unused harmony export validateEmptyOrAlternative */
-/* unused harmony export validateAmbiguousAlternationAlternatives */
-/* unused harmony export RepetionCollector */
-/* unused harmony export validateTooManyAlts */
-/* unused harmony export validateSomeNonEmptyLookaheadPath */
-/* unused harmony export checkPrefixAlternativesAmbiguities */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lookahead__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interpreter__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__ = __webpack_require__(20);
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
-
-
-
-
-
-
-
-
-function validateGrammar(topLevels, globalMaxLookahead, tokenTypes, ignoredIssues, errMsgProvider, grammarName) {
-    var duplicateErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](topLevels, function (currTopLevel) {
-        return validateDuplicateProductions(currTopLevel, errMsgProvider);
-    });
-    var leftRecursionErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](topLevels, function (currTopRule) {
-        return validateNoLeftRecursion(currTopRule, currTopRule, errMsgProvider);
-    });
-    var emptyAltErrors = [];
-    var ambiguousAltsErrors = [];
-    var emptyRepetitionErrors = [];
-    // left recursion could cause infinite loops in the following validations.
-    // It is safest to first have the user fix the left recursion errors first and only then examine Further issues.
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(leftRecursionErrors, __WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])) {
-        emptyAltErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (currTopRule) {
-            return validateEmptyOrAlternative(currTopRule, errMsgProvider);
-        });
-        ambiguousAltsErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (currTopRule) {
-            return validateAmbiguousAlternationAlternatives(currTopRule, globalMaxLookahead, ignoredIssues, errMsgProvider);
-        });
-        emptyRepetitionErrors = validateSomeNonEmptyLookaheadPath(topLevels, globalMaxLookahead, errMsgProvider);
-    }
-    var termsNamespaceConflictErrors = checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider);
-    var tokenNameErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](tokenTypes, function (currTokType) {
-        return validateTokenName(currTokType, errMsgProvider);
-    });
-    var nestedRulesNameErrors = validateNestedRulesNames(topLevels, errMsgProvider);
-    var nestedRulesDuplicateErrors = validateDuplicateNestedRules(topLevels, errMsgProvider);
-    var tooManyAltsErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (curRule) {
-        return validateTooManyAlts(curRule, errMsgProvider);
-    });
-    var ruleNameErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (curRule) {
-        return validateRuleName(curRule, errMsgProvider);
-    });
-    var duplicateRulesError = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (curRule) {
-        return validateRuleDoesNotAlreadyExist(curRule, topLevels, grammarName, errMsgProvider);
-    });
-    return (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */](duplicateErrors.concat(tokenNameErrors, nestedRulesNameErrors, nestedRulesDuplicateErrors, emptyRepetitionErrors, leftRecursionErrors, emptyAltErrors, ambiguousAltsErrors, termsNamespaceConflictErrors, tooManyAltsErrors, ruleNameErrors, duplicateRulesError)));
-}
-function validateNestedRulesNames(topLevels, errMsgProvider) {
-    var result = [];
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevels, function (curTopLevel) {
-        var namedCollectorVisitor = new __WEBPACK_IMPORTED_MODULE_4__cst_cst__["a" /* NamedDSLMethodsCollectorVisitor */]("");
-        curTopLevel.accept(namedCollectorVisitor);
-        var nestedProds = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(namedCollectorVisitor.result, function (currItem) { return currItem.orgProd; });
-        result.push(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(nestedProds, function (currNestedProd) {
-            return validateNestedRuleName(curTopLevel, currNestedProd, errMsgProvider);
-        }));
-    });
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(result);
-}
-function validateDuplicateProductions(topLevelRule, errMsgProvider) {
-    var collectorVisitor = new OccurrenceValidationCollector();
-    topLevelRule.accept(collectorVisitor);
-    var allRuleProductions = collectorVisitor.allProductions;
-    var productionGroups = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["v" /* groupBy */](allRuleProductions, identifyProductionForDuplicates);
-    var duplicates = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */](productionGroups, function (currGroup) {
-        return currGroup.length > 1;
-    });
-    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */](duplicates), function (currDuplicates) {
-        var firstProd = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["s" /* first */](currDuplicates);
-        var msg = errMsgProvider.buildDuplicateFoundError(topLevelRule, currDuplicates);
-        var dslName = Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["c" /* getProductionDslName */])(firstProd);
-        var defError = {
-            message: msg,
-            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_PRODUCTIONS,
-            ruleName: topLevelRule.name,
-            dslName: dslName,
-            occurrence: firstProd.idx
-        };
-        var param = getExtraProductionArgument(firstProd);
-        if (param) {
-            defError.parameter = param;
-        }
-        return defError;
-    });
-    return errors;
-}
-function identifyProductionForDuplicates(prod) {
-    return Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["c" /* getProductionDslName */])(prod) + "_#_" + prod.idx + "_#_" + getExtraProductionArgument(prod);
-}
-function getExtraProductionArgument(prod) {
-    if (prod instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["k" /* Terminal */]) {
-        return prod.terminalType.name;
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["d" /* NonTerminal */]) {
-        return prod.nonTerminalName;
-    }
-    else {
-        return "";
-    }
-}
-var OccurrenceValidationCollector = /** @class */ (function (_super) {
-    __extends(OccurrenceValidationCollector, _super);
-    function OccurrenceValidationCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.allProductions = [];
-        return _this;
-    }
-    OccurrenceValidationCollector.prototype.visitNonTerminal = function (subrule) {
-        this.allProductions.push(subrule);
-    };
-    OccurrenceValidationCollector.prototype.visitOption = function (option) {
-        this.allProductions.push(option);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
-        this.allProductions.push(manySep);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
-        this.allProductions.push(atLeastOne);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
-        this.allProductions.push(atLeastOneSep);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetition = function (many) {
-        this.allProductions.push(many);
-    };
-    OccurrenceValidationCollector.prototype.visitAlternation = function (or) {
-        this.allProductions.push(or);
-    };
-    OccurrenceValidationCollector.prototype.visitTerminal = function (terminal) {
-        this.allProductions.push(terminal);
-    };
-    return OccurrenceValidationCollector;
-}(__WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__["a" /* GAstVisitor */]));
-
-var validTermsPattern = /^[a-zA-Z_]\w*$/;
-var validNestedRuleName = new RegExp(validTermsPattern.source.replace("^", "^\\$"));
-// TODO: remove this limitation now that we use recorders
-function validateRuleName(rule, errMsgProvider) {
-    var errors = [];
-    var ruleName = rule.name;
-    if (!ruleName.match(validTermsPattern)) {
-        errors.push({
-            message: errMsgProvider.buildInvalidRuleNameError({
-                topLevelRule: rule,
-                expectedPattern: validTermsPattern
-            }),
-            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_RULE_NAME,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-// TODO: did the nested rule name regExp now change?
-function validateNestedRuleName(topLevel, nestedProd, errMsgProvider) {
-    var errors = [];
-    var errMsg;
-    if (!nestedProd.name.match(validNestedRuleName)) {
-        errMsg = errMsgProvider.buildInvalidNestedRuleNameError(topLevel, nestedProd);
-        errors.push({
-            message: errMsg,
-            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_NESTED_RULE_NAME,
-            ruleName: topLevel.name
-        });
-    }
-    return errors;
-}
-// TODO: remove this limitation now that we use recorders
-function validateTokenName(tokenType, errMsgProvider) {
-    var errors = [];
-    var tokTypeName = tokenType.name;
-    if (!tokTypeName.match(validTermsPattern)) {
-        errors.push({
-            message: errMsgProvider.buildTokenNameError({
-                tokenType: tokenType,
-                expectedPattern: validTermsPattern
-            }),
-            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_TOKEN_NAME
-        });
-    }
-    return errors;
-}
-function validateRuleDoesNotAlreadyExist(rule, allRules, className, errMsgProvider) {
-    var errors = [];
-    var occurrences = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(allRules, function (result, curRule) {
-        if (curRule.name === rule.name) {
-            return result + 1;
-        }
-        return result;
-    }, 0);
-    if (occurrences > 1) {
-        var errMsg = errMsgProvider.buildDuplicateRuleNameError({
-            topLevelRule: rule,
-            grammarName: className
-        });
-        errors.push({
-            message: errMsg,
-            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_RULE_NAME,
-            ruleName: rule.name
-        });
-    }
-    return errors;
-}
-// TODO: is there anyway to get only the rule names of rules inherited from the super grammars?
-// This is not part of the IGrammarErrorProvider because the validation cannot be performed on
-// The grammar structure, only at runtime.
-function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
-    var errors = [];
-    var errMsg;
-    if (!__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */](definedRulesNames, ruleName)) {
-        errMsg =
-            "Invalid rule override, rule: ->" + ruleName + "<- cannot be overridden in the grammar: ->" + className + "<-" +
-                "as it is not defined in any of the super grammars ";
-        errors.push({
-            message: errMsg,
-            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_RULE_OVERRIDE,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path) {
-    if (path === void 0) { path = []; }
-    var errors = [];
-    var nextNonTerminals = getFirstNoneTerminal(currRule.definition);
-    if (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */](nextNonTerminals)) {
-        return [];
-    }
-    else {
-        var ruleName = topRule.name;
-        var foundLeftRecursion = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */](nextNonTerminals, topRule);
-        if (foundLeftRecursion) {
-            errors.push({
-                message: errMsgProvider.buildLeftRecursionError({
-                    topLevelRule: topRule,
-                    leftRecursionPath: path
-                }),
-                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].LEFT_RECURSION,
-                ruleName: ruleName
-            });
-        }
-        // we are only looking for cyclic paths leading back to the specific topRule
-        // other cyclic paths are ignored, we still need this difference to avoid infinite loops...
-        var validNextSteps = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["l" /* difference */](nextNonTerminals, path.concat([topRule]));
-        var errorsFromNextSteps = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](validNextSteps, function (currRefRule) {
-            var newPath = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["g" /* cloneArr */](path);
-            newPath.push(currRefRule);
-            return validateNoLeftRecursion(topRule, currRefRule, errMsgProvider, newPath);
-        });
-        return errors.concat(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */](errorsFromNextSteps));
-    }
-}
-function getFirstNoneTerminal(definition) {
-    var result = [];
-    if (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */](definition)) {
-        return result;
-    }
-    var firstProd = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["s" /* first */](definition);
-    /* istanbul ignore else */
-    if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["d" /* NonTerminal */]) {
-        result.push(firstProd.referencedRule);
-    }
-    else if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["c" /* Flat */] ||
-        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["e" /* Option */] ||
-        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["g" /* RepetitionMandatory */] ||
-        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */] ||
-        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["i" /* RepetitionWithSeparator */] ||
-        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["f" /* Repetition */]) {
-        result = result.concat(getFirstNoneTerminal(firstProd.definition));
-    }
-    else if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["b" /* Alternation */]) {
-        // each sub definition in alternation is a FLAT
-        result = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */](__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](firstProd.definition, function (currSubDef) {
-            return getFirstNoneTerminal(currSubDef.definition);
-        }));
-    }
-    else if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["k" /* Terminal */]) {
-        // nothing to see, move along
-    }
-    else {
-        throw Error("non exhaustive match");
-    }
-    var isFirstOptional = Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["e" /* isOptionalProd */])(firstProd);
-    var hasMore = definition.length > 1;
-    if (isFirstOptional && hasMore) {
-        var rest = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["m" /* drop */](definition);
-        return result.concat(getFirstNoneTerminal(rest));
-    }
-    else {
-        return result;
-    }
-}
-var OrCollector = /** @class */ (function (_super) {
-    __extends(OrCollector, _super);
-    function OrCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.alternations = [];
-        return _this;
-    }
-    OrCollector.prototype.visitAlternation = function (node) {
-        this.alternations.push(node);
-    };
-    return OrCollector;
-}(__WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__["a" /* GAstVisitor */]));
-function validateEmptyOrAlternative(topLevelRule, errMsgProvider) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */](ors, function (errors, currOr) {
-        var exceptLast = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["n" /* dropRight */](currOr.definition);
-        var currErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](exceptLast, function (currAlternative, currAltIdx) {
-            var possibleFirstInAlt = Object(__WEBPACK_IMPORTED_MODULE_5__interpreter__["f" /* nextPossibleTokensAfter */])([currAlternative], [], null, 1);
-            if (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */](possibleFirstInAlt)) {
-                return {
-                    message: errMsgProvider.buildEmptyAlternationError({
-                        topLevelRule: topLevelRule,
-                        alternation: currOr,
-                        emptyChoiceIdx: currAltIdx
-                    }),
-                    type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].NONE_LAST_EMPTY_ALT,
-                    ruleName: topLevelRule.name,
-                    occurrence: currOr.idx,
-                    alternative: currAltIdx + 1
-                };
-            }
-            else {
-                return null;
-            }
-        });
-        return errors.concat(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["i" /* compact */](currErrors));
-    }, []);
-    return errors;
-}
-function validateAmbiguousAlternationAlternatives(topLevelRule, globalMaxLookahead, ignoredIssues, errMsgProvider) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    // TODO: this filtering should be deprecated once we remove the ignoredIssues
-    //  IParserConfig property
-    var ignoredIssuesForCurrentRule = ignoredIssues[topLevelRule.name];
-    if (ignoredIssuesForCurrentRule) {
-        ors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["P" /* reject */])(ors, function (currOr) {
-            return ignoredIssuesForCurrentRule[Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["c" /* getProductionDslName */])(currOr) +
-                (currOr.idx === 0 ? "" : currOr.idx)];
-        });
-    }
-    // New Handling of ignoring ambiguities
-    // - https://github.com/SAP/chevrotain/issues/869
-    ors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["P" /* reject */])(ors, function (currOr) { return currOr.ignoreAmbiguities === true; });
-    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */](ors, function (result, currOr) {
-        var currOccurrence = currOr.idx;
-        var actualMaxLookahead = currOr.maxLookahead || globalMaxLookahead;
-        var alternatives = Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["h" /* getLookaheadPathsForOr */])(currOccurrence, topLevelRule, actualMaxLookahead, currOr);
-        var altsAmbiguityErrors = checkAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
-        var altsPrefixAmbiguityErrors = checkPrefixAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
-        return result.concat(altsAmbiguityErrors, altsPrefixAmbiguityErrors);
-    }, []);
-    return errors;
-}
-var RepetionCollector = /** @class */ (function (_super) {
-    __extends(RepetionCollector, _super);
-    function RepetionCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.allProductions = [];
-        return _this;
-    }
-    RepetionCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
-        this.allProductions.push(manySep);
-    };
-    RepetionCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
-        this.allProductions.push(atLeastOne);
-    };
-    RepetionCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
-        this.allProductions.push(atLeastOneSep);
-    };
-    RepetionCollector.prototype.visitRepetition = function (many) {
-        this.allProductions.push(many);
-    };
-    return RepetionCollector;
-}(__WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__["a" /* GAstVisitor */]));
-
-function validateTooManyAlts(topLevelRule, errMsgProvider) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */](ors, function (errors, currOr) {
-        if (currOr.definition.length > 255) {
-            errors.push({
-                message: errMsgProvider.buildTooManyAlternativesError({
-                    topLevelRule: topLevelRule,
-                    alternation: currOr
-                }),
-                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].TOO_MANY_ALTS,
-                ruleName: topLevelRule.name,
-                occurrence: currOr.idx
-            });
-        }
-        return errors;
-    }, []);
-    return errors;
-}
-function validateSomeNonEmptyLookaheadPath(topLevelRules, maxLookahead, errMsgProvider) {
-    var errors = [];
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevelRules, function (currTopRule) {
-        var collectorVisitor = new RepetionCollector();
-        currTopRule.accept(collectorVisitor);
-        var allRuleProductions = collectorVisitor.allProductions;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(allRuleProductions, function (currProd) {
-            var prodType = Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["i" /* getProdType */])(currProd);
-            var actualMaxLookahead = currProd.maxLookahead || maxLookahead;
-            var currOccurrence = currProd.idx;
-            var paths = Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["g" /* getLookaheadPathsForOptionalProd */])(currOccurrence, currTopRule, prodType, actualMaxLookahead);
-            var pathsInsideProduction = paths[0];
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(pathsInsideProduction))) {
-                var errMsg = errMsgProvider.buildEmptyRepetitionError({
-                    topLevelRule: currTopRule,
-                    repetition: currProd
-                });
-                errors.push({
-                    message: errMsg,
-                    type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].NO_NON_EMPTY_LOOKAHEAD,
-                    ruleName: currTopRule.name
-                });
-            }
-        });
-    });
-    return errors;
-}
-function checkAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
-    var foundAmbiguousPaths = [];
-    var identicalAmbiguities = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(alternatives, function (result, currAlt, currAltIdx) {
-        // ignore (skip) ambiguities with this alternative
-        if (alternation.definition[currAltIdx].ignoreAmbiguities === true) {
-            return result;
-        }
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currAlt, function (currPath) {
-            var altsCurrPathAppearsIn = [currAltIdx];
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(alternatives, function (currOtherAlt, currOtherAltIdx) {
-                if (currAltIdx !== currOtherAltIdx &&
-                    Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["f" /* containsPath */])(currOtherAlt, currPath) &&
-                    // ignore (skip) ambiguities with this "other" alternative
-                    alternation.definition[currOtherAltIdx]
-                        .ignoreAmbiguities !== true) {
-                    altsCurrPathAppearsIn.push(currOtherAltIdx);
-                }
-            });
-            if (altsCurrPathAppearsIn.length > 1 &&
-                !Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["f" /* containsPath */])(foundAmbiguousPaths, currPath)) {
-                foundAmbiguousPaths.push(currPath);
-                result.push({
-                    alts: altsCurrPathAppearsIn,
-                    path: currPath
-                });
-            }
-        });
-        return result;
-    }, []);
-    var currErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](identicalAmbiguities, function (currAmbDescriptor) {
-        var ambgIndices = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(currAmbDescriptor.alts, function (currAltIdx) { return currAltIdx + 1; });
-        var currMessage = errMsgProvider.buildAlternationAmbiguityError({
-            topLevelRule: rule,
-            alternation: alternation,
-            ambiguityIndices: ambgIndices,
-            prefixPath: currAmbDescriptor.path
-        });
-        return {
-            message: currMessage,
-            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].AMBIGUOUS_ALTS,
-            ruleName: rule.name,
-            occurrence: alternation.idx,
-            alternatives: [currAmbDescriptor.alts]
-        };
-    });
-    return currErrors;
-}
-function checkPrefixAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
-    var errors = [];
-    // flatten
-    var pathsAndIndices = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(alternatives, function (result, currAlt, idx) {
-        var currPathsAndIdx = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(currAlt, function (currPath) {
-            return { idx: idx, path: currPath };
-        });
-        return result.concat(currPathsAndIdx);
-    }, []);
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(pathsAndIndices, function (currPathAndIdx) {
-        var alternativeGast = alternation.definition[currPathAndIdx.idx];
-        // ignore (skip) ambiguities with this alternative
-        if (alternativeGast.ignoreAmbiguities === true) {
-            return;
-        }
-        var targetIdx = currPathAndIdx.idx;
-        var targetPath = currPathAndIdx.path;
-        var prefixAmbiguitiesPathsAndIndices = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["r" /* findAll */])(pathsAndIndices, function (searchPathAndIdx) {
-            // prefix ambiguity can only be created from lower idx (higher priority) path
-            return (
-            // ignore (skip) ambiguities with this "other" alternative
-            alternation.definition[searchPathAndIdx.idx]
-                .ignoreAmbiguities !== true &&
-                searchPathAndIdx.idx < targetIdx &&
-                // checking for strict prefix because identical lookaheads
-                // will be be detected using a different validation.
-                Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["j" /* isStrictPrefixOfPath */])(searchPathAndIdx.path, targetPath));
-        });
-        var currPathPrefixErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(prefixAmbiguitiesPathsAndIndices, function (currAmbPathAndIdx) {
-            var ambgIndices = [currAmbPathAndIdx.idx + 1, targetIdx + 1];
-            var occurrence = alternation.idx === 0 ? "" : alternation.idx;
-            var message = errMsgProvider.buildAlternationPrefixAmbiguityError({
-                topLevelRule: rule,
-                alternation: alternation,
-                ambiguityIndices: ambgIndices,
-                prefixPath: currAmbPathAndIdx.path
-            });
-            return {
-                message: message,
-                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].AMBIGUOUS_PREFIX_ALTS,
-                ruleName: rule.name,
-                occurrence: occurrence,
-                alternatives: ambgIndices
-            };
-        });
-        errors = errors.concat(currPathPrefixErrors);
-    });
-    return errors;
-}
-function checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider) {
-    var errors = [];
-    var tokenNames = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(tokenTypes, function (currToken) { return currToken.name; });
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevels, function (currRule) {
-        var currRuleName = currRule.name;
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(tokenNames, currRuleName)) {
-            var errMsg = errMsgProvider.buildNamespaceConflictError(currRule);
-            errors.push({
-                message: errMsg,
-                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].CONFLICT_TOKENS_RULES_NAMESPACE,
-                ruleName: currRuleName
-            });
-        }
-    });
-    return errors;
-}
-function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
-    var errors = [];
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevelRules, function (currTopRule) {
-        var namedCollectorVisitor = new __WEBPACK_IMPORTED_MODULE_4__cst_cst__["a" /* NamedDSLMethodsCollectorVisitor */]("");
-        currTopRule.accept(namedCollectorVisitor);
-        var prodsByGroup = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["v" /* groupBy */])(namedCollectorVisitor.result, function (item) { return item.name; });
-        var duplicates = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(prodsByGroup, function (currGroup) {
-            return currGroup.length > 1;
-        });
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(duplicates), function (currDupGroup) {
-            var currDupProds = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(currDupGroup, function (dupGroup) { return dupGroup.orgProd; });
-            var errMsg = errMsgProvider.buildDuplicateNestedRuleNameError(currTopRule, currDupProds);
-            errors.push({
-                message: errMsg,
-                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_NESTED_NAME,
-                ruleName: currTopRule.name
-            });
-        });
-    });
-    return errors;
-}
-//# sourceMappingURL=checks.js.map
-
-/***/ }),
-/* 34 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PROD_TYPE; });
-/* harmony export (immutable) */ __webpack_exports__["i"] = getProdType;
-/* harmony export (immutable) */ __webpack_exports__["d"] = buildLookaheadFuncForOr;
-/* harmony export (immutable) */ __webpack_exports__["c"] = buildLookaheadFuncForOptionalProd;
-/* harmony export (immutable) */ __webpack_exports__["b"] = buildAlternativesLookAheadFunc;
-/* harmony export (immutable) */ __webpack_exports__["e"] = buildSingleAlternativeLookaheadFunction;
-/* unused harmony export lookAheadSequenceFromAlternatives */
-/* harmony export (immutable) */ __webpack_exports__["h"] = getLookaheadPathsForOr;
-/* harmony export (immutable) */ __webpack_exports__["g"] = getLookaheadPathsForOptionalProd;
-/* harmony export (immutable) */ __webpack_exports__["f"] = containsPath;
-/* harmony export (immutable) */ __webpack_exports__["j"] = isStrictPrefixOfPath;
-/* unused harmony export areTokenCategoriesNotUsed */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__interpreter__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__ = __webpack_require__(20);
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-
-
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.areTokenCategoriesNotUsed = exports.isStrictPrefixOfPath = exports.containsPath = exports.getLookaheadPathsForOptionalProd = exports.getLookaheadPathsForOr = exports.lookAheadSequenceFromAlternatives = exports.buildSingleAlternativeLookaheadFunction = exports.buildAlternativesLookAheadFunc = exports.buildLookaheadFuncForOptionalProd = exports.buildLookaheadFuncForOr = exports.getProdType = exports.PROD_TYPE = void 0;
+var utils_1 = __webpack_require__(2);
+var interpreter_1 = __webpack_require__(33);
+var rest_1 = __webpack_require__(42);
+var tokens_1 = __webpack_require__(24);
+var gast_public_1 = __webpack_require__(8);
+var gast_visitor_public_1 = __webpack_require__(25);
 var PROD_TYPE;
 (function (PROD_TYPE) {
     PROD_TYPE[PROD_TYPE["OPTION"] = 0] = "OPTION";
@@ -32261,38 +31571,40 @@ var PROD_TYPE;
     PROD_TYPE[PROD_TYPE["REPETITION_MANDATORY_WITH_SEPARATOR"] = 3] = "REPETITION_MANDATORY_WITH_SEPARATOR";
     PROD_TYPE[PROD_TYPE["REPETITION_WITH_SEPARATOR"] = 4] = "REPETITION_WITH_SEPARATOR";
     PROD_TYPE[PROD_TYPE["ALTERNATION"] = 5] = "ALTERNATION";
-})(PROD_TYPE || (PROD_TYPE = {}));
+})(PROD_TYPE = exports.PROD_TYPE || (exports.PROD_TYPE = {}));
 function getProdType(prod) {
     /* istanbul ignore else */
-    if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["e" /* Option */]) {
+    if (prod instanceof gast_public_1.Option) {
         return PROD_TYPE.OPTION;
     }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["f" /* Repetition */]) {
+    else if (prod instanceof gast_public_1.Repetition) {
         return PROD_TYPE.REPETITION;
     }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["g" /* RepetitionMandatory */]) {
+    else if (prod instanceof gast_public_1.RepetitionMandatory) {
         return PROD_TYPE.REPETITION_MANDATORY;
     }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+    else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
         return PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR;
     }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+    else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
         return PROD_TYPE.REPETITION_WITH_SEPARATOR;
     }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["b" /* Alternation */]) {
+    else if (prod instanceof gast_public_1.Alternation) {
         return PROD_TYPE.ALTERNATION;
     }
     else {
         throw Error("non exhaustive match");
     }
 }
+exports.getProdType = getProdType;
 function buildLookaheadFuncForOr(occurrence, ruleGrammar, maxLookahead, hasPredicates, dynamicTokensEnabled, laFuncBuilder) {
     var lookAheadPaths = getLookaheadPathsForOr(occurrence, ruleGrammar, maxLookahead);
     var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
-        ? __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */]
-        : __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["d" /* tokenStructuredMatcher */];
+        ? tokens_1.tokenStructuredMatcherNoCategories
+        : tokens_1.tokenStructuredMatcher;
     return laFuncBuilder(lookAheadPaths, hasPredicates, tokenMatcher, dynamicTokensEnabled);
 }
+exports.buildLookaheadFuncForOr = buildLookaheadFuncForOr;
 /**
  *  When dealing with an Optional production (OPTION/MANY/2nd iteration of AT_LEAST_ONE/...) we need to compare
  *  the lookahead "inside" the production and the lookahead immediately "after" it in the same top level rule (context free).
@@ -32308,14 +31620,15 @@ function buildLookaheadFuncForOr(occurrence, ruleGrammar, maxLookahead, hasPredi
 function buildLookaheadFuncForOptionalProd(occurrence, ruleGrammar, k, dynamicTokensEnabled, prodType, lookaheadBuilder) {
     var lookAheadPaths = getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k);
     var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
-        ? __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */]
-        : __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["d" /* tokenStructuredMatcher */];
+        ? tokens_1.tokenStructuredMatcherNoCategories
+        : tokens_1.tokenStructuredMatcher;
     return lookaheadBuilder(lookAheadPaths[0], tokenMatcher, dynamicTokensEnabled);
 }
+exports.buildLookaheadFuncForOptionalProd = buildLookaheadFuncForOptionalProd;
 function buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynamicTokensEnabled) {
     var numOfAlts = alts.length;
-    var areAllOneTokenLookahead = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(alts, function (currAlt) {
-        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(currAlt, function (currPath) {
+    var areAllOneTokenLookahead = utils_1.every(alts, function (currAlt) {
+        return utils_1.every(currAlt, function (currPath) {
             return currPath.length === 1;
         });
     });
@@ -32328,13 +31641,12 @@ function buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynam
             // unfortunately the predicates must be extracted every single time
             // as they cannot be cached due to references to parameters(vars) which are no longer valid.
             // note that in the common case of no predicates, no cpu time will be wasted on this (see else block)
-            var predicates = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(orAlts, function (currAlt) { return currAlt.GATE; });
+            var predicates = utils_1.map(orAlts, function (currAlt) { return currAlt.GATE; });
             for (var t = 0; t < numOfAlts; t++) {
                 var currAlt = alts[t];
                 var currNumOfPaths = currAlt.length;
                 var currPredicate = predicates[t];
-                if (currPredicate !== undefined &&
-                    currPredicate.call(this) === false) {
+                if (currPredicate !== undefined && currPredicate.call(this) === false) {
                     // if the predicate does not match there is no point in checking the paths
                     continue;
                 }
@@ -32363,16 +31675,16 @@ function buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynam
     else if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
         // optimized (common) case of all the lookaheads paths requiring only
         // a single token lookahead. These Optimizations cannot work if dynamically defined Tokens are used.
-        var singleTokenAlts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(alts, function (currAlt) {
-            return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(currAlt);
+        var singleTokenAlts = utils_1.map(alts, function (currAlt) {
+            return utils_1.flatten(currAlt);
         });
-        var choiceToAlt_1 = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(singleTokenAlts, function (result, currAlt, idx) {
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currAlt, function (currTokType) {
-                if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(result, currTokType.tokenTypeIdx)) {
+        var choiceToAlt_1 = utils_1.reduce(singleTokenAlts, function (result, currAlt, idx) {
+            utils_1.forEach(currAlt, function (currTokType) {
+                if (!utils_1.has(result, currTokType.tokenTypeIdx)) {
                     result[currTokType.tokenTypeIdx] = idx;
                 }
-                Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currTokType.categoryMatches, function (currExtendingType) {
-                    if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(result, currExtendingType)) {
+                utils_1.forEach(currTokType.categoryMatches, function (currExtendingType) {
+                    if (!utils_1.has(result, currExtendingType)) {
                         result[currExtendingType] = idx;
                     }
                 });
@@ -32420,17 +31732,18 @@ function buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynam
         };
     }
 }
+exports.buildAlternativesLookAheadFunc = buildAlternativesLookAheadFunc;
 function buildSingleAlternativeLookaheadFunction(alt, tokenMatcher, dynamicTokensEnabled) {
-    var areAllOneTokenLookahead = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(alt, function (currPath) {
+    var areAllOneTokenLookahead = utils_1.every(alt, function (currPath) {
         return currPath.length === 1;
     });
     var numOfPaths = alt.length;
     // optimized (common) case of all the lookaheads paths requiring only
     // a single token lookahead.
     if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
-        var singleTokensTypes = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(alt);
+        var singleTokensTypes = utils_1.flatten(alt);
         if (singleTokensTypes.length === 1 &&
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(singleTokensTypes[0].categoryMatches)) {
+            utils_1.isEmpty(singleTokensTypes[0].categoryMatches)) {
             var expectedTokenType = singleTokensTypes[0];
             var expectedTokenUniqueKey_1 = expectedTokenType.tokenTypeIdx;
             return function () {
@@ -32438,9 +31751,9 @@ function buildSingleAlternativeLookaheadFunction(alt, tokenMatcher, dynamicToken
             };
         }
         else {
-            var choiceToAlt_2 = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(singleTokensTypes, function (result, currTokType, idx) {
+            var choiceToAlt_2 = utils_1.reduce(singleTokensTypes, function (result, currTokType, idx) {
                 result[currTokType.tokenTypeIdx] = true;
-                Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currTokType.categoryMatches, function (currExtendingType) {
+                utils_1.forEach(currTokType.categoryMatches, function (currExtendingType) {
                     result[currExtendingType] = true;
                 });
                 return result;
@@ -32472,6 +31785,7 @@ function buildSingleAlternativeLookaheadFunction(alt, tokenMatcher, dynamicToken
         };
     }
 }
+exports.buildSingleAlternativeLookaheadFunction = buildSingleAlternativeLookaheadFunction;
 var RestDefinitionFinderWalker = /** @class */ (function (_super) {
     __extends(RestDefinitionFinderWalker, _super);
     function RestDefinitionFinderWalker(topProd, targetOccurrence, targetProdType) {
@@ -32520,7 +31834,7 @@ var RestDefinitionFinderWalker = /** @class */ (function (_super) {
         }
     };
     return RestDefinitionFinderWalker;
-}(__WEBPACK_IMPORTED_MODULE_2__rest__["a" /* RestWalker */]));
+}(rest_1.RestWalker));
 /**
  * Returns the definition of a target production in a top level level rule.
  */
@@ -32560,7 +31874,7 @@ var InsideDefinitionFinderVisitor = /** @class */ (function (_super) {
         this.checkIsTarget(node, PROD_TYPE.ALTERNATION);
     };
     return InsideDefinitionFinderVisitor;
-}(__WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__["a" /* GAstVisitor */]));
+}(gast_visitor_public_1.GAstVisitor));
 function initializeArrayOfArrays(size) {
     var result = new Array(size);
     for (var i = 0; i < size; i++) {
@@ -32611,13 +31925,15 @@ function isUniquePrefixHash(altKnownPathsKeys, searchPathKeys, idx) {
     return true;
 }
 function lookAheadSequenceFromAlternatives(altsDefs, k) {
-    var partialAlts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(altsDefs, function (currAlt) { return Object(__WEBPACK_IMPORTED_MODULE_1__interpreter__["g" /* possiblePathsFrom */])([currAlt], 1); });
+    var partialAlts = utils_1.map(altsDefs, function (currAlt) {
+        return interpreter_1.possiblePathsFrom([currAlt], 1);
+    });
     var finalResult = initializeArrayOfArrays(partialAlts.length);
-    var altsHashes = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(partialAlts, function (currAltPaths) {
+    var altsHashes = utils_1.map(partialAlts, function (currAltPaths) {
         var dict = {};
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currAltPaths, function (item) {
+        utils_1.forEach(currAltPaths, function (item) {
             var keys = pathToHashKeys(item.partialPath);
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(keys, function (currKey) {
+            utils_1.forEach(keys, function (currKey) {
                 dict[currKey] = true;
             });
         });
@@ -32637,9 +31953,7 @@ function lookAheadSequenceFromAlternatives(altsDefs, k) {
                 var prefixKeys = pathToHashKeys(currPathPrefix);
                 var isUnique = isUniquePrefixHash(altsHashes, prefixKeys, altIdx);
                 // End of the line for this path.
-                if (isUnique ||
-                    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(suffixDef) ||
-                    currPathPrefix.length === k) {
+                if (isUnique || utils_1.isEmpty(suffixDef) || currPathPrefix.length === k) {
                     var currAltResult = finalResult[altIdx];
                     // TODO: Can we implement a containsPath using Maps/Dictionaries?
                     if (containsPath(currAltResult, currPathPrefix) === false) {
@@ -32653,12 +31967,12 @@ function lookAheadSequenceFromAlternatives(altsDefs, k) {
                 }
                 // Expand longer paths
                 else {
-                    var newPartialPathsAndSuffixes = Object(__WEBPACK_IMPORTED_MODULE_1__interpreter__["g" /* possiblePathsFrom */])(suffixDef, pathLength + 1, currPathPrefix);
+                    var newPartialPathsAndSuffixes = interpreter_1.possiblePathsFrom(suffixDef, pathLength + 1, currPathPrefix);
                     newData[altIdx] = newData[altIdx].concat(newPartialPathsAndSuffixes);
                     // Update keys for new known paths
-                    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(newPartialPathsAndSuffixes, function (item) {
+                    utils_1.forEach(newPartialPathsAndSuffixes, function (item) {
                         var prefixKeys = pathToHashKeys(item.partialPath);
-                        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(prefixKeys, function (key) {
+                        utils_1.forEach(prefixKeys, function (key) {
                             altsHashes[altIdx][key] = true;
                         });
                     });
@@ -32672,21 +31986,24 @@ function lookAheadSequenceFromAlternatives(altsDefs, k) {
     }
     return finalResult;
 }
+exports.lookAheadSequenceFromAlternatives = lookAheadSequenceFromAlternatives;
 function getLookaheadPathsForOr(occurrence, ruleGrammar, k, orProd) {
     var visitor = new InsideDefinitionFinderVisitor(occurrence, PROD_TYPE.ALTERNATION, orProd);
     ruleGrammar.accept(visitor);
     return lookAheadSequenceFromAlternatives(visitor.result, k);
 }
+exports.getLookaheadPathsForOr = getLookaheadPathsForOr;
 function getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k) {
     var insideDefVisitor = new InsideDefinitionFinderVisitor(occurrence, prodType);
     ruleGrammar.accept(insideDefVisitor);
     var insideDef = insideDefVisitor.result;
     var afterDefWalker = new RestDefinitionFinderWalker(ruleGrammar, occurrence, prodType);
     var afterDef = afterDefWalker.startWalking();
-    var insideFlat = new __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["c" /* Flat */]({ definition: insideDef });
-    var afterFlat = new __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["c" /* Flat */]({ definition: afterDef });
+    var insideFlat = new gast_public_1.Alternative({ definition: insideDef });
+    var afterFlat = new gast_public_1.Alternative({ definition: afterDef });
     return lookAheadSequenceFromAlternatives([insideFlat, afterFlat], k);
 }
+exports.getLookaheadPathsForOptionalProd = getLookaheadPathsForOptionalProd;
 function containsPath(alternative, searchPath) {
     compareOtherPath: for (var i = 0; i < alternative.length; i++) {
         var otherPath = alternative[i];
@@ -32697,8 +32014,7 @@ function containsPath(alternative, searchPath) {
             var searchTok = searchPath[j];
             var otherTok = otherPath[j];
             var matchingTokens = searchTok === otherTok ||
-                otherTok.categoryMatchesMap[searchTok.tokenTypeIdx] !==
-                    undefined;
+                otherTok.categoryMatchesMap[searchTok.tokenTypeIdx] !== undefined;
             if (matchingTokens === false) {
                 continue compareOtherPath;
             }
@@ -32707,62 +32023,57 @@ function containsPath(alternative, searchPath) {
     }
     return false;
 }
+exports.containsPath = containsPath;
 function isStrictPrefixOfPath(prefix, other) {
     return (prefix.length < other.length &&
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(prefix, function (tokType, idx) {
+        utils_1.every(prefix, function (tokType, idx) {
             var otherTokType = other[idx];
             return (tokType === otherTokType ||
                 otherTokType.categoryMatchesMap[tokType.tokenTypeIdx]);
         }));
 }
+exports.isStrictPrefixOfPath = isStrictPrefixOfPath;
 function areTokenCategoriesNotUsed(lookAheadPaths) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(lookAheadPaths, function (singleAltPaths) {
-        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(singleAltPaths, function (singlePath) {
-            return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(singlePath, function (token) { return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(token.categoryMatches); });
+    return utils_1.every(lookAheadPaths, function (singleAltPaths) {
+        return utils_1.every(singleAltPaths, function (singlePath) {
+            return utils_1.every(singlePath, function (token) { return utils_1.isEmpty(token.categoryMatches); });
         });
     });
 }
+exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 //# sourceMappingURL=lookahead.js.map
 
 /***/ }),
-/* 35 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* unused harmony export AbstractNextPossibleTokensWalker */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NextAfterTokenWalker; });
-/* unused harmony export AbstractNextTerminalAfterProductionWalker */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return NextTerminalAfterManyWalker; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return NextTerminalAfterManySepWalker; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return NextTerminalAfterAtLeastOneWalker; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return NextTerminalAfterAtLeastOneSepWalker; });
-/* harmony export (immutable) */ __webpack_exports__["g"] = possiblePathsFrom;
-/* harmony export (immutable) */ __webpack_exports__["f"] = nextPossibleTokensAfter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(6);
-var __extends = (this && this.__extends) || (function () {
+
+/* istanbul ignore next */ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.nextPossibleTokensAfter = exports.possiblePathsFrom = exports.NextTerminalAfterAtLeastOneSepWalker = exports.NextTerminalAfterAtLeastOneWalker = exports.NextTerminalAfterManySepWalker = exports.NextTerminalAfterManyWalker = exports.AbstractNextTerminalAfterProductionWalker = exports.NextAfterTokenWalker = exports.AbstractNextPossibleTokensWalker = void 0;
+var rest_1 = __webpack_require__(42);
+var utils_1 = __webpack_require__(2);
+var first_1 = __webpack_require__(214);
+var gast_public_1 = __webpack_require__(8);
 var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
     __extends(AbstractNextPossibleTokensWalker, _super);
     function AbstractNextPossibleTokensWalker(topProd, path) {
-        var _this = _super.call(this) || this;
+        var _this = _super.call(this) /* istanbul ignore next */ || this;
         _this.topProd = topProd;
         _this.path = path;
         _this.possibleTokTypes = [];
@@ -32778,8 +32089,8 @@ var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
             throw Error("The path does not start with the walker's top Rule!");
         }
         // immutable for the win
-        this.ruleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.path.ruleStack).reverse(); // intelij bug requires assertion
-        this.occurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.path.occurrenceStack).reverse(); // intelij bug requires assertion
+        this.ruleStack = utils_1.cloneArr(this.path.ruleStack).reverse(); // intelij bug requires assertion
+        this.occurrenceStack = utils_1.cloneArr(this.path.occurrenceStack).reverse(); // intelij bug requires assertion
         // already verified that the first production is valid, we now seek the 2nd production
         this.ruleStack.pop();
         this.occurrenceStack.pop();
@@ -32805,7 +32116,7 @@ var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
     };
     AbstractNextPossibleTokensWalker.prototype.updateExpectedNext = function () {
         // need to consume the Terminal
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.ruleStack)) {
+        if (utils_1.isEmpty(this.ruleStack)) {
             // must reset nextProductionXXX to avoid walking down another Top Level production while what we are
             // really seeking is the last Terminal...
             this.nextProductionName = "";
@@ -32818,12 +32129,12 @@ var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
         }
     };
     return AbstractNextPossibleTokensWalker;
-}(__WEBPACK_IMPORTED_MODULE_0__rest__["a" /* RestWalker */]));
-
+}(rest_1.RestWalker));
+exports.AbstractNextPossibleTokensWalker = AbstractNextPossibleTokensWalker;
 var NextAfterTokenWalker = /** @class */ (function (_super) {
     __extends(NextAfterTokenWalker, _super);
     function NextAfterTokenWalker(topProd, path) {
-        var _this = _super.call(this, topProd, path) || this;
+        var _this = _super.call(this, topProd, path) /* istanbul ignore next */ || this;
         _this.path = path;
         _this.nextTerminalName = "";
         _this.nextTerminalOccurrence = 0;
@@ -32837,14 +32148,14 @@ var NextAfterTokenWalker = /** @class */ (function (_super) {
             terminal.idx === this.nextTerminalOccurrence &&
             !this.found) {
             var fullRest = currRest.concat(prevRest);
-            var restProd = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]({ definition: fullRest });
-            this.possibleTokTypes = Object(__WEBPACK_IMPORTED_MODULE_2__first__["a" /* first */])(restProd);
+            var restProd = new gast_public_1.Alternative({ definition: fullRest });
+            this.possibleTokTypes = first_1.first(restProd);
             this.found = true;
         }
     };
     return NextAfterTokenWalker;
 }(AbstractNextPossibleTokensWalker));
-
+exports.NextAfterTokenWalker = NextAfterTokenWalker;
 /**
  * This walker only "walks" a single "TOP" level in the Grammar Ast, this means
  * it never "follows" production refs
@@ -32852,7 +32163,7 @@ var NextAfterTokenWalker = /** @class */ (function (_super) {
 var AbstractNextTerminalAfterProductionWalker = /** @class */ (function (_super) {
     __extends(AbstractNextTerminalAfterProductionWalker, _super);
     function AbstractNextTerminalAfterProductionWalker(topRule, occurrence) {
-        var _this = _super.call(this) || this;
+        var _this = _super.call(this) /* istanbul ignore next */ || this;
         _this.topRule = topRule;
         _this.occurrence = occurrence;
         _this.result = {
@@ -32867,18 +32178,18 @@ var AbstractNextTerminalAfterProductionWalker = /** @class */ (function (_super)
         return this.result;
     };
     return AbstractNextTerminalAfterProductionWalker;
-}(__WEBPACK_IMPORTED_MODULE_0__rest__["a" /* RestWalker */]));
-
+}(rest_1.RestWalker));
+exports.AbstractNextTerminalAfterProductionWalker = AbstractNextTerminalAfterProductionWalker;
 var NextTerminalAfterManyWalker = /** @class */ (function (_super) {
     __extends(NextTerminalAfterManyWalker, _super);
     function NextTerminalAfterManyWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        return _super !== null && _super.apply(this, arguments) /* istanbul ignore next */ || this;
     }
     NextTerminalAfterManyWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
         if (manyProd.idx === this.occurrence) {
-            var firstAfterMany = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
+            var firstAfterMany = utils_1.first(currRest.concat(prevRest));
             this.result.isEndOfRule = firstAfterMany === undefined;
-            if (firstAfterMany instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+            if (firstAfterMany instanceof gast_public_1.Terminal) {
                 this.result.token = firstAfterMany.terminalType;
                 this.result.occurrence = firstAfterMany.idx;
             }
@@ -32889,17 +32200,17 @@ var NextTerminalAfterManyWalker = /** @class */ (function (_super) {
     };
     return NextTerminalAfterManyWalker;
 }(AbstractNextTerminalAfterProductionWalker));
-
+exports.NextTerminalAfterManyWalker = NextTerminalAfterManyWalker;
 var NextTerminalAfterManySepWalker = /** @class */ (function (_super) {
     __extends(NextTerminalAfterManySepWalker, _super);
     function NextTerminalAfterManySepWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        return _super !== null && _super.apply(this, arguments) /* istanbul ignore next */ || this;
     }
     NextTerminalAfterManySepWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
         if (manySepProd.idx === this.occurrence) {
-            var firstAfterManySep = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
+            var firstAfterManySep = utils_1.first(currRest.concat(prevRest));
             this.result.isEndOfRule = firstAfterManySep === undefined;
-            if (firstAfterManySep instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+            if (firstAfterManySep instanceof gast_public_1.Terminal) {
                 this.result.token = firstAfterManySep.terminalType;
                 this.result.occurrence = firstAfterManySep.idx;
             }
@@ -32910,17 +32221,17 @@ var NextTerminalAfterManySepWalker = /** @class */ (function (_super) {
     };
     return NextTerminalAfterManySepWalker;
 }(AbstractNextTerminalAfterProductionWalker));
-
+exports.NextTerminalAfterManySepWalker = NextTerminalAfterManySepWalker;
 var NextTerminalAfterAtLeastOneWalker = /** @class */ (function (_super) {
     __extends(NextTerminalAfterAtLeastOneWalker, _super);
     function NextTerminalAfterAtLeastOneWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        return _super !== null && _super.apply(this, arguments) /* istanbul ignore next */ || this;
     }
     NextTerminalAfterAtLeastOneWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
         if (atLeastOneProd.idx === this.occurrence) {
-            var firstAfterAtLeastOne = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
+            var firstAfterAtLeastOne = utils_1.first(currRest.concat(prevRest));
             this.result.isEndOfRule = firstAfterAtLeastOne === undefined;
-            if (firstAfterAtLeastOne instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+            if (firstAfterAtLeastOne instanceof gast_public_1.Terminal) {
                 this.result.token = firstAfterAtLeastOne.terminalType;
                 this.result.occurrence = firstAfterAtLeastOne.idx;
             }
@@ -32931,21 +32242,19 @@ var NextTerminalAfterAtLeastOneWalker = /** @class */ (function (_super) {
     };
     return NextTerminalAfterAtLeastOneWalker;
 }(AbstractNextTerminalAfterProductionWalker));
-
+exports.NextTerminalAfterAtLeastOneWalker = NextTerminalAfterAtLeastOneWalker;
 // TODO: reduce code duplication in the AfterWalkers
 var NextTerminalAfterAtLeastOneSepWalker = /** @class */ (function (_super) {
     __extends(NextTerminalAfterAtLeastOneSepWalker, _super);
     function NextTerminalAfterAtLeastOneSepWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        return _super !== null && _super.apply(this, arguments) /* istanbul ignore next */ || this;
     }
     NextTerminalAfterAtLeastOneSepWalker.prototype.walkAtLeastOneSep = function (atleastOneSepProd, currRest, prevRest) {
         if (atleastOneSepProd.idx === this.occurrence) {
-            var firstAfterfirstAfterAtLeastOneSep = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
-            this.result.isEndOfRule =
-                firstAfterfirstAfterAtLeastOneSep === undefined;
-            if (firstAfterfirstAfterAtLeastOneSep instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
-                this.result.token =
-                    firstAfterfirstAfterAtLeastOneSep.terminalType;
+            var firstAfterfirstAfterAtLeastOneSep = utils_1.first(currRest.concat(prevRest));
+            this.result.isEndOfRule = firstAfterfirstAfterAtLeastOneSep === undefined;
+            if (firstAfterfirstAfterAtLeastOneSep instanceof gast_public_1.Terminal) {
+                this.result.token = firstAfterfirstAfterAtLeastOneSep.terminalType;
                 this.result.occurrence = firstAfterfirstAfterAtLeastOneSep.idx;
             }
         }
@@ -32955,16 +32264,16 @@ var NextTerminalAfterAtLeastOneSepWalker = /** @class */ (function (_super) {
     };
     return NextTerminalAfterAtLeastOneSepWalker;
 }(AbstractNextTerminalAfterProductionWalker));
-
+exports.NextTerminalAfterAtLeastOneSepWalker = NextTerminalAfterAtLeastOneSepWalker;
 function possiblePathsFrom(targetDef, maxLength, currPath) {
     if (currPath === void 0) { currPath = []; }
     // avoid side effects
-    currPath = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currPath);
+    currPath = utils_1.cloneArr(currPath);
     var result = [];
     var i = 0;
     // TODO: avoid inner funcs
     function remainingPathWith(nextDef) {
-        return nextDef.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(targetDef, i + 1));
+        return nextDef.concat(utils_1.drop(targetDef, i + 1));
     }
     // TODO: avoid inner funcs
     function getAlternativesForProd(definition) {
@@ -32981,59 +32290,60 @@ function possiblePathsFrom(targetDef, maxLength, currPath) {
     while (currPath.length < maxLength && i < targetDef.length) {
         var prod = targetDef[i];
         /* istanbul ignore else */
-        if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]) {
+        if (prod instanceof gast_public_1.Alternative) {
             return getAlternativesForProd(prod.definition);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["d" /* NonTerminal */]) {
+        else if (prod instanceof gast_public_1.NonTerminal) {
             return getAlternativesForProd(prod.definition);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["e" /* Option */]) {
+        else if (prod instanceof gast_public_1.Option) {
             result = getAlternativesForProd(prod.definition);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["g" /* RepetitionMandatory */]) {
+        else if (prod instanceof gast_public_1.RepetitionMandatory) {
             var newDef = prod.definition.concat([
-                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                new gast_public_1.Repetition({
                     definition: prod.definition
                 })
             ]);
             return getAlternativesForProd(newDef);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+        else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
             var newDef = [
-                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]({ definition: prod.definition }),
-                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
-                    definition: [
-                        new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({ terminalType: prod.separator })
-                    ].concat(prod.definition)
+                new gast_public_1.Alternative({ definition: prod.definition }),
+                new gast_public_1.Repetition({
+                    definition: [new gast_public_1.Terminal({ terminalType: prod.separator })].concat(prod.definition)
                 })
             ];
             return getAlternativesForProd(newDef);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+        else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
             var newDef = prod.definition.concat([
-                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
-                    definition: [
-                        new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({ terminalType: prod.separator })
-                    ].concat(prod.definition)
+                new gast_public_1.Repetition({
+                    definition: [new gast_public_1.Terminal({ terminalType: prod.separator })].concat(prod.definition)
                 })
             ]);
             result = getAlternativesForProd(newDef);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]) {
+        else if (prod instanceof gast_public_1.Repetition) {
             var newDef = prod.definition.concat([
-                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                new gast_public_1.Repetition({
                     definition: prod.definition
                 })
             ]);
             result = getAlternativesForProd(newDef);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["b" /* Alternation */]) {
-            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(prod.definition, function (currAlt) {
-                result = getAlternativesForProd(currAlt.definition);
+        else if (prod instanceof gast_public_1.Alternation) {
+            utils_1.forEach(prod.definition, function (currAlt) {
+                // TODO: this is a limited check for empty alternatives
+                //   It would prevent a common case of infinite loops during parser initialization.
+                //   However **in-directly** empty alternatives may still cause issues.
+                if (utils_1.isEmpty(currAlt.definition) === false) {
+                    result = getAlternativesForProd(currAlt.definition);
+                }
             });
             return result;
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+        else if (prod instanceof gast_public_1.Terminal) {
             currPath.push(prod.terminalType);
         }
         else {
@@ -33043,10 +32353,11 @@ function possiblePathsFrom(targetDef, maxLength, currPath) {
     }
     result.push({
         partialPath: currPath,
-        suffixDef: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(targetDef, i)
+        suffixDef: utils_1.drop(targetDef, i)
     });
     return result;
 }
+exports.possiblePathsFrom = possiblePathsFrom;
 function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhead) {
     var EXIT_NON_TERMINAL = "EXIT_NONE_TERMINAL";
     // to avoid creating a new Array each time.
@@ -33063,12 +32374,12 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
         ruleStack: [],
         occurrenceStack: []
     });
-    while (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(possiblePaths)) {
+    while (!utils_1.isEmpty(possiblePaths)) {
         var currPath = possiblePaths.pop();
         // skip alternatives if no more results can be found (assuming deterministic grammar with fixed lookahead)
         if (currPath === EXIT_ALTERNATIVE) {
             if (foundCompletePath &&
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["H" /* last */])(possiblePaths).idx <= minimalAlternativesIndex) {
+                utils_1.last(possiblePaths).idx <= minimalAlternativesIndex) {
                 // remove irrelevant alternative
                 possiblePaths.pop();
             }
@@ -33079,7 +32390,7 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
         var currRuleStack = currPath.ruleStack;
         var currOccurrenceStack = currPath.occurrenceStack;
         // For Example: an empty path could exist in a valid grammar in the case of an EMPTY_ALT
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(currDef)) {
+        if (utils_1.isEmpty(currDef)) {
             continue;
         }
         var prod = currDef[0];
@@ -33087,13 +32398,13 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
         if (prod === EXIT_NON_TERMINAL) {
             var nextPath = {
                 idx: currIdx,
-                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
-                ruleStack: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(currRuleStack),
-                occurrenceStack: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(currOccurrenceStack)
+                def: utils_1.drop(currDef),
+                ruleStack: utils_1.dropRight(currRuleStack),
+                occurrenceStack: utils_1.dropRight(currOccurrenceStack)
             };
             possiblePaths.push(nextPath);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+        else if (prod instanceof gast_public_1.Terminal) {
             /* istanbul ignore else */
             if (currIdx < tokenVectorLength - 1) {
                 var nextIdx = currIdx + 1;
@@ -33101,7 +32412,7 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
                 if (tokMatcher(actualToken, prod.terminalType)) {
                     var nextPath = {
                         idx: nextIdx,
-                        def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                        def: utils_1.drop(currDef),
                         ruleStack: currRuleStack,
                         occurrenceStack: currOccurrenceStack
                     };
@@ -33123,24 +32434,24 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
                 throw Error("non exhaustive match");
             }
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["d" /* NonTerminal */]) {
-            var newRuleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currRuleStack);
+        else if (prod instanceof gast_public_1.NonTerminal) {
+            var newRuleStack = utils_1.cloneArr(currRuleStack);
             newRuleStack.push(prod.nonTerminalName);
-            var newOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currOccurrenceStack);
+            var newOccurrenceStack = utils_1.cloneArr(currOccurrenceStack);
             newOccurrenceStack.push(prod.idx);
             var nextPath = {
                 idx: currIdx,
-                def: prod.definition.concat(EXIT_NON_TERMINAL_ARR, Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                def: prod.definition.concat(EXIT_NON_TERMINAL_ARR, utils_1.drop(currDef)),
                 ruleStack: newRuleStack,
                 occurrenceStack: newOccurrenceStack
             };
             possiblePaths.push(nextPath);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["e" /* Option */]) {
+        else if (prod instanceof gast_public_1.Option) {
             // the order of alternatives is meaningful, FILO (Last path will be traversed first).
             var nextPathWithout = {
                 idx: currIdx,
-                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                def: utils_1.drop(currDef),
                 ruleStack: currRuleStack,
                 occurrenceStack: currOccurrenceStack
             };
@@ -33149,19 +32460,19 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
             possiblePaths.push(EXIT_ALTERNATIVE);
             var nextPathWith = {
                 idx: currIdx,
-                def: prod.definition.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                def: prod.definition.concat(utils_1.drop(currDef)),
                 ruleStack: currRuleStack,
                 occurrenceStack: currOccurrenceStack
             };
             possiblePaths.push(nextPathWith);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["g" /* RepetitionMandatory */]) {
+        else if (prod instanceof gast_public_1.RepetitionMandatory) {
             // TODO:(THE NEW operators here take a while...) (convert once?)
-            var secondIteration = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+            var secondIteration = new gast_public_1.Repetition({
                 definition: prod.definition,
                 idx: prod.idx
             });
-            var nextDef = prod.definition.concat([secondIteration], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextDef = prod.definition.concat([secondIteration], utils_1.drop(currDef));
             var nextPath = {
                 idx: currIdx,
                 def: nextDef,
@@ -33170,16 +32481,16 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
             };
             possiblePaths.push(nextPath);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+        else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
             // TODO:(THE NEW operators here take a while...) (convert once?)
-            var separatorGast = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({
+            var separatorGast = new gast_public_1.Terminal({
                 terminalType: prod.separator
             });
-            var secondIteration = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+            var secondIteration = new gast_public_1.Repetition({
                 definition: [separatorGast].concat(prod.definition),
                 idx: prod.idx
             });
-            var nextDef = prod.definition.concat([secondIteration], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextDef = prod.definition.concat([secondIteration], utils_1.drop(currDef));
             var nextPath = {
                 idx: currIdx,
                 def: nextDef,
@@ -33188,25 +32499,25 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
             };
             possiblePaths.push(nextPath);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+        else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
             // the order of alternatives is meaningful, FILO (Last path will be traversed first).
             var nextPathWithout = {
                 idx: currIdx,
-                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                def: utils_1.drop(currDef),
                 ruleStack: currRuleStack,
                 occurrenceStack: currOccurrenceStack
             };
             possiblePaths.push(nextPathWithout);
             // required marker to avoid backtracking paths whose higher priority alternatives already matched
             possiblePaths.push(EXIT_ALTERNATIVE);
-            var separatorGast = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({
+            var separatorGast = new gast_public_1.Terminal({
                 terminalType: prod.separator
             });
-            var nthRepetition = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+            var nthRepetition = new gast_public_1.Repetition({
                 definition: [separatorGast].concat(prod.definition),
                 idx: prod.idx
             });
-            var nextDef = prod.definition.concat([nthRepetition], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextDef = prod.definition.concat([nthRepetition], utils_1.drop(currDef));
             var nextPathWith = {
                 idx: currIdx,
                 def: nextDef,
@@ -33215,11 +32526,11 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
             };
             possiblePaths.push(nextPathWith);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]) {
+        else if (prod instanceof gast_public_1.Repetition) {
             // the order of alternatives is meaningful, FILO (Last path will be traversed first).
             var nextPathWithout = {
                 idx: currIdx,
-                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                def: utils_1.drop(currDef),
                 ruleStack: currRuleStack,
                 occurrenceStack: currOccurrenceStack
             };
@@ -33227,11 +32538,11 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
             // required marker to avoid backtracking paths whose higher priority alternatives already matched
             possiblePaths.push(EXIT_ALTERNATIVE);
             // TODO: an empty repetition will cause infinite loops here, will the parser detect this in selfAnalysis?
-            var nthRepetition = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+            var nthRepetition = new gast_public_1.Repetition({
                 definition: prod.definition,
                 idx: prod.idx
             });
-            var nextDef = prod.definition.concat([nthRepetition], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextDef = prod.definition.concat([nthRepetition], utils_1.drop(currDef));
             var nextPathWith = {
                 idx: currIdx,
                 def: nextDef,
@@ -33240,13 +32551,13 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
             };
             possiblePaths.push(nextPathWith);
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["b" /* Alternation */]) {
+        else if (prod instanceof gast_public_1.Alternation) {
             // the order of alternatives is meaningful, FILO (Last path will be traversed first).
             for (var i = prod.definition.length - 1; i >= 0; i--) {
                 var currAlt = prod.definition[i];
                 var currAltPath = {
                     idx: currIdx,
-                    def: currAlt.definition.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                    def: currAlt.definition.concat(utils_1.drop(currDef)),
                     ruleStack: currRuleStack,
                     occurrenceStack: currOccurrenceStack
                 };
@@ -33254,15 +32565,15 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
                 possiblePaths.push(EXIT_ALTERNATIVE);
             }
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]) {
+        else if (prod instanceof gast_public_1.Alternative) {
             possiblePaths.push({
                 idx: currIdx,
-                def: prod.definition.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                def: prod.definition.concat(utils_1.drop(currDef)),
                 ruleStack: currRuleStack,
                 occurrenceStack: currOccurrenceStack
             });
         }
-        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["j" /* Rule */]) {
+        else if (prod instanceof gast_public_1.Rule) {
             // last because we should only encounter at most a single one of these per invocation.
             possiblePaths.push(expandTopLevelRule(prod, currIdx, currRuleStack, currOccurrenceStack));
         }
@@ -33272,10 +32583,11 @@ function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhe
     }
     return result;
 }
+exports.nextPossibleTokensAfter = nextPossibleTokensAfter;
 function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack) {
-    var newRuleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currRuleStack);
+    var newRuleStack = utils_1.cloneArr(currRuleStack);
     newRuleStack.push(topRule.name);
-    var newCurrOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currOccurrenceStack);
+    var newCurrOccurrenceStack = utils_1.cloneArr(currOccurrenceStack);
     // top rule is always assumed to have been called with occurrence index 1
     newCurrOccurrenceStack.push(1);
     return {
@@ -33288,7 +32600,7 @@ function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack
 //# sourceMappingURL=interpreter.js.map
 
 /***/ }),
-/* 36 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33342,7 +32654,7 @@ logger.deprecate = function (fn, msg) {
 };
 
 /***/ }),
-/* 37 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33409,7 +32721,7 @@ var DestroyedChartError = exports.DestroyedChartError = function (_Error) {
 }(Error);
 
 /***/ }),
-/* 38 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33728,7 +33040,7 @@ function bubbleMixin(_chart) {
 }
 
 /***/ }),
-/* 39 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33739,7 +33051,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = stackMixin;
 
-var _binningHelpers = __webpack_require__(22);
+var _binningHelpers = __webpack_require__(21);
 
 var _utils = __webpack_require__(4);
 
@@ -33749,7 +33061,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _core = __webpack_require__(3);
 
-var _multipleKeyAccessors = __webpack_require__(183);
+var _multipleKeyAccessors = __webpack_require__(181);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34142,7 +33454,7 @@ function stackMixin(_chart) {
 }
 
 /***/ }),
-/* 40 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34165,9 +33477,9 @@ var _moment2 = _interopRequireDefault(_moment);
 
 var _utils = __webpack_require__(4);
 
-var _heatmap = __webpack_require__(187);
+var _heatmap = __webpack_require__(185);
 
-var _binningHelpers = __webpack_require__(22);
+var _binningHelpers = __webpack_require__(21);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34445,7 +33757,7 @@ function lockAxisMixin(chart) {
 }
 
 /***/ }),
-/* 41 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34463,7 +33775,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _lodash = __webpack_require__(23);
+var _lodash = __webpack_require__(22);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -34471,7 +33783,7 @@ var _coreAsync = __webpack_require__(5);
 
 var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(189);
+var _rasterDrawMixin = __webpack_require__(187);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -35369,7 +34681,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 }
 
 /***/ }),
-/* 42 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36109,7 +35421,7 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 43 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36130,15 +35442,15 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 44 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RestWalker; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(6);
 
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RestWalker = void 0;
+var utils_1 = __webpack_require__(2);
+var gast_public_1 = __webpack_require__(8);
 /**
  *  A Grammar Walker that computes the "remaining" grammar "after" a productions in the grammar.
  */
@@ -36148,34 +35460,34 @@ var RestWalker = /** @class */ (function () {
     RestWalker.prototype.walk = function (prod, prevRest) {
         var _this = this;
         if (prevRest === void 0) { prevRest = []; }
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(prod.definition, function (subProd, index) {
-            var currRest = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["m" /* drop */])(prod.definition, index + 1);
+        utils_1.forEach(prod.definition, function (subProd, index) {
+            var currRest = utils_1.drop(prod.definition, index + 1);
             /* istanbul ignore else */
-            if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["d" /* NonTerminal */]) {
+            if (subProd instanceof gast_public_1.NonTerminal) {
                 _this.walkProdRef(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["k" /* Terminal */]) {
+            else if (subProd instanceof gast_public_1.Terminal) {
                 _this.walkTerminal(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["c" /* Flat */]) {
+            else if (subProd instanceof gast_public_1.Alternative) {
                 _this.walkFlat(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]) {
+            else if (subProd instanceof gast_public_1.Option) {
                 _this.walkOption(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["g" /* RepetitionMandatory */]) {
+            else if (subProd instanceof gast_public_1.RepetitionMandatory) {
                 _this.walkAtLeastOne(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+            else if (subProd instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
                 _this.walkAtLeastOneSep(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+            else if (subProd instanceof gast_public_1.RepetitionWithSeparator) {
                 _this.walkManySep(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["f" /* Repetition */]) {
+            else if (subProd instanceof gast_public_1.Repetition) {
                 _this.walkMany(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["b" /* Alternation */]) {
+            else if (subProd instanceof gast_public_1.Alternation) {
                 _this.walkOr(subProd, currRest, prevRest);
             }
             else {
@@ -36198,7 +35510,7 @@ var RestWalker = /** @class */ (function () {
     RestWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
         // ABC(DE)+F => after the (DE)+ the rest is (DE)?F
         var fullAtLeastOneRest = [
-            new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]({ definition: atLeastOneProd.definition })
+            new gast_public_1.Option({ definition: atLeastOneProd.definition })
         ].concat(currRest, prevRest);
         this.walk(atLeastOneProd, fullAtLeastOneRest);
     };
@@ -36210,7 +35522,7 @@ var RestWalker = /** @class */ (function () {
     RestWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
         // ABC(DE)*F => after the (DE)* the rest is (DE)?F
         var fullManyRest = [
-            new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]({ definition: manyProd.definition })
+            new gast_public_1.Option({ definition: manyProd.definition })
         ].concat(currRest, prevRest);
         this.walk(manyProd, fullManyRest);
     };
@@ -36224,23 +35536,21 @@ var RestWalker = /** @class */ (function () {
         // ABC(D|E|F)G => when finding the (D|E|F) the rest is G
         var fullOrRest = currRest.concat(prevRest);
         // walk all different alternatives
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(orProd.definition, function (alt) {
+        utils_1.forEach(orProd.definition, function (alt) {
             // wrapping each alternative in a single definition wrapper
             // to avoid errors in computing the rest of that alternative in the invocation to computeInProdFollows
             // (otherwise for OR([alt1,alt2]) alt2 will be considered in 'rest' of alt1
-            var prodWrapper = new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["c" /* Flat */]({ definition: [alt] });
+            var prodWrapper = new gast_public_1.Alternative({ definition: [alt] });
             _this.walk(prodWrapper, fullOrRest);
         });
     };
     return RestWalker;
 }());
-
+exports.RestWalker = RestWalker;
 function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
     var repSepRest = [
-        new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]({
-            definition: [
-                new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["k" /* Terminal */]({ terminalType: repSepProd.separator })
-            ].concat(repSepProd.definition)
+        new gast_public_1.Option({
+            definition: [new gast_public_1.Terminal({ terminalType: repSepProd.separator })].concat(repSepProd.definition)
         })
     ];
     var fullRepSepRest = repSepRest.concat(currRest, prevRest);
@@ -36249,7 +35559,7 @@ function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
 //# sourceMappingURL=rest.js.map
 
 /***/ }),
-/* 45 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;;(function(root, factory) {
@@ -36303,6 +35613,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             var flags = {
                 type: "Flags",
+                loc: { begin: this.idx, end: input.length },
                 global: false,
                 ignoreCase: false,
                 multiLine: false,
@@ -36335,11 +35646,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                     "Redundant input: " + this.input.substring(this.idx)
                 )
             }
-            return { type: "Pattern", flags: flags, value: value }
+            return {
+                type: "Pattern",
+                flags: flags,
+                value: value,
+                loc: this.loc(0)
+            }
         }
 
         RegExpParser.prototype.disjunction = function() {
             var alts = []
+            var begin = this.idx
+
             alts.push(this.alternative())
 
             while (this.peekChar() === "|") {
@@ -36347,17 +35665,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 alts.push(this.alternative())
             }
 
-            return { type: "Disjunction", value: alts }
+            return { type: "Disjunction", value: alts, loc: this.loc(begin) }
         }
 
         RegExpParser.prototype.alternative = function() {
             var terms = []
+            var begin = this.idx
 
             while (this.isTerm()) {
                 terms.push(this.term())
             }
 
-            return { type: "Alternative", value: terms }
+            return { type: "Alternative", value: terms, loc: this.loc(begin) }
         }
 
         RegExpParser.prototype.term = function() {
@@ -36369,18 +35688,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         RegExpParser.prototype.assertion = function() {
+            var begin = this.idx
             switch (this.popChar()) {
                 case "^":
-                    return { type: "StartAnchor" }
+                    return {
+                        type: "StartAnchor",
+                        loc: this.loc(begin)
+                    }
                 case "$":
-                    return { type: "EndAnchor" }
+                    return { type: "EndAnchor", loc: this.loc(begin) }
                 // '\b' or '\B'
                 case "\\":
                     switch (this.popChar()) {
                         case "b":
-                            return { type: "WordBoundary" }
+                            return {
+                                type: "WordBoundary",
+                                loc: this.loc(begin)
+                            }
                         case "B":
-                            return { type: "NonWordBoundary" }
+                            return {
+                                type: "NonWordBoundary",
+                                loc: this.loc(begin)
+                            }
                     }
                     // istanbul ignore next
                     throw Error("Invalid Assertion Escape")
@@ -36403,7 +35732,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
                     this.consumeChar(")")
 
-                    return { type: type, value: disjunction }
+                    return {
+                        type: type,
+                        value: disjunction,
+                        loc: this.loc(begin)
+                    }
             }
             // istanbul ignore next
             ASSERT_NEVER_REACH_HERE()
@@ -36411,6 +35744,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         RegExpParser.prototype.quantifier = function(isBacktracking) {
             var range
+            var begin = this.idx
             switch (this.popChar()) {
                 case "*":
                     range = {
@@ -36481,11 +35815,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }
 
             range.type = "Quantifier"
+            range.loc = this.loc(begin)
             return range
         }
 
         RegExpParser.prototype.atom = function() {
             var atom
+            var begin = this.idx
             switch (this.peekChar()) {
                 case ".":
                     atom = this.dotAll()
@@ -36506,6 +35842,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }
 
             ASSERT_EXISTS(atom)
+
+            atom.loc = this.loc(begin)
 
             if (this.isQuantifier()) {
                 atom.quantifier = this.quantifier()
@@ -37034,6 +36372,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             this.idx++
         }
 
+        RegExpParser.prototype.loc = function(begin) {
+            return { begin: begin, end: this.idx }
+        }
+
         // consts and utilities
         var hexDigitPattern = /[0-9a-fA-F]/
         var decimalPattern = /[0-9]/
@@ -37223,24 +36565,23 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return {
             RegExpParser: RegExpParser,
             BaseRegExpVisitor: BaseRegExpVisitor,
-            VERSION: "0.4.0"
+            VERSION: "0.5.0"
         }
     }
 )
 
 
 /***/ }),
-/* 46 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = getRegExpAst;
-/* harmony export (immutable) */ __webpack_exports__["a"] = clearRegExpParserCache;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.clearRegExpParserCache = exports.getRegExpAst = void 0;
+var regexp_to_ast_1 = __webpack_require__(43);
 var regExpAstCache = {};
-var regExpParser = new __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["RegExpParser"]();
+var regExpParser = new regexp_to_ast_1.RegExpParser();
 function getRegExpAst(regExp) {
     var regExpStr = regExp.toString();
     if (regExpAstCache.hasOwnProperty(regExpStr)) {
@@ -37252,216 +36593,55 @@ function getRegExpAst(regExp) {
         return regExpAst;
     }
 }
+exports.getRegExpAst = getRegExpAst;
 function clearRegExpParserCache() {
     regExpAstCache = {};
 }
+exports.clearRegExpParserCache = clearRegExpParserCache;
 //# sourceMappingURL=reg_exp_parser.js.map
 
 /***/ }),
-/* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["f"] = setNodeLocationOnlyOffset;
-/* harmony export (immutable) */ __webpack_exports__["e"] = setNodeLocationFull;
-/* harmony export (immutable) */ __webpack_exports__["c"] = addTerminalToCst;
-/* harmony export (immutable) */ __webpack_exports__["b"] = addNoneTerminalToCst;
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NamedDSLMethodsCollectorVisitor; });
-/* harmony export (immutable) */ __webpack_exports__["d"] = expandAllNestedRuleNames;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__ = __webpack_require__(20);
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 
-
-
-
-/**
- * This nodeLocation tracking is not efficient and should only be used
- * when error recovery is enabled or the Token Vector contains virtual Tokens
- * (e.g, Python Indent/Outdent)
- * As it executes the calculation for every single terminal/nonTerminal
- * and does not rely on the fact the token vector is **sorted**
- */
-function setNodeLocationOnlyOffset(currNodeLocation, newLocationInfo) {
-    // First (valid) update for this cst node
-    if (isNaN(currNodeLocation.startOffset) === true) {
-        // assumption1: Token location information is either NaN or a valid number
-        // assumption2: Token location information is fully valid if it exist
-        // (both start/end offsets exist and are numbers).
-        currNodeLocation.startOffset = newLocationInfo.startOffset;
-        currNodeLocation.endOffset = newLocationInfo.endOffset;
-    }
-    // Once the startOffset has been updated with a valid number it should never receive
-    // any farther updates as the Token vector is sorted.
-    // We still have to check this this condition for every new possible location info
-    // because with error recovery enabled we may encounter invalid tokens (NaN location props)
-    else if (currNodeLocation.endOffset < newLocationInfo.endOffset === true) {
-        currNodeLocation.endOffset = newLocationInfo.endOffset;
-    }
+// Lookahead keys are 32Bit integers in the form
+// TTTTTTTT-ZZZZZZZZZZZZ-YYYY-XXXXXXXX
+// XXXX -> Occurrence Index bitmap.
+// YYYY -> DSL Method Type bitmap.
+// ZZZZZZZZZZZZZZZ -> Rule short Index bitmap.
+// TTTTTTTTT -> alternation alternative index bitmap
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getKeyForAutomaticLookahead = exports.AT_LEAST_ONE_SEP_IDX = exports.MANY_SEP_IDX = exports.AT_LEAST_ONE_IDX = exports.MANY_IDX = exports.OPTION_IDX = exports.OR_IDX = exports.BITS_FOR_ALT_IDX = exports.BITS_FOR_RULE_IDX = exports.BITS_FOR_OCCURRENCE_IDX = exports.BITS_FOR_METHOD_TYPE = void 0;
+exports.BITS_FOR_METHOD_TYPE = 4;
+exports.BITS_FOR_OCCURRENCE_IDX = 8;
+exports.BITS_FOR_RULE_IDX = 12;
+// TODO: validation, this means that there may at most 2^8 --> 256 alternatives for an alternation.
+exports.BITS_FOR_ALT_IDX = 8;
+// short string used as part of mapping keys.
+// being short improves the performance when composing KEYS for maps out of these
+// The 5 - 8 bits (16 possible values, are reserved for the DSL method indices)
+/* tslint:disable */
+exports.OR_IDX = 1 << exports.BITS_FOR_OCCURRENCE_IDX;
+exports.OPTION_IDX = 2 << exports.BITS_FOR_OCCURRENCE_IDX;
+exports.MANY_IDX = 3 << exports.BITS_FOR_OCCURRENCE_IDX;
+exports.AT_LEAST_ONE_IDX = 4 << exports.BITS_FOR_OCCURRENCE_IDX;
+exports.MANY_SEP_IDX = 5 << exports.BITS_FOR_OCCURRENCE_IDX;
+exports.AT_LEAST_ONE_SEP_IDX = 6 << exports.BITS_FOR_OCCURRENCE_IDX;
+/* tslint:enable */
+// this actually returns a number, but it is always used as a string (object prop key)
+function getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) {
+    /* tslint:disable */
+    return occurrence | dslMethodIdx | ruleIdx;
+    /* tslint:enable */
 }
-/**
- * This nodeLocation tracking is not efficient and should only be used
- * when error recovery is enabled or the Token Vector contains virtual Tokens
- * (e.g, Python Indent/Outdent)
- * As it executes the calculation for every single terminal/nonTerminal
- * and does not rely on the fact the token vector is **sorted**
- */
-function setNodeLocationFull(currNodeLocation, newLocationInfo) {
-    // First (valid) update for this cst node
-    if (isNaN(currNodeLocation.startOffset) === true) {
-        // assumption1: Token location information is either NaN or a valid number
-        // assumption2: Token location information is fully valid if it exist
-        // (all start/end props exist and are numbers).
-        currNodeLocation.startOffset = newLocationInfo.startOffset;
-        currNodeLocation.startColumn = newLocationInfo.startColumn;
-        currNodeLocation.startLine = newLocationInfo.startLine;
-        currNodeLocation.endOffset = newLocationInfo.endOffset;
-        currNodeLocation.endColumn = newLocationInfo.endColumn;
-        currNodeLocation.endLine = newLocationInfo.endLine;
-    }
-    // Once the start props has been updated with a valid number it should never receive
-    // any farther updates as the Token vector is sorted.
-    // We still have to check this this condition for every new possible location info
-    // because with error recovery enabled we may encounter invalid tokens (NaN location props)
-    else if (currNodeLocation.endOffset < newLocationInfo.endOffset === true) {
-        currNodeLocation.endOffset = newLocationInfo.endOffset;
-        currNodeLocation.endColumn = newLocationInfo.endColumn;
-        currNodeLocation.endLine = newLocationInfo.endLine;
-    }
-}
-function addTerminalToCst(node, token, tokenTypeName) {
-    if (node.children[tokenTypeName] === undefined) {
-        node.children[tokenTypeName] = [token];
-    }
-    else {
-        node.children[tokenTypeName].push(token);
-    }
-}
-function addNoneTerminalToCst(node, ruleName, ruleResult) {
-    if (node.children[ruleName] === undefined) {
-        node.children[ruleName] = [ruleResult];
-    }
-    else {
-        node.children[ruleName].push(ruleResult);
-    }
-}
-var NamedDSLMethodsCollectorVisitor = /** @class */ (function (_super) {
-    __extends(NamedDSLMethodsCollectorVisitor, _super);
-    function NamedDSLMethodsCollectorVisitor(ruleIdx) {
-        var _this = _super.call(this) || this;
-        _this.result = [];
-        _this.ruleIdx = ruleIdx;
-        return _this;
-    }
-    NamedDSLMethodsCollectorVisitor.prototype.collectNamedDSLMethod = function (node, newNodeConstructor, methodIdx) {
-        // TODO: better hack to copy what we need here...
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(node.name)) {
-            // copy without name so this will indeed be processed later.
-            var nameLessNode 
-            /* istanbul ignore else */
-            = void 0;
-            /* istanbul ignore else */
-            if (node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["e" /* Option */] ||
-                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["f" /* Repetition */] ||
-                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["g" /* RepetitionMandatory */] ||
-                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["b" /* Alternation */]) {
-                nameLessNode = new newNodeConstructor({
-                    definition: node.definition,
-                    idx: node.idx
-                });
-            }
-            else if (node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */] ||
-                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["i" /* RepetitionWithSeparator */]) {
-                nameLessNode = new newNodeConstructor({
-                    definition: node.definition,
-                    idx: node.idx,
-                    separator: node.separator
-                });
-            }
-            else {
-                throw Error("non exhaustive match");
-            }
-            var def = [nameLessNode];
-            var key = Object(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(this.ruleIdx, methodIdx, node.idx);
-            this.result.push({ def: def, key: key, name: node.name, orgProd: node });
-        }
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitOption = function (node) {
-        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["e" /* Option */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["g" /* OPTION_IDX */]);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetition = function (node) {
-        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["f" /* Repetition */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */]);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (node) {
-        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["g" /* RepetitionMandatory */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */]);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
-        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */]);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (node) {
-        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["i" /* RepetitionWithSeparator */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */]);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitAlternation = function (node) {
-        var _this = this;
-        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["b" /* Alternation */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */]);
-        var hasMoreThanOneAlternative = node.definition.length > 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(node.definition, function (currFlatAlt, altIdx) {
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(currFlatAlt.name)) {
-                var def = currFlatAlt.definition;
-                if (hasMoreThanOneAlternative) {
-                    def = [new __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["e" /* Option */]({ definition: currFlatAlt.definition })];
-                }
-                else {
-                    // mandatory
-                    def = currFlatAlt.definition;
-                }
-                var key = Object(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["i" /* getKeyForAltIndex */])(_this.ruleIdx, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], node.idx, altIdx);
-                _this.result.push({
-                    def: def,
-                    key: key,
-                    name: currFlatAlt.name,
-                    orgProd: currFlatAlt
-                });
-            }
-        });
-    };
-    return NamedDSLMethodsCollectorVisitor;
-}(__WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__["a" /* GAstVisitor */]));
-
-function expandAllNestedRuleNames(topRules, fullToShortName) {
-    var result = {
-        allRuleNames: []
-    };
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topRules, function (currTopRule) {
-        var currTopRuleShortName = fullToShortName[currTopRule.name];
-        result.allRuleNames.push(currTopRule.name);
-        var namedCollectorVisitor = new NamedDSLMethodsCollectorVisitor(currTopRuleShortName);
-        currTopRule.accept(namedCollectorVisitor);
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(namedCollectorVisitor.result, function (_a) {
-            var def = _a.def, key = _a.key, name = _a.name;
-            result.allRuleNames.push(currTopRule.name + name);
-        });
-    });
-    return result;
-}
-//# sourceMappingURL=cst.js.map
+exports.getKeyForAutomaticLookahead = getKeyForAutomaticLookahead;
+var BITS_START_FOR_ALT_IDX = 32 - exports.BITS_FOR_ALT_IDX;
+//# sourceMappingURL=keys.js.map
 
 /***/ }),
-/* 48 */
+/* 46 */
 /***/ (function(module, exports) {
 
 var g;
@@ -37488,7 +36668,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 49 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37537,7 +36717,7 @@ function escapeQuotes(string) {
 }
 
 /***/ }),
-/* 50 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37560,7 +36740,7 @@ function parseFilter(sql, transform) {
 }
 
 /***/ }),
-/* 51 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37607,7 +36787,7 @@ function parseSource(transforms) {
 }
 
 /***/ }),
-/* 52 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37663,7 +36843,7 @@ module.exports = invariant;
 
 
 /***/ }),
-/* 53 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -37691,7 +36871,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 54 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37768,7 +36948,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 55 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37907,7 +37087,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 56 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37970,7 +37150,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 57 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38033,7 +37213,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 58 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38159,7 +37339,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 59 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38222,7 +37402,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 60 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38330,7 +37510,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 61 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38393,7 +37573,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 62 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38502,7 +37682,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 63 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38638,7 +37818,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 64 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38732,7 +37912,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 65 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38794,7 +37974,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 66 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38917,7 +38097,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 67 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39040,7 +38220,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 68 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39152,7 +38332,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 69 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39307,7 +38487,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 70 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39399,7 +38579,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 71 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39575,7 +38755,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 72 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39642,7 +38822,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 73 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39726,7 +38906,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 74 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39790,7 +38970,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 75 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39870,7 +39050,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 76 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39950,7 +39130,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 77 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40030,7 +39210,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40133,7 +39313,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 79 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40237,7 +39417,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 80 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40308,7 +39488,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 81 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40379,7 +39559,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 82 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40446,7 +39626,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 83 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40517,7 +39697,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 84 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40588,7 +39768,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 85 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40654,7 +39834,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 86 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40725,7 +39905,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 87 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40800,7 +39980,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 88 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40896,7 +40076,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 89 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40992,7 +40172,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 90 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41088,7 +40268,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 91 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41172,7 +40352,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 92 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41242,7 +40422,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 93 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41352,7 +40532,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 94 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41465,7 +40645,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 95 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41529,7 +40709,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 96 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41616,7 +40796,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 97 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41694,7 +40874,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 98 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41776,7 +40956,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 99 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41855,7 +41035,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 100 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41936,7 +41116,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 101 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42016,7 +41196,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 102 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42097,7 +41277,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 103 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42224,7 +41404,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 104 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42352,7 +41532,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 105 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42453,7 +41633,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 106 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42581,7 +41761,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 107 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42739,7 +41919,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 108 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42853,7 +42033,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 109 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42952,7 +42132,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 110 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43038,7 +42218,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 111 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43174,7 +42354,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 112 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43247,7 +42427,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 113 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43320,7 +42500,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 114 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43416,7 +42596,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 115 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43502,7 +42682,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 116 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43595,7 +42775,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 117 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43686,7 +42866,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 118 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43800,7 +42980,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 119 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43930,7 +43110,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 120 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44015,7 +43195,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 121 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44138,7 +43318,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 122 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44229,7 +43409,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 123 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44369,7 +43549,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 124 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44443,7 +43623,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 125 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44565,7 +43745,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 126 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44666,7 +43846,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 127 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44782,7 +43962,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 128 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44850,7 +44030,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 129 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44944,7 +44124,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 130 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45029,7 +44209,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 131 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45137,7 +44317,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 132 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45301,7 +44481,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 133 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45387,7 +44567,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 134 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45473,7 +44653,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 135 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45537,7 +44717,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 136 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45634,7 +44814,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 137 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45700,7 +44880,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 138 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45827,7 +45007,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 139 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45918,7 +45098,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 140 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46009,7 +45189,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 141 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46073,7 +45253,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 142 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46201,7 +45381,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 143 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46331,7 +45511,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 144 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46400,7 +45580,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 145 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46465,7 +45645,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 146 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46544,7 +45724,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 147 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46730,7 +45910,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 148 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46832,7 +46012,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 149 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46896,7 +46076,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 150 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46971,7 +46151,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 151 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47131,7 +46311,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 152 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47308,7 +46488,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 153 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47380,7 +46560,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 154 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47495,7 +46675,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 155 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47610,7 +46790,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 156 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47702,7 +46882,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 157 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47775,7 +46955,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 158 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47838,7 +47018,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 159 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47971,7 +47151,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 160 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48064,7 +47244,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 161 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48135,7 +47315,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 162 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48255,7 +47435,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 163 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48326,7 +47506,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 164 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48392,7 +47572,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 165 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48518,7 +47698,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 166 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -48616,7 +47796,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 167 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48711,7 +47891,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 168 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48773,7 +47953,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 169 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48835,7 +48015,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 170 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -48958,7 +48138,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 171 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49116,7 +48296,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 172 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49218,7 +48398,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 173 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49280,7 +48460,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 174 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49342,7 +48522,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 175 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49425,7 +48605,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 176 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49497,7 +48677,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 177 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49561,7 +48741,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 178 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49675,7 +48855,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 179 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49782,7 +48962,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 180 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49889,7 +49069,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 181 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49951,7 +49131,7 @@ module.exports = function equal(a, b) {
 
 
 /***/ }),
-/* 182 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50123,7 +49303,7 @@ function asyncMixin(_chart) {
 }
 
 /***/ }),
-/* 183 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50180,7 +49360,7 @@ var multipleKeysAccessorForCap = exports.multipleKeysAccessorForCap = createAcce
 var multipleKeysAccessorForStack = exports.multipleKeysAccessorForStack = createAccessor(getMinOfRange);
 
 /***/ }),
-/* 184 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50247,7 +49427,7 @@ function multipleKeysLabelMixin(_chart) {
 }
 
 /***/ }),
-/* 185 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50265,7 +49445,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(249);
+var _dcConstants = __webpack_require__(246);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50379,7 +49559,7 @@ function spinnerMixin(_chart) {
 }
 
 /***/ }),
-/* 186 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50390,7 +49570,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(251);
+var _ramda = __webpack_require__(248);
 
 var _d = __webpack_require__(1);
 
@@ -50455,7 +49635,7 @@ function elasticDimensionMixin(_chart) {
 }
 
 /***/ }),
-/* 187 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50497,13 +49677,13 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _filters = __webpack_require__(21);
+var _filters = __webpack_require__(20);
 
 var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _binningHelpers = __webpack_require__(22);
+var _binningHelpers = __webpack_require__(21);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51233,7 +50413,7 @@ function heatMap(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 188 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51484,7 +50664,7 @@ function multiSeriesMixin(chart) {
 }
 
 /***/ }),
-/* 189 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51495,15 +50675,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.rasterDrawMixin = rasterDrawMixin;
 
-var _utilsLatlon = __webpack_require__(24);
+var _utilsLatlon = __webpack_require__(23);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(259);
+var _lassoToolUi = __webpack_require__(256);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
-var _lodash = __webpack_require__(23);
+var _lodash = __webpack_require__(22);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -51513,11 +50693,11 @@ var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
 var _coreAsync = __webpack_require__(5);
 
-var _LatLonCircle = __webpack_require__(190);
+var _LatLonCircle = __webpack_require__(188);
 
 var _LatLonCircle2 = _interopRequireDefault(_LatLonCircle);
 
-var _LatLonPoly = __webpack_require__(192);
+var _LatLonPoly = __webpack_require__(190);
 
 var _LatLonPoly2 = _interopRequireDefault(_LatLonPoly);
 
@@ -52078,7 +51258,7 @@ function rasterDrawMixin(chart) {
 }
 
 /***/ }),
-/* 190 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52094,7 +51274,7 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _utilsLatlon = __webpack_require__(24);
+var _utilsLatlon = __webpack_require__(23);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
@@ -52102,7 +51282,7 @@ var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _LatLonViewIntersectUtils = __webpack_require__(191);
+var _LatLonViewIntersectUtils = __webpack_require__(189);
 
 var _LatLonViewIntersectUtils2 = _interopRequireDefault(_LatLonViewIntersectUtils);
 
@@ -52950,7 +52130,7 @@ var LatLonCircle = function (_MapdDraw$Circle) {
 exports.default = LatLonCircle;
 
 /***/ }),
-/* 191 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52960,7 +52140,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utilsLatlon = __webpack_require__(24);
+var _utilsLatlon = __webpack_require__(23);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
@@ -53360,7 +52540,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 192 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53376,7 +52556,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _utilsLatlon = __webpack_require__(24);
+var _utilsLatlon = __webpack_require__(23);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
@@ -53384,7 +52564,7 @@ var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _LatLonViewIntersectUtils = __webpack_require__(191);
+var _LatLonViewIntersectUtils = __webpack_require__(189);
 
 var _LatLonViewIntersectUtils2 = _interopRequireDefault(_LatLonViewIntersectUtils);
 
@@ -53623,7 +52803,7 @@ var LatLonPoly = function (_MapdDraw$Poly) {
 exports.default = LatLonPoly;
 
 /***/ }),
-/* 193 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53639,11 +52819,11 @@ exports.default = coordinateGridRasterMixin;
 
 var _core = __webpack_require__(3);
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(272);
+var _coordinateGridRasterMixinUi = __webpack_require__(269);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -53659,15 +52839,15 @@ var _marginMixin = __webpack_require__(18);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _axios = __webpack_require__(275);
+var _axios = __webpack_require__(272);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _lockAxisMixin = __webpack_require__(40);
+var _lockAxisMixin = __webpack_require__(38);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _errors = __webpack_require__(37);
+var _errors = __webpack_require__(35);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55041,7 +54221,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 }
 
 /***/ }),
-/* 194 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55059,13 +54239,13 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 195 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -55137,7 +54317,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 196 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55149,14 +54329,14 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 197 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(8);
-var normalizeHeaderName = __webpack_require__(283);
+var utils = __webpack_require__(7);
+var normalizeHeaderName = __webpack_require__(280);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -55173,10 +54353,10 @@ function getDefaultAdapter() {
   // Only Node.JS has a process variable that is of [[Class]] process
   if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(198);
+    adapter = __webpack_require__(196);
   } else if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(198);
+    adapter = __webpack_require__(196);
   }
   return adapter;
 }
@@ -55252,21 +54432,21 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(279)))
 
 /***/ }),
-/* 198 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
-var settle = __webpack_require__(284);
-var buildURL = __webpack_require__(195);
-var parseHeaders = __webpack_require__(286);
-var isURLSameOrigin = __webpack_require__(287);
-var createError = __webpack_require__(199);
+var utils = __webpack_require__(7);
+var settle = __webpack_require__(281);
+var buildURL = __webpack_require__(193);
+var parseHeaders = __webpack_require__(283);
+var isURLSameOrigin = __webpack_require__(284);
+var createError = __webpack_require__(197);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -55358,7 +54538,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(288);
+      var cookies = __webpack_require__(285);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -55436,13 +54616,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 199 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(285);
+var enhanceError = __webpack_require__(282);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -55461,13 +54641,13 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 200 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 /**
  * Config-specific merge-function which creates a new config-object
@@ -55519,7 +54699,7 @@ module.exports = function mergeConfig(config1, config2) {
 
 
 /***/ }),
-/* 201 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55545,7 +54725,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 202 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55558,7 +54738,7 @@ exports.default = scatterMixin;
 
 var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(189);
+var _rasterDrawMixin = __webpack_require__(187);
 
 function extend(destination, source) {
   for (var k in source) {
@@ -55793,7 +54973,7 @@ function scatterMixin(_chart, _mapboxgl) {
 }
 
 /***/ }),
-/* 203 */
+/* 201 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55807,7 +54987,7 @@ function vnode(sel, data, children, text, elm) {
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 204 */
+/* 202 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55820,13 +55000,13 @@ function primitive(s) {
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 205 */
+/* 203 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = h;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(203);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(202);
 
 
 function addNS(data, children, sel) {
@@ -55885,18 +55065,18 @@ function h(sel, b, c) {
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 206 */
+/* 204 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(311);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(312);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(313);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(314);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(316);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(309);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(205);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(311);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(313);
 
 
 
@@ -56042,7 +55222,7 @@ var prefixes = ["y","z","a","f","p","n","µ","m","","k","M","G","T","P","E","Z",
 
 
 /***/ }),
-/* 207 */
+/* 205 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56086,12 +55266,12 @@ FormatSpecifier.prototype.toString = function() {
 
 
 /***/ }),
-/* 208 */
+/* 206 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return prefixExponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(41);
 
 
 var prefixExponent;
@@ -56111,7 +55291,7 @@ var prefixExponent;
 
 
 /***/ }),
-/* 209 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56414,7 +55594,7 @@ function rasterLayerHeatmapMixin(_layer) {
 }
 
 /***/ }),
-/* 210 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57200,7 +56380,7 @@ function rasterLayerPointMixin(_layer) {
 }
 
 /***/ }),
-/* 211 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57228,7 +56408,7 @@ var _utils = __webpack_require__(4);
 
 var _coreAsync = __webpack_require__(5);
 
-var _customSqlParser = __webpack_require__(212);
+var _customSqlParser = __webpack_require__(210);
 
 var _customSqlParser2 = _interopRequireDefault(_customSqlParser);
 
@@ -57993,7 +57173,7 @@ function rasterLayerPolyMixin(_layer) {
 }
 
 /***/ }),
-/* 212 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58009,7 +57189,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.default = parseFactsFromCustomSQL;
 
-var _chevrotain = __webpack_require__(213);
+var _chevrotain = __webpack_require__(322);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -59208,174 +58388,62 @@ function parseFactsFromCustomSQL(factTable, withAlias, sql) {
 }
 
 /***/ }),
-/* 213 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 211 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["clearCache"] = clearCache;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(214);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return __WEBPACK_IMPORTED_MODULE_0__version__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__ = __webpack_require__(9);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Parser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["g"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CstParser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EmbeddedActionsParser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["f"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "ParserDefinitionErrorType", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["h"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EMPTY_ALT", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["d"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(31);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Lexer", function() { return __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "LexerDefinitionErrorType", function() { return __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["b"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__ = __webpack_require__(17);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createToken", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createTokenInstance", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["c"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EOF", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenLabel", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["e"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenMatcher", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["f"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenName", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["g"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__ = __webpack_require__(32);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGrammarResolverErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGrammarValidatorErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultParserErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__ = __webpack_require__(28);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EarlyExitException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "isRecognitionException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["e"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MismatchedTokenException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NotAllInputParsedException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["d"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NoViableAltException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(216);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLexerErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__ = __webpack_require__(6);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Alternation", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Flat", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["c"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NonTerminal", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["d"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Option", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["e"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Repetition", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["f"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RepetitionMandatory", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["g"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RepetitionMandatoryWithSeparator", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["h"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RepetitionWithSeparator", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["i"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Rule", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["j"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Terminal", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["k"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeGrammar", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["l"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeProduction", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["m"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__ = __webpack_require__(20);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "GAstVisitor", function() { return __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(219);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "resolveGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "validateGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(338);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createSyntaxDiagramsCode", function() { return __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(339);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserFactory", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserModule", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["b"]; });
-// semantic version
 
-
-
-// Tokens utilities
-
-// Other Utilities
-
-
-
-// grammar reflection API
-
-// GAST Utilities
-
-
-
-/* istanbul ignore next */
-function clearCache() {
-    console.warn("The clearCache function was 'soft' removed from the Chevrotain API." +
-        "\n\t It performs no action other than printing this message." +
-        "\n\t Please avoid using it as it will be completely removed in the future");
-}
-
-
-//# sourceMappingURL=api.js.map
-
-/***/ }),
-/* 214 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VERSION; });
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VERSION = void 0;
 // needs a separate module as this is required inside chevrotain productive code
 // and also in the entry point for webpack(api.ts).
 // A separate file avoids cyclic dependencies and webpack errors.
-var VERSION = "6.5.0";
+exports.VERSION = "9.0.2";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 215 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 212 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DEFAULT_MODE; });
-/* unused harmony export MODES */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SUPPORT_STICKY; });
-/* unused harmony export disableSticky */
-/* unused harmony export enableSticky */
-/* harmony export (immutable) */ __webpack_exports__["d"] = analyzeTokenTypes;
-/* harmony export (immutable) */ __webpack_exports__["j"] = validatePatterns;
-/* unused harmony export findMissingPatterns */
-/* unused harmony export findInvalidPatterns */
-/* unused harmony export findEndOfInputAnchor */
-/* unused harmony export findEmptyMatchRegExps */
-/* unused harmony export findStartOfInputAnchor */
-/* unused harmony export findUnsupportedFlags */
-/* unused harmony export findDuplicatePatterns */
-/* unused harmony export findInvalidGroupType */
-/* unused harmony export findModesThatDoNotExist */
-/* unused harmony export findUnreachablePatterns */
-/* unused harmony export addStartOfInput */
-/* unused harmony export addStickyFlag */
-/* harmony export (immutable) */ __webpack_exports__["h"] = performRuntimeChecks;
-/* harmony export (immutable) */ __webpack_exports__["i"] = performWarningRuntimeChecks;
-/* harmony export (immutable) */ __webpack_exports__["f"] = cloneEmptyGroups;
-/* unused harmony export isCustomPattern */
-/* unused harmony export isShortPattern */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LineTerminatorOptimizedTester; });
-/* unused harmony export buildLineBreakIssueMessage */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return minOptimizationVal; });
-/* harmony export (immutable) */ __webpack_exports__["e"] = charCodeToOptimizedIndex;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(326);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(46);
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.charCodeToOptimizedIndex = exports.minOptimizationVal = exports.buildLineBreakIssueMessage = exports.LineTerminatorOptimizedTester = exports.isShortPattern = exports.isCustomPattern = exports.cloneEmptyGroups = exports.performWarningRuntimeChecks = exports.performRuntimeChecks = exports.addStickyFlag = exports.addStartOfInput = exports.findUnreachablePatterns = exports.findModesThatDoNotExist = exports.findInvalidGroupType = exports.findDuplicatePatterns = exports.findUnsupportedFlags = exports.findStartOfInputAnchor = exports.findEmptyMatchRegExps = exports.findEndOfInputAnchor = exports.findInvalidPatterns = exports.findMissingPatterns = exports.validatePatterns = exports.analyzeTokenTypes = exports.enableSticky = exports.disableSticky = exports.SUPPORT_STICKY = exports.MODES = exports.DEFAULT_MODE = void 0;
+var regexp_to_ast_1 = __webpack_require__(43);
+var lexer_public_1 = __webpack_require__(29);
+var utils_1 = __webpack_require__(2);
+var reg_exp_1 = __webpack_require__(324);
+var reg_exp_parser_1 = __webpack_require__(44);
 var PATTERN = "PATTERN";
-var DEFAULT_MODE = "defaultMode";
-var MODES = "modes";
-var SUPPORT_STICKY = typeof new RegExp("(?:)").sticky === "boolean";
+exports.DEFAULT_MODE = "defaultMode";
+exports.MODES = "modes";
+exports.SUPPORT_STICKY = typeof new RegExp("(?:)").sticky === "boolean";
 function disableSticky() {
-    SUPPORT_STICKY = false;
+    exports.SUPPORT_STICKY = false;
 }
+exports.disableSticky = disableSticky;
 function enableSticky() {
-    SUPPORT_STICKY = true;
+    exports.SUPPORT_STICKY = true;
 }
+exports.enableSticky = enableSticky;
 function analyzeTokenTypes(tokenTypes, options) {
-    options = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["k" /* defaults */])(options, {
-        useSticky: SUPPORT_STICKY,
+    options = utils_1.defaults(options, {
+        useSticky: exports.SUPPORT_STICKY,
         debug: false,
         safeMode: false,
         positionTracking: "full",
@@ -59388,30 +58456,31 @@ function analyzeTokenTypes(tokenTypes, options) {
     });
     var onlyRelevantTypes;
     tracer("Reject Lexer.NA", function () {
-        onlyRelevantTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["P" /* reject */])(tokenTypes, function (currType) {
-            return currType[PATTERN] === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA;
+        onlyRelevantTypes = utils_1.reject(tokenTypes, function (currType) {
+            return currType[PATTERN] === lexer_public_1.Lexer.NA;
         });
     });
     var hasCustom = false;
     var allTransformedPatterns;
     tracer("Transform Patterns", function () {
         hasCustom = false;
-        allTransformedPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (currType) {
+        allTransformedPatterns = utils_1.map(onlyRelevantTypes, function (currType) {
             var currPattern = currType[PATTERN];
             /* istanbul ignore else */
-            if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(currPattern)) {
+            if (utils_1.isRegExp(currPattern)) {
                 var regExpSource = currPattern.source;
                 if (regExpSource.length === 1 &&
                     // only these regExp meta characters which can appear in a length one regExp
                     regExpSource !== "^" &&
                     regExpSource !== "$" &&
-                    regExpSource !== ".") {
+                    regExpSource !== "." &&
+                    !currPattern.ignoreCase) {
                     return regExpSource;
                 }
                 else if (regExpSource.length === 2 &&
                     regExpSource[0] === "\\" &&
                     // not a meta character
-                    !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["j" /* contains */])([
+                    !utils_1.contains([
                         "d",
                         "D",
                         "s",
@@ -59440,12 +58509,12 @@ function analyzeTokenTypes(tokenTypes, options) {
                         : addStartOfInput(currPattern);
                 }
             }
-            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(currPattern)) {
+            else if (utils_1.isFunction(currPattern)) {
                 hasCustom = true;
                 // CustomPatternMatcherFunc - custom patterns do not require any transformations, only wrapping in a RegExp Like object
                 return { exec: currPattern };
             }
-            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(currPattern, "exec")) {
+            else if (utils_1.has(currPattern, "exec")) {
                 hasCustom = true;
                 // ICustomPattern
                 return currPattern;
@@ -59473,47 +58542,47 @@ function analyzeTokenTypes(tokenTypes, options) {
     var patternIdxToPushMode;
     var patternIdxToPopMode;
     tracer("misc mapping", function () {
-        patternIdxToType = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (currType) { return currType.tokenTypeIdx; });
-        patternIdxToGroup = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) {
+        patternIdxToType = utils_1.map(onlyRelevantTypes, function (currType) { return currType.tokenTypeIdx; });
+        patternIdxToGroup = utils_1.map(onlyRelevantTypes, function (clazz) {
             var groupName = clazz.GROUP;
             /* istanbul ignore next */
-            if (groupName === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].SKIPPED) {
+            if (groupName === lexer_public_1.Lexer.SKIPPED) {
                 return undefined;
             }
-            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(groupName)) {
+            else if (utils_1.isString(groupName)) {
                 return groupName;
             }
-            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["F" /* isUndefined */])(groupName)) {
+            else if (utils_1.isUndefined(groupName)) {
                 return false;
             }
             else {
                 throw Error("non exhaustive match");
             }
         });
-        patternIdxToLongerAltIdx = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) {
+        patternIdxToLongerAltIdx = utils_1.map(onlyRelevantTypes, function (clazz) {
             var longerAltType = clazz.LONGER_ALT;
             if (longerAltType) {
-                var longerAltIdx = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["x" /* indexOf */])(onlyRelevantTypes, longerAltType);
+                var longerAltIdx = utils_1.indexOf(onlyRelevantTypes, longerAltType);
                 return longerAltIdx;
             }
         });
-        patternIdxToPushMode = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) { return clazz.PUSH_MODE; });
-        patternIdxToPopMode = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) {
-            return Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(clazz, "POP_MODE");
+        patternIdxToPushMode = utils_1.map(onlyRelevantTypes, function (clazz) { return clazz.PUSH_MODE; });
+        patternIdxToPopMode = utils_1.map(onlyRelevantTypes, function (clazz) {
+            return utils_1.has(clazz, "POP_MODE");
         });
     });
     var patternIdxToCanLineTerminator;
     tracer("Line Terminator Handling", function () {
         var lineTerminatorCharCodes = getCharCodes(options.lineTerminatorCharacters);
-        patternIdxToCanLineTerminator = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (tokType) { return false; });
+        patternIdxToCanLineTerminator = utils_1.map(onlyRelevantTypes, function (tokType) { return false; });
         if (options.positionTracking !== "onlyOffset") {
-            patternIdxToCanLineTerminator = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (tokType) {
-                if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(tokType, "LINE_BREAKS")) {
+            patternIdxToCanLineTerminator = utils_1.map(onlyRelevantTypes, function (tokType) {
+                if (utils_1.has(tokType, "LINE_BREAKS")) {
                     return tokType.LINE_BREAKS;
                 }
                 else {
                     if (checkLineBreaksIssues(tokType, lineTerminatorCharCodes) === false) {
-                        return Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["a" /* canMatchCharCode */])(lineTerminatorCharCodes, tokType.PATTERN);
+                        return reg_exp_1.canMatchCharCode(lineTerminatorCharCodes, tokType.PATTERN);
                     }
                 }
             });
@@ -59524,16 +58593,16 @@ function analyzeTokenTypes(tokenTypes, options) {
     var emptyGroups;
     var patternIdxToConfig;
     tracer("Misc Mapping #2", function () {
-        patternIdxToIsCustom = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, isCustomPattern);
-        patternIdxToShort = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(allTransformedPatterns, isShortPattern);
-        emptyGroups = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(onlyRelevantTypes, function (acc, clazz) {
+        patternIdxToIsCustom = utils_1.map(onlyRelevantTypes, isCustomPattern);
+        patternIdxToShort = utils_1.map(allTransformedPatterns, isShortPattern);
+        emptyGroups = utils_1.reduce(onlyRelevantTypes, function (acc, clazz) {
             var groupName = clazz.GROUP;
-            if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(groupName) && !(groupName === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].SKIPPED)) {
+            if (utils_1.isString(groupName) && !(groupName === lexer_public_1.Lexer.SKIPPED)) {
                 acc[groupName] = [];
             }
             return acc;
         }, {});
-        patternIdxToConfig = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(allTransformedPatterns, function (x, idx) {
+        patternIdxToConfig = utils_1.map(allTransformedPatterns, function (x, idx) {
             return {
                 pattern: allTransformedPatterns[idx],
                 longerAlt: patternIdxToLongerAltIdx[idx],
@@ -59552,59 +58621,62 @@ function analyzeTokenTypes(tokenTypes, options) {
     var charCodeToPatternIdxToConfig = [];
     if (!options.safeMode) {
         tracer("First Char Optimization", function () {
-            charCodeToPatternIdxToConfig = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(onlyRelevantTypes, function (result, currTokType, idx) {
+            charCodeToPatternIdxToConfig = utils_1.reduce(onlyRelevantTypes, function (result, currTokType, idx) {
                 if (typeof currTokType.PATTERN === "string") {
                     var charCode = currTokType.PATTERN.charCodeAt(0);
                     var optimizedIdx = charCodeToOptimizedIndex(charCode);
                     addToMapOfArrays(result, optimizedIdx, patternIdxToConfig[idx]);
                 }
-                else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["y" /* isArray */])(currTokType.START_CHARS_HINT)) {
+                else if (utils_1.isArray(currTokType.START_CHARS_HINT)) {
                     var lastOptimizedIdx_1;
-                    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(currTokType.START_CHARS_HINT, function (charOrInt) {
+                    utils_1.forEach(currTokType.START_CHARS_HINT, function (charOrInt) {
                         var charCode = typeof charOrInt === "string"
                             ? charOrInt.charCodeAt(0)
                             : charOrInt;
                         var currOptimizedIdx = charCodeToOptimizedIndex(charCode);
                         // Avoid adding the config multiple times
+                        /* istanbul ignore else */
+                        // - Difficult to check this scenario effects as it is only a performance
+                        //   optimization that does not change correctness
                         if (lastOptimizedIdx_1 !== currOptimizedIdx) {
                             lastOptimizedIdx_1 = currOptimizedIdx;
                             addToMapOfArrays(result, currOptimizedIdx, patternIdxToConfig[idx]);
                         }
                     });
                 }
-                else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(currTokType.PATTERN)) {
+                else if (utils_1.isRegExp(currTokType.PATTERN)) {
                     if (currTokType.PATTERN.unicode) {
                         canBeOptimized = false;
                         if (options.ensureOptimizations) {
-                            Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["c" /* PRINT_ERROR */])("" + __WEBPACK_IMPORTED_MODULE_3__reg_exp__["b" /* failedOptimizationPrefixMsg */] +
+                            utils_1.PRINT_ERROR("" + reg_exp_1.failedOptimizationPrefixMsg +
                                 ("\tUnable to analyze < " + currTokType.PATTERN.toString() + " > pattern.\n") +
                                 "\tThe regexp unicode flag is not currently supported by the regexp-to-ast library.\n" +
                                 "\tThis will disable the lexer's first char optimizations.\n" +
-                                "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#UNICODE_OPTIMIZE");
+                                "\tFor details See: https://chevrotain.io/docs/guide/resolving_lexer_errors.html#UNICODE_OPTIMIZE");
                         }
                     }
                     else {
-                        var optimizedCodes = Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["c" /* getOptimizedStartCodesIndices */])(currTokType.PATTERN, options.ensureOptimizations);
+                        var optimizedCodes = reg_exp_1.getOptimizedStartCodesIndices(currTokType.PATTERN, options.ensureOptimizations);
                         /* istanbul ignore if */
                         // start code will only be empty given an empty regExp or failure of regexp-to-ast library
                         // the first should be a different validation and the second cannot be tested.
-                        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["A" /* isEmpty */])(optimizedCodes)) {
+                        if (utils_1.isEmpty(optimizedCodes)) {
                             // we cannot understand what codes may start possible matches
                             // The optimization correctness requires knowing start codes for ALL patterns.
                             // Not actually sure this is an error, no debug message
                             canBeOptimized = false;
                         }
-                        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(optimizedCodes, function (code) {
+                        utils_1.forEach(optimizedCodes, function (code) {
                             addToMapOfArrays(result, code, patternIdxToConfig[idx]);
                         });
                     }
                 }
                 else {
                     if (options.ensureOptimizations) {
-                        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["c" /* PRINT_ERROR */])("" + __WEBPACK_IMPORTED_MODULE_3__reg_exp__["b" /* failedOptimizationPrefixMsg */] +
+                        utils_1.PRINT_ERROR("" + reg_exp_1.failedOptimizationPrefixMsg +
                             ("\tTokenType: <" + currTokType.name + "> is using a custom token pattern without providing <start_chars_hint> parameter.\n") +
                             "\tThis will disable the lexer's first char optimizations.\n" +
-                            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#CUSTOM_OPTIMIZE");
+                            "\tFor details See: https://chevrotain.io/docs/guide/resolving_lexer_errors.html#CUSTOM_OPTIMIZE");
                     }
                     canBeOptimized = false;
                 }
@@ -59613,7 +58685,7 @@ function analyzeTokenTypes(tokenTypes, options) {
         });
     }
     tracer("ArrayPacking", function () {
-        charCodeToPatternIdxToConfig = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["L" /* packArray */])(charCodeToPatternIdxToConfig);
+        charCodeToPatternIdxToConfig = utils_1.packArray(charCodeToPatternIdxToConfig);
     });
     return {
         emptyGroups: emptyGroups,
@@ -59623,6 +58695,7 @@ function analyzeTokenTypes(tokenTypes, options) {
         canBeOptimized: canBeOptimized
     };
 }
+exports.analyzeTokenTypes = analyzeTokenTypes;
 function validatePatterns(tokenTypes, validModesNames) {
     var errors = [];
     var missingResult = findMissingPatterns(tokenTypes);
@@ -59636,10 +58709,11 @@ function validatePatterns(tokenTypes, validModesNames) {
     errors = errors.concat(findUnreachablePatterns(validTokenTypes));
     return errors;
 }
+exports.validatePatterns = validatePatterns;
 function validateRegExpPattern(tokenTypes) {
     var errors = [];
-    var withRegExpPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currTokType) {
-        return Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(currTokType[PATTERN]);
+    var withRegExpPatterns = utils_1.filter(tokenTypes, function (currTokType) {
+        return utils_1.isRegExp(currTokType[PATTERN]);
     });
     errors = errors.concat(findEndOfInputAnchor(withRegExpPatterns));
     errors = errors.concat(findStartOfInputAnchor(withRegExpPatterns));
@@ -59649,42 +58723,44 @@ function validateRegExpPattern(tokenTypes) {
     return errors;
 }
 function findMissingPatterns(tokenTypes) {
-    var tokenTypesWithMissingPattern = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
-        return !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(currType, PATTERN);
+    var tokenTypesWithMissingPattern = utils_1.filter(tokenTypes, function (currType) {
+        return !utils_1.has(currType, PATTERN);
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(tokenTypesWithMissingPattern, function (currType) {
+    var errors = utils_1.map(tokenTypesWithMissingPattern, function (currType) {
         return {
             message: "Token Type: ->" +
                 currType.name +
                 "<- missing static 'PATTERN' property",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MISSING_PATTERN,
+            type: lexer_public_1.LexerDefinitionErrorType.MISSING_PATTERN,
             tokenTypes: [currType]
         };
     });
-    var valid = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["l" /* difference */])(tokenTypes, tokenTypesWithMissingPattern);
+    var valid = utils_1.difference(tokenTypes, tokenTypesWithMissingPattern);
     return { errors: errors, valid: valid };
 }
+exports.findMissingPatterns = findMissingPatterns;
 function findInvalidPatterns(tokenTypes) {
-    var tokenTypesWithInvalidPattern = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+    var tokenTypesWithInvalidPattern = utils_1.filter(tokenTypes, function (currType) {
         var pattern = currType[PATTERN];
-        return (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern) &&
-            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(pattern) &&
-            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(pattern, "exec") &&
-            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern));
+        return (!utils_1.isRegExp(pattern) &&
+            !utils_1.isFunction(pattern) &&
+            !utils_1.has(pattern, "exec") &&
+            !utils_1.isString(pattern));
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(tokenTypesWithInvalidPattern, function (currType) {
+    var errors = utils_1.map(tokenTypesWithInvalidPattern, function (currType) {
         return {
             message: "Token Type: ->" +
                 currType.name +
                 "<- static 'PATTERN' can only be a RegExp, a" +
                 " Function matching the {CustomPatternMatcherFunc} type or an Object matching the {ICustomPattern} interface.",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].INVALID_PATTERN,
+            type: lexer_public_1.LexerDefinitionErrorType.INVALID_PATTERN,
             tokenTypes: [currType]
         };
     });
-    var valid = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["l" /* difference */])(tokenTypes, tokenTypesWithInvalidPattern);
+    var valid = utils_1.difference(tokenTypes, tokenTypesWithInvalidPattern);
     return { errors: errors, valid: valid };
 }
+exports.findInvalidPatterns = findInvalidPatterns;
 var end_of_input = /[^\\][\$]/;
 function findEndOfInputAnchor(tokenTypes) {
     var EndAnchorFinder = /** @class */ (function (_super) {
@@ -59698,11 +58774,11 @@ function findEndOfInputAnchor(tokenTypes) {
             this.found = true;
         };
         return EndAnchorFinder;
-    }(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["BaseRegExpVisitor"]));
-    var invalidRegex = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+    }(regexp_to_ast_1.BaseRegExpVisitor));
+    var invalidRegex = utils_1.filter(tokenTypes, function (currType) {
         var pattern = currType[PATTERN];
         try {
-            var regexpAst = Object(__WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__["b" /* getRegExpAst */])(pattern);
+            var regexpAst = reg_exp_parser_1.getRegExpAst(pattern);
             var endAnchorVisitor = new EndAnchorFinder();
             endAnchorVisitor.visit(regexpAst);
             return endAnchorVisitor.found;
@@ -59713,36 +58789,38 @@ function findEndOfInputAnchor(tokenTypes) {
             return end_of_input.test(pattern.source);
         }
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidRegex, function (currType) {
+    var errors = utils_1.map(invalidRegex, function (currType) {
         return {
             message: "Unexpected RegExp Anchor Error:\n" +
                 "\tToken Type: ->" +
                 currType.name +
                 "<- static 'PATTERN' cannot contain end of input anchor '$'\n" +
-                "\tSee sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#ANCHORS" +
+                "\tSee chevrotain.io/docs/guide/resolving_lexer_errors.html#ANCHORS" +
                 "\tfor details.",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].EOI_ANCHOR_FOUND,
+            type: lexer_public_1.LexerDefinitionErrorType.EOI_ANCHOR_FOUND,
             tokenTypes: [currType]
         };
     });
     return errors;
 }
+exports.findEndOfInputAnchor = findEndOfInputAnchor;
 function findEmptyMatchRegExps(tokenTypes) {
-    var matchesEmptyString = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+    var matchesEmptyString = utils_1.filter(tokenTypes, function (currType) {
         var pattern = currType[PATTERN];
         return pattern.test("");
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(matchesEmptyString, function (currType) {
+    var errors = utils_1.map(matchesEmptyString, function (currType) {
         return {
             message: "Token Type: ->" +
                 currType.name +
                 "<- static 'PATTERN' must not match an empty string",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].EMPTY_MATCH_PATTERN,
+            type: lexer_public_1.LexerDefinitionErrorType.EMPTY_MATCH_PATTERN,
             tokenTypes: [currType]
         };
     });
     return errors;
 }
+exports.findEmptyMatchRegExps = findEmptyMatchRegExps;
 var start_of_input = /[^\\[][\^]|^\^/;
 function findStartOfInputAnchor(tokenTypes) {
     var StartAnchorFinder = /** @class */ (function (_super) {
@@ -59756,11 +58834,11 @@ function findStartOfInputAnchor(tokenTypes) {
             this.found = true;
         };
         return StartAnchorFinder;
-    }(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["BaseRegExpVisitor"]));
-    var invalidRegex = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+    }(regexp_to_ast_1.BaseRegExpVisitor));
+    var invalidRegex = utils_1.filter(tokenTypes, function (currType) {
         var pattern = currType[PATTERN];
         try {
-            var regexpAst = Object(__WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__["b" /* getRegExpAst */])(pattern);
+            var regexpAst = reg_exp_parser_1.getRegExpAst(pattern);
             var startAnchorVisitor = new StartAnchorFinder();
             startAnchorVisitor.visit(regexpAst);
             return startAnchorVisitor.found;
@@ -59771,44 +58849,46 @@ function findStartOfInputAnchor(tokenTypes) {
             return start_of_input.test(pattern.source);
         }
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidRegex, function (currType) {
+    var errors = utils_1.map(invalidRegex, function (currType) {
         return {
             message: "Unexpected RegExp Anchor Error:\n" +
                 "\tToken Type: ->" +
                 currType.name +
                 "<- static 'PATTERN' cannot contain start of input anchor '^'\n" +
-                "\tSee https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#ANCHORS" +
+                "\tSee https://chevrotain.io/docs/guide/resolving_lexer_errors.html#ANCHORS" +
                 "\tfor details.",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].SOI_ANCHOR_FOUND,
+            type: lexer_public_1.LexerDefinitionErrorType.SOI_ANCHOR_FOUND,
             tokenTypes: [currType]
         };
     });
     return errors;
 }
+exports.findStartOfInputAnchor = findStartOfInputAnchor;
 function findUnsupportedFlags(tokenTypes) {
-    var invalidFlags = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+    var invalidFlags = utils_1.filter(tokenTypes, function (currType) {
         var pattern = currType[PATTERN];
-        return (pattern instanceof RegExp && (pattern.multiline || pattern.global));
+        return pattern instanceof RegExp && (pattern.multiline || pattern.global);
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidFlags, function (currType) {
+    var errors = utils_1.map(invalidFlags, function (currType) {
         return {
             message: "Token Type: ->" +
                 currType.name +
                 "<- static 'PATTERN' may NOT contain global('g') or multiline('m')",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].UNSUPPORTED_FLAGS_FOUND,
+            type: lexer_public_1.LexerDefinitionErrorType.UNSUPPORTED_FLAGS_FOUND,
             tokenTypes: [currType]
         };
     });
     return errors;
 }
+exports.findUnsupportedFlags = findUnsupportedFlags;
 // This can only test for identical duplicate RegExps, not semantically equivalent ones.
 function findDuplicatePatterns(tokenTypes) {
     var found = [];
-    var identicalPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(tokenTypes, function (outerType) {
-        return Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(tokenTypes, function (result, innerType) {
+    var identicalPatterns = utils_1.map(tokenTypes, function (outerType) {
+        return utils_1.reduce(tokenTypes, function (result, innerType) {
             if (outerType.PATTERN.source === innerType.PATTERN.source &&
-                !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["j" /* contains */])(found, innerType) &&
-                innerType.PATTERN !== __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA) {
+                !utils_1.contains(found, innerType) &&
+                innerType.PATTERN !== lexer_public_1.Lexer.NA) {
                 // this avoids duplicates in the result, each Token Type may only appear in one "set"
                 // in essence we are creating Equivalence classes on equality relation.
                 found.push(innerType);
@@ -59818,87 +58898,89 @@ function findDuplicatePatterns(tokenTypes) {
             return result;
         }, []);
     });
-    identicalPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["i" /* compact */])(identicalPatterns);
-    var duplicatePatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(identicalPatterns, function (currIdenticalSet) {
+    identicalPatterns = utils_1.compact(identicalPatterns);
+    var duplicatePatterns = utils_1.filter(identicalPatterns, function (currIdenticalSet) {
         return currIdenticalSet.length > 1;
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(duplicatePatterns, function (setOfIdentical) {
-        var tokenTypeNames = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(setOfIdentical, function (currType) {
+    var errors = utils_1.map(duplicatePatterns, function (setOfIdentical) {
+        var tokenTypeNames = utils_1.map(setOfIdentical, function (currType) {
             return currType.name;
         });
-        var dupPatternSrc = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["s" /* first */])(setOfIdentical).PATTERN;
+        var dupPatternSrc = utils_1.first(setOfIdentical).PATTERN;
         return {
             message: "The same RegExp pattern ->" + dupPatternSrc + "<-" +
                 ("has been used in all of the following Token Types: " + tokenTypeNames.join(", ") + " <-"),
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].DUPLICATE_PATTERNS_FOUND,
+            type: lexer_public_1.LexerDefinitionErrorType.DUPLICATE_PATTERNS_FOUND,
             tokenTypes: setOfIdentical
         };
     });
     return errors;
 }
+exports.findDuplicatePatterns = findDuplicatePatterns;
 function findInvalidGroupType(tokenTypes) {
-    var invalidTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (clazz) {
-        if (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(clazz, "GROUP")) {
+    var invalidTypes = utils_1.filter(tokenTypes, function (clazz) {
+        if (!utils_1.has(clazz, "GROUP")) {
             return false;
         }
         var group = clazz.GROUP;
-        return group !== __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].SKIPPED && group !== __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA && !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(group);
+        return group !== lexer_public_1.Lexer.SKIPPED && group !== lexer_public_1.Lexer.NA && !utils_1.isString(group);
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidTypes, function (currType) {
+    var errors = utils_1.map(invalidTypes, function (currType) {
         return {
             message: "Token Type: ->" +
                 currType.name +
                 "<- static 'GROUP' can only be Lexer.SKIPPED/Lexer.NA/A String",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].INVALID_GROUP_TYPE_FOUND,
+            type: lexer_public_1.LexerDefinitionErrorType.INVALID_GROUP_TYPE_FOUND,
             tokenTypes: [currType]
         };
     });
     return errors;
 }
+exports.findInvalidGroupType = findInvalidGroupType;
 function findModesThatDoNotExist(tokenTypes, validModes) {
-    var invalidModes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (clazz) {
-        return (clazz.PUSH_MODE !== undefined &&
-            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["j" /* contains */])(validModes, clazz.PUSH_MODE));
+    var invalidModes = utils_1.filter(tokenTypes, function (clazz) {
+        return (clazz.PUSH_MODE !== undefined && !utils_1.contains(validModes, clazz.PUSH_MODE));
     });
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidModes, function (tokType) {
+    var errors = utils_1.map(invalidModes, function (tokType) {
         var msg = "Token Type: ->" + tokType.name + "<- static 'PUSH_MODE' value cannot refer to a Lexer Mode ->" + tokType.PUSH_MODE + "<-" +
             "which does not exist";
         return {
             message: msg,
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].PUSH_MODE_DOES_NOT_EXIST,
+            type: lexer_public_1.LexerDefinitionErrorType.PUSH_MODE_DOES_NOT_EXIST,
             tokenTypes: [tokType]
         };
     });
     return errors;
 }
+exports.findModesThatDoNotExist = findModesThatDoNotExist;
 function findUnreachablePatterns(tokenTypes) {
     var errors = [];
-    var canBeTested = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(tokenTypes, function (result, tokType, idx) {
+    var canBeTested = utils_1.reduce(tokenTypes, function (result, tokType, idx) {
         var pattern = tokType.PATTERN;
-        if (pattern === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA) {
+        if (pattern === lexer_public_1.Lexer.NA) {
             return result;
         }
         // a more comprehensive validation for all forms of regExps would require
         // deeper regExp analysis capabilities
-        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern)) {
+        if (utils_1.isString(pattern)) {
             result.push({ str: pattern, idx: idx, tokenType: tokType });
         }
-        else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern) && noMetaChar(pattern)) {
+        else if (utils_1.isRegExp(pattern) && noMetaChar(pattern)) {
             result.push({ str: pattern.source, idx: idx, tokenType: tokType });
         }
         return result;
     }, []);
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(tokenTypes, function (tokType, testIdx) {
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(canBeTested, function (_a) {
+    utils_1.forEach(tokenTypes, function (tokType, testIdx) {
+        utils_1.forEach(canBeTested, function (_a) {
             var str = _a.str, idx = _a.idx, tokenType = _a.tokenType;
             if (testIdx < idx && testTokenType(str, tokType.PATTERN)) {
                 var msg = "Token: ->" + tokenType.name + "<- can never be matched.\n" +
                     ("Because it appears AFTER the Token Type ->" + tokType.name + "<-") +
                     "in the lexer's definition.\n" +
-                    "See https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#UNREACHABLE";
+                    "See https://chevrotain.io/docs/guide/resolving_lexer_errors.html#UNREACHABLE";
                 errors.push({
                     message: msg,
-                    type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].UNREACHABLE_PATTERN,
+                    type: lexer_public_1.LexerDefinitionErrorType.UNREACHABLE_PATTERN,
                     tokenTypes: [tokType, tokenType]
                 });
             }
@@ -59906,17 +58988,18 @@ function findUnreachablePatterns(tokenTypes) {
     });
     return errors;
 }
+exports.findUnreachablePatterns = findUnreachablePatterns;
 function testTokenType(str, pattern) {
     /* istanbul ignore else */
-    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern)) {
+    if (utils_1.isRegExp(pattern)) {
         var regExpArray = pattern.exec(str);
         return regExpArray !== null && regExpArray.index === 0;
     }
-    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(pattern)) {
+    else if (utils_1.isFunction(pattern)) {
         // maintain the API of custom patterns
         return pattern(str, 0, [], {});
     }
-    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(pattern, "exec")) {
+    else if (utils_1.has(pattern, "exec")) {
         // maintain the API of custom patterns
         return pattern.exec(str, 0, [], {});
     }
@@ -59944,8 +59027,7 @@ function noMetaChar(regExp) {
         "+",
         "{"
     ];
-    return (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["q" /* find */])(metaChars, function (char) { return regExp.source.indexOf(char) !== -1; }) ===
-        undefined);
+    return (utils_1.find(metaChars, function (char) { return regExp.source.indexOf(char) !== -1; }) === undefined);
 }
 function addStartOfInput(pattern) {
     var flags = pattern.ignoreCase ? "i" : "";
@@ -59953,48 +59035,50 @@ function addStartOfInput(pattern) {
     // duplicate/redundant start of input markers have no meaning (/^^^^A/ === /^A/)
     return new RegExp("^(?:" + pattern.source + ")", flags);
 }
+exports.addStartOfInput = addStartOfInput;
 function addStickyFlag(pattern) {
     var flags = pattern.ignoreCase ? "iy" : "y";
     // always wrapping in a none capturing group preceded by '^' to make sure matching can only work on start of input.
     // duplicate/redundant start of input markers have no meaning (/^^^^A/ === /^A/)
     return new RegExp("" + pattern.source, flags);
 }
+exports.addStickyFlag = addStickyFlag;
 function performRuntimeChecks(lexerDefinition, trackLines, lineTerminatorCharacters) {
     var errors = [];
     // some run time checks to help the end users.
-    if (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, DEFAULT_MODE)) {
+    if (!utils_1.has(lexerDefinition, exports.DEFAULT_MODE)) {
         errors.push({
             message: "A MultiMode Lexer cannot be initialized without a <" +
-                DEFAULT_MODE +
+                exports.DEFAULT_MODE +
                 "> property in its definition\n",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MULTI_MODE_LEXER_WITHOUT_DEFAULT_MODE
+            type: lexer_public_1.LexerDefinitionErrorType.MULTI_MODE_LEXER_WITHOUT_DEFAULT_MODE
         });
     }
-    if (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, MODES)) {
+    if (!utils_1.has(lexerDefinition, exports.MODES)) {
         errors.push({
             message: "A MultiMode Lexer cannot be initialized without a <" +
-                MODES +
+                exports.MODES +
                 "> property in its definition\n",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MULTI_MODE_LEXER_WITHOUT_MODES_PROPERTY
+            type: lexer_public_1.LexerDefinitionErrorType.MULTI_MODE_LEXER_WITHOUT_MODES_PROPERTY
         });
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, MODES) &&
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, DEFAULT_MODE) &&
-        !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition.modes, lexerDefinition.defaultMode)) {
+    if (utils_1.has(lexerDefinition, exports.MODES) &&
+        utils_1.has(lexerDefinition, exports.DEFAULT_MODE) &&
+        !utils_1.has(lexerDefinition.modes, lexerDefinition.defaultMode)) {
         errors.push({
-            message: "A MultiMode Lexer cannot be initialized with a " + DEFAULT_MODE + ": <" + lexerDefinition.defaultMode + ">" +
+            message: "A MultiMode Lexer cannot be initialized with a " + exports.DEFAULT_MODE + ": <" + lexerDefinition.defaultMode + ">" +
                 "which does not exist\n",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MULTI_MODE_LEXER_DEFAULT_MODE_VALUE_DOES_NOT_EXIST
+            type: lexer_public_1.LexerDefinitionErrorType.MULTI_MODE_LEXER_DEFAULT_MODE_VALUE_DOES_NOT_EXIST
         });
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, MODES)) {
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(lexerDefinition.modes, function (currModeValue, currModeName) {
-            Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(currModeValue, function (currTokType, currIdx) {
-                if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["F" /* isUndefined */])(currTokType)) {
+    if (utils_1.has(lexerDefinition, exports.MODES)) {
+        utils_1.forEach(lexerDefinition.modes, function (currModeValue, currModeName) {
+            utils_1.forEach(currModeValue, function (currTokType, currIdx) {
+                if (utils_1.isUndefined(currTokType)) {
                     errors.push({
                         message: "A Lexer cannot be initialized using an undefined Token Type. Mode:" +
                             ("<" + currModeName + "> at index: <" + currIdx + ">\n"),
-                        type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].LEXER_DEFINITION_CANNOT_CONTAIN_UNDEFINED
+                        type: lexer_public_1.LexerDefinitionErrorType.LEXER_DEFINITION_CANNOT_CONTAIN_UNDEFINED
                     });
                 }
             });
@@ -60002,14 +59086,15 @@ function performRuntimeChecks(lexerDefinition, trackLines, lineTerminatorCharact
     }
     return errors;
 }
+exports.performRuntimeChecks = performRuntimeChecks;
 function performWarningRuntimeChecks(lexerDefinition, trackLines, lineTerminatorCharacters) {
     var warnings = [];
     var hasAnyLineBreak = false;
-    var allTokenTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["i" /* compact */])(Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["J" /* mapValues */])(lexerDefinition.modes, function (tokTypes) { return tokTypes; })));
-    var concreteTokenTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["P" /* reject */])(allTokenTypes, function (currType) { return currType[PATTERN] === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA; });
+    var allTokenTypes = utils_1.compact(utils_1.flatten(utils_1.mapValues(lexerDefinition.modes, function (tokTypes) { return tokTypes; })));
+    var concreteTokenTypes = utils_1.reject(allTokenTypes, function (currType) { return currType[PATTERN] === lexer_public_1.Lexer.NA; });
     var terminatorCharCodes = getCharCodes(lineTerminatorCharacters);
     if (trackLines) {
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(concreteTokenTypes, function (tokType) {
+        utils_1.forEach(concreteTokenTypes, function (tokType) {
             var currIssue = checkLineBreaksIssues(tokType, terminatorCharCodes);
             if (currIssue !== false) {
                 var message = buildLineBreakIssueMessage(tokType, currIssue);
@@ -60022,13 +59107,13 @@ function performWarningRuntimeChecks(lexerDefinition, trackLines, lineTerminator
             }
             else {
                 // we don't want to attempt to scan if the user explicitly specified the line_breaks option.
-                if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(tokType, "LINE_BREAKS")) {
+                if (utils_1.has(tokType, "LINE_BREAKS")) {
                     if (tokType.LINE_BREAKS === true) {
                         hasAnyLineBreak = true;
                     }
                 }
                 else {
-                    if (Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["a" /* canMatchCharCode */])(terminatorCharCodes, tokType.PATTERN)) {
+                    if (reg_exp_1.canMatchCharCode(terminatorCharCodes, tokType.PATTERN)) {
                         hasAnyLineBreak = true;
                     }
                 }
@@ -60040,20 +59125,21 @@ function performWarningRuntimeChecks(lexerDefinition, trackLines, lineTerminator
             message: "Warning: No LINE_BREAKS Found.\n" +
                 "\tThis Lexer has been defined to track line and column information,\n" +
                 "\tBut none of the Token Types can be identified as matching a line terminator.\n" +
-                "\tSee https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#LINE_BREAKS \n" +
+                "\tSee https://chevrotain.io/docs/guide/resolving_lexer_errors.html#LINE_BREAKS \n" +
                 "\tfor details.",
-            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].NO_LINE_BREAKS_FLAGS
+            type: lexer_public_1.LexerDefinitionErrorType.NO_LINE_BREAKS_FLAGS
         });
     }
     return warnings;
 }
+exports.performWarningRuntimeChecks = performWarningRuntimeChecks;
 function cloneEmptyGroups(emptyGroups) {
     var clonedResult = {};
-    var groupKeys = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["G" /* keys */])(emptyGroups);
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(groupKeys, function (currKey) {
+    var groupKeys = utils_1.keys(emptyGroups);
+    utils_1.forEach(groupKeys, function (currKey) {
         var currGroupValue = emptyGroups[currKey];
         /* istanbul ignore else */
-        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["y" /* isArray */])(currGroupValue)) {
+        if (utils_1.isArray(currGroupValue)) {
             clonedResult[currKey] = [];
         }
         else {
@@ -60062,40 +59148,43 @@ function cloneEmptyGroups(emptyGroups) {
     });
     return clonedResult;
 }
+exports.cloneEmptyGroups = cloneEmptyGroups;
 // TODO: refactor to avoid duplication
 function isCustomPattern(tokenType) {
     var pattern = tokenType.PATTERN;
     /* istanbul ignore else */
-    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern)) {
+    if (utils_1.isRegExp(pattern)) {
         return false;
     }
-    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(pattern)) {
+    else if (utils_1.isFunction(pattern)) {
         // CustomPatternMatcherFunc - custom patterns do not require any transformations, only wrapping in a RegExp Like object
         return true;
     }
-    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(pattern, "exec")) {
+    else if (utils_1.has(pattern, "exec")) {
         // ICustomPattern
         return true;
     }
-    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern)) {
+    else if (utils_1.isString(pattern)) {
         return false;
     }
     else {
         throw Error("non exhaustive match");
     }
 }
+exports.isCustomPattern = isCustomPattern;
 function isShortPattern(pattern) {
-    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern) && pattern.length === 1) {
+    if (utils_1.isString(pattern) && pattern.length === 1) {
         return pattern.charCodeAt(0);
     }
     else {
         return false;
     }
 }
+exports.isShortPattern = isShortPattern;
 /**
  * Faster than using a RegExp for default newline detection during lexing.
  */
-var LineTerminatorOptimizedTester = {
+exports.LineTerminatorOptimizedTester = {
     // implements /\n|\r\n?/g.test
     test: function (text) {
         var len = text.length;
@@ -60120,33 +59209,34 @@ var LineTerminatorOptimizedTester = {
     lastIndex: 0
 };
 function checkLineBreaksIssues(tokType, lineTerminatorCharCodes) {
-    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(tokType, "LINE_BREAKS")) {
+    if (utils_1.has(tokType, "LINE_BREAKS")) {
         // if the user explicitly declared the line_breaks option we will respect their choice
         // and assume it is correct.
         return false;
     }
     else {
         /* istanbul ignore else */
-        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(tokType.PATTERN)) {
+        if (utils_1.isRegExp(tokType.PATTERN)) {
             try {
-                Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["a" /* canMatchCharCode */])(lineTerminatorCharCodes, tokType.PATTERN);
+                // TODO: why is the casting suddenly needed?
+                reg_exp_1.canMatchCharCode(lineTerminatorCharCodes, tokType.PATTERN);
             }
             catch (e) {
                 /* istanbul ignore next - to test this we would have to mock <canMatchCharCode> to throw an error */
                 return {
-                    issue: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].IDENTIFY_TERMINATOR,
+                    issue: lexer_public_1.LexerDefinitionErrorType.IDENTIFY_TERMINATOR,
                     errMsg: e.message
                 };
             }
             return false;
         }
-        else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(tokType.PATTERN)) {
+        else if (utils_1.isString(tokType.PATTERN)) {
             // string literal patterns can always be analyzed to detect line terminator usage
             return false;
         }
         else if (isCustomPattern(tokType)) {
             // custom token types
-            return { issue: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].CUSTOM_LINE_BREAK };
+            return { issue: lexer_public_1.LexerDefinitionErrorType.CUSTOM_LINE_BREAK };
         }
         else {
             throw Error("non exhaustive match");
@@ -60155,24 +59245,25 @@ function checkLineBreaksIssues(tokType, lineTerminatorCharCodes) {
 }
 function buildLineBreakIssueMessage(tokType, details) {
     /* istanbul ignore else */
-    if (details.issue === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].IDENTIFY_TERMINATOR) {
+    if (details.issue === lexer_public_1.LexerDefinitionErrorType.IDENTIFY_TERMINATOR) {
         return ("Warning: unable to identify line terminator usage in pattern.\n" +
             ("\tThe problem is in the <" + tokType.name + "> Token Type\n") +
             ("\t Root cause: " + details.errMsg + ".\n") +
-            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#IDENTIFY_TERMINATOR");
+            "\tFor details See: https://chevrotain.io/docs/guide/resolving_lexer_errors.html#IDENTIFY_TERMINATOR");
     }
-    else if (details.issue === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].CUSTOM_LINE_BREAK) {
+    else if (details.issue === lexer_public_1.LexerDefinitionErrorType.CUSTOM_LINE_BREAK) {
         return ("Warning: A Custom Token Pattern should specify the <line_breaks> option.\n" +
             ("\tThe problem is in the <" + tokType.name + "> Token Type\n") +
-            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#CUSTOM_LINE_BREAK");
+            "\tFor details See: https://chevrotain.io/docs/guide/resolving_lexer_errors.html#CUSTOM_LINE_BREAK");
     }
     else {
         throw Error("non exhaustive match");
     }
 }
+exports.buildLineBreakIssueMessage = buildLineBreakIssueMessage;
 function getCharCodes(charsOrCodes) {
-    var charCodes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(charsOrCodes, function (numOrString) {
-        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(numOrString) && numOrString.length > 0) {
+    var charCodes = utils_1.map(charsOrCodes, function (numOrString) {
+        if (utils_1.isString(numOrString) && numOrString.length > 0) {
             return numOrString.charCodeAt(0);
         }
         else {
@@ -60189,7 +59280,7 @@ function addToMapOfArrays(map, key, value) {
         map[key].push(value);
     }
 }
-var minOptimizationVal = 256;
+exports.minOptimizationVal = 256;
 /**
  * We ae mapping charCode above ASCI (256) into buckets each in the size of 256.
  * This is because ASCI are the most common start chars so each one of those will get its own
@@ -60205,11 +59296,13 @@ var minOptimizationVal = 256;
  * note the hack for fast division integer part extraction
  * See: https://stackoverflow.com/a/4228528
  */
+var charCodeToOptimizedIdxMap = [];
 function charCodeToOptimizedIndex(charCode) {
-    return charCode < minOptimizationVal
+    return charCode < exports.minOptimizationVal
         ? charCode
         : charCodeToOptimizedIdxMap[charCode];
 }
+exports.charCodeToOptimizedIndex = charCodeToOptimizedIndex;
 /**
  * This is a compromise between cold start / hot running performance
  * Creating this array takes ~3ms on a modern machine,
@@ -60218,9 +59311,8 @@ function charCodeToOptimizedIndex(charCode) {
  *
  * TODO: Perhaps it should be lazy initialized only if a charCode > 255 is used.
  */
-var charCodeToOptimizedIdxMap = [];
 function initCharCodeToOptimizedIndexMap() {
-    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["A" /* isEmpty */])(charCodeToOptimizedIdxMap)) {
+    if (utils_1.isEmpty(charCodeToOptimizedIdxMap)) {
         charCodeToOptimizedIdxMap = new Array(65536);
         for (var i = 0; i < 65536; i++) {
             /* tslint:disable */
@@ -60232,12 +59324,14 @@ function initCharCodeToOptimizedIndexMap() {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 216 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 213 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return defaultLexerErrorProvider; });
-var defaultLexerErrorProvider = {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.defaultLexerErrorProvider = void 0;
+exports.defaultLexerErrorProvider = {
     buildUnableToPopLexerModeMessage: function (token) {
         return "Unable to pop Lexer Mode after encountering Token ->" + token.image + "<- The Mode Stack is empty";
     },
@@ -60248,23 +59342,19 @@ var defaultLexerErrorProvider = {
 //# sourceMappingURL=lexer_errors_public.js.map
 
 /***/ }),
-/* 217 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 214 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = first;
-/* unused harmony export firstForSequence */
-/* unused harmony export firstForBranching */
-/* unused harmony export firstForTerminal */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(26);
 
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.firstForTerminal = exports.firstForBranching = exports.firstForSequence = exports.first = void 0;
+var utils_1 = __webpack_require__(2);
+var gast_public_1 = __webpack_require__(8);
+var gast_1 = __webpack_require__(30);
 function first(prod) {
     /* istanbul ignore else */
-    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["d" /* NonTerminal */]) {
+    if (prod instanceof gast_public_1.NonTerminal) {
         // this could in theory cause infinite loops if
         // (1) prod A refs prod B.
         // (2) prod B refs prod A
@@ -60275,19 +59365,20 @@ function first(prod) {
         // (1) not sure a grammar in which this can happen is useful for anything (productive)
         return first(prod.referencedRule);
     }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["k" /* Terminal */]) {
+    else if (prod instanceof gast_public_1.Terminal) {
         return firstForTerminal(prod);
     }
-    else if (Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["f" /* isSequenceProd */])(prod)) {
+    else if (gast_1.isSequenceProd(prod)) {
         return firstForSequence(prod);
     }
-    else if (Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["d" /* isBranchingProd */])(prod)) {
+    else if (gast_1.isBranchingProd(prod)) {
         return firstForBranching(prod);
     }
     else {
         throw Error("non exhaustive match");
     }
 }
+exports.first = first;
 function firstForSequence(prod) {
     var firstSet = [];
     var seq = prod.definition;
@@ -60299,108 +59390,556 @@ function firstForSequence(prod) {
     // scan a sequence until it's end or until we have found a NONE optional production in it
     while (hasInnerProdsRemaining && isLastInnerProdOptional) {
         currSubProd = seq[nextSubProdIdx];
-        isLastInnerProdOptional = Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["e" /* isOptionalProd */])(currSubProd);
+        isLastInnerProdOptional = gast_1.isOptionalProd(currSubProd);
         firstSet = firstSet.concat(first(currSubProd));
         nextSubProdIdx = nextSubProdIdx + 1;
         hasInnerProdsRemaining = seq.length > nextSubProdIdx;
     }
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["T" /* uniq */])(firstSet);
+    return utils_1.uniq(firstSet);
 }
+exports.firstForSequence = firstForSequence;
 function firstForBranching(prod) {
-    var allAlternativesFirsts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(prod.definition, function (innerProd) {
+    var allAlternativesFirsts = utils_1.map(prod.definition, function (innerProd) {
         return first(innerProd);
     });
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["T" /* uniq */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(allAlternativesFirsts));
+    return utils_1.uniq(utils_1.flatten(allAlternativesFirsts));
 }
+exports.firstForBranching = firstForBranching;
 function firstForTerminal(terminal) {
     return [terminal.terminalType];
 }
+exports.firstForTerminal = firstForTerminal;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 218 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 215 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IN; });
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IN = void 0;
 // TODO: can this be removed? where is it used?
-var IN = "_~IN~_";
+exports.IN = "_~IN~_";
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
-/* 219 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 216 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = resolveGrammar;
-/* harmony export (immutable) */ __webpack_exports__["c"] = validateGrammar;
-/* harmony export (immutable) */ __webpack_exports__["a"] = assignOccurrenceIndices;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(327);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__checks__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast__ = __webpack_require__(26);
 
-
-
-
-
-function resolveGrammar(options) {
-    options = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["k" /* defaults */])(options, {
-        errMsgProvider: __WEBPACK_IMPORTED_MODULE_3__errors_public__["a" /* defaultGrammarResolverErrorProvider */]
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkPrefixAlternativesAmbiguities = exports.validateSomeNonEmptyLookaheadPath = exports.validateTooManyAlts = exports.RepetionCollector = exports.validateAmbiguousAlternationAlternatives = exports.validateEmptyOrAlternative = exports.getFirstNoneTerminal = exports.validateNoLeftRecursion = exports.validateRuleIsOverridden = exports.validateRuleDoesNotAlreadyExist = exports.OccurrenceValidationCollector = exports.identifyProductionForDuplicates = exports.validateGrammar = void 0;
+var utils = __webpack_require__(2);
+var utils_1 = __webpack_require__(2);
+var parser_1 = __webpack_require__(9);
+var gast_1 = __webpack_require__(30);
+var lookahead_1 = __webpack_require__(32);
+var interpreter_1 = __webpack_require__(33);
+var gast_public_1 = __webpack_require__(8);
+var gast_visitor_public_1 = __webpack_require__(25);
+function validateGrammar(topLevels, globalMaxLookahead, tokenTypes, errMsgProvider, grammarName) {
+    var duplicateErrors = utils.map(topLevels, function (currTopLevel) {
+        return validateDuplicateProductions(currTopLevel, errMsgProvider);
     });
-    var topRulesTable = {};
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(options.rules, function (rule) {
-        topRulesTable[rule.name] = rule;
+    var leftRecursionErrors = utils.map(topLevels, function (currTopRule) {
+        return validateNoLeftRecursion(currTopRule, currTopRule, errMsgProvider);
     });
-    return Object(__WEBPACK_IMPORTED_MODULE_1__resolver__["a" /* resolveGrammar */])(topRulesTable, options.errMsgProvider);
+    var emptyAltErrors = [];
+    var ambiguousAltsErrors = [];
+    var emptyRepetitionErrors = [];
+    // left recursion could cause infinite loops in the following validations.
+    // It is safest to first have the user fix the left recursion errors first and only then examine Further issues.
+    if (utils_1.every(leftRecursionErrors, utils_1.isEmpty)) {
+        emptyAltErrors = utils_1.map(topLevels, function (currTopRule) {
+            return validateEmptyOrAlternative(currTopRule, errMsgProvider);
+        });
+        ambiguousAltsErrors = utils_1.map(topLevels, function (currTopRule) {
+            return validateAmbiguousAlternationAlternatives(currTopRule, globalMaxLookahead, errMsgProvider);
+        });
+        emptyRepetitionErrors = validateSomeNonEmptyLookaheadPath(topLevels, globalMaxLookahead, errMsgProvider);
+    }
+    var termsNamespaceConflictErrors = checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider);
+    var tooManyAltsErrors = utils_1.map(topLevels, function (curRule) {
+        return validateTooManyAlts(curRule, errMsgProvider);
+    });
+    var duplicateRulesError = utils_1.map(topLevels, function (curRule) {
+        return validateRuleDoesNotAlreadyExist(curRule, topLevels, grammarName, errMsgProvider);
+    });
+    return (utils.flatten(duplicateErrors.concat(emptyRepetitionErrors, leftRecursionErrors, emptyAltErrors, ambiguousAltsErrors, termsNamespaceConflictErrors, tooManyAltsErrors, duplicateRulesError)));
 }
-function validateGrammar(options) {
-    options = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["k" /* defaults */])(options, {
-        errMsgProvider: __WEBPACK_IMPORTED_MODULE_3__errors_public__["b" /* defaultGrammarValidatorErrorProvider */],
-        ignoredIssues: {}
+exports.validateGrammar = validateGrammar;
+function validateDuplicateProductions(topLevelRule, errMsgProvider) {
+    var collectorVisitor = new OccurrenceValidationCollector();
+    topLevelRule.accept(collectorVisitor);
+    var allRuleProductions = collectorVisitor.allProductions;
+    var productionGroups = utils.groupBy(allRuleProductions, identifyProductionForDuplicates);
+    var duplicates = utils.pick(productionGroups, function (currGroup) {
+        return currGroup.length > 1;
     });
-    return Object(__WEBPACK_IMPORTED_MODULE_2__checks__["c" /* validateGrammar */])(options.rules, options.maxLookahead, options.tokenTypes, options.ignoredIssues, options.errMsgProvider, options.grammarName);
+    var errors = utils.map(utils.values(duplicates), function (currDuplicates) {
+        var firstProd = utils.first(currDuplicates);
+        var msg = errMsgProvider.buildDuplicateFoundError(topLevelRule, currDuplicates);
+        var dslName = gast_1.getProductionDslName(firstProd);
+        var defError = {
+            message: msg,
+            type: parser_1.ParserDefinitionErrorType.DUPLICATE_PRODUCTIONS,
+            ruleName: topLevelRule.name,
+            dslName: dslName,
+            occurrence: firstProd.idx
+        };
+        var param = getExtraProductionArgument(firstProd);
+        if (param) {
+            defError.parameter = param;
+        }
+        return defError;
+    });
+    return errors;
 }
-function assignOccurrenceIndices(options) {
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(options.rules, function (currRule) {
-        var methodsCollector = new __WEBPACK_IMPORTED_MODULE_4__gast__["a" /* DslMethodsCollectorVisitor */]();
-        currRule.accept(methodsCollector);
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(methodsCollector.dslMethods, function (methods) {
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(methods, function (currMethod, arrIdx) {
-                currMethod.idx = arrIdx + 1;
+function identifyProductionForDuplicates(prod) {
+    return gast_1.getProductionDslName(prod) + "_#_" + prod.idx + "_#_" + getExtraProductionArgument(prod);
+}
+exports.identifyProductionForDuplicates = identifyProductionForDuplicates;
+function getExtraProductionArgument(prod) {
+    if (prod instanceof gast_public_1.Terminal) {
+        return prod.terminalType.name;
+    }
+    else if (prod instanceof gast_public_1.NonTerminal) {
+        return prod.nonTerminalName;
+    }
+    else {
+        return "";
+    }
+}
+var OccurrenceValidationCollector = /** @class */ (function (_super) {
+    __extends(OccurrenceValidationCollector, _super);
+    function OccurrenceValidationCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    OccurrenceValidationCollector.prototype.visitNonTerminal = function (subrule) {
+        this.allProductions.push(subrule);
+    };
+    OccurrenceValidationCollector.prototype.visitOption = function (option) {
+        this.allProductions.push(option);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    OccurrenceValidationCollector.prototype.visitAlternation = function (or) {
+        this.allProductions.push(or);
+    };
+    OccurrenceValidationCollector.prototype.visitTerminal = function (terminal) {
+        this.allProductions.push(terminal);
+    };
+    return OccurrenceValidationCollector;
+}(gast_visitor_public_1.GAstVisitor));
+exports.OccurrenceValidationCollector = OccurrenceValidationCollector;
+function validateRuleDoesNotAlreadyExist(rule, allRules, className, errMsgProvider) {
+    var errors = [];
+    var occurrences = utils_1.reduce(allRules, function (result, curRule) {
+        if (curRule.name === rule.name) {
+            return result + 1;
+        }
+        return result;
+    }, 0);
+    if (occurrences > 1) {
+        var errMsg = errMsgProvider.buildDuplicateRuleNameError({
+            topLevelRule: rule,
+            grammarName: className
+        });
+        errors.push({
+            message: errMsg,
+            type: parser_1.ParserDefinitionErrorType.DUPLICATE_RULE_NAME,
+            ruleName: rule.name
+        });
+    }
+    return errors;
+}
+exports.validateRuleDoesNotAlreadyExist = validateRuleDoesNotAlreadyExist;
+// TODO: is there anyway to get only the rule names of rules inherited from the super grammars?
+// This is not part of the IGrammarErrorProvider because the validation cannot be performed on
+// The grammar structure, only at runtime.
+function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
+    var errors = [];
+    var errMsg;
+    if (!utils.contains(definedRulesNames, ruleName)) {
+        errMsg =
+            "Invalid rule override, rule: ->" + ruleName + "<- cannot be overridden in the grammar: ->" + className + "<-" +
+                "as it is not defined in any of the super grammars ";
+        errors.push({
+            message: errMsg,
+            type: parser_1.ParserDefinitionErrorType.INVALID_RULE_OVERRIDE,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+exports.validateRuleIsOverridden = validateRuleIsOverridden;
+function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path) {
+    if (path === void 0) { path = []; }
+    var errors = [];
+    var nextNonTerminals = getFirstNoneTerminal(currRule.definition);
+    if (utils.isEmpty(nextNonTerminals)) {
+        return [];
+    }
+    else {
+        var ruleName = topRule.name;
+        var foundLeftRecursion = utils.contains(nextNonTerminals, topRule);
+        if (foundLeftRecursion) {
+            errors.push({
+                message: errMsgProvider.buildLeftRecursionError({
+                    topLevelRule: topRule,
+                    leftRecursionPath: path
+                }),
+                type: parser_1.ParserDefinitionErrorType.LEFT_RECURSION,
+                ruleName: ruleName
             });
+        }
+        // we are only looking for cyclic paths leading back to the specific topRule
+        // other cyclic paths are ignored, we still need this difference to avoid infinite loops...
+        var validNextSteps = utils.difference(nextNonTerminals, path.concat([topRule]));
+        var errorsFromNextSteps = utils.map(validNextSteps, function (currRefRule) {
+            var newPath = utils.cloneArr(path);
+            newPath.push(currRefRule);
+            return validateNoLeftRecursion(topRule, currRefRule, errMsgProvider, newPath);
+        });
+        return errors.concat(utils.flatten(errorsFromNextSteps));
+    }
+}
+exports.validateNoLeftRecursion = validateNoLeftRecursion;
+function getFirstNoneTerminal(definition) {
+    var result = [];
+    if (utils.isEmpty(definition)) {
+        return result;
+    }
+    var firstProd = utils.first(definition);
+    /* istanbul ignore else */
+    if (firstProd instanceof gast_public_1.NonTerminal) {
+        result.push(firstProd.referencedRule);
+    }
+    else if (firstProd instanceof gast_public_1.Alternative ||
+        firstProd instanceof gast_public_1.Option ||
+        firstProd instanceof gast_public_1.RepetitionMandatory ||
+        firstProd instanceof gast_public_1.RepetitionMandatoryWithSeparator ||
+        firstProd instanceof gast_public_1.RepetitionWithSeparator ||
+        firstProd instanceof gast_public_1.Repetition) {
+        result = result.concat(getFirstNoneTerminal(firstProd.definition));
+    }
+    else if (firstProd instanceof gast_public_1.Alternation) {
+        // each sub definition in alternation is a FLAT
+        result = utils.flatten(utils.map(firstProd.definition, function (currSubDef) {
+            return getFirstNoneTerminal(currSubDef.definition);
+        }));
+    }
+    else if (firstProd instanceof gast_public_1.Terminal) {
+        // nothing to see, move along
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+    var isFirstOptional = gast_1.isOptionalProd(firstProd);
+    var hasMore = definition.length > 1;
+    if (isFirstOptional && hasMore) {
+        var rest = utils.drop(definition);
+        return result.concat(getFirstNoneTerminal(rest));
+    }
+    else {
+        return result;
+    }
+}
+exports.getFirstNoneTerminal = getFirstNoneTerminal;
+var OrCollector = /** @class */ (function (_super) {
+    __extends(OrCollector, _super);
+    function OrCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.alternations = [];
+        return _this;
+    }
+    OrCollector.prototype.visitAlternation = function (node) {
+        this.alternations.push(node);
+    };
+    return OrCollector;
+}(gast_visitor_public_1.GAstVisitor));
+function validateEmptyOrAlternative(topLevelRule, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = utils.reduce(ors, function (errors, currOr) {
+        var exceptLast = utils.dropRight(currOr.definition);
+        var currErrors = utils.map(exceptLast, function (currAlternative, currAltIdx) {
+            var possibleFirstInAlt = interpreter_1.nextPossibleTokensAfter([currAlternative], [], null, 1);
+            if (utils.isEmpty(possibleFirstInAlt)) {
+                return {
+                    message: errMsgProvider.buildEmptyAlternationError({
+                        topLevelRule: topLevelRule,
+                        alternation: currOr,
+                        emptyChoiceIdx: currAltIdx
+                    }),
+                    type: parser_1.ParserDefinitionErrorType.NONE_LAST_EMPTY_ALT,
+                    ruleName: topLevelRule.name,
+                    occurrence: currOr.idx,
+                    alternative: currAltIdx + 1
+                };
+            }
+            else {
+                return null;
+            }
+        });
+        return errors.concat(utils.compact(currErrors));
+    }, []);
+    return errors;
+}
+exports.validateEmptyOrAlternative = validateEmptyOrAlternative;
+function validateAmbiguousAlternationAlternatives(topLevelRule, globalMaxLookahead, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    // New Handling of ignoring ambiguities
+    // - https://github.com/chevrotain/chevrotain/issues/869
+    ors = utils_1.reject(ors, function (currOr) { return currOr.ignoreAmbiguities === true; });
+    var errors = utils.reduce(ors, function (result, currOr) {
+        var currOccurrence = currOr.idx;
+        var actualMaxLookahead = currOr.maxLookahead || globalMaxLookahead;
+        var alternatives = lookahead_1.getLookaheadPathsForOr(currOccurrence, topLevelRule, actualMaxLookahead, currOr);
+        var altsAmbiguityErrors = checkAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
+        var altsPrefixAmbiguityErrors = checkPrefixAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
+        return result.concat(altsAmbiguityErrors, altsPrefixAmbiguityErrors);
+    }, []);
+    return errors;
+}
+exports.validateAmbiguousAlternationAlternatives = validateAmbiguousAlternationAlternatives;
+var RepetionCollector = /** @class */ (function (_super) {
+    __extends(RepetionCollector, _super);
+    function RepetionCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    RepetionCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    RepetionCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    return RepetionCollector;
+}(gast_visitor_public_1.GAstVisitor));
+exports.RepetionCollector = RepetionCollector;
+function validateTooManyAlts(topLevelRule, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = utils.reduce(ors, function (errors, currOr) {
+        if (currOr.definition.length > 255) {
+            errors.push({
+                message: errMsgProvider.buildTooManyAlternativesError({
+                    topLevelRule: topLevelRule,
+                    alternation: currOr
+                }),
+                type: parser_1.ParserDefinitionErrorType.TOO_MANY_ALTS,
+                ruleName: topLevelRule.name,
+                occurrence: currOr.idx
+            });
+        }
+        return errors;
+    }, []);
+    return errors;
+}
+exports.validateTooManyAlts = validateTooManyAlts;
+function validateSomeNonEmptyLookaheadPath(topLevelRules, maxLookahead, errMsgProvider) {
+    var errors = [];
+    utils_1.forEach(topLevelRules, function (currTopRule) {
+        var collectorVisitor = new RepetionCollector();
+        currTopRule.accept(collectorVisitor);
+        var allRuleProductions = collectorVisitor.allProductions;
+        utils_1.forEach(allRuleProductions, function (currProd) {
+            var prodType = lookahead_1.getProdType(currProd);
+            var actualMaxLookahead = currProd.maxLookahead || maxLookahead;
+            var currOccurrence = currProd.idx;
+            var paths = lookahead_1.getLookaheadPathsForOptionalProd(currOccurrence, currTopRule, prodType, actualMaxLookahead);
+            var pathsInsideProduction = paths[0];
+            if (utils_1.isEmpty(utils_1.flatten(pathsInsideProduction))) {
+                var errMsg = errMsgProvider.buildEmptyRepetitionError({
+                    topLevelRule: currTopRule,
+                    repetition: currProd
+                });
+                errors.push({
+                    message: errMsg,
+                    type: parser_1.ParserDefinitionErrorType.NO_NON_EMPTY_LOOKAHEAD,
+                    ruleName: currTopRule.name
+                });
+            }
         });
     });
+    return errors;
 }
-//# sourceMappingURL=gast_resolver_public.js.map
+exports.validateSomeNonEmptyLookaheadPath = validateSomeNonEmptyLookaheadPath;
+function checkAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
+    var foundAmbiguousPaths = [];
+    var identicalAmbiguities = utils_1.reduce(alternatives, function (result, currAlt, currAltIdx) {
+        // ignore (skip) ambiguities with this alternative
+        if (alternation.definition[currAltIdx].ignoreAmbiguities === true) {
+            return result;
+        }
+        utils_1.forEach(currAlt, function (currPath) {
+            var altsCurrPathAppearsIn = [currAltIdx];
+            utils_1.forEach(alternatives, function (currOtherAlt, currOtherAltIdx) {
+                if (currAltIdx !== currOtherAltIdx &&
+                    lookahead_1.containsPath(currOtherAlt, currPath) &&
+                    // ignore (skip) ambiguities with this "other" alternative
+                    alternation.definition[currOtherAltIdx].ignoreAmbiguities !== true) {
+                    altsCurrPathAppearsIn.push(currOtherAltIdx);
+                }
+            });
+            if (altsCurrPathAppearsIn.length > 1 &&
+                !lookahead_1.containsPath(foundAmbiguousPaths, currPath)) {
+                foundAmbiguousPaths.push(currPath);
+                result.push({
+                    alts: altsCurrPathAppearsIn,
+                    path: currPath
+                });
+            }
+        });
+        return result;
+    }, []);
+    var currErrors = utils.map(identicalAmbiguities, function (currAmbDescriptor) {
+        var ambgIndices = utils_1.map(currAmbDescriptor.alts, function (currAltIdx) { return currAltIdx + 1; });
+        var currMessage = errMsgProvider.buildAlternationAmbiguityError({
+            topLevelRule: rule,
+            alternation: alternation,
+            ambiguityIndices: ambgIndices,
+            prefixPath: currAmbDescriptor.path
+        });
+        return {
+            message: currMessage,
+            type: parser_1.ParserDefinitionErrorType.AMBIGUOUS_ALTS,
+            ruleName: rule.name,
+            occurrence: alternation.idx,
+            alternatives: [currAmbDescriptor.alts]
+        };
+    });
+    return currErrors;
+}
+function checkPrefixAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
+    var errors = [];
+    // flatten
+    var pathsAndIndices = utils_1.reduce(alternatives, function (result, currAlt, idx) {
+        var currPathsAndIdx = utils_1.map(currAlt, function (currPath) {
+            return { idx: idx, path: currPath };
+        });
+        return result.concat(currPathsAndIdx);
+    }, []);
+    utils_1.forEach(pathsAndIndices, function (currPathAndIdx) {
+        var alternativeGast = alternation.definition[currPathAndIdx.idx];
+        // ignore (skip) ambiguities with this alternative
+        if (alternativeGast.ignoreAmbiguities === true) {
+            return;
+        }
+        var targetIdx = currPathAndIdx.idx;
+        var targetPath = currPathAndIdx.path;
+        var prefixAmbiguitiesPathsAndIndices = utils_1.findAll(pathsAndIndices, function (searchPathAndIdx) {
+            // prefix ambiguity can only be created from lower idx (higher priority) path
+            return (
+            // ignore (skip) ambiguities with this "other" alternative
+            alternation.definition[searchPathAndIdx.idx].ignoreAmbiguities !==
+                true &&
+                searchPathAndIdx.idx < targetIdx &&
+                // checking for strict prefix because identical lookaheads
+                // will be be detected using a different validation.
+                lookahead_1.isStrictPrefixOfPath(searchPathAndIdx.path, targetPath));
+        });
+        var currPathPrefixErrors = utils_1.map(prefixAmbiguitiesPathsAndIndices, function (currAmbPathAndIdx) {
+            var ambgIndices = [currAmbPathAndIdx.idx + 1, targetIdx + 1];
+            var occurrence = alternation.idx === 0 ? "" : alternation.idx;
+            var message = errMsgProvider.buildAlternationPrefixAmbiguityError({
+                topLevelRule: rule,
+                alternation: alternation,
+                ambiguityIndices: ambgIndices,
+                prefixPath: currAmbPathAndIdx.path
+            });
+            return {
+                message: message,
+                type: parser_1.ParserDefinitionErrorType.AMBIGUOUS_PREFIX_ALTS,
+                ruleName: rule.name,
+                occurrence: occurrence,
+                alternatives: ambgIndices
+            };
+        });
+        errors = errors.concat(currPathPrefixErrors);
+    });
+    return errors;
+}
+exports.checkPrefixAlternativesAmbiguities = checkPrefixAlternativesAmbiguities;
+function checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider) {
+    var errors = [];
+    var tokenNames = utils_1.map(tokenTypes, function (currToken) { return currToken.name; });
+    utils_1.forEach(topLevels, function (currRule) {
+        var currRuleName = currRule.name;
+        if (utils_1.contains(tokenNames, currRuleName)) {
+            var errMsg = errMsgProvider.buildNamespaceConflictError(currRule);
+            errors.push({
+                message: errMsg,
+                type: parser_1.ParserDefinitionErrorType.CONFLICT_TOKENS_RULES_NAMESPACE,
+                ruleName: currRuleName
+            });
+        }
+    });
+    return errors;
+}
+//# sourceMappingURL=checks.js.map
 
 /***/ }),
-/* 220 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 217 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* unused harmony export EOF_FOLLOW_KEY */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IN_RULE_RECOVERY_EXCEPTION; });
-/* unused harmony export InRuleRecoveryException */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Recoverable; });
-/* unused harmony export attemptInRepetitionRecovery */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(218);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
-
-
-
-
-var EOF_FOLLOW_KEY = {};
-var IN_RULE_RECOVERY_EXCEPTION = "InRuleRecoveryException";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.attemptInRepetitionRecovery = exports.Recoverable = exports.InRuleRecoveryException = exports.IN_RULE_RECOVERY_EXCEPTION = exports.EOF_FOLLOW_KEY = void 0;
+var tokens_public_1 = __webpack_require__(17);
+var utils_1 = __webpack_require__(2);
+var exceptions_public_1 = __webpack_require__(26);
+var constants_1 = __webpack_require__(215);
+var parser_1 = __webpack_require__(9);
+exports.EOF_FOLLOW_KEY = {};
+exports.IN_RULE_RECOVERY_EXCEPTION = "InRuleRecoveryException";
 function InRuleRecoveryException(message) {
-    this.name = IN_RULE_RECOVERY_EXCEPTION;
+    this.name = exports.IN_RULE_RECOVERY_EXCEPTION;
     this.message = message;
 }
+exports.InRuleRecoveryException = InRuleRecoveryException;
 InRuleRecoveryException.prototype = Error.prototype;
 /**
  * This trait is responsible for the error recovery and fault tolerant logic
@@ -60411,9 +59950,9 @@ var Recoverable = /** @class */ (function () {
     Recoverable.prototype.initRecoverable = function (config) {
         this.firstAfterRepMap = {};
         this.resyncFollows = {};
-        this.recoveryEnabled = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "recoveryEnabled")
+        this.recoveryEnabled = utils_1.has(config, "recoveryEnabled")
             ? config.recoveryEnabled
-            : __WEBPACK_IMPORTED_MODULE_4__parser__["b" /* DEFAULT_PARSER_CONFIG */].recoveryEnabled;
+            : parser_1.DEFAULT_PARSER_CONFIG.recoveryEnabled;
         // performance optimization, NOOP will be inlined which
         // effectively means that this optional feature does not exist
         // when not used.
@@ -60422,7 +59961,7 @@ var Recoverable = /** @class */ (function () {
         }
     };
     Recoverable.prototype.getTokenToInsert = function (tokType) {
-        var tokToInsert = Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["c" /* createTokenInstance */])(tokType, "", NaN, NaN, NaN, NaN, NaN, NaN);
+        var tokToInsert = tokens_public_1.createTokenInstance(tokType, "", NaN, NaN, NaN, NaN, NaN, NaN);
         tokToInsert.isInsertedInRecovery = true;
         return tokToInsert;
     };
@@ -60448,9 +59987,9 @@ var Recoverable = /** @class */ (function () {
                 previous: previousToken,
                 ruleName: _this.getCurrRuleFullName()
             });
-            var error = new __WEBPACK_IMPORTED_MODULE_2__exceptions_public__["b" /* MismatchedTokenException */](msg, nextTokenWithoutResync, _this.LA(0));
+            var error = new exceptions_public_1.MismatchedTokenException(msg, nextTokenWithoutResync, _this.LA(0));
             // the first token here will be the original cause of the error, this is not part of the resyncedTokens property.
-            error.resyncedTokens = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(resyncedTokens);
+            error.resyncedTokens = utils_1.dropRight(resyncedTokens);
             _this.SAVE_ERROR(error);
         };
         while (!passedResyncPoint) {
@@ -60534,11 +60073,11 @@ var Recoverable = /** @class */ (function () {
             return false;
         }
         // must know the possible following tokens to perform single token insertion
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(follows)) {
+        if (utils_1.isEmpty(follows)) {
             return false;
         }
         var mismatchedTok = this.LA(1);
-        var isMisMatchedTokInFollows = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(follows, function (possibleFollowsTokType) {
+        var isMisMatchedTokInFollows = utils_1.find(follows, function (possibleFollowsTokType) {
             return _this.tokenMatcher(mismatchedTok, possibleFollowsTokType);
         }) !== undefined;
         return isMisMatchedTokInFollows;
@@ -60550,7 +60089,7 @@ var Recoverable = /** @class */ (function () {
     Recoverable.prototype.isInCurrentRuleReSyncSet = function (tokenTypeIdx) {
         var followKey = this.getCurrFollowKey();
         var currentRuleReSyncSet = this.getFollowSetFromFollowKey(followKey);
-        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(currentRuleReSyncSet, tokenTypeIdx);
+        return utils_1.contains(currentRuleReSyncSet, tokenTypeIdx);
     };
     Recoverable.prototype.findReSyncTokenType = function () {
         var allPossibleReSyncTokTypes = this.flattenFollowSet();
@@ -60559,7 +60098,7 @@ var Recoverable = /** @class */ (function () {
         var k = 2;
         while (true) {
             var nextTokenType = nextToken.tokenType;
-            if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(allPossibleReSyncTokTypes, nextTokenType)) {
+            if (utils_1.contains(allPossibleReSyncTokTypes, nextTokenType)) {
                 return nextTokenType;
             }
             nextToken = this.LA(k);
@@ -60569,7 +60108,7 @@ var Recoverable = /** @class */ (function () {
     Recoverable.prototype.getCurrFollowKey = function () {
         // the length is at least one as we always add the ruleName to the stack before invoking the rule.
         if (this.RULE_STACK.length === 1) {
-            return EOF_FOLLOW_KEY;
+            return exports.EOF_FOLLOW_KEY;
         }
         var currRuleShortName = this.getLastExplicitRuleShortName();
         var currRuleIdx = this.getLastExplicitRuleOccurrenceIndex();
@@ -60584,14 +60123,9 @@ var Recoverable = /** @class */ (function () {
         var _this = this;
         var explicitRuleStack = this.RULE_STACK;
         var explicitOccurrenceStack = this.RULE_OCCURRENCE_STACK;
-        if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.LAST_EXPLICIT_RULE_STACK)) {
-            explicitRuleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.LAST_EXPLICIT_RULE_STACK, function (idx) { return _this.RULE_STACK[idx]; });
-            explicitOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.LAST_EXPLICIT_RULE_STACK, function (idx) { return _this.RULE_OCCURRENCE_STACK[idx]; });
-        }
-        // TODO: only iterate over explicit rules here
-        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(explicitRuleStack, function (ruleName, idx) {
+        return utils_1.map(explicitRuleStack, function (ruleName, idx) {
             if (idx === 0) {
-                return EOF_FOLLOW_KEY;
+                return exports.EOF_FOLLOW_KEY;
             }
             return {
                 ruleName: _this.shortRuleNameToFullName(ruleName),
@@ -60602,25 +60136,22 @@ var Recoverable = /** @class */ (function () {
     };
     Recoverable.prototype.flattenFollowSet = function () {
         var _this = this;
-        var followStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.buildFullFollowKeyStack(), function (currKey) {
+        var followStack = utils_1.map(this.buildFullFollowKeyStack(), function (currKey) {
             return _this.getFollowSetFromFollowKey(currKey);
         });
-        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["t" /* flatten */])(followStack);
+        return utils_1.flatten(followStack);
     };
     Recoverable.prototype.getFollowSetFromFollowKey = function (followKey) {
-        if (followKey === EOF_FOLLOW_KEY) {
-            return [__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["a" /* EOF */]];
+        if (followKey === exports.EOF_FOLLOW_KEY) {
+            return [tokens_public_1.EOF];
         }
-        var followName = followKey.ruleName +
-            followKey.idxInCallingRule +
-            __WEBPACK_IMPORTED_MODULE_3__constants__["a" /* IN */] +
-            followKey.inRule;
+        var followName = followKey.ruleName + followKey.idxInCallingRule + constants_1.IN + followKey.inRule;
         return this.resyncFollows[followName];
     };
     // It does not make any sense to include a virtual EOF token in the list of resynced tokens
     // as EOF does not really exist and thus does not contain any useful information (line/column numbers)
     Recoverable.prototype.addToResyncTokens = function (token, resyncTokens) {
-        if (!this.tokenMatcher(token, __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["a" /* EOF */])) {
+        if (!this.tokenMatcher(token, tokens_public_1.EOF)) {
             resyncTokens.push(token);
         }
         return resyncTokens;
@@ -60633,7 +60164,7 @@ var Recoverable = /** @class */ (function () {
             this.addToResyncTokens(nextTok, resyncedTokens);
         }
         // the last token is not part of the error.
-        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(resyncedTokens);
+        return utils_1.dropRight(resyncedTokens);
     };
     Recoverable.prototype.attemptInRepetitionRecovery = function (prodFunc, args, lookaheadFunc, dslMethodIdx, prodOccurrence, nextToksWalker, notStuck) {
         // by default this is a NO-OP
@@ -60641,7 +60172,7 @@ var Recoverable = /** @class */ (function () {
     };
     Recoverable.prototype.getCurrentGrammarPath = function (tokType, tokIdxInRule) {
         var pathRuleStack = this.getHumanReadableRuleStack();
-        var pathOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.RULE_OCCURRENCE_STACK);
+        var pathOccurrenceStack = utils_1.cloneArr(this.RULE_OCCURRENCE_STACK);
         var grammarPath = {
             ruleStack: pathRuleStack,
             occurrenceStack: pathOccurrenceStack,
@@ -60652,20 +60183,13 @@ var Recoverable = /** @class */ (function () {
     };
     Recoverable.prototype.getHumanReadableRuleStack = function () {
         var _this = this;
-        if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.LAST_EXPLICIT_RULE_STACK)) {
-            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.LAST_EXPLICIT_RULE_STACK, function (currIdx) {
-                return _this.shortRuleNameToFullName(_this.RULE_STACK[currIdx]);
-            });
-        }
-        else {
-            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.RULE_STACK, function (currShortName) {
-                return _this.shortRuleNameToFullName(currShortName);
-            });
-        }
+        return utils_1.map(this.RULE_STACK, function (currShortName) {
+            return _this.shortRuleNameToFullName(currShortName);
+        });
     };
     return Recoverable;
 }());
-
+exports.Recoverable = Recoverable;
 function attemptInRepetitionRecovery(prodFunc, args, lookaheadFunc, dslMethodIdx, prodOccurrence, nextToksWalker, notStuck) {
     var key = this.getKeyForAutomaticLookahead(dslMethodIdx, prodOccurrence);
     var firstAfterRepInfo = this.firstAfterRepMap[key];
@@ -60684,7 +60208,7 @@ function attemptInRepetitionRecovery(prodFunc, args, lookaheadFunc, dslMethodIdx
     if (this.RULE_STACK.length === 1 &&
         isEndOfRule &&
         expectTokAfterLastMatch === undefined) {
-        expectTokAfterLastMatch = __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["a" /* EOF */];
+        expectTokAfterLastMatch = tokens_public_1.EOF;
         nextTokIdx = 1;
     }
     if (this.shouldInRepetitionRecoveryBeTried(expectTokAfterLastMatch, nextTokIdx, notStuck)) {
@@ -60694,42 +60218,48 @@ function attemptInRepetitionRecovery(prodFunc, args, lookaheadFunc, dslMethodIdx
         this.tryInRepetitionRecovery(prodFunc, args, lookaheadFunc, expectTokAfterLastMatch);
     }
 }
+exports.attemptInRepetitionRecovery = attemptInRepetitionRecovery;
 //# sourceMappingURL=recoverable.js.map
 
 /***/ }),
-/* 221 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 218 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = classNameFromInstance;
-/* harmony export (immutable) */ __webpack_exports__["c"] = functionName;
-/* harmony export (immutable) */ __webpack_exports__["b"] = defineNameProp;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.defineNameProp = exports.functionName = exports.classNameFromInstance = void 0;
+var utils_1 = __webpack_require__(2);
 function classNameFromInstance(instance) {
     return functionName(instance.constructor);
 }
-var FUNC_NAME_REGEXP = /^\s*function\s*(\S*)\s*\(/;
+exports.classNameFromInstance = classNameFromInstance;
 var NAME = "name";
-/* istanbul ignore next too many hacks for IE/old versions of node.js here*/
+/**
+ * Utility to obtain Function names.
+ * Note that there should not be an assumptions on the result of this function.
+ * E.g: When running from minified source code the result may be auto generated.
+ */
 function functionName(func) {
     // Engines that support Function.prototype.name OR the nth (n>1) time after
     // the name has been computed in the following else block.
     var existingNameProp = func.name;
+    /* istanbul ignore else - too many hacks for IE/old versions of node.js here*/
     if (existingNameProp) {
         return existingNameProp;
     }
-    // hack for IE and engines that do not support Object.defineProperty on function.name (Node.js 0.10 && 0.12)
-    var computedName = func.toString().match(FUNC_NAME_REGEXP)[1];
-    return computedName;
+    else {
+        return "anonymous";
+    }
 }
+exports.functionName = functionName;
 /**
  * @returns {boolean} - has the property been successfully defined
  */
 function defineNameProp(obj, nameValue) {
     var namePropDescriptor = Object.getOwnPropertyDescriptor(obj, NAME);
     /* istanbul ignore else -> will only run in old versions of node.js */
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(namePropDescriptor) || namePropDescriptor.configurable) {
+    if (utils_1.isUndefined(namePropDescriptor) || namePropDescriptor.configurable) {
         Object.defineProperty(obj, NAME, {
             enumerable: false,
             configurable: true,
@@ -60741,26 +60271,27 @@ function defineNameProp(obj, nameValue) {
     /* istanbul ignore next -> will only run in old versions of node.js */
     return false;
 }
+exports.defineNameProp = defineNameProp;
 //# sourceMappingURL=lang_extensions.js.map
 
 /***/ }),
-/* 222 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(223);
+__webpack_require__(220);
 
 /***/ }),
-/* 223 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(224);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48)))
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(221);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(46)))
 
 /***/ }),
-/* 224 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60807,7 +60338,7 @@ Object.keys(_events).forEach(function (key) {
   });
 });
 
-var _filters = __webpack_require__(21);
+var _filters = __webpack_require__(20);
 
 Object.keys(_filters).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -60831,7 +60362,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _logger = __webpack_require__(36);
+var _logger = __webpack_require__(34);
 
 Object.keys(_logger).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -60843,7 +60374,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(245);
+var _bubbleOverlay = __webpack_require__(242);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -60852,7 +60383,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(250);
+var _barChart = __webpack_require__(247);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -60861,7 +60392,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(253);
+var _bubbleChart = __webpack_require__(250);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -60870,7 +60401,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(254);
+var _cloudChart = __webpack_require__(251);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -60879,7 +60410,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(255);
+var _compositeChart = __webpack_require__(252);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -60888,7 +60419,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(256);
+var _dataCount = __webpack_require__(253);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -60897,7 +60428,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(257);
+var _dataGrid = __webpack_require__(254);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -60906,7 +60437,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(258);
+var _geoChoroplethChart = __webpack_require__(255);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -60915,7 +60446,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(187);
+var _heatmap = __webpack_require__(185);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -60924,7 +60455,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(266);
+var _pieChart = __webpack_require__(263);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -60933,7 +60464,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(267);
+var _lineChart = __webpack_require__(264);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -60942,7 +60473,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(268);
+var _numberChart = __webpack_require__(265);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -60951,7 +60482,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(269);
+var _rasterChart = __webpack_require__(266);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -60960,7 +60491,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(320);
+var _rowChart = __webpack_require__(317);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -60969,7 +60500,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(321);
+var _scatterPlot = __webpack_require__(318);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -60978,7 +60509,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(322);
+var _mapdTable = __webpack_require__(319);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -60987,7 +60518,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(323);
+var _boxPlot = __webpack_require__(320);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -60996,7 +60527,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(324);
+var _countWidget = __webpack_require__(321);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -61005,7 +60536,7 @@ Object.defineProperty(exports, "countWidget", {
   }
 });
 
-var _asyncMixin = __webpack_require__(182);
+var _asyncMixin = __webpack_require__(180);
 
 Object.defineProperty(exports, "asyncMixin", {
   enumerable: true,
@@ -61014,7 +60545,7 @@ Object.defineProperty(exports, "asyncMixin", {
   }
 });
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 Object.defineProperty(exports, "baseMixin", {
   enumerable: true,
@@ -61023,7 +60554,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(38);
+var _bubbleMixin = __webpack_require__(36);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -61059,7 +60590,7 @@ Object.defineProperty(exports, "coordinateGridMixin", {
   }
 });
 
-var _coordinateGridRasterMixin = __webpack_require__(193);
+var _coordinateGridRasterMixin = __webpack_require__(191);
 
 Object.defineProperty(exports, "coordinateGridRasterMixin", {
   enumerable: true,
@@ -61068,7 +60599,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(39);
+var _stackMixin = __webpack_require__(37);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -61086,7 +60617,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(41);
+var _mapMixin = __webpack_require__(39);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -61095,7 +60626,7 @@ Object.defineProperty(exports, "mapMixin", {
   }
 });
 
-var _rasterLayerHeatmapMixin = __webpack_require__(209);
+var _rasterLayerHeatmapMixin = __webpack_require__(207);
 
 Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   enumerable: true,
@@ -61104,7 +60635,7 @@ Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   }
 });
 
-var _rasterLayerPointMixin = __webpack_require__(210);
+var _rasterLayerPointMixin = __webpack_require__(208);
 
 Object.defineProperty(exports, "rasterLayerPointMixin", {
   enumerable: true,
@@ -61113,7 +60644,7 @@ Object.defineProperty(exports, "rasterLayerPointMixin", {
   }
 });
 
-var _rasterLayerPolyMixin = __webpack_require__(211);
+var _rasterLayerPolyMixin = __webpack_require__(209);
 
 Object.defineProperty(exports, "rasterLayerPolyMixin", {
   enumerable: true,
@@ -61122,7 +60653,7 @@ Object.defineProperty(exports, "rasterLayerPolyMixin", {
   }
 });
 
-var _rasterLayer = __webpack_require__(341);
+var _rasterLayer = __webpack_require__(340);
 
 Object.defineProperty(exports, "rasterLayer", {
   enumerable: true,
@@ -61131,7 +60662,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(343);
+var _rasterMixin = __webpack_require__(342);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -61140,7 +60671,7 @@ Object.defineProperty(exports, "rasterMixin", {
   }
 });
 
-var _scatterMixin = __webpack_require__(202);
+var _scatterMixin = __webpack_require__(200);
 
 Object.defineProperty(exports, "scatterMixin", {
   enumerable: true,
@@ -61149,7 +60680,7 @@ Object.defineProperty(exports, "scatterMixin", {
   }
 });
 
-var _spinnerMixin = __webpack_require__(185);
+var _spinnerMixin = __webpack_require__(183);
 
 Object.defineProperty(exports, "spinnerMixin", {
   enumerable: true,
@@ -61158,7 +60689,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(344);
+var _legendContinuous = __webpack_require__(343);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -61167,7 +60698,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(345);
+var _legend = __webpack_require__(344);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -61176,7 +60707,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(347);
+var _dcLegendCont = __webpack_require__(346);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -61185,7 +60716,7 @@ Object.defineProperty(exports, "legendCont", {
   }
 });
 
-var _customSqlParser = __webpack_require__(212);
+var _customSqlParser = __webpack_require__(210);
 
 Object.defineProperty(exports, "parseFactsFromCustomSQL", {
   enumerable: true,
@@ -61198,20 +60729,20 @@ var _d2 = __webpack_require__(1);
 
 var _d = _interopRequireWildcard(_d2);
 
-var _errors = __webpack_require__(37);
+var _errors = __webpack_require__(35);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+__webpack_require__(347);
 __webpack_require__(348);
 __webpack_require__(349);
 __webpack_require__(350);
 __webpack_require__(351);
-__webpack_require__(352);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(353);
+  window.mapboxgl = __webpack_require__(352);
 }
 
 exports.d3 = _d; // eslint-disable-line
@@ -61223,18 +60754,18 @@ var errors = exports.errors = {
 };
 
 /***/ }),
-/* 225 */
+/* 222 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(11);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(240);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(237);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(242);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(239);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(240);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -61251,13 +60782,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 226 */
+/* 223 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseExpression;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(47);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -61352,7 +60883,7 @@ function parseExpression(expression) {
 }
 
 /***/ }),
-/* 227 */
+/* 224 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61390,23 +60921,23 @@ function parseDataState(state, parser) {
 }
 
 /***/ }),
-/* 228 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(229);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(230);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(231);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(232);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(233);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(234);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(235);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(236);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(237);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(233);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(235);
 
 
 
@@ -61451,7 +60982,7 @@ function parseTransform(sql, t, parser) {
 }
 
 /***/ }),
-/* 229 */
+/* 226 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61516,7 +61047,7 @@ function parseGroupBy(sql, groupby, parser) {
 }
 
 /***/ }),
-/* 230 */
+/* 227 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61548,13 +61079,13 @@ function parseBin(sql, _ref) {
 }
 
 /***/ }),
-/* 231 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(48);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -61585,7 +61116,7 @@ function parseCrossfilter(sql, transform) {
 }
 
 /***/ }),
-/* 232 */
+/* 229 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61606,7 +61137,7 @@ function parseSort(sql, transform) {
 }
 
 /***/ }),
-/* 233 */
+/* 230 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61620,7 +61151,7 @@ function parseLimit(sql, transform) {
 }
 
 /***/ }),
-/* 234 */
+/* 231 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61668,7 +61199,7 @@ function parsePostFilter(sql, transform) {
 }
 
 /***/ }),
-/* 235 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61685,7 +61216,7 @@ function parseProject(sql, transform) {
 }
 
 /***/ }),
-/* 236 */
+/* 233 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61708,7 +61239,7 @@ function parseResolvefilter(sql, transform) {
 }
 
 /***/ }),
-/* 237 */
+/* 234 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61738,7 +61269,7 @@ function sample(sql, transform) {
 }
 
 /***/ }),
-/* 238 */
+/* 235 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61758,7 +61289,7 @@ function parseWith(sql, transform) {
 }
 
 /***/ }),
-/* 239 */
+/* 236 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61813,14 +61344,14 @@ function writeWith(With) {
 }
 
 /***/ }),
-/* 240 */
+/* 237 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(238);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -61892,14 +61423,14 @@ function createDataGraph(connector) {
 }
 
 /***/ }),
-/* 241 */
+/* 238 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(47);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -61985,7 +61516,7 @@ function createDataNode(context) {
 }
 
 /***/ }),
-/* 242 */
+/* 239 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -62193,7 +61724,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 243 */
+/* 240 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -62421,264 +61952,264 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 244 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 54,
-	"./af.js": 54,
-	"./ar": 55,
-	"./ar-dz": 56,
-	"./ar-dz.js": 56,
-	"./ar-kw": 57,
-	"./ar-kw.js": 57,
-	"./ar-ly": 58,
-	"./ar-ly.js": 58,
-	"./ar-ma": 59,
-	"./ar-ma.js": 59,
-	"./ar-sa": 60,
-	"./ar-sa.js": 60,
-	"./ar-tn": 61,
-	"./ar-tn.js": 61,
-	"./ar.js": 55,
-	"./az": 62,
-	"./az.js": 62,
-	"./be": 63,
-	"./be.js": 63,
-	"./bg": 64,
-	"./bg.js": 64,
-	"./bm": 65,
-	"./bm.js": 65,
-	"./bn": 66,
-	"./bn.js": 66,
-	"./bo": 67,
-	"./bo.js": 67,
-	"./br": 68,
-	"./br.js": 68,
-	"./bs": 69,
-	"./bs.js": 69,
-	"./ca": 70,
-	"./ca.js": 70,
-	"./cs": 71,
-	"./cs.js": 71,
-	"./cv": 72,
-	"./cv.js": 72,
-	"./cy": 73,
-	"./cy.js": 73,
-	"./da": 74,
-	"./da.js": 74,
-	"./de": 75,
-	"./de-at": 76,
-	"./de-at.js": 76,
-	"./de-ch": 77,
-	"./de-ch.js": 77,
-	"./de.js": 75,
-	"./dv": 78,
-	"./dv.js": 78,
-	"./el": 79,
-	"./el.js": 79,
-	"./en-SG": 80,
-	"./en-SG.js": 80,
-	"./en-au": 81,
-	"./en-au.js": 81,
-	"./en-ca": 82,
-	"./en-ca.js": 82,
-	"./en-gb": 83,
-	"./en-gb.js": 83,
-	"./en-ie": 84,
-	"./en-ie.js": 84,
-	"./en-il": 85,
-	"./en-il.js": 85,
-	"./en-nz": 86,
-	"./en-nz.js": 86,
-	"./eo": 87,
-	"./eo.js": 87,
-	"./es": 88,
-	"./es-do": 89,
-	"./es-do.js": 89,
-	"./es-us": 90,
-	"./es-us.js": 90,
-	"./es.js": 88,
-	"./et": 91,
-	"./et.js": 91,
-	"./eu": 92,
-	"./eu.js": 92,
-	"./fa": 93,
-	"./fa.js": 93,
-	"./fi": 94,
-	"./fi.js": 94,
-	"./fo": 95,
-	"./fo.js": 95,
-	"./fr": 96,
-	"./fr-ca": 97,
-	"./fr-ca.js": 97,
-	"./fr-ch": 98,
-	"./fr-ch.js": 98,
-	"./fr.js": 96,
-	"./fy": 99,
-	"./fy.js": 99,
-	"./ga": 100,
-	"./ga.js": 100,
-	"./gd": 101,
-	"./gd.js": 101,
-	"./gl": 102,
-	"./gl.js": 102,
-	"./gom-latn": 103,
-	"./gom-latn.js": 103,
-	"./gu": 104,
-	"./gu.js": 104,
-	"./he": 105,
-	"./he.js": 105,
-	"./hi": 106,
-	"./hi.js": 106,
-	"./hr": 107,
-	"./hr.js": 107,
-	"./hu": 108,
-	"./hu.js": 108,
-	"./hy-am": 109,
-	"./hy-am.js": 109,
-	"./id": 110,
-	"./id.js": 110,
-	"./is": 111,
-	"./is.js": 111,
-	"./it": 112,
-	"./it-ch": 113,
-	"./it-ch.js": 113,
-	"./it.js": 112,
-	"./ja": 114,
-	"./ja.js": 114,
-	"./jv": 115,
-	"./jv.js": 115,
-	"./ka": 116,
-	"./ka.js": 116,
-	"./kk": 117,
-	"./kk.js": 117,
-	"./km": 118,
-	"./km.js": 118,
-	"./kn": 119,
-	"./kn.js": 119,
-	"./ko": 120,
-	"./ko.js": 120,
-	"./ku": 121,
-	"./ku.js": 121,
-	"./ky": 122,
-	"./ky.js": 122,
-	"./lb": 123,
-	"./lb.js": 123,
-	"./lo": 124,
-	"./lo.js": 124,
-	"./lt": 125,
-	"./lt.js": 125,
-	"./lv": 126,
-	"./lv.js": 126,
-	"./me": 127,
-	"./me.js": 127,
-	"./mi": 128,
-	"./mi.js": 128,
-	"./mk": 129,
-	"./mk.js": 129,
-	"./ml": 130,
-	"./ml.js": 130,
-	"./mn": 131,
-	"./mn.js": 131,
-	"./mr": 132,
-	"./mr.js": 132,
-	"./ms": 133,
-	"./ms-my": 134,
-	"./ms-my.js": 134,
-	"./ms.js": 133,
-	"./mt": 135,
-	"./mt.js": 135,
-	"./my": 136,
-	"./my.js": 136,
-	"./nb": 137,
-	"./nb.js": 137,
-	"./ne": 138,
-	"./ne.js": 138,
-	"./nl": 139,
-	"./nl-be": 140,
-	"./nl-be.js": 140,
-	"./nl.js": 139,
-	"./nn": 141,
-	"./nn.js": 141,
-	"./pa-in": 142,
-	"./pa-in.js": 142,
-	"./pl": 143,
-	"./pl.js": 143,
-	"./pt": 144,
-	"./pt-br": 145,
-	"./pt-br.js": 145,
-	"./pt.js": 144,
-	"./ro": 146,
-	"./ro.js": 146,
-	"./ru": 147,
-	"./ru.js": 147,
-	"./sd": 148,
-	"./sd.js": 148,
-	"./se": 149,
-	"./se.js": 149,
-	"./si": 150,
-	"./si.js": 150,
-	"./sk": 151,
-	"./sk.js": 151,
-	"./sl": 152,
-	"./sl.js": 152,
-	"./sq": 153,
-	"./sq.js": 153,
-	"./sr": 154,
-	"./sr-cyrl": 155,
-	"./sr-cyrl.js": 155,
-	"./sr.js": 154,
-	"./ss": 156,
-	"./ss.js": 156,
-	"./sv": 157,
-	"./sv.js": 157,
-	"./sw": 158,
-	"./sw.js": 158,
-	"./ta": 159,
-	"./ta.js": 159,
-	"./te": 160,
-	"./te.js": 160,
-	"./tet": 161,
-	"./tet.js": 161,
-	"./tg": 162,
-	"./tg.js": 162,
-	"./th": 163,
-	"./th.js": 163,
-	"./tl-ph": 164,
-	"./tl-ph.js": 164,
-	"./tlh": 165,
-	"./tlh.js": 165,
-	"./tr": 166,
-	"./tr.js": 166,
-	"./tzl": 167,
-	"./tzl.js": 167,
-	"./tzm": 168,
-	"./tzm-latn": 169,
-	"./tzm-latn.js": 169,
-	"./tzm.js": 168,
-	"./ug-cn": 170,
-	"./ug-cn.js": 170,
-	"./uk": 171,
-	"./uk.js": 171,
-	"./ur": 172,
-	"./ur.js": 172,
-	"./uz": 173,
-	"./uz-latn": 174,
-	"./uz-latn.js": 174,
-	"./uz.js": 173,
-	"./vi": 175,
-	"./vi.js": 175,
-	"./x-pseudo": 176,
-	"./x-pseudo.js": 176,
-	"./yo": 177,
-	"./yo.js": 177,
-	"./zh-cn": 178,
-	"./zh-cn.js": 178,
-	"./zh-hk": 179,
-	"./zh-hk.js": 179,
-	"./zh-tw": 180,
-	"./zh-tw.js": 180
+	"./af": 52,
+	"./af.js": 52,
+	"./ar": 53,
+	"./ar-dz": 54,
+	"./ar-dz.js": 54,
+	"./ar-kw": 55,
+	"./ar-kw.js": 55,
+	"./ar-ly": 56,
+	"./ar-ly.js": 56,
+	"./ar-ma": 57,
+	"./ar-ma.js": 57,
+	"./ar-sa": 58,
+	"./ar-sa.js": 58,
+	"./ar-tn": 59,
+	"./ar-tn.js": 59,
+	"./ar.js": 53,
+	"./az": 60,
+	"./az.js": 60,
+	"./be": 61,
+	"./be.js": 61,
+	"./bg": 62,
+	"./bg.js": 62,
+	"./bm": 63,
+	"./bm.js": 63,
+	"./bn": 64,
+	"./bn.js": 64,
+	"./bo": 65,
+	"./bo.js": 65,
+	"./br": 66,
+	"./br.js": 66,
+	"./bs": 67,
+	"./bs.js": 67,
+	"./ca": 68,
+	"./ca.js": 68,
+	"./cs": 69,
+	"./cs.js": 69,
+	"./cv": 70,
+	"./cv.js": 70,
+	"./cy": 71,
+	"./cy.js": 71,
+	"./da": 72,
+	"./da.js": 72,
+	"./de": 73,
+	"./de-at": 74,
+	"./de-at.js": 74,
+	"./de-ch": 75,
+	"./de-ch.js": 75,
+	"./de.js": 73,
+	"./dv": 76,
+	"./dv.js": 76,
+	"./el": 77,
+	"./el.js": 77,
+	"./en-SG": 78,
+	"./en-SG.js": 78,
+	"./en-au": 79,
+	"./en-au.js": 79,
+	"./en-ca": 80,
+	"./en-ca.js": 80,
+	"./en-gb": 81,
+	"./en-gb.js": 81,
+	"./en-ie": 82,
+	"./en-ie.js": 82,
+	"./en-il": 83,
+	"./en-il.js": 83,
+	"./en-nz": 84,
+	"./en-nz.js": 84,
+	"./eo": 85,
+	"./eo.js": 85,
+	"./es": 86,
+	"./es-do": 87,
+	"./es-do.js": 87,
+	"./es-us": 88,
+	"./es-us.js": 88,
+	"./es.js": 86,
+	"./et": 89,
+	"./et.js": 89,
+	"./eu": 90,
+	"./eu.js": 90,
+	"./fa": 91,
+	"./fa.js": 91,
+	"./fi": 92,
+	"./fi.js": 92,
+	"./fo": 93,
+	"./fo.js": 93,
+	"./fr": 94,
+	"./fr-ca": 95,
+	"./fr-ca.js": 95,
+	"./fr-ch": 96,
+	"./fr-ch.js": 96,
+	"./fr.js": 94,
+	"./fy": 97,
+	"./fy.js": 97,
+	"./ga": 98,
+	"./ga.js": 98,
+	"./gd": 99,
+	"./gd.js": 99,
+	"./gl": 100,
+	"./gl.js": 100,
+	"./gom-latn": 101,
+	"./gom-latn.js": 101,
+	"./gu": 102,
+	"./gu.js": 102,
+	"./he": 103,
+	"./he.js": 103,
+	"./hi": 104,
+	"./hi.js": 104,
+	"./hr": 105,
+	"./hr.js": 105,
+	"./hu": 106,
+	"./hu.js": 106,
+	"./hy-am": 107,
+	"./hy-am.js": 107,
+	"./id": 108,
+	"./id.js": 108,
+	"./is": 109,
+	"./is.js": 109,
+	"./it": 110,
+	"./it-ch": 111,
+	"./it-ch.js": 111,
+	"./it.js": 110,
+	"./ja": 112,
+	"./ja.js": 112,
+	"./jv": 113,
+	"./jv.js": 113,
+	"./ka": 114,
+	"./ka.js": 114,
+	"./kk": 115,
+	"./kk.js": 115,
+	"./km": 116,
+	"./km.js": 116,
+	"./kn": 117,
+	"./kn.js": 117,
+	"./ko": 118,
+	"./ko.js": 118,
+	"./ku": 119,
+	"./ku.js": 119,
+	"./ky": 120,
+	"./ky.js": 120,
+	"./lb": 121,
+	"./lb.js": 121,
+	"./lo": 122,
+	"./lo.js": 122,
+	"./lt": 123,
+	"./lt.js": 123,
+	"./lv": 124,
+	"./lv.js": 124,
+	"./me": 125,
+	"./me.js": 125,
+	"./mi": 126,
+	"./mi.js": 126,
+	"./mk": 127,
+	"./mk.js": 127,
+	"./ml": 128,
+	"./ml.js": 128,
+	"./mn": 129,
+	"./mn.js": 129,
+	"./mr": 130,
+	"./mr.js": 130,
+	"./ms": 131,
+	"./ms-my": 132,
+	"./ms-my.js": 132,
+	"./ms.js": 131,
+	"./mt": 133,
+	"./mt.js": 133,
+	"./my": 134,
+	"./my.js": 134,
+	"./nb": 135,
+	"./nb.js": 135,
+	"./ne": 136,
+	"./ne.js": 136,
+	"./nl": 137,
+	"./nl-be": 138,
+	"./nl-be.js": 138,
+	"./nl.js": 137,
+	"./nn": 139,
+	"./nn.js": 139,
+	"./pa-in": 140,
+	"./pa-in.js": 140,
+	"./pl": 141,
+	"./pl.js": 141,
+	"./pt": 142,
+	"./pt-br": 143,
+	"./pt-br.js": 143,
+	"./pt.js": 142,
+	"./ro": 144,
+	"./ro.js": 144,
+	"./ru": 145,
+	"./ru.js": 145,
+	"./sd": 146,
+	"./sd.js": 146,
+	"./se": 147,
+	"./se.js": 147,
+	"./si": 148,
+	"./si.js": 148,
+	"./sk": 149,
+	"./sk.js": 149,
+	"./sl": 150,
+	"./sl.js": 150,
+	"./sq": 151,
+	"./sq.js": 151,
+	"./sr": 152,
+	"./sr-cyrl": 153,
+	"./sr-cyrl.js": 153,
+	"./sr.js": 152,
+	"./ss": 154,
+	"./ss.js": 154,
+	"./sv": 155,
+	"./sv.js": 155,
+	"./sw": 156,
+	"./sw.js": 156,
+	"./ta": 157,
+	"./ta.js": 157,
+	"./te": 158,
+	"./te.js": 158,
+	"./tet": 159,
+	"./tet.js": 159,
+	"./tg": 160,
+	"./tg.js": 160,
+	"./th": 161,
+	"./th.js": 161,
+	"./tl-ph": 162,
+	"./tl-ph.js": 162,
+	"./tlh": 163,
+	"./tlh.js": 163,
+	"./tr": 164,
+	"./tr.js": 164,
+	"./tzl": 165,
+	"./tzl.js": 165,
+	"./tzm": 166,
+	"./tzm-latn": 167,
+	"./tzm-latn.js": 167,
+	"./tzm.js": 166,
+	"./ug-cn": 168,
+	"./ug-cn.js": 168,
+	"./uk": 169,
+	"./uk.js": 169,
+	"./ur": 170,
+	"./ur.js": 170,
+	"./uz": 171,
+	"./uz-latn": 172,
+	"./uz-latn.js": 172,
+	"./uz.js": 171,
+	"./vi": 173,
+	"./vi.js": 173,
+	"./x-pseudo": 174,
+	"./x-pseudo.js": 174,
+	"./yo": 175,
+	"./yo.js": 175,
+	"./zh-cn": 176,
+	"./zh-cn.js": 176,
+	"./zh-hk": 177,
+	"./zh-hk.js": 177,
+	"./zh-tw": 178,
+	"./zh-tw.js": 178
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -62694,10 +62225,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 244;
+webpackContext.id = 241;
 
 /***/ }),
-/* 245 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62712,11 +62243,11 @@ var _core = __webpack_require__(3);
 
 var _coreAsync = __webpack_require__(5);
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(38);
+var _bubbleMixin = __webpack_require__(36);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -63120,7 +62651,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 246 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63241,7 +62772,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 247 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63258,7 +62789,7 @@ exports.hasFilterHandler = hasFilterHandler;
 exports.filterHandlerWithChartContext = filterHandlerWithChartContext;
 exports.default = filterMixin;
 
-var _lodash = __webpack_require__(23);
+var _lodash = __webpack_require__(22);
 
 var _formattingHelpers = __webpack_require__(10);
 
@@ -63493,7 +63024,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 248 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63637,7 +63168,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 249 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63649,7 +63180,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 250 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63664,17 +63195,17 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _datesAndTimes = __webpack_require__(29);
+var _datesAndTimes = __webpack_require__(27);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(39);
+var _stackMixin = __webpack_require__(37);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _elasticDimensionMixin = __webpack_require__(186);
+var _elasticDimensionMixin = __webpack_require__(184);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
@@ -63682,7 +63213,7 @@ var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _multiSeriesMixin = __webpack_require__(188);
+var _multiSeriesMixin = __webpack_require__(186);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -64200,7 +63731,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 251 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -72990,7 +72521,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 252 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73002,7 +72533,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.roundTimeBin = roundTimeBin;
 exports.default = binningMixin;
 
-var _binningHelpers = __webpack_require__(22);
+var _binningHelpers = __webpack_require__(21);
 
 var _d = __webpack_require__(1);
 
@@ -73010,7 +72541,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _events = __webpack_require__(15);
 
-var _filters = __webpack_require__(21);
+var _filters = __webpack_require__(20);
 
 var _core = __webpack_require__(3);
 
@@ -73191,7 +72722,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 253 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73206,7 +72737,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(38);
+var _bubbleMixin = __webpack_require__(36);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -73663,7 +73194,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 254 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73674,7 +73205,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = cloudChart;
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -73813,7 +73344,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 255 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74381,7 +73912,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 256 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74392,7 +73923,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = dataCount;
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -74550,7 +74081,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 257 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74565,7 +74096,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -74805,7 +74336,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 258 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74819,7 +74350,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 exports.default = geoChoroplethChart;
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -74831,7 +74362,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _mapMixin = __webpack_require__(41);
+var _mapMixin = __webpack_require__(39);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -74839,11 +74370,11 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _bbox = __webpack_require__(261);
+var _bbox = __webpack_require__(258);
 
 var _bbox2 = _interopRequireDefault(_bbox);
 
-var _bboxClip = __webpack_require__(263);
+var _bboxClip = __webpack_require__(260);
 
 var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
@@ -75269,7 +74800,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 259 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75281,7 +74812,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _utilsLatlon = __webpack_require__(24);
+var _utilsLatlon = __webpack_require__(23);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
@@ -75289,17 +74820,17 @@ var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(260);
+var _simplifyJs = __webpack_require__(257);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
-var _logger = __webpack_require__(36);
+var _logger = __webpack_require__(34);
 
-var _LatLonCircle = __webpack_require__(190);
+var _LatLonCircle = __webpack_require__(188);
 
 var _LatLonCircle2 = _interopRequireDefault(_LatLonCircle);
 
-var _LatLonPoly = __webpack_require__(192);
+var _LatLonPoly = __webpack_require__(190);
 
 var _LatLonPoly2 = _interopRequireDefault(_LatLonPoly);
 
@@ -76279,7 +75810,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 260 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -76409,13 +75940,13 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 261 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(262);
+var meta_1 = __webpack_require__(259);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -76452,7 +75983,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 262 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76460,7 +75991,7 @@ exports.default = bbox;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var helpers = __webpack_require__(42);
+var helpers = __webpack_require__(40);
 
 /**
  * Callback for coordEach
@@ -77591,7 +77122,7 @@ exports.findPoint = findPoint;
 
 
 /***/ }),
-/* 263 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77604,9 +77135,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(42);
-var invariant_1 = __webpack_require__(264);
-var lineclip = __importStar(__webpack_require__(265));
+var helpers_1 = __webpack_require__(40);
+var invariant_1 = __webpack_require__(261);
+var lineclip = __importStar(__webpack_require__(262));
 /**
  * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
  * [lineclip](https://github.com/mapbox/lineclip).
@@ -77674,13 +77205,13 @@ function clipPolygon(rings, bbox) {
 
 
 /***/ }),
-/* 264 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(42);
+var helpers_1 = __webpack_require__(40);
 /**
  * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
  *
@@ -77892,7 +77423,7 @@ exports.getType = getType;
 
 
 /***/ }),
-/* 265 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78024,7 +77555,7 @@ function bitCode(p, bbox) {
 
 
 /***/ }),
-/* 266 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78035,7 +77566,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = pieChart;
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -78051,7 +77582,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _multipleKeyLabelMixin = __webpack_require__(184);
+var _multipleKeyLabelMixin = __webpack_require__(182);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
@@ -79034,7 +78565,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 267 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79057,15 +78588,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _elasticDimensionMixin = __webpack_require__(186);
+var _elasticDimensionMixin = __webpack_require__(184);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(39);
+var _stackMixin = __webpack_require__(37);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _multiSeriesMixin = __webpack_require__(188);
+var _multiSeriesMixin = __webpack_require__(186);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -79657,7 +79188,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 268 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79668,7 +79199,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = numberChart;
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -79741,7 +79272,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 269 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79759,29 +79290,29 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackedLegend = __webpack_require__(270);
+var _stackedLegend = __webpack_require__(267);
 
-var _coordinateGridRasterMixin = __webpack_require__(193);
+var _coordinateGridRasterMixin = __webpack_require__(191);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(41);
+var _mapMixin = __webpack_require__(39);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _scatterMixin = __webpack_require__(202);
+var _scatterMixin = __webpack_require__(200);
 
 var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
 var _coreAsync = __webpack_require__(5);
 
-var _legendables = __webpack_require__(293);
+var _legendables = __webpack_require__(290);
 
-var _lodash = __webpack_require__(23);
+var _lodash = __webpack_require__(22);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -80513,7 +80044,7 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 270 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80535,7 +80066,7 @@ exports.handleLegendLock = handleLegendLock;
 exports.handleLegendInput = handleLegendInput;
 exports.toLegendState = toLegendState;
 
-var _lodash = __webpack_require__(23);
+var _lodash = __webpack_require__(22);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -80859,7 +80390,7 @@ function isNullLegend(domain) {
 }
 
 /***/ }),
-/* 271 */
+/* 268 */
 /***/ (function(module, exports) {
 
 /*eslint-disable no-cond-assign */
@@ -81135,7 +80666,7 @@ function stringify (gj) {
 
 
 /***/ }),
-/* 272 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81151,7 +80682,7 @@ exports.default = bindEventHandlers;
 
 var _coreAsync = __webpack_require__(5);
 
-var _mapboxPortedFunctions = __webpack_require__(273);
+var _mapboxPortedFunctions = __webpack_require__(270);
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -82238,7 +81769,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 273 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82250,7 +81781,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.timed = undefined;
 exports.bezier = bezier;
 
-var _unitbezier = __webpack_require__(274);
+var _unitbezier = __webpack_require__(271);
 
 var _unitbezier2 = _interopRequireDefault(_unitbezier);
 
@@ -82327,7 +81858,7 @@ var timed = exports.timed = function timed(fn, dur, ctx) {
 };
 
 /***/ }),
-/* 274 */
+/* 271 */
 /***/ (function(module, exports) {
 
 /*
@@ -82438,23 +81969,23 @@ UnitBezier.prototype.solve = function(x, epsilon) {
 
 
 /***/ }),
-/* 275 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(276);
+module.exports = __webpack_require__(273);
 
 /***/ }),
-/* 276 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
-var bind = __webpack_require__(194);
-var Axios = __webpack_require__(278);
-var mergeConfig = __webpack_require__(200);
-var defaults = __webpack_require__(197);
+var utils = __webpack_require__(7);
+var bind = __webpack_require__(192);
+var Axios = __webpack_require__(275);
+var mergeConfig = __webpack_require__(198);
+var defaults = __webpack_require__(195);
 
 /**
  * Create an instance of Axios
@@ -82487,15 +82018,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(201);
-axios.CancelToken = __webpack_require__(291);
-axios.isCancel = __webpack_require__(196);
+axios.Cancel = __webpack_require__(199);
+axios.CancelToken = __webpack_require__(288);
+axios.isCancel = __webpack_require__(194);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(292);
+axios.spread = __webpack_require__(289);
 
 module.exports = axios;
 
@@ -82504,7 +82035,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 277 */
+/* 274 */
 /***/ (function(module, exports) {
 
 /*!
@@ -82521,17 +82052,17 @@ module.exports = function isBuffer (obj) {
 
 
 /***/ }),
-/* 278 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
-var buildURL = __webpack_require__(195);
-var InterceptorManager = __webpack_require__(279);
-var dispatchRequest = __webpack_require__(280);
-var mergeConfig = __webpack_require__(200);
+var utils = __webpack_require__(7);
+var buildURL = __webpack_require__(193);
+var InterceptorManager = __webpack_require__(276);
+var dispatchRequest = __webpack_require__(277);
+var mergeConfig = __webpack_require__(198);
 
 /**
  * Create a new instance of Axios
@@ -82614,13 +82145,13 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 279 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -82673,18 +82204,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 280 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
-var transformData = __webpack_require__(281);
-var isCancel = __webpack_require__(196);
-var defaults = __webpack_require__(197);
-var isAbsoluteURL = __webpack_require__(289);
-var combineURLs = __webpack_require__(290);
+var utils = __webpack_require__(7);
+var transformData = __webpack_require__(278);
+var isCancel = __webpack_require__(194);
+var defaults = __webpack_require__(195);
+var isAbsoluteURL = __webpack_require__(286);
+var combineURLs = __webpack_require__(287);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -82766,13 +82297,13 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 281 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 /**
  * Transform the data for a request or a response
@@ -82793,7 +82324,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 282 */
+/* 279 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -82983,13 +82514,13 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 283 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -83002,13 +82533,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 284 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(199);
+var createError = __webpack_require__(197);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -83034,7 +82565,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 285 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83083,13 +82614,13 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 286 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -83143,13 +82674,13 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 287 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -83218,13 +82749,13 @@ module.exports = (
 
 
 /***/ }),
-/* 288 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(8);
+var utils = __webpack_require__(7);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -83278,7 +82809,7 @@ module.exports = (
 
 
 /***/ }),
-/* 289 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83299,7 +82830,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 290 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83320,13 +82851,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 291 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(201);
+var Cancel = __webpack_require__(199);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -83384,7 +82915,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 292 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83418,18 +82949,18 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 293 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(294);
+var legend_1 = __webpack_require__(291);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 294 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83443,10 +82974,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(295);
-var vdom_1 = __webpack_require__(298);
-var d3_dispatch_1 = __webpack_require__(307);
-var d3_format_1 = __webpack_require__(309);
+var h_1 = __webpack_require__(292);
+var vdom_1 = __webpack_require__(295);
+var d3_dispatch_1 = __webpack_require__(304);
+var d3_format_1 = __webpack_require__(306);
 var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -83638,14 +83169,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 295 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(296);
-var is = __webpack_require__(297);
+var vnode_1 = __webpack_require__(293);
+var is = __webpack_require__(294);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -83703,7 +83234,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 296 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83719,7 +83250,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 297 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83733,18 +83264,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 298 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(299);
-var attributes_1 = __webpack_require__(302);
-var class_1 = __webpack_require__(303);
-var props_1 = __webpack_require__(304);
-var style_1 = __webpack_require__(305);
-var eventlisteners_1 = __webpack_require__(306);
+var snabbdom_1 = __webpack_require__(296);
+var attributes_1 = __webpack_require__(299);
+var class_1 = __webpack_require__(300);
+var props_1 = __webpack_require__(301);
+var style_1 = __webpack_require__(302);
+var eventlisteners_1 = __webpack_require__(303);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -83755,18 +83286,18 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 299 */
+/* 296 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(203);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(300);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(205);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(297);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(203);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(301);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(298);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -84074,7 +83605,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 300 */
+/* 297 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84145,12 +83676,12 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 301 */
+/* 298 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return thunk; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(205);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(203);
 
 function copyToThunk(vnode, thunk) {
     thunk.elm = vnode.elm;
@@ -84198,7 +83729,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 302 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84259,7 +83790,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 303 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84290,7 +83821,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 304 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84322,7 +83853,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 305 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84423,7 +83954,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 306 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84524,18 +84055,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 307 */
+/* 304 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(305);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 308 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84626,24 +84157,24 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 309 */
+/* 306 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(307);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(204);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__locale__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(207);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(205);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(317);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(314);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(318);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(315);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(319);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(316);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__precisionRound__["a"]; });
 
 
@@ -84654,14 +84185,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 310 */
+/* 307 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return format; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return formatPrefix; });
 /* harmony export (immutable) */ __webpack_exports__["a"] = defaultLocale;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(204);
 
 
 var locale;
@@ -84684,7 +84215,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 311 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84709,7 +84240,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 312 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84723,7 +84254,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 313 */
+/* 310 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84741,12 +84272,12 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 314 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(315);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(312);
 
 
 
@@ -84768,11 +84299,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 315 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(41);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
@@ -84787,7 +84318,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 316 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84797,11 +84328,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 317 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(28);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step) {
@@ -84810,11 +84341,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 318 */
+/* 315 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(28);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, value) {
@@ -84823,11 +84354,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 319 */
+/* 316 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(28);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, max) {
@@ -84837,7 +84368,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 320 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84848,7 +84379,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rowChart;
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -84864,7 +84395,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _lockAxisMixin = __webpack_require__(40);
+var _lockAxisMixin = __webpack_require__(38);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -85506,7 +85037,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 321 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85527,7 +85058,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _events = __webpack_require__(15);
 
-var _filters = __webpack_require__(21);
+var _filters = __webpack_require__(20);
 
 var _core = __webpack_require__(3);
 
@@ -85808,7 +85339,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 322 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85826,7 +85357,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _formattingHelpers = __webpack_require__(10);
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -86357,7 +85888,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 323 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86615,7 +86146,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 324 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86634,7 +86165,7 @@ var _core = __webpack_require__(3);
 
 var _coreAsync = __webpack_require__(5);
 
-var _baseMixin = __webpack_require__(7);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -86744,37 +86275,109 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 325 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* unused harmony export ResyncFollowsWalker */
-/* harmony export (immutable) */ __webpack_exports__["a"] = computeAllProdsFollows;
-/* unused harmony export buildBetweenProdsFollowPrefix */
-/* unused harmony export buildInProdFollowPrefix */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(218);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
+
+/* istanbul ignore file - tricky to import some things from this module during testing */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Parser = exports.createSyntaxDiagramsCode = exports.clearCache = exports.GAstVisitor = exports.serializeProduction = exports.serializeGrammar = exports.Terminal = exports.Rule = exports.RepetitionWithSeparator = exports.RepetitionMandatoryWithSeparator = exports.RepetitionMandatory = exports.Repetition = exports.Option = exports.NonTerminal = exports.Alternative = exports.Alternation = exports.defaultLexerErrorProvider = exports.NoViableAltException = exports.NotAllInputParsedException = exports.MismatchedTokenException = exports.isRecognitionException = exports.EarlyExitException = exports.defaultParserErrorProvider = exports.tokenName = exports.tokenMatcher = exports.tokenLabel = exports.EOF = exports.createTokenInstance = exports.createToken = exports.LexerDefinitionErrorType = exports.Lexer = exports.EMPTY_ALT = exports.ParserDefinitionErrorType = exports.EmbeddedActionsParser = exports.CstParser = exports.VERSION = void 0;
+// semantic version
+var version_1 = __webpack_require__(211);
+Object.defineProperty(exports, "VERSION", { enumerable: true, get: function () { return version_1.VERSION; } });
+var parser_1 = __webpack_require__(9);
+Object.defineProperty(exports, "CstParser", { enumerable: true, get: function () { return parser_1.CstParser; } });
+Object.defineProperty(exports, "EmbeddedActionsParser", { enumerable: true, get: function () { return parser_1.EmbeddedActionsParser; } });
+Object.defineProperty(exports, "ParserDefinitionErrorType", { enumerable: true, get: function () { return parser_1.ParserDefinitionErrorType; } });
+Object.defineProperty(exports, "EMPTY_ALT", { enumerable: true, get: function () { return parser_1.EMPTY_ALT; } });
+var lexer_public_1 = __webpack_require__(29);
+Object.defineProperty(exports, "Lexer", { enumerable: true, get: function () { return lexer_public_1.Lexer; } });
+Object.defineProperty(exports, "LexerDefinitionErrorType", { enumerable: true, get: function () { return lexer_public_1.LexerDefinitionErrorType; } });
+// Tokens utilities
+var tokens_public_1 = __webpack_require__(17);
+Object.defineProperty(exports, "createToken", { enumerable: true, get: function () { return tokens_public_1.createToken; } });
+Object.defineProperty(exports, "createTokenInstance", { enumerable: true, get: function () { return tokens_public_1.createTokenInstance; } });
+Object.defineProperty(exports, "EOF", { enumerable: true, get: function () { return tokens_public_1.EOF; } });
+Object.defineProperty(exports, "tokenLabel", { enumerable: true, get: function () { return tokens_public_1.tokenLabel; } });
+Object.defineProperty(exports, "tokenMatcher", { enumerable: true, get: function () { return tokens_public_1.tokenMatcher; } });
+Object.defineProperty(exports, "tokenName", { enumerable: true, get: function () { return tokens_public_1.tokenName; } });
+// Other Utilities
+var errors_public_1 = __webpack_require__(31);
+Object.defineProperty(exports, "defaultParserErrorProvider", { enumerable: true, get: function () { return errors_public_1.defaultParserErrorProvider; } });
+var exceptions_public_1 = __webpack_require__(26);
+Object.defineProperty(exports, "EarlyExitException", { enumerable: true, get: function () { return exceptions_public_1.EarlyExitException; } });
+Object.defineProperty(exports, "isRecognitionException", { enumerable: true, get: function () { return exceptions_public_1.isRecognitionException; } });
+Object.defineProperty(exports, "MismatchedTokenException", { enumerable: true, get: function () { return exceptions_public_1.MismatchedTokenException; } });
+Object.defineProperty(exports, "NotAllInputParsedException", { enumerable: true, get: function () { return exceptions_public_1.NotAllInputParsedException; } });
+Object.defineProperty(exports, "NoViableAltException", { enumerable: true, get: function () { return exceptions_public_1.NoViableAltException; } });
+var lexer_errors_public_1 = __webpack_require__(213);
+Object.defineProperty(exports, "defaultLexerErrorProvider", { enumerable: true, get: function () { return lexer_errors_public_1.defaultLexerErrorProvider; } });
+// grammar reflection API
+var gast_public_1 = __webpack_require__(8);
+Object.defineProperty(exports, "Alternation", { enumerable: true, get: function () { return gast_public_1.Alternation; } });
+Object.defineProperty(exports, "Alternative", { enumerable: true, get: function () { return gast_public_1.Alternative; } });
+Object.defineProperty(exports, "NonTerminal", { enumerable: true, get: function () { return gast_public_1.NonTerminal; } });
+Object.defineProperty(exports, "Option", { enumerable: true, get: function () { return gast_public_1.Option; } });
+Object.defineProperty(exports, "Repetition", { enumerable: true, get: function () { return gast_public_1.Repetition; } });
+Object.defineProperty(exports, "RepetitionMandatory", { enumerable: true, get: function () { return gast_public_1.RepetitionMandatory; } });
+Object.defineProperty(exports, "RepetitionMandatoryWithSeparator", { enumerable: true, get: function () { return gast_public_1.RepetitionMandatoryWithSeparator; } });
+Object.defineProperty(exports, "RepetitionWithSeparator", { enumerable: true, get: function () { return gast_public_1.RepetitionWithSeparator; } });
+Object.defineProperty(exports, "Rule", { enumerable: true, get: function () { return gast_public_1.Rule; } });
+Object.defineProperty(exports, "Terminal", { enumerable: true, get: function () { return gast_public_1.Terminal; } });
+// GAST Utilities
+var gast_public_2 = __webpack_require__(8);
+Object.defineProperty(exports, "serializeGrammar", { enumerable: true, get: function () { return gast_public_2.serializeGrammar; } });
+Object.defineProperty(exports, "serializeProduction", { enumerable: true, get: function () { return gast_public_2.serializeProduction; } });
+var gast_visitor_public_1 = __webpack_require__(25);
+Object.defineProperty(exports, "GAstVisitor", { enumerable: true, get: function () { return gast_visitor_public_1.GAstVisitor; } });
+/* istanbul ignore next */
+function clearCache() {
+    console.warn("The clearCache function was 'soft' removed from the Chevrotain API." +
+        "\n\t It performs no action other than printing this message." +
+        "\n\t Please avoid using it as it will be completely removed in the future");
+}
+exports.clearCache = clearCache;
+var render_public_1 = __webpack_require__(339);
+Object.defineProperty(exports, "createSyntaxDiagramsCode", { enumerable: true, get: function () { return render_public_1.createSyntaxDiagramsCode; } });
+var Parser = /** @class */ (function () {
+    function Parser() {
+        throw new Error("The Parser class has been deprecated, use CstParser or EmbeddedActionsParser instead.\t\n" +
+            "See: https://chevrotain.io/docs/changes/BREAKING_CHANGES.html#_7-0-0");
+    }
+    return Parser;
+}());
+exports.Parser = Parser;
+//# sourceMappingURL=api.js.map
+
+/***/ }),
+/* 323 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildInProdFollowPrefix = exports.buildBetweenProdsFollowPrefix = exports.computeAllProdsFollows = exports.ResyncFollowsWalker = void 0;
+var rest_1 = __webpack_require__(42);
+var first_1 = __webpack_require__(214);
+var utils_1 = __webpack_require__(2);
+var constants_1 = __webpack_require__(215);
+var gast_public_1 = __webpack_require__(8);
 // This ResyncFollowsWalker computes all of the follows required for RESYNC
 // (skipping reference production).
 var ResyncFollowsWalker = /** @class */ (function (_super) {
@@ -86796,67 +86399,66 @@ var ResyncFollowsWalker = /** @class */ (function (_super) {
         var followName = buildBetweenProdsFollowPrefix(refProd.referencedRule, refProd.idx) +
             this.topProd.name;
         var fullRest = currRest.concat(prevRest);
-        var restProd = new __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["c" /* Flat */]({ definition: fullRest });
-        var t_in_topProd_follows = Object(__WEBPACK_IMPORTED_MODULE_1__first__["a" /* first */])(restProd);
+        var restProd = new gast_public_1.Alternative({ definition: fullRest });
+        var t_in_topProd_follows = first_1.first(restProd);
         this.follows[followName] = t_in_topProd_follows;
     };
     return ResyncFollowsWalker;
-}(__WEBPACK_IMPORTED_MODULE_0__rest__["a" /* RestWalker */]));
-
+}(rest_1.RestWalker));
+exports.ResyncFollowsWalker = ResyncFollowsWalker;
 function computeAllProdsFollows(topProductions) {
     var reSyncFollows = {};
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(topProductions, function (topProd) {
+    utils_1.forEach(topProductions, function (topProd) {
         var currRefsFollow = new ResyncFollowsWalker(topProd).startWalking();
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["f" /* assign */])(reSyncFollows, currRefsFollow);
+        utils_1.assign(reSyncFollows, currRefsFollow);
     });
     return reSyncFollows;
 }
+exports.computeAllProdsFollows = computeAllProdsFollows;
 function buildBetweenProdsFollowPrefix(inner, occurenceInParent) {
-    return inner.name + occurenceInParent + __WEBPACK_IMPORTED_MODULE_3__constants__["a" /* IN */];
+    return inner.name + occurenceInParent + constants_1.IN;
 }
+exports.buildBetweenProdsFollowPrefix = buildBetweenProdsFollowPrefix;
 function buildInProdFollowPrefix(terminal) {
     var terminalName = terminal.terminalType.name;
-    return terminalName + terminal.idx + __WEBPACK_IMPORTED_MODULE_3__constants__["a" /* IN */];
+    return terminalName + terminal.idx + constants_1.IN;
 }
+exports.buildInProdFollowPrefix = buildInProdFollowPrefix;
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 326 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 324 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return failedOptimizationPrefixMsg; });
-/* harmony export (immutable) */ __webpack_exports__["c"] = getOptimizedStartCodesIndices;
-/* unused harmony export firstCharOptimizedIndices */
-/* harmony export (immutable) */ __webpack_exports__["a"] = canMatchCharCode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(215);
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.canMatchCharCode = exports.firstCharOptimizedIndices = exports.getOptimizedStartCodesIndices = exports.failedOptimizationPrefixMsg = void 0;
+var regexp_to_ast_1 = __webpack_require__(43);
+var utils_1 = __webpack_require__(2);
+var reg_exp_parser_1 = __webpack_require__(44);
+var lexer_1 = __webpack_require__(212);
 var complementErrorMessage = "Complement Sets are not supported for first char optimization";
-var failedOptimizationPrefixMsg = 'Unable to use "first char" lexer optimizations:\n';
+exports.failedOptimizationPrefixMsg = 'Unable to use "first char" lexer optimizations:\n';
 function getOptimizedStartCodesIndices(regExp, ensureOptimizations) {
     if (ensureOptimizations === void 0) { ensureOptimizations = false; }
     try {
-        var ast = Object(__WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__["b" /* getRegExpAst */])(regExp);
+        var ast = reg_exp_parser_1.getRegExpAst(regExp);
         var firstChars = firstCharOptimizedIndices(ast.value, {}, ast.flags.ignoreCase);
         return firstChars;
     }
@@ -86866,11 +86468,11 @@ function getOptimizedStartCodesIndices(regExp, ensureOptimizations) {
         // TODO: only the else branch needs to be ignored, try to fix with newer prettier / tsc
         if (e.message === complementErrorMessage) {
             if (ensureOptimizations) {
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["d" /* PRINT_WARNING */])("" + failedOptimizationPrefixMsg +
+                utils_1.PRINT_WARNING("" + exports.failedOptimizationPrefixMsg +
                     ("\tUnable to optimize: < " + regExp.toString() + " >\n") +
                     "\tComplement Sets cannot be automatically optimized.\n" +
                     "\tThis will disable the lexer's first char optimizations.\n" +
-                    "\tSee: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#COMPLEMENT for details.");
+                    "\tSee: https://chevrotain.io/docs/guide/resolving_lexer_errors.html#COMPLEMENT for details.");
             }
         }
         else {
@@ -86878,17 +86480,18 @@ function getOptimizedStartCodesIndices(regExp, ensureOptimizations) {
             if (ensureOptimizations) {
                 msgSuffix =
                     "\n\tThis will disable the lexer's first char optimizations.\n" +
-                        "\tSee: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#REGEXP_PARSING for details.";
+                        "\tSee: https://chevrotain.io/docs/guide/resolving_lexer_errors.html#REGEXP_PARSING for details.";
             }
-            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["c" /* PRINT_ERROR */])(failedOptimizationPrefixMsg + "\n" +
+            utils_1.PRINT_ERROR(exports.failedOptimizationPrefixMsg + "\n" +
                 ("\tFailed parsing: < " + regExp.toString() + " >\n") +
-                ("\tUsing the regexp-to-ast library version: " + __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["VERSION"] + "\n") +
+                ("\tUsing the regexp-to-ast library version: " + regexp_to_ast_1.VERSION + "\n") +
                 "\tPlease open an issue at: https://github.com/bd82/regexp-to-ast/issues" +
                 msgSuffix);
         }
     }
     return [];
 }
+exports.getOptimizedStartCodesIndices = getOptimizedStartCodesIndices;
 function firstCharOptimizedIndices(ast, result, ignoreCase) {
     switch (ast.type) {
         case "Disjunction":
@@ -86924,7 +86527,7 @@ function firstCharOptimizedIndices(ast, result, ignoreCase) {
                         if (atom.complement === true) {
                             throw Error(complementErrorMessage);
                         }
-                        Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(atom.value, function (code) {
+                        utils_1.forEach(atom.value, function (code) {
                             if (typeof code === "number") {
                                 addOptimizedIdxToResult(code, result, ignoreCase);
                             }
@@ -86940,18 +86543,17 @@ function firstCharOptimizedIndices(ast, result, ignoreCase) {
                                 // Optimization (2 orders of magnitude less work for very large ranges)
                                 else {
                                     // handle unoptimized values
-                                    for (var rangeCode = range.from; rangeCode <= range.to &&
-                                        rangeCode < __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */]; rangeCode++) {
+                                    for (var rangeCode = range.from; rangeCode <= range.to && rangeCode < lexer_1.minOptimizationVal; rangeCode++) {
                                         addOptimizedIdxToResult(rangeCode, result, ignoreCase);
                                     }
                                     // Less common charCode where we optimize for faster init time, by using larger "buckets"
-                                    if (range.to >= __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */]) {
-                                        var minUnOptVal = range.from >= __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */]
+                                    if (range.to >= lexer_1.minOptimizationVal) {
+                                        var minUnOptVal = range.from >= lexer_1.minOptimizationVal
                                             ? range.from
-                                            : __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */];
+                                            : lexer_1.minOptimizationVal;
                                         var maxUnOptVal = range.to;
-                                        var minOptIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(minUnOptVal);
-                                        var maxOptIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(maxUnOptVal);
+                                        var minOptIdx = lexer_1.charCodeToOptimizedIndex(minUnOptVal);
+                                        var maxOptIdx = lexer_1.charCodeToOptimizedIndex(maxUnOptVal);
                                         for (var currOptIdx = minOptIdx; currOptIdx <= maxOptIdx; currOptIdx++) {
                                             result[currOptIdx] = currOptIdx;
                                         }
@@ -86968,13 +86570,11 @@ function firstCharOptimizedIndices(ast, result, ignoreCase) {
                         throw Error("Non Exhaustive Match");
                 }
                 // reached a mandatory production, no more **start** codes can be found on this alternative
-                var isOptionalQuantifier = atom.quantifier !== undefined &&
-                    atom.quantifier.atLeast === 0;
+                var isOptionalQuantifier = atom.quantifier !== undefined && atom.quantifier.atLeast === 0;
                 if (
                 // A group may be optional due to empty contents /(?:)/
                 // or if everything inside it is optional /((a)?)/
-                (atom.type === "Group" &&
-                    isWholeOptional(atom) === false) ||
+                (atom.type === "Group" && isWholeOptional(atom) === false) ||
                     // If this term is not a group it may only be optional if it has an optional quantifier
                     (atom.type !== "Group" && isOptionalQuantifier === false)) {
                     break;
@@ -86986,10 +86586,11 @@ function firstCharOptimizedIndices(ast, result, ignoreCase) {
             throw Error("non exhaustive match!");
     }
     // console.log(Object.keys(result).length)
-    return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["U" /* values */])(result);
+    return utils_1.values(result);
 }
+exports.firstCharOptimizedIndices = firstCharOptimizedIndices;
 function addOptimizedIdxToResult(code, result, ignoreCase) {
-    var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(code);
+    var optimizedCharIdx = lexer_1.charCodeToOptimizedIndex(code);
     result[optimizedCharIdx] = optimizedCharIdx;
     if (ignoreCase === true) {
         handleIgnoreCase(code, result);
@@ -87000,28 +86601,26 @@ function handleIgnoreCase(code, result) {
     var upperChar = char.toUpperCase();
     /* istanbul ignore else */
     if (upperChar !== char) {
-        var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(upperChar.charCodeAt(0));
+        var optimizedCharIdx = lexer_1.charCodeToOptimizedIndex(upperChar.charCodeAt(0));
         result[optimizedCharIdx] = optimizedCharIdx;
     }
     else {
         var lowerChar = char.toLowerCase();
         if (lowerChar !== char) {
-            var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(lowerChar.charCodeAt(0));
+            var optimizedCharIdx = lexer_1.charCodeToOptimizedIndex(lowerChar.charCodeAt(0));
             result[optimizedCharIdx] = optimizedCharIdx;
         }
     }
 }
 function findCode(setNode, targetCharCodes) {
-    return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(setNode.value, function (codeOrRange) {
+    return utils_1.find(setNode.value, function (codeOrRange) {
         if (typeof codeOrRange === "number") {
-            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(targetCharCodes, codeOrRange);
+            return utils_1.contains(targetCharCodes, codeOrRange);
         }
         else {
             // range
             var range_1 = codeOrRange;
-            return (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(targetCharCodes, function (targetCode) {
-                return range_1.from <= targetCode && targetCode <= range_1.to;
-            }) !== undefined);
+            return (utils_1.find(targetCharCodes, function (targetCode) { return range_1.from <= targetCode && targetCode <= range_1.to; }) !== undefined);
         }
     });
 }
@@ -87032,8 +86631,8 @@ function isWholeOptional(ast) {
     if (!ast.value) {
         return false;
     }
-    return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["y" /* isArray */])(ast.value)
-        ? Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["o" /* every */])(ast.value, isWholeOptional)
+    return utils_1.isArray(ast.value)
+        ? utils_1.every(ast.value, isWholeOptional)
         : isWholeOptional(ast.value);
 }
 var CharCodeFinder = /** @class */ (function (_super) {
@@ -87062,7 +86661,7 @@ var CharCodeFinder = /** @class */ (function (_super) {
         _super.prototype.visitChildren.call(this, node);
     };
     CharCodeFinder.prototype.visitCharacter = function (node) {
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(this.targetCharCodes, node.value)) {
+        if (utils_1.contains(this.targetCharCodes, node.value)) {
             this.found = true;
         }
     };
@@ -87079,53 +86678,87 @@ var CharCodeFinder = /** @class */ (function (_super) {
         }
     };
     return CharCodeFinder;
-}(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["BaseRegExpVisitor"]));
+}(regexp_to_ast_1.BaseRegExpVisitor));
 function canMatchCharCode(charCodes, pattern) {
     if (pattern instanceof RegExp) {
-        var ast = Object(__WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__["b" /* getRegExpAst */])(pattern);
+        var ast = reg_exp_parser_1.getRegExpAst(pattern);
         var charCodeFinder = new CharCodeFinder(charCodes);
         charCodeFinder.visit(ast);
         return charCodeFinder.found;
     }
     else {
-        return (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(pattern, function (char) {
-            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(charCodes, char.charCodeAt(0));
+        return (utils_1.find(pattern, function (char) {
+            return utils_1.contains(charCodes, char.charCodeAt(0));
         }) !== undefined);
     }
 }
+exports.canMatchCharCode = canMatchCharCode;
 //# sourceMappingURL=reg_exp.js.map
 
 /***/ }),
-/* 327 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 325 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = resolveGrammar;
-/* unused harmony export GastRefResolverVisitor */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast_visitor_public__ = __webpack_require__(20);
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateGrammar = exports.resolveGrammar = void 0;
+var utils_1 = __webpack_require__(2);
+var resolver_1 = __webpack_require__(326);
+var checks_1 = __webpack_require__(216);
+var errors_public_1 = __webpack_require__(31);
+function resolveGrammar(options) {
+    options = utils_1.defaults(options, {
+        errMsgProvider: errors_public_1.defaultGrammarResolverErrorProvider
+    });
+    var topRulesTable = {};
+    utils_1.forEach(options.rules, function (rule) {
+        topRulesTable[rule.name] = rule;
+    });
+    return resolver_1.resolveGrammar(topRulesTable, options.errMsgProvider);
+}
+exports.resolveGrammar = resolveGrammar;
+function validateGrammar(options) {
+    options = utils_1.defaults(options, {
+        errMsgProvider: errors_public_1.defaultGrammarValidatorErrorProvider
+    });
+    return checks_1.validateGrammar(options.rules, options.maxLookahead, options.tokenTypes, options.errMsgProvider, options.grammarName);
+}
+exports.validateGrammar = validateGrammar;
+//# sourceMappingURL=gast_resolver_public.js.map
+
+/***/ }),
+/* 326 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GastRefResolverVisitor = exports.resolveGrammar = void 0;
+var parser_1 = __webpack_require__(9);
+var utils_1 = __webpack_require__(2);
+var gast_visitor_public_1 = __webpack_require__(25);
 function resolveGrammar(topLevels, errMsgProvider) {
     var refResolver = new GastRefResolverVisitor(topLevels, errMsgProvider);
     refResolver.resolveRefs();
     return refResolver.errors;
 }
+exports.resolveGrammar = resolveGrammar;
 var GastRefResolverVisitor = /** @class */ (function (_super) {
     __extends(GastRefResolverVisitor, _super);
     function GastRefResolverVisitor(nameToTopRule, errMsgProvider) {
@@ -87137,7 +86770,7 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
     }
     GastRefResolverVisitor.prototype.resolveRefs = function () {
         var _this = this;
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["U" /* values */])(this.nameToTopRule), function (prod) {
+        utils_1.forEach(utils_1.values(this.nameToTopRule), function (prod) {
             _this.currTopLevel = prod;
             prod.accept(_this);
         });
@@ -87148,7 +86781,7 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
             var msg = this.errMsgProvider.buildRuleNotFoundError(this.currTopLevel, node);
             this.errors.push({
                 message: msg,
-                type: __WEBPACK_IMPORTED_MODULE_0__parser_parser__["h" /* ParserDefinitionErrorType */].UNRESOLVED_SUBRULE_REF,
+                type: parser_1.ParserDefinitionErrorType.UNRESOLVED_SUBRULE_REF,
                 ruleName: this.currTopLevel.name,
                 unresolvedRefName: node.nonTerminalName
             });
@@ -87158,26 +86791,23 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
         }
     };
     return GastRefResolverVisitor;
-}(__WEBPACK_IMPORTED_MODULE_2__gast_gast_visitor_public__["a" /* GAstVisitor */]));
-
+}(gast_visitor_public_1.GAstVisitor));
+exports.GastRefResolverVisitor = GastRefResolverVisitor;
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 328 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 327 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LooksAhead; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__ = __webpack_require__(26);
 
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LooksAhead = void 0;
+var lookahead_1 = __webpack_require__(32);
+var utils_1 = __webpack_require__(2);
+var parser_1 = __webpack_require__(9);
+var keys_1 = __webpack_require__(45);
+var gast_1 = __webpack_require__(30);
 /**
  * Trait responsible for the lookahead related utilities and optimizations.
  */
@@ -87185,18 +86815,18 @@ var LooksAhead = /** @class */ (function () {
     function LooksAhead() {
     }
     LooksAhead.prototype.initLooksAhead = function (config) {
-        this.dynamicTokensEnabled = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "dynamicTokensEnabled")
+        this.dynamicTokensEnabled = utils_1.has(config, "dynamicTokensEnabled")
             ? config.dynamicTokensEnabled
-            : __WEBPACK_IMPORTED_MODULE_2__parser__["b" /* DEFAULT_PARSER_CONFIG */].dynamicTokensEnabled;
-        this.maxLookahead = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "maxLookahead")
+            : parser_1.DEFAULT_PARSER_CONFIG.dynamicTokensEnabled;
+        this.maxLookahead = utils_1.has(config, "maxLookahead")
             ? config.maxLookahead
-            : __WEBPACK_IMPORTED_MODULE_2__parser__["b" /* DEFAULT_PARSER_CONFIG */].maxLookahead;
+            : parser_1.DEFAULT_PARSER_CONFIG.maxLookahead;
         /* istanbul ignore next - Using plain array as dictionary will be tested on older node.js versions and IE11 */
-        this.lookAheadFuncsCache = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["z" /* isES2015MapSupported */])() ? new Map() : [];
+        this.lookAheadFuncsCache = utils_1.isES2015MapSupported() ? new Map() : [];
         // Performance optimization on newer engines that support ES6 Map
         // For larger Maps this is slightly faster than using a plain object (array in our case).
         /* istanbul ignore else - The else branch will be tested on older node.js versions and IE11 */
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["z" /* isES2015MapSupported */])()) {
+        if (utils_1.isES2015MapSupported()) {
             this.getLaFuncFromCache = this.getLaFuncFromMap;
             this.setLaFuncCache = this.setLaFuncCacheUsingMap;
         }
@@ -87207,31 +86837,31 @@ var LooksAhead = /** @class */ (function () {
     };
     LooksAhead.prototype.preComputeLookaheadFunctions = function (rules) {
         var _this = this;
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(rules, function (currRule) {
+        utils_1.forEach(rules, function (currRule) {
             _this.TRACE_INIT(currRule.name + " Rule Lookahead", function () {
-                var _a = Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["b" /* collectMethods */])(currRule), alternation = _a.alternation, repetition = _a.repetition, option = _a.option, repetitionMandatory = _a.repetitionMandatory, repetitionMandatoryWithSeparator = _a.repetitionMandatoryWithSeparator, repetitionWithSeparator = _a.repetitionWithSeparator;
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(alternation, function (currProd) {
+                var _a = gast_1.collectMethods(currRule), alternation = _a.alternation, repetition = _a.repetition, option = _a.option, repetitionMandatory = _a.repetitionMandatory, repetitionMandatoryWithSeparator = _a.repetitionMandatoryWithSeparator, repetitionWithSeparator = _a.repetitionWithSeparator;
+                utils_1.forEach(alternation, function (currProd) {
                     var prodIdx = currProd.idx === 0 ? "" : currProd.idx;
-                    _this.TRACE_INIT("" + Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd) + prodIdx, function () {
-                        var laFunc = Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["d" /* buildLookaheadFuncForOr */])(currProd.idx, currRule, currProd.maxLookahead || _this.maxLookahead, currProd.hasPredicates, _this.dynamicTokensEnabled, _this.lookAheadBuilderForAlternatives);
-                        var key = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(_this.fullRuleNameToShort[currRule.name], __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["h" /* OR_IDX */], currProd.idx);
+                    _this.TRACE_INIT("" + gast_1.getProductionDslName(currProd) + prodIdx, function () {
+                        var laFunc = lookahead_1.buildLookaheadFuncForOr(currProd.idx, currRule, currProd.maxLookahead || _this.maxLookahead, currProd.hasPredicates, _this.dynamicTokensEnabled, _this.lookAheadBuilderForAlternatives);
+                        var key = keys_1.getKeyForAutomaticLookahead(_this.fullRuleNameToShort[currRule.name], keys_1.OR_IDX, currProd.idx);
                         _this.setLaFuncCache(key, laFunc);
                     });
                 });
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetition, function (currProd) {
-                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["e" /* MANY_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                utils_1.forEach(repetition, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, keys_1.MANY_IDX, lookahead_1.PROD_TYPE.REPETITION, currProd.maxLookahead, gast_1.getProductionDslName(currProd));
                 });
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(option, function (currProd) {
-                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["g" /* OPTION_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].OPTION, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                utils_1.forEach(option, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, keys_1.OPTION_IDX, lookahead_1.PROD_TYPE.OPTION, currProd.maxLookahead, gast_1.getProductionDslName(currProd));
                 });
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetitionMandatory, function (currProd) {
-                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                utils_1.forEach(repetitionMandatory, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, keys_1.AT_LEAST_ONE_IDX, lookahead_1.PROD_TYPE.REPETITION_MANDATORY, currProd.maxLookahead, gast_1.getProductionDslName(currProd));
                 });
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetitionMandatoryWithSeparator, function (currProd) {
-                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY_WITH_SEPARATOR, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                utils_1.forEach(repetitionMandatoryWithSeparator, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, keys_1.AT_LEAST_ONE_SEP_IDX, lookahead_1.PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR, currProd.maxLookahead, gast_1.getProductionDslName(currProd));
                 });
-                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetitionWithSeparator, function (currProd) {
-                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["f" /* MANY_SEP_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_WITH_SEPARATOR, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                utils_1.forEach(repetitionWithSeparator, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, keys_1.MANY_SEP_IDX, lookahead_1.PROD_TYPE.REPETITION_WITH_SEPARATOR, currProd.maxLookahead, gast_1.getProductionDslName(currProd));
                 });
             });
         });
@@ -87239,21 +86869,21 @@ var LooksAhead = /** @class */ (function () {
     LooksAhead.prototype.computeLookaheadFunc = function (rule, prodOccurrence, prodKey, prodType, prodMaxLookahead, dslMethodName) {
         var _this = this;
         this.TRACE_INIT("" + dslMethodName + (prodOccurrence === 0 ? "" : prodOccurrence), function () {
-            var laFunc = Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["c" /* buildLookaheadFuncForOptionalProd */])(prodOccurrence, rule, prodMaxLookahead || _this.maxLookahead, _this.dynamicTokensEnabled, prodType, _this.lookAheadBuilderForOptional);
-            var key = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(_this.fullRuleNameToShort[rule.name], prodKey, prodOccurrence);
+            var laFunc = lookahead_1.buildLookaheadFuncForOptionalProd(prodOccurrence, rule, prodMaxLookahead || _this.maxLookahead, _this.dynamicTokensEnabled, prodType, _this.lookAheadBuilderForOptional);
+            var key = keys_1.getKeyForAutomaticLookahead(_this.fullRuleNameToShort[rule.name], prodKey, prodOccurrence);
             _this.setLaFuncCache(key, laFunc);
         });
     };
     LooksAhead.prototype.lookAheadBuilderForOptional = function (alt, tokenMatcher, dynamicTokensEnabled) {
-        return Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["e" /* buildSingleAlternativeLookaheadFunction */])(alt, tokenMatcher, dynamicTokensEnabled);
+        return lookahead_1.buildSingleAlternativeLookaheadFunction(alt, tokenMatcher, dynamicTokensEnabled);
     };
     LooksAhead.prototype.lookAheadBuilderForAlternatives = function (alts, hasPredicates, tokenMatcher, dynamicTokensEnabled) {
-        return Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["b" /* buildAlternativesLookAheadFunc */])(alts, hasPredicates, tokenMatcher, dynamicTokensEnabled);
+        return lookahead_1.buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynamicTokensEnabled);
     };
     // this actually returns a number, but it is always used as a string (object prop key)
     LooksAhead.prototype.getKeyForAutomaticLookahead = function (dslMethodIdx, occurrence) {
         var currRuleShortName = this.getLastExplicitRuleShortName();
-        return Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(currRuleShortName, dslMethodIdx, occurrence);
+        return keys_1.getKeyForAutomaticLookahead(currRuleShortName, dslMethodIdx, occurrence);
     };
     /* istanbul ignore next */
     LooksAhead.prototype.getLaFuncFromCache = function (key) {
@@ -87277,25 +86907,21 @@ var LooksAhead = /** @class */ (function () {
     };
     return LooksAhead;
 }());
-
+exports.LooksAhead = LooksAhead;
 //# sourceMappingURL=looksahead.js.map
 
 /***/ }),
-/* 329 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 328 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TreeBuilder; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cst_cst__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(330);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TreeBuilder = void 0;
+var cst_1 = __webpack_require__(329);
+var utils_1 = __webpack_require__(2);
+var cst_visitor_1 = __webpack_require__(330);
+var parser_1 = __webpack_require__(9);
 /**
  * This trait is responsible for the CST building logic.
  */
@@ -87303,64 +86929,53 @@ var TreeBuilder = /** @class */ (function () {
     function TreeBuilder() {
     }
     TreeBuilder.prototype.initTreeBuilder = function (config) {
-        this.LAST_EXPLICIT_RULE_STACK = [];
         this.CST_STACK = [];
-        this.outputCst = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "outputCst")
-            ? config.outputCst
-            : __WEBPACK_IMPORTED_MODULE_4__parser__["b" /* DEFAULT_PARSER_CONFIG */].outputCst;
-        this.nodeLocationTracking = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "nodeLocationTracking")
+        // outputCst is no longer exposed/defined in the pubic API
+        this.outputCst = config.outputCst;
+        this.nodeLocationTracking = utils_1.has(config, "nodeLocationTracking")
             ? config.nodeLocationTracking
-            : __WEBPACK_IMPORTED_MODULE_4__parser__["b" /* DEFAULT_PARSER_CONFIG */].nodeLocationTracking;
+            : parser_1.DEFAULT_PARSER_CONFIG.nodeLocationTracking;
         if (!this.outputCst) {
-            this.cstInvocationStateUpdate = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-            this.cstFinallyStateUpdate = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-            this.cstPostTerminal = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-            this.cstPostNonTerminal = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-            this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-            this.getLastExplicitRuleShortName = this.getLastExplicitRuleShortNameNoCst;
-            this.getPreviousExplicitRuleShortName = this.getPreviousExplicitRuleShortNameNoCst;
-            this.getLastExplicitRuleOccurrenceIndex = this.getLastExplicitRuleOccurrenceIndexNoCst;
-            this.manyInternal = this.manyInternalNoCst;
-            this.orInternal = this.orInternalNoCst;
-            this.optionInternal = this.optionInternalNoCst;
-            this.atLeastOneInternal = this.atLeastOneInternalNoCst;
-            this.manySepFirstInternal = this.manySepFirstInternalNoCst;
-            this.atLeastOneSepFirstInternal = this.atLeastOneSepFirstInternalNoCst;
+            this.cstInvocationStateUpdate = utils_1.NOOP;
+            this.cstFinallyStateUpdate = utils_1.NOOP;
+            this.cstPostTerminal = utils_1.NOOP;
+            this.cstPostNonTerminal = utils_1.NOOP;
+            this.cstPostRule = utils_1.NOOP;
         }
         else {
             if (/full/i.test(this.nodeLocationTracking)) {
                 if (this.recoveryEnabled) {
-                    this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_0__cst_cst__["e" /* setNodeLocationFull */];
-                    this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_0__cst_cst__["e" /* setNodeLocationFull */];
-                    this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setNodeLocationFromToken = cst_1.setNodeLocationFull;
+                    this.setNodeLocationFromNode = cst_1.setNodeLocationFull;
+                    this.cstPostRule = utils_1.NOOP;
                     this.setInitialNodeLocation = this.setInitialNodeLocationFullRecovery;
                 }
                 else {
-                    this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-                    this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setNodeLocationFromToken = utils_1.NOOP;
+                    this.setNodeLocationFromNode = utils_1.NOOP;
                     this.cstPostRule = this.cstPostRuleFull;
                     this.setInitialNodeLocation = this.setInitialNodeLocationFullRegular;
                 }
             }
             else if (/onlyOffset/i.test(this.nodeLocationTracking)) {
                 if (this.recoveryEnabled) {
-                    this.setNodeLocationFromToken = (__WEBPACK_IMPORTED_MODULE_0__cst_cst__["f" /* setNodeLocationOnlyOffset */]);
-                    this.setNodeLocationFromNode = (__WEBPACK_IMPORTED_MODULE_0__cst_cst__["f" /* setNodeLocationOnlyOffset */]);
-                    this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setNodeLocationFromToken = cst_1.setNodeLocationOnlyOffset;
+                    this.setNodeLocationFromNode = cst_1.setNodeLocationOnlyOffset;
+                    this.cstPostRule = utils_1.NOOP;
                     this.setInitialNodeLocation = this.setInitialNodeLocationOnlyOffsetRecovery;
                 }
                 else {
-                    this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-                    this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setNodeLocationFromToken = utils_1.NOOP;
+                    this.setNodeLocationFromNode = utils_1.NOOP;
                     this.cstPostRule = this.cstPostRuleOnlyOffset;
                     this.setInitialNodeLocation = this.setInitialNodeLocationOnlyOffsetRegular;
                 }
             }
             else if (/none/i.test(this.nodeLocationTracking)) {
-                this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-                this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-                this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
-                this.setInitialNodeLocation = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                this.setNodeLocationFromToken = utils_1.NOOP;
+                this.setNodeLocationFromNode = utils_1.NOOP;
+                this.cstPostRule = utils_1.NOOP;
+                this.setInitialNodeLocation = utils_1.NOOP;
             }
             else {
                 throw Error("Invalid <nodeLocationTracking> config option: \"" + config.nodeLocationTracking + "\"");
@@ -87394,10 +87009,10 @@ var TreeBuilder = /** @class */ (function () {
         };
     };
     /**
-     *  @see setInitialNodeLocationOnlyOffsetRegular for explanation why this work
-
-     * @param cstNode
-     */
+       *  @see setInitialNodeLocationOnlyOffsetRegular for explanation why this work
+  
+       * @param cstNode
+       */
     TreeBuilder.prototype.setInitialNodeLocationFullRegular = function (cstNode) {
         var nextToken = this.LA(1);
         cstNode.location = {
@@ -87409,19 +87024,7 @@ var TreeBuilder = /** @class */ (function () {
             endColumn: NaN
         };
     };
-    // CST
-    TreeBuilder.prototype.cstNestedInvocationStateUpdate = function (nestedName, shortName) {
-        var cstNode = {
-            name: nestedName,
-            fullName: this.shortRuleNameToFull[this.getLastExplicitRuleShortName()] +
-                nestedName,
-            children: {}
-        };
-        this.setInitialNodeLocation(cstNode);
-        this.CST_STACK.push(cstNode);
-    };
     TreeBuilder.prototype.cstInvocationStateUpdate = function (fullRuleName, shortName) {
-        this.LAST_EXPLICIT_RULE_STACK.push(this.RULE_STACK.length - 1);
         var cstNode = {
             name: fullRuleName,
             children: {}
@@ -87430,21 +87033,13 @@ var TreeBuilder = /** @class */ (function () {
         this.CST_STACK.push(cstNode);
     };
     TreeBuilder.prototype.cstFinallyStateUpdate = function () {
-        this.LAST_EXPLICIT_RULE_STACK.pop();
         this.CST_STACK.pop();
-    };
-    TreeBuilder.prototype.cstNestedFinallyStateUpdate = function () {
-        var lastCstNode = this.CST_STACK.pop();
-        // TODO: the naming is bad, this should go directly to the
-        //       (correct) cstLocation update method
-        //       e.g if we put other logic in postRule...
-        this.cstPostRule(lastCstNode);
     };
     TreeBuilder.prototype.cstPostRuleFull = function (ruleCstNode) {
         var prevToken = this.LA(0);
         var loc = ruleCstNode.location;
         // If this condition is true it means we consumed at least one Token
-        // In this CstNode or its nested children.
+        // In this CstNode.
         if (loc.startOffset <= prevToken.startOffset === true) {
             loc.endOffset = prevToken.endOffset;
             loc.endLine = prevToken.endLine;
@@ -87461,7 +87056,7 @@ var TreeBuilder = /** @class */ (function () {
         var prevToken = this.LA(0);
         var loc = ruleCstNode.location;
         // If this condition is true it means we consumed at least one Token
-        // In this CstNode or its nested children.
+        // In this CstNode.
         if (loc.startOffset <= prevToken.startOffset === true) {
             loc.endOffset = prevToken.endOffset;
         }
@@ -87472,134 +87067,145 @@ var TreeBuilder = /** @class */ (function () {
     };
     TreeBuilder.prototype.cstPostTerminal = function (key, consumedToken) {
         var rootCst = this.CST_STACK[this.CST_STACK.length - 1];
-        Object(__WEBPACK_IMPORTED_MODULE_0__cst_cst__["c" /* addTerminalToCst */])(rootCst, consumedToken, key);
+        cst_1.addTerminalToCst(rootCst, consumedToken, key);
         // This is only used when **both** error recovery and CST Output are enabled.
         this.setNodeLocationFromToken(rootCst.location, consumedToken);
     };
     TreeBuilder.prototype.cstPostNonTerminal = function (ruleCstResult, ruleName) {
-        // Avoid side effects due to back tracking
-        // TODO: This costs a 2-3% in performance, A flag on IParserConfig
-        //   could be used to get rid of this conditional, but not sure its worth the effort
-        //   and API complexity.
-        if (this.isBackTracking() !== true) {
-            var preCstNode = this.CST_STACK[this.CST_STACK.length - 1];
-            Object(__WEBPACK_IMPORTED_MODULE_0__cst_cst__["b" /* addNoneTerminalToCst */])(preCstNode, ruleName, ruleCstResult);
-            // This is only used when **both** error recovery and CST Output are enabled.
-            this.setNodeLocationFromNode(preCstNode.location, ruleCstResult.location);
-        }
+        var preCstNode = this.CST_STACK[this.CST_STACK.length - 1];
+        cst_1.addNoneTerminalToCst(preCstNode, ruleName, ruleCstResult);
+        // This is only used when **both** error recovery and CST Output are enabled.
+        this.setNodeLocationFromNode(preCstNode.location, ruleCstResult.location);
     };
     TreeBuilder.prototype.getBaseCstVisitorConstructor = function () {
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(this.baseCstVisitorConstructor)) {
-            var newBaseCstVisitorConstructor = Object(__WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__["a" /* createBaseSemanticVisitorConstructor */])(this.className, this.allRuleNames);
+        if (utils_1.isUndefined(this.baseCstVisitorConstructor)) {
+            var newBaseCstVisitorConstructor = cst_visitor_1.createBaseSemanticVisitorConstructor(this.className, utils_1.keys(this.gastProductionsCache));
             this.baseCstVisitorConstructor = newBaseCstVisitorConstructor;
             return newBaseCstVisitorConstructor;
         }
         return this.baseCstVisitorConstructor;
     };
     TreeBuilder.prototype.getBaseCstVisitorConstructorWithDefaults = function () {
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(this.baseCstVisitorWithDefaultsConstructor)) {
-            var newConstructor = Object(__WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__["b" /* createBaseVisitorConstructorWithDefaults */])(this.className, this.allRuleNames, this.getBaseCstVisitorConstructor());
+        if (utils_1.isUndefined(this.baseCstVisitorWithDefaultsConstructor)) {
+            var newConstructor = cst_visitor_1.createBaseVisitorConstructorWithDefaults(this.className, utils_1.keys(this.gastProductionsCache), this.getBaseCstVisitorConstructor());
             this.baseCstVisitorWithDefaultsConstructor = newConstructor;
             return newConstructor;
         }
         return this.baseCstVisitorWithDefaultsConstructor;
     };
-    TreeBuilder.prototype.nestedRuleBeforeClause = function (methodOpts, laKey) {
-        var nestedName;
-        if (methodOpts.NAME !== undefined) {
-            nestedName = methodOpts.NAME;
-            this.nestedRuleInvocationStateUpdate(nestedName, laKey);
-            return nestedName;
-        }
-        else {
-            return undefined;
-        }
-    };
-    TreeBuilder.prototype.nestedAltBeforeClause = function (methodOpts, occurrence, methodKeyIdx, altIdx) {
-        var ruleIdx = this.getLastExplicitRuleShortName();
-        var shortName = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["i" /* getKeyForAltIndex */])(ruleIdx, methodKeyIdx, occurrence, altIdx);
-        var nestedName;
-        if (methodOpts.NAME !== undefined) {
-            nestedName = methodOpts.NAME;
-            this.nestedRuleInvocationStateUpdate(nestedName, shortName);
-            return {
-                shortName: shortName,
-                nestedName: nestedName
-            };
-        }
-        else {
-            return undefined;
-        }
-    };
-    TreeBuilder.prototype.nestedRuleFinallyClause = function (laKey, nestedName) {
-        var cstStack = this.CST_STACK;
-        var nestedRuleCst = cstStack[cstStack.length - 1];
-        this.nestedRuleFinallyStateUpdate();
-        // this return a different result than the previous invocation because "nestedRuleFinallyStateUpdate" pops the cst stack
-        var parentCstNode = cstStack[cstStack.length - 1];
-        Object(__WEBPACK_IMPORTED_MODULE_0__cst_cst__["b" /* addNoneTerminalToCst */])(parentCstNode, nestedName, nestedRuleCst);
-        this.setNodeLocationFromNode(parentCstNode.location, nestedRuleCst.location);
-    };
     TreeBuilder.prototype.getLastExplicitRuleShortName = function () {
-        var lastExplictIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 1];
-        return this.RULE_STACK[lastExplictIndex];
-    };
-    TreeBuilder.prototype.getLastExplicitRuleShortNameNoCst = function () {
         var ruleStack = this.RULE_STACK;
         return ruleStack[ruleStack.length - 1];
     };
     TreeBuilder.prototype.getPreviousExplicitRuleShortName = function () {
-        var lastExplicitIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 2];
-        return this.RULE_STACK[lastExplicitIndex];
-    };
-    TreeBuilder.prototype.getPreviousExplicitRuleShortNameNoCst = function () {
         var ruleStack = this.RULE_STACK;
         return ruleStack[ruleStack.length - 2];
     };
     TreeBuilder.prototype.getLastExplicitRuleOccurrenceIndex = function () {
-        var lastExplicitIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 1];
-        return this.RULE_OCCURRENCE_STACK[lastExplicitIndex];
-    };
-    TreeBuilder.prototype.getLastExplicitRuleOccurrenceIndexNoCst = function () {
         var occurrenceStack = this.RULE_OCCURRENCE_STACK;
         return occurrenceStack[occurrenceStack.length - 1];
     };
-    TreeBuilder.prototype.nestedRuleInvocationStateUpdate = function (nestedRuleName, shortNameKey) {
-        this.RULE_OCCURRENCE_STACK.push(1);
-        this.RULE_STACK.push(shortNameKey);
-        this.cstNestedInvocationStateUpdate(nestedRuleName, shortNameKey);
-    };
-    TreeBuilder.prototype.nestedRuleFinallyStateUpdate = function () {
-        this.RULE_STACK.pop();
-        this.RULE_OCCURRENCE_STACK.pop();
-        // NOOP when cst is disabled
-        this.cstNestedFinallyStateUpdate();
-    };
     return TreeBuilder;
 }());
-
+exports.TreeBuilder = TreeBuilder;
 //# sourceMappingURL=tree_builder.js.map
 
 /***/ }),
-/* 330 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 329 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* unused harmony export defaultVisit */
-/* harmony export (immutable) */ __webpack_exports__["a"] = createBaseSemanticVisitorConstructor;
-/* harmony export (immutable) */ __webpack_exports__["b"] = createBaseVisitorConstructorWithDefaults;
-/* unused harmony export CstVisitorDefinitionError */
-/* unused harmony export validateVisitor */
-/* unused harmony export validateMissingCstMethods */
-/* unused harmony export validateRedundantMethods */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(221);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_checks__ = __webpack_require__(33);
 
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addNoneTerminalToCst = exports.addTerminalToCst = exports.setNodeLocationFull = exports.setNodeLocationOnlyOffset = void 0;
+/**
+ * This nodeLocation tracking is not efficient and should only be used
+ * when error recovery is enabled or the Token Vector contains virtual Tokens
+ * (e.g, Python Indent/Outdent)
+ * As it executes the calculation for every single terminal/nonTerminal
+ * and does not rely on the fact the token vector is **sorted**
+ */
+function setNodeLocationOnlyOffset(currNodeLocation, newLocationInfo) {
+    // First (valid) update for this cst node
+    if (isNaN(currNodeLocation.startOffset) === true) {
+        // assumption1: Token location information is either NaN or a valid number
+        // assumption2: Token location information is fully valid if it exist
+        // (both start/end offsets exist and are numbers).
+        currNodeLocation.startOffset = newLocationInfo.startOffset;
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+    }
+    // Once the startOffset has been updated with a valid number it should never receive
+    // any farther updates as the Token vector is sorted.
+    // We still have to check this this condition for every new possible location info
+    // because with error recovery enabled we may encounter invalid tokens (NaN location props)
+    else if (currNodeLocation.endOffset < newLocationInfo.endOffset === true) {
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+    }
+}
+exports.setNodeLocationOnlyOffset = setNodeLocationOnlyOffset;
+/**
+ * This nodeLocation tracking is not efficient and should only be used
+ * when error recovery is enabled or the Token Vector contains virtual Tokens
+ * (e.g, Python Indent/Outdent)
+ * As it executes the calculation for every single terminal/nonTerminal
+ * and does not rely on the fact the token vector is **sorted**
+ */
+function setNodeLocationFull(currNodeLocation, newLocationInfo) {
+    // First (valid) update for this cst node
+    if (isNaN(currNodeLocation.startOffset) === true) {
+        // assumption1: Token location information is either NaN or a valid number
+        // assumption2: Token location information is fully valid if it exist
+        // (all start/end props exist and are numbers).
+        currNodeLocation.startOffset = newLocationInfo.startOffset;
+        currNodeLocation.startColumn = newLocationInfo.startColumn;
+        currNodeLocation.startLine = newLocationInfo.startLine;
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+        currNodeLocation.endColumn = newLocationInfo.endColumn;
+        currNodeLocation.endLine = newLocationInfo.endLine;
+    }
+    // Once the start props has been updated with a valid number it should never receive
+    // any farther updates as the Token vector is sorted.
+    // We still have to check this this condition for every new possible location info
+    // because with error recovery enabled we may encounter invalid tokens (NaN location props)
+    else if (currNodeLocation.endOffset < newLocationInfo.endOffset === true) {
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+        currNodeLocation.endColumn = newLocationInfo.endColumn;
+        currNodeLocation.endLine = newLocationInfo.endLine;
+    }
+}
+exports.setNodeLocationFull = setNodeLocationFull;
+function addTerminalToCst(node, token, tokenTypeName) {
+    if (node.children[tokenTypeName] === undefined) {
+        node.children[tokenTypeName] = [token];
+    }
+    else {
+        node.children[tokenTypeName].push(token);
+    }
+}
+exports.addTerminalToCst = addTerminalToCst;
+function addNoneTerminalToCst(node, ruleName, ruleResult) {
+    if (node.children[ruleName] === undefined) {
+        node.children[ruleName] = [ruleResult];
+    }
+    else {
+        node.children[ruleName].push(ruleResult);
+    }
+}
+exports.addNoneTerminalToCst = addNoneTerminalToCst;
+//# sourceMappingURL=cst.js.map
 
+/***/ }),
+/* 330 */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateRedundantMethods = exports.validateMissingCstMethods = exports.validateVisitor = exports.CstVisitorDefinitionError = exports.createBaseVisitorConstructorWithDefaults = exports.createBaseSemanticVisitorConstructor = exports.defaultVisit = void 0;
+var utils_1 = __webpack_require__(2);
+var lang_extensions_1 = __webpack_require__(218);
 function defaultVisit(ctx, param) {
-    var childrenNames = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["G" /* keys */])(ctx);
+    var childrenNames = utils_1.keys(ctx);
     var childrenNamesLength = childrenNames.length;
     for (var i = 0; i < childrenNamesLength; i++) {
         var currChildName = childrenNames[i];
@@ -87609,49 +87215,39 @@ function defaultVisit(ctx, param) {
             var currChild = currChildArray[j];
             // distinction between Tokens Children and CstNode children
             if (currChild.tokenTypeIdx === undefined) {
-                if (currChild.fullName !== undefined) {
-                    this[currChild.fullName](currChild.children, param);
-                }
-                else {
-                    this[currChild.name](currChild.children, param);
-                }
+                this[currChild.name](currChild.children, param);
             }
         }
     }
     // defaultVisit does not support generic out param
     return undefined;
 }
+exports.defaultVisit = defaultVisit;
 function createBaseSemanticVisitorConstructor(grammarName, ruleNames) {
     var derivedConstructor = function () { };
     // can be overwritten according to:
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/
     // name?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FFunction%2Fname
-    Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["b" /* defineNameProp */])(derivedConstructor, grammarName + "BaseSemantics");
+    lang_extensions_1.defineNameProp(derivedConstructor, grammarName + "BaseSemantics");
     var semanticProto = {
         visit: function (cstNode, param) {
             // enables writing more concise visitor methods when CstNode has only a single child
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(cstNode)) {
+            if (utils_1.isArray(cstNode)) {
                 // A CST Node's children dictionary can never have empty arrays as values
                 // If a key is defined there will be at least one element in the corresponding value array.
                 cstNode = cstNode[0];
             }
             // enables passing optional CstNodes concisely.
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(cstNode)) {
+            if (utils_1.isUndefined(cstNode)) {
                 return undefined;
             }
-            if (cstNode.fullName !== undefined) {
-                return this[cstNode.fullName](cstNode.children, param);
-            }
-            else {
-                return this[cstNode.name](cstNode.children, param);
-            }
+            return this[cstNode.name](cstNode.children, param);
         },
         validateVisitor: function () {
             var semanticDefinitionErrors = validateVisitor(this, ruleNames);
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(semanticDefinitionErrors)) {
-                var errorMessages = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(semanticDefinitionErrors, function (currDefError) { return currDefError.msg; });
-                throw Error("Errors Detected in CST Visitor <" + Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["c" /* functionName */])(this.constructor) + ">:\n\t" +
-                    ("" + errorMessages.join("\n\n").replace(/\n/g, "\n\t")));
+            if (!utils_1.isEmpty(semanticDefinitionErrors)) {
+                var errorMessages = utils_1.map(semanticDefinitionErrors, function (currDefError) { return currDefError.msg; });
+                throw Error("Errors Detected in CST Visitor <" + lang_extensions_1.functionName(this.constructor) + ">:\n\t" + ("" + errorMessages.join("\n\n").replace(/\n/g, "\n\t")));
             }
         }
     };
@@ -87660,54 +87256,56 @@ function createBaseSemanticVisitorConstructor(grammarName, ruleNames) {
     derivedConstructor._RULE_NAMES = ruleNames;
     return derivedConstructor;
 }
+exports.createBaseSemanticVisitorConstructor = createBaseSemanticVisitorConstructor;
 function createBaseVisitorConstructorWithDefaults(grammarName, ruleNames, baseConstructor) {
     var derivedConstructor = function () { };
     // can be overwritten according to:
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/
     // name?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FFunction%2Fname
-    Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["b" /* defineNameProp */])(derivedConstructor, grammarName + "BaseSemanticsWithDefaults");
+    lang_extensions_1.defineNameProp(derivedConstructor, grammarName + "BaseSemanticsWithDefaults");
     var withDefaultsProto = Object.create(baseConstructor.prototype);
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(ruleNames, function (ruleName) {
+    utils_1.forEach(ruleNames, function (ruleName) {
         withDefaultsProto[ruleName] = defaultVisit;
     });
     derivedConstructor.prototype = withDefaultsProto;
     derivedConstructor.prototype.constructor = derivedConstructor;
     return derivedConstructor;
 }
+exports.createBaseVisitorConstructorWithDefaults = createBaseVisitorConstructorWithDefaults;
 var CstVisitorDefinitionError;
 (function (CstVisitorDefinitionError) {
     CstVisitorDefinitionError[CstVisitorDefinitionError["REDUNDANT_METHOD"] = 0] = "REDUNDANT_METHOD";
     CstVisitorDefinitionError[CstVisitorDefinitionError["MISSING_METHOD"] = 1] = "MISSING_METHOD";
-})(CstVisitorDefinitionError || (CstVisitorDefinitionError = {}));
+})(CstVisitorDefinitionError = exports.CstVisitorDefinitionError || (exports.CstVisitorDefinitionError = {}));
 function validateVisitor(visitorInstance, ruleNames) {
     var missingErrors = validateMissingCstMethods(visitorInstance, ruleNames);
     var redundantErrors = validateRedundantMethods(visitorInstance, ruleNames);
     return missingErrors.concat(redundantErrors);
 }
+exports.validateVisitor = validateVisitor;
 function validateMissingCstMethods(visitorInstance, ruleNames) {
-    var errors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(ruleNames, function (currRuleName) {
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(visitorInstance[currRuleName])) {
+    var errors = utils_1.map(ruleNames, function (currRuleName) {
+        if (!utils_1.isFunction(visitorInstance[currRuleName])) {
             return {
-                msg: "Missing visitor method: <" + currRuleName + "> on " + Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["c" /* functionName */])(visitorInstance.constructor) + " CST Visitor.",
+                msg: "Missing visitor method: <" + currRuleName + "> on " + lang_extensions_1.functionName(visitorInstance.constructor) + " CST Visitor.",
                 type: CstVisitorDefinitionError.MISSING_METHOD,
                 methodName: currRuleName
             };
         }
     });
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["i" /* compact */])(errors);
+    return utils_1.compact(errors);
 }
+exports.validateMissingCstMethods = validateMissingCstMethods;
 var VALID_PROP_NAMES = ["constructor", "visit", "validateVisitor"];
 function validateRedundantMethods(visitorInstance, ruleNames) {
     var errors = [];
     for (var prop in visitorInstance) {
-        if (__WEBPACK_IMPORTED_MODULE_2__grammar_checks__["b" /* validTermsPattern */].test(prop) &&
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(visitorInstance[prop]) &&
-            !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(VALID_PROP_NAMES, prop) &&
-            !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(ruleNames, prop)) {
+        if (utils_1.isFunction(visitorInstance[prop]) &&
+            !utils_1.contains(VALID_PROP_NAMES, prop) &&
+            !utils_1.contains(ruleNames, prop)) {
             errors.push({
-                msg: "Redundant visitor method: <" + prop + "> on " + Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["c" /* functionName */])(visitorInstance.constructor) + " CST Visitor\n" +
-                    "There is no Grammar Rule corresponding to this method's name.\n" +
-                    ("For utility methods on visitor classes use methods names that do not match /" + __WEBPACK_IMPORTED_MODULE_2__grammar_checks__["b" /* validTermsPattern */].source + "/."),
+                msg: "Redundant visitor method: <" + prop + "> on " + lang_extensions_1.functionName(visitorInstance.constructor) + " CST Visitor\n" +
+                    "There is no Grammar Rule corresponding to this method's name.\n",
                 type: CstVisitorDefinitionError.REDUNDANT_METHOD,
                 methodName: prop
             });
@@ -87715,16 +87313,18 @@ function validateRedundantMethods(visitorInstance, ruleNames) {
     }
     return errors;
 }
+exports.validateRedundantMethods = validateRedundantMethods;
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
 /* 331 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LexerAdapter; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser__ = __webpack_require__(9);
 
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LexerAdapter = void 0;
+var parser_1 = __webpack_require__(9);
 /**
  * Trait responsible abstracting over the interaction with Lexer output (Token vector).
  *
@@ -87745,14 +87345,18 @@ var LexerAdapter = /** @class */ (function () {
             return this.tokVector;
         },
         set: function (newInput) {
+            // @ts-ignore - `this parameter` not supported in setters/getters
+            //   - https://www.typescriptlang.org/docs/handbook/functions.html#this-parameters
             if (this.selfAnalysisDone !== true) {
                 throw Error("Missing <performSelfAnalysis> invocation at the end of the Parser's constructor.");
             }
+            // @ts-ignore - `this parameter` not supported in setters/getters
+            //   - https://www.typescriptlang.org/docs/handbook/functions.html#this-parameters
             this.reset();
             this.tokVector = newInput;
             this.tokVectorLength = newInput.length;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     // skips a token and returns the next token
@@ -87762,7 +87366,7 @@ var LexerAdapter = /** @class */ (function () {
             return this.LA(1);
         }
         else {
-            return __WEBPACK_IMPORTED_MODULE_0__parser__["e" /* END_OF_FILE */];
+            return parser_1.END_OF_FILE;
         }
     };
     // Lexer (accessing Token vector) related methods which can be overridden to implement lazy lexers
@@ -87770,7 +87374,7 @@ var LexerAdapter = /** @class */ (function () {
     LexerAdapter.prototype.LA = function (howMuch) {
         var soughtIdx = this.currIdx + howMuch;
         if (soughtIdx < 0 || this.tokVectorLength <= soughtIdx) {
-            return __WEBPACK_IMPORTED_MODULE_0__parser__["e" /* END_OF_FILE */];
+            return parser_1.END_OF_FILE;
         }
         else {
             return this.tokVector[soughtIdx];
@@ -87796,27 +87400,23 @@ var LexerAdapter = /** @class */ (function () {
     };
     return LexerAdapter;
 }());
-
+exports.LexerAdapter = LexerAdapter;
 //# sourceMappingURL=lexer_adapter.js.map
 
 /***/ }),
 /* 332 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RecognizerApi; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__exceptions_public__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_public__ = __webpack_require__(6);
 
-
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RecognizerApi = void 0;
+var utils_1 = __webpack_require__(2);
+var exceptions_public_1 = __webpack_require__(26);
+var parser_1 = __webpack_require__(9);
+var errors_public_1 = __webpack_require__(31);
+var checks_1 = __webpack_require__(216);
+var gast_public_1 = __webpack_require__(8);
 /**
  * This trait is responsible for implementing the public API
  * for defining Chevrotain parsers, i.e:
@@ -88090,15 +87690,15 @@ var RecognizerApi = /** @class */ (function () {
         this.atLeastOneSepFirstInternal(9, options);
     };
     RecognizerApi.prototype.RULE = function (name, implementation, config) {
-        if (config === void 0) { config = __WEBPACK_IMPORTED_MODULE_2__parser__["c" /* DEFAULT_RULE_CONFIG */]; }
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(this.definedRulesNames, name)) {
-            var errMsg = __WEBPACK_IMPORTED_MODULE_3__errors_public__["b" /* defaultGrammarValidatorErrorProvider */].buildDuplicateRuleNameError({
+        if (config === void 0) { config = parser_1.DEFAULT_RULE_CONFIG; }
+        if (utils_1.contains(this.definedRulesNames, name)) {
+            var errMsg = errors_public_1.defaultGrammarValidatorErrorProvider.buildDuplicateRuleNameError({
                 topLevelRule: name,
                 grammarName: this.className
             });
             var error = {
                 message: errMsg,
-                type: __WEBPACK_IMPORTED_MODULE_2__parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_RULE_NAME,
+                type: parser_1.ParserDefinitionErrorType.DUPLICATE_RULE_NAME,
                 ruleName: name
             };
             this.definitionErrors.push(error);
@@ -88109,10 +87709,10 @@ var RecognizerApi = /** @class */ (function () {
         return ruleImplementation;
     };
     RecognizerApi.prototype.OVERRIDE_RULE = function (name, impl, config) {
-        if (config === void 0) { config = __WEBPACK_IMPORTED_MODULE_2__parser__["c" /* DEFAULT_RULE_CONFIG */]; }
+        if (config === void 0) { config = parser_1.DEFAULT_RULE_CONFIG; }
         var ruleErrors = [];
-        ruleErrors = ruleErrors.concat(Object(__WEBPACK_IMPORTED_MODULE_4__grammar_checks__["d" /* validateRuleIsOverridden */])(name, this.definedRulesNames, this.className));
-        this.definitionErrors.push.apply(this.definitionErrors, ruleErrors); // mutability for the win
+        ruleErrors = ruleErrors.concat(checks_1.validateRuleIsOverridden(name, this.definedRulesNames, this.className));
+        this.definitionErrors = this.definitionErrors.concat(ruleErrors);
         var ruleImplementation = this.defineRule(name, impl, config);
         this[name] = ruleImplementation;
         return ruleImplementation;
@@ -88128,7 +87728,7 @@ var RecognizerApi = /** @class */ (function () {
                 return true;
             }
             catch (e) {
-                if (Object(__WEBPACK_IMPORTED_MODULE_1__exceptions_public__["e" /* isRecognitionException */])(e)) {
+                if (exceptions_public_1.isRecognitionException(e)) {
                     return false;
                 }
                 else {
@@ -88146,39 +87746,31 @@ var RecognizerApi = /** @class */ (function () {
         return this.gastProductionsCache;
     };
     RecognizerApi.prototype.getSerializedGastProductions = function () {
-        return Object(__WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_public__["l" /* serializeGrammar */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(this.gastProductionsCache));
+        return gast_public_1.serializeGrammar(utils_1.values(this.gastProductionsCache));
     };
     return RecognizerApi;
 }());
-
+exports.RecognizerApi = RecognizerApi;
 //# sourceMappingURL=recognizer_api.js.map
 
 /***/ }),
 /* 333 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RecognizerEngine; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__scan_tokens__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(221);
 
-
-
-
-
-
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RecognizerEngine = void 0;
+var utils_1 = __webpack_require__(2);
+var keys_1 = __webpack_require__(45);
+var exceptions_public_1 = __webpack_require__(26);
+var lookahead_1 = __webpack_require__(32);
+var interpreter_1 = __webpack_require__(33);
+var parser_1 = __webpack_require__(9);
+var recoverable_1 = __webpack_require__(217);
+var tokens_public_1 = __webpack_require__(17);
+var tokens_1 = __webpack_require__(24);
+var lang_extensions_1 = __webpack_require__(218);
 /**
  * This trait is responsible for the runtime parsing engine
  * Used by the official API (recognizer_api.ts)
@@ -88187,56 +87779,55 @@ var RecognizerEngine = /** @class */ (function () {
     function RecognizerEngine() {
     }
     RecognizerEngine.prototype.initRecognizerEngine = function (tokenVocabulary, config) {
-        this.className = Object(__WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__["a" /* classNameFromInstance */])(this);
+        this.className = lang_extensions_1.classNameFromInstance(this);
         // TODO: would using an ES6 Map or plain object be faster (CST building scenario)
         this.shortRuleNameToFull = {};
         this.fullRuleNameToShort = {};
         this.ruleShortNameIdx = 256;
-        this.tokenMatcher = __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */];
+        this.tokenMatcher = tokens_1.tokenStructuredMatcherNoCategories;
         this.definedRulesNames = [];
         this.tokensMap = {};
-        this.allRuleNames = [];
         this.isBackTrackingStack = [];
         this.RULE_STACK = [];
         this.RULE_OCCURRENCE_STACK = [];
         this.gastProductionsCache = {};
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "serializedGrammar")) {
+        if (utils_1.has(config, "serializedGrammar")) {
             throw Error("The Parser's configuration can no longer contain a <serializedGrammar> property.\n" +
-                "\tSee: https://sap.github.io/chevrotain/docs/changes/BREAKING_CHANGES.html#_6-0-0\n" +
+                "\tSee: https://chevrotain.io/docs/changes/BREAKING_CHANGES.html#_6-0-0\n" +
                 "\tFor Further details.");
         }
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(tokenVocabulary)) {
+        if (utils_1.isArray(tokenVocabulary)) {
             // This only checks for Token vocabularies provided as arrays.
             // That is good enough because the main objective is to detect users of pre-V4.0 APIs
             // rather than all edge cases of empty Token vocabularies.
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(tokenVocabulary)) {
+            if (utils_1.isEmpty(tokenVocabulary)) {
                 throw Error("A Token Vocabulary cannot be empty.\n" +
                     "\tNote that the first argument for the parser constructor\n" +
                     "\tis no longer a Token vector (since v4.0).");
             }
             if (typeof tokenVocabulary[0].startOffset === "number") {
                 throw Error("The Parser constructor no longer accepts a token vector as the first argument.\n" +
-                    "\tSee: https://sap.github.io/chevrotain/docs/changes/BREAKING_CHANGES.html#_4-0-0\n" +
+                    "\tSee: https://chevrotain.io/docs/changes/BREAKING_CHANGES.html#_4-0-0\n" +
                     "\tFor Further details.");
             }
         }
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(tokenVocabulary)) {
-            this.tokensMap = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(tokenVocabulary, function (acc, tokType) {
+        if (utils_1.isArray(tokenVocabulary)) {
+            this.tokensMap = utils_1.reduce(tokenVocabulary, function (acc, tokType) {
                 acc[tokType.name] = tokType;
                 return acc;
             }, {});
         }
-        else if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokenVocabulary, "modes") &&
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(tokenVocabulary.modes)), __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["c" /* isTokenType */])) {
-            var allTokenTypes = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(tokenVocabulary.modes));
-            var uniqueTokens = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["T" /* uniq */])(allTokenTypes);
-            this.tokensMap = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(uniqueTokens, function (acc, tokType) {
+        else if (utils_1.has(tokenVocabulary, "modes") &&
+            utils_1.every(utils_1.flatten(utils_1.values(tokenVocabulary.modes)), tokens_1.isTokenType)) {
+            var allTokenTypes = utils_1.flatten(utils_1.values(tokenVocabulary.modes));
+            var uniqueTokens = utils_1.uniq(allTokenTypes);
+            this.tokensMap = utils_1.reduce(uniqueTokens, function (acc, tokType) {
                 acc[tokType.name] = tokType;
                 return acc;
             }, {});
         }
-        else if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["C" /* isObject */])(tokenVocabulary)) {
-            this.tokensMap = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["h" /* cloneObj */])(tokenVocabulary);
+        else if (utils_1.isObject(tokenVocabulary)) {
+            this.tokensMap = utils_1.cloneObj(tokenVocabulary);
         }
         else {
             throw new Error("<tokensDictionary> argument must be An Array of Token constructors," +
@@ -88245,33 +87836,32 @@ var RecognizerEngine = /** @class */ (function () {
         // always add EOF to the tokenNames -> constructors map. it is useful to assure all the input has been
         // parsed with a clear error message ("expecting EOF but found ...")
         /* tslint:disable */
-        this.tokensMap["EOF"] = __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__["a" /* EOF */];
+        this.tokensMap["EOF"] = tokens_public_1.EOF;
         // TODO: This check may not be accurate for multi mode lexers
-        var noTokenCategoriesUsed = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(tokenVocabulary), function (tokenConstructor) { return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(tokenConstructor.categoryMatches); });
+        var noTokenCategoriesUsed = utils_1.every(utils_1.values(tokenVocabulary), function (tokenConstructor) { return utils_1.isEmpty(tokenConstructor.categoryMatches); });
         this.tokenMatcher = noTokenCategoriesUsed
-            ? __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */]
-            : __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["d" /* tokenStructuredMatcher */];
+            ? tokens_1.tokenStructuredMatcherNoCategories
+            : tokens_1.tokenStructuredMatcher;
         // Because ES2015+ syntax should be supported for creating Token classes
         // We cannot assume that the Token classes were created using the "extendToken" utilities
         // Therefore we must augment the Token classes both on Lexer initialization and on Parser initialization
-        Object(__WEBPACK_IMPORTED_MODULE_8__scan_tokens__["a" /* augmentTokenTypes */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(this.tokensMap));
+        tokens_1.augmentTokenTypes(utils_1.values(this.tokensMap));
     };
     RecognizerEngine.prototype.defineRule = function (ruleName, impl, config) {
         if (this.selfAnalysisDone) {
             throw Error("Grammar rule <" + ruleName + "> may not be defined after the 'performSelfAnalysis' method has been called'\n" +
                 "Make sure that all grammar rule definitions are done before 'performSelfAnalysis' is called.");
         }
-        var resyncEnabled = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "resyncEnabled")
+        var resyncEnabled = utils_1.has(config, "resyncEnabled")
             ? config.resyncEnabled
-            : __WEBPACK_IMPORTED_MODULE_5__parser__["c" /* DEFAULT_RULE_CONFIG */].resyncEnabled;
-        var recoveryValueFunc = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "recoveryValueFunc")
+            : parser_1.DEFAULT_RULE_CONFIG.resyncEnabled;
+        var recoveryValueFunc = utils_1.has(config, "recoveryValueFunc")
             ? config.recoveryValueFunc
-            : __WEBPACK_IMPORTED_MODULE_5__parser__["c" /* DEFAULT_RULE_CONFIG */].recoveryValueFunc;
+            : parser_1.DEFAULT_RULE_CONFIG.recoveryValueFunc;
         // performance optimization: Use small integers as keys for the longer human readable "full" rule names.
         // this greatly improves Map access time (as much as 8% for some performance benchmarks).
         /* tslint:disable */
-        var shortName = this.ruleShortNameIdx <<
-            (__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["c" /* BITS_FOR_METHOD_TYPE */] + __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["d" /* BITS_FOR_OCCURRENCE_IDX */]);
+        var shortName = this.ruleShortNameIdx << (keys_1.BITS_FOR_METHOD_TYPE + keys_1.BITS_FOR_OCCURRENCE_IDX);
         /* tslint:enable */
         this.ruleShortNameIdx++;
         this.shortRuleNameToFull[shortName] = ruleName;
@@ -88295,8 +87885,7 @@ var RecognizerEngine = /** @class */ (function () {
                 this.ruleFinallyStateUpdate();
             }
         }
-        var wrappedGrammarRule;
-        wrappedGrammarRule = function (idxInCallingRule, args) {
+        var wrappedGrammarRule = function (idxInCallingRule, args) {
             if (idxInCallingRule === void 0) { idxInCallingRule = 0; }
             this.ruleInvocationStateUpdate(shortName, ruleName, idxInCallingRule);
             return invokeRuleWithTry.call(this, args);
@@ -88312,10 +87901,8 @@ var RecognizerEngine = /** @class */ (function () {
         // reSync with EOF and just output some INVALID ParseTree
         // during backtracking reSync recovery is disabled, otherwise we can't be certain the backtracking
         // path is really the most valid one
-        var reSyncEnabled = resyncEnabledConfig &&
-            !this.isBackTracking() &&
-            this.recoveryEnabled;
-        if (Object(__WEBPACK_IMPORTED_MODULE_2__exceptions_public__["e" /* isRecognitionException */])(e)) {
+        var reSyncEnabled = resyncEnabledConfig && !this.isBackTracking() && this.recoveryEnabled;
+        if (exceptions_public_1.isRecognitionException(e)) {
             var recogError = e;
             if (reSyncEnabled) {
                 var reSyncTokType = this.findReSyncTokenType();
@@ -88359,19 +87946,7 @@ var RecognizerEngine = /** @class */ (function () {
     };
     // Implementation of parsing DSL
     RecognizerEngine.prototype.optionInternal = function (actionORMethodDef, occurrence) {
-        var key = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["g" /* OPTION_IDX */], occurrence);
-        var nestedName = this.nestedRuleBeforeClause(actionORMethodDef, key);
-        try {
-            return this.optionInternalLogic(actionORMethodDef, occurrence, key);
-        }
-        finally {
-            if (nestedName !== undefined) {
-                this.nestedRuleFinallyClause(key, nestedName);
-            }
-        }
-    };
-    RecognizerEngine.prototype.optionInternalNoCst = function (actionORMethodDef, occurrence) {
-        var key = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["g" /* OPTION_IDX */], occurrence);
+        var key = this.getKeyForAutomaticLookahead(keys_1.OPTION_IDX, occurrence);
         return this.optionInternalLogic(actionORMethodDef, occurrence, key);
     };
     RecognizerEngine.prototype.optionInternalLogic = function (actionORMethodDef, occurrence, key) {
@@ -88386,7 +87961,7 @@ var RecognizerEngine = /** @class */ (function () {
             if (predicate !== undefined) {
                 var orgLookaheadFunction_1 = lookAheadFunc;
                 lookAheadFunc = function () {
-                    return (predicate.call(_this) && orgLookaheadFunction_1.call(_this));
+                    return predicate.call(_this) && orgLookaheadFunction_1.call(_this);
                 };
             }
         }
@@ -88399,20 +87974,8 @@ var RecognizerEngine = /** @class */ (function () {
         return undefined;
     };
     RecognizerEngine.prototype.atLeastOneInternal = function (prodOccurrence, actionORMethodDef) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], prodOccurrence);
-        var nestedName = this.nestedRuleBeforeClause(actionORMethodDef, laKey);
-        try {
-            return this.atLeastOneInternalLogic(prodOccurrence, actionORMethodDef, laKey);
-        }
-        finally {
-            if (nestedName !== undefined) {
-                this.nestedRuleFinallyClause(laKey, nestedName);
-            }
-        }
-    };
-    RecognizerEngine.prototype.atLeastOneInternalNoCst = function (prodOccurrence, actionORMethodDef) {
-        var key = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], prodOccurrence);
-        this.atLeastOneInternalLogic(prodOccurrence, actionORMethodDef, key);
+        var laKey = this.getKeyForAutomaticLookahead(keys_1.AT_LEAST_ONE_IDX, prodOccurrence);
+        return this.atLeastOneInternalLogic(prodOccurrence, actionORMethodDef, laKey);
     };
     RecognizerEngine.prototype.atLeastOneInternalLogic = function (prodOccurrence, actionORMethodDef, key) {
         var _this = this;
@@ -88426,7 +87989,7 @@ var RecognizerEngine = /** @class */ (function () {
             if (predicate !== undefined) {
                 var orgLookaheadFunction_2 = lookAheadFunc;
                 lookAheadFunc = function () {
-                    return (predicate.call(_this) && orgLookaheadFunction_2.call(_this));
+                    return predicate.call(_this) && orgLookaheadFunction_2.call(_this);
                 };
             }
         }
@@ -88441,28 +88004,16 @@ var RecognizerEngine = /** @class */ (function () {
             }
         }
         else {
-            throw this.raiseEarlyExitException(prodOccurrence, __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY, actionORMethodDef.ERR_MSG);
+            throw this.raiseEarlyExitException(prodOccurrence, lookahead_1.PROD_TYPE.REPETITION_MANDATORY, actionORMethodDef.ERR_MSG);
         }
         // note that while it may seem that this can cause an error because by using a recursive call to
         // AT_LEAST_ONE we change the grammar to AT_LEAST_TWO, AT_LEAST_THREE ... , the possible recursive call
         // from the tryInRepetitionRecovery(...) will only happen IFF there really are TWO/THREE/.... items.
         // Performance optimization: "attemptInRepetitionRecovery" will be defined as NOOP unless recovery is enabled
-        this.attemptInRepetitionRecovery(this.atLeastOneInternal, [prodOccurrence, actionORMethodDef], lookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["c" /* NextTerminalAfterAtLeastOneWalker */]);
+        this.attemptInRepetitionRecovery(this.atLeastOneInternal, [prodOccurrence, actionORMethodDef], lookAheadFunc, keys_1.AT_LEAST_ONE_IDX, prodOccurrence, interpreter_1.NextTerminalAfterAtLeastOneWalker);
     };
     RecognizerEngine.prototype.atLeastOneSepFirstInternal = function (prodOccurrence, options) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence);
-        var nestedName = this.nestedRuleBeforeClause(options, laKey);
-        try {
-            this.atLeastOneSepFirstInternalLogic(prodOccurrence, options, laKey);
-        }
-        finally {
-            if (nestedName !== undefined) {
-                this.nestedRuleFinallyClause(laKey, nestedName);
-            }
-        }
-    };
-    RecognizerEngine.prototype.atLeastOneSepFirstInternalNoCst = function (prodOccurrence, options) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence);
+        var laKey = this.getKeyForAutomaticLookahead(keys_1.AT_LEAST_ONE_SEP_IDX, prodOccurrence);
         this.atLeastOneSepFirstInternalLogic(prodOccurrence, options, laKey);
     };
     RecognizerEngine.prototype.atLeastOneSepFirstInternalLogic = function (prodOccurrence, options, key) {
@@ -88492,27 +88043,15 @@ var RecognizerEngine = /** @class */ (function () {
                 separator,
                 separatorLookAheadFunc,
                 action,
-                __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["b" /* NextTerminalAfterAtLeastOneSepWalker */]
-            ], separatorLookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["b" /* NextTerminalAfterAtLeastOneSepWalker */]);
+                interpreter_1.NextTerminalAfterAtLeastOneSepWalker
+            ], separatorLookAheadFunc, keys_1.AT_LEAST_ONE_SEP_IDX, prodOccurrence, interpreter_1.NextTerminalAfterAtLeastOneSepWalker);
         }
         else {
-            throw this.raiseEarlyExitException(prodOccurrence, __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY_WITH_SEPARATOR, options.ERR_MSG);
+            throw this.raiseEarlyExitException(prodOccurrence, lookahead_1.PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR, options.ERR_MSG);
         }
     };
     RecognizerEngine.prototype.manyInternal = function (prodOccurrence, actionORMethodDef) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */], prodOccurrence);
-        var nestedName = this.nestedRuleBeforeClause(actionORMethodDef, laKey);
-        try {
-            return this.manyInternalLogic(prodOccurrence, actionORMethodDef, laKey);
-        }
-        finally {
-            if (nestedName !== undefined) {
-                this.nestedRuleFinallyClause(laKey, nestedName);
-            }
-        }
-    };
-    RecognizerEngine.prototype.manyInternalNoCst = function (prodOccurrence, actionORMethodDef) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */], prodOccurrence);
+        var laKey = this.getKeyForAutomaticLookahead(keys_1.MANY_IDX, prodOccurrence);
         return this.manyInternalLogic(prodOccurrence, actionORMethodDef, laKey);
     };
     RecognizerEngine.prototype.manyInternalLogic = function (prodOccurrence, actionORMethodDef, key) {
@@ -88527,7 +88066,7 @@ var RecognizerEngine = /** @class */ (function () {
             if (predicate !== undefined) {
                 var orgLookaheadFunction_3 = lookaheadFunction;
                 lookaheadFunction = function () {
-                    return (predicate.call(_this) && orgLookaheadFunction_3.call(_this));
+                    return predicate.call(_this) && orgLookaheadFunction_3.call(_this);
                 };
             }
         }
@@ -88539,7 +88078,7 @@ var RecognizerEngine = /** @class */ (function () {
             notStuck = this.doSingleRepetition(action);
         }
         // Performance optimization: "attemptInRepetitionRecovery" will be defined as NOOP unless recovery is enabled
-        this.attemptInRepetitionRecovery(this.manyInternal, [prodOccurrence, actionORMethodDef], lookaheadFunction, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["e" /* NextTerminalAfterManyWalker */], 
+        this.attemptInRepetitionRecovery(this.manyInternal, [prodOccurrence, actionORMethodDef], lookaheadFunction, keys_1.MANY_IDX, prodOccurrence, interpreter_1.NextTerminalAfterManyWalker, 
         // The notStuck parameter is only relevant when "attemptInRepetitionRecovery"
         // is invoked from manyInternal, in the MANY_SEP case and AT_LEAST_ONE[_SEP]
         // An infinite loop cannot occur as:
@@ -88548,19 +88087,7 @@ var RecognizerEngine = /** @class */ (function () {
         notStuck);
     };
     RecognizerEngine.prototype.manySepFirstInternal = function (prodOccurrence, options) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */], prodOccurrence);
-        var nestedName = this.nestedRuleBeforeClause(options, laKey);
-        try {
-            this.manySepFirstInternalLogic(prodOccurrence, options, laKey);
-        }
-        finally {
-            if (nestedName !== undefined) {
-                this.nestedRuleFinallyClause(laKey, nestedName);
-            }
-        }
-    };
-    RecognizerEngine.prototype.manySepFirstInternalNoCst = function (prodOccurrence, options) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */], prodOccurrence);
+        var laKey = this.getKeyForAutomaticLookahead(keys_1.MANY_SEP_IDX, prodOccurrence);
         this.manySepFirstInternalLogic(prodOccurrence, options, laKey);
     };
     RecognizerEngine.prototype.manySepFirstInternalLogic = function (prodOccurrence, options, key) {
@@ -88588,8 +88115,8 @@ var RecognizerEngine = /** @class */ (function () {
                 separator,
                 separatorLookAheadFunc,
                 action,
-                __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["d" /* NextTerminalAfterManySepWalker */]
-            ], separatorLookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["d" /* NextTerminalAfterManySepWalker */]);
+                interpreter_1.NextTerminalAfterManySepWalker
+            ], separatorLookAheadFunc, keys_1.MANY_SEP_IDX, prodOccurrence, interpreter_1.NextTerminalAfterManySepWalker);
         }
     };
     RecognizerEngine.prototype.repetitionSepSecondInternal = function (prodOccurrence, separator, separatorLookAheadFunc, action, nextTerminalAfterWalker) {
@@ -88611,7 +88138,7 @@ var RecognizerEngine = /** @class */ (function () {
             separatorLookAheadFunc,
             action,
             nextTerminalAfterWalker
-        ], separatorLookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence, nextTerminalAfterWalker);
+        ], separatorLookAheadFunc, keys_1.AT_LEAST_ONE_SEP_IDX, prodOccurrence, nextTerminalAfterWalker);
     };
     RecognizerEngine.prototype.doSingleRepetition = function (action) {
         var beforeIteration = this.getLexerPosition();
@@ -88621,11 +88148,11 @@ var RecognizerEngine = /** @class */ (function () {
         // or if we are "stuck" (potential infinite loop in the repetition).
         return afterIteration > beforeIteration;
     };
-    RecognizerEngine.prototype.orInternalNoCst = function (altsOrOpts, occurrence) {
-        var alts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(altsOrOpts)
+    RecognizerEngine.prototype.orInternal = function (altsOrOpts, occurrence) {
+        var laKey = this.getKeyForAutomaticLookahead(keys_1.OR_IDX, occurrence);
+        var alts = utils_1.isArray(altsOrOpts)
             ? altsOrOpts
             : altsOrOpts.DEF;
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], occurrence);
         var laFunc = this.getLaFuncFromCache(laKey);
         var altIdxToTake = laFunc.call(this, alts);
         if (altIdxToTake !== undefined) {
@@ -88633,35 +88160,6 @@ var RecognizerEngine = /** @class */ (function () {
             return chosenAlternative.ALT.call(this);
         }
         this.raiseNoAltException(occurrence, altsOrOpts.ERR_MSG);
-    };
-    RecognizerEngine.prototype.orInternal = function (altsOrOpts, occurrence) {
-        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], occurrence);
-        var nestedName = this.nestedRuleBeforeClause(altsOrOpts, laKey);
-        try {
-            var alts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(altsOrOpts)
-                ? altsOrOpts
-                : altsOrOpts.DEF;
-            var laFunc = this.getLaFuncFromCache(laKey);
-            var altIdxToTake = laFunc.call(this, alts);
-            if (altIdxToTake !== undefined) {
-                var chosenAlternative = alts[altIdxToTake];
-                var nestedAltBeforeClauseResult = this.nestedAltBeforeClause(chosenAlternative, occurrence, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], altIdxToTake);
-                try {
-                    return chosenAlternative.ALT.call(this);
-                }
-                finally {
-                    if (nestedAltBeforeClauseResult !== undefined) {
-                        this.nestedRuleFinallyClause(nestedAltBeforeClauseResult.shortName, nestedAltBeforeClauseResult.nestedName);
-                    }
-                }
-            }
-            this.raiseNoAltException(occurrence, altsOrOpts.ERR_MSG);
-        }
-        finally {
-            if (nestedName !== undefined) {
-                this.nestedRuleFinallyClause(laKey, nestedName);
-            }
-        }
     };
     RecognizerEngine.prototype.ruleFinallyStateUpdate = function () {
         this.RULE_STACK.pop();
@@ -88674,7 +88172,7 @@ var RecognizerEngine = /** @class */ (function () {
                 firstRedundant: firstRedundantTok,
                 ruleName: this.getCurrRuleFullName()
             });
-            this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_2__exceptions_public__["d" /* NotAllInputParsedException */](errMsg, firstRedundantTok));
+            this.SAVE_ERROR(new exceptions_public_1.NotAllInputParsedException(errMsg, firstRedundantTok));
         }
     };
     RecognizerEngine.prototype.subruleInternal = function (ruleToCall, idx, options) {
@@ -88692,7 +88190,7 @@ var RecognizerEngine = /** @class */ (function () {
         }
     };
     RecognizerEngine.prototype.subruleInternalError = function (e, options, ruleName) {
-        if (Object(__WEBPACK_IMPORTED_MODULE_2__exceptions_public__["e" /* isRecognitionException */])(e) && e.partialCstResult !== undefined) {
+        if (exceptions_public_1.isRecognitionException(e) && e.partialCstResult !== undefined) {
             this.cstPostNonTerminal(e.partialCstResult, options !== undefined && options.LABEL !== undefined
                 ? options.LABEL
                 : ruleName);
@@ -88734,7 +88232,7 @@ var RecognizerEngine = /** @class */ (function () {
                 ruleName: this.getCurrRuleFullName()
             });
         }
-        throw this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_2__exceptions_public__["b" /* MismatchedTokenException */](msg, nextToken, previousToken));
+        throw this.SAVE_ERROR(new exceptions_public_1.MismatchedTokenException(msg, nextToken, previousToken));
     };
     RecognizerEngine.prototype.consumeInternalRecovery = function (tokType, idx, eFromConsumption) {
         // no recovery allowed during backtracking, otherwise backtracking may recover invalid syntax and accept it
@@ -88748,7 +88246,7 @@ var RecognizerEngine = /** @class */ (function () {
                 return this.tryInRuleRecovery(tokType, follows);
             }
             catch (eFromInRuleRecovery) {
-                if (eFromInRuleRecovery.name === __WEBPACK_IMPORTED_MODULE_6__recoverable__["a" /* IN_RULE_RECOVERY_EXCEPTION */]) {
+                if (eFromInRuleRecovery.name === recoverable_1.IN_RULE_RECOVERY_EXCEPTION) {
                     // failed in RuleRecovery.
                     // throw the original error in order to trigger reSync error recovery
                     throw eFromConsumption;
@@ -88765,13 +88263,12 @@ var RecognizerEngine = /** @class */ (function () {
     RecognizerEngine.prototype.saveRecogState = function () {
         // errors is a getter which will clone the errors array
         var savedErrors = this.errors;
-        var savedRuleStack = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["g" /* cloneArr */])(this.RULE_STACK);
+        var savedRuleStack = utils_1.cloneArr(this.RULE_STACK);
         return {
             errors: savedErrors,
             lexerState: this.exportLexerState(),
             RULE_STACK: savedRuleStack,
-            CST_STACK: this.CST_STACK,
-            LAST_EXPLICIT_RULE_STACK: this.LAST_EXPLICIT_RULE_STACK
+            CST_STACK: this.CST_STACK
         };
     };
     RecognizerEngine.prototype.reloadRecogState = function (newState) {
@@ -88796,37 +88293,34 @@ var RecognizerEngine = /** @class */ (function () {
         return this.shortRuleNameToFull[shortName];
     };
     RecognizerEngine.prototype.isAtEndOfInput = function () {
-        return this.tokenMatcher(this.LA(1), __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__["a" /* EOF */]);
+        return this.tokenMatcher(this.LA(1), tokens_public_1.EOF);
     };
     RecognizerEngine.prototype.reset = function () {
         this.resetLexerState();
         this.isBackTrackingStack = [];
         this.errors = [];
         this.RULE_STACK = [];
-        this.LAST_EXPLICIT_RULE_STACK = [];
-        // TODO: extract a specific rest for TreeBuilder trait
+        // TODO: extract a specific reset for TreeBuilder trait
         this.CST_STACK = [];
         this.RULE_OCCURRENCE_STACK = [];
     };
     return RecognizerEngine;
 }());
-
+exports.RecognizerEngine = RecognizerEngine;
 //# sourceMappingURL=recognizer_engine.js.map
 
 /***/ }),
 /* 334 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ErrorHandler; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exceptions_public__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parser__ = __webpack_require__(9);
 
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ErrorHandler = void 0;
+var exceptions_public_1 = __webpack_require__(26);
+var utils_1 = __webpack_require__(2);
+var lookahead_1 = __webpack_require__(32);
+var parser_1 = __webpack_require__(9);
 /**
  * Trait responsible for runtime parsing errors.
  */
@@ -88835,13 +88329,15 @@ var ErrorHandler = /** @class */ (function () {
     }
     ErrorHandler.prototype.initErrorHandler = function (config) {
         this._errors = [];
-        this.errorMessageProvider = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["k" /* defaults */])(config.errorMessageProvider, __WEBPACK_IMPORTED_MODULE_3__parser__["b" /* DEFAULT_PARSER_CONFIG */].errorMessageProvider);
+        this.errorMessageProvider = utils_1.has(config, "errorMessageProvider")
+            ? config.errorMessageProvider
+            : parser_1.DEFAULT_PARSER_CONFIG.errorMessageProvider;
     };
     ErrorHandler.prototype.SAVE_ERROR = function (error) {
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__exceptions_public__["e" /* isRecognitionException */])(error)) {
+        if (exceptions_public_1.isRecognitionException(error)) {
             error.context = {
                 ruleStack: this.getHumanReadableRuleStack(),
-                ruleOccurrenceStack: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.RULE_OCCURRENCE_STACK)
+                ruleOccurrenceStack: utils_1.cloneArr(this.RULE_OCCURRENCE_STACK)
             };
             this._errors.push(error);
             return error;
@@ -88851,21 +88347,20 @@ var ErrorHandler = /** @class */ (function () {
         }
     };
     Object.defineProperty(ErrorHandler.prototype, "errors", {
-        // TODO: extract these methods to ErrorHandler Trait?
         get: function () {
-            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this._errors);
+            return utils_1.cloneArr(this._errors);
         },
         set: function (newErrors) {
             this._errors = newErrors;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     // TODO: consider caching the error message computed information
     ErrorHandler.prototype.raiseEarlyExitException = function (occurrence, prodType, userDefinedErrMsg) {
         var ruleName = this.getCurrRuleFullName();
         var ruleGrammar = this.getGAstProductions()[ruleName];
-        var lookAheadPathsPerAlternative = Object(__WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__["g" /* getLookaheadPathsForOptionalProd */])(occurrence, ruleGrammar, prodType, this.maxLookahead);
+        var lookAheadPathsPerAlternative = lookahead_1.getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, this.maxLookahead);
         var insideProdPaths = lookAheadPathsPerAlternative[0];
         var actualTokens = [];
         for (var i = 1; i <= this.maxLookahead; i++) {
@@ -88878,14 +88373,14 @@ var ErrorHandler = /** @class */ (function () {
             customUserDescription: userDefinedErrMsg,
             ruleName: ruleName
         });
-        throw this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_0__exceptions_public__["a" /* EarlyExitException */](msg, this.LA(1), this.LA(0)));
+        throw this.SAVE_ERROR(new exceptions_public_1.EarlyExitException(msg, this.LA(1), this.LA(0)));
     };
     // TODO: consider caching the error message computed information
     ErrorHandler.prototype.raiseNoAltException = function (occurrence, errMsgTypes) {
         var ruleName = this.getCurrRuleFullName();
         var ruleGrammar = this.getGAstProductions()[ruleName];
         // TODO: getLookaheadPathsForOr can be slow for large enough maxLookahead and certain grammars, consider caching ?
-        var lookAheadPathsPerAlternative = Object(__WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__["h" /* getLookaheadPathsForOr */])(occurrence, ruleGrammar, this.maxLookahead);
+        var lookAheadPathsPerAlternative = lookahead_1.getLookaheadPathsForOr(occurrence, ruleGrammar, this.maxLookahead);
         var actualTokens = [];
         for (var i = 1; i <= this.maxLookahead; i++) {
             actualTokens.push(this.LA(i));
@@ -88898,86 +88393,81 @@ var ErrorHandler = /** @class */ (function () {
             customUserDescription: errMsgTypes,
             ruleName: this.getCurrRuleFullName()
         });
-        throw this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_0__exceptions_public__["c" /* NoViableAltException */](errMsg, this.LA(1), previousToken));
+        throw this.SAVE_ERROR(new exceptions_public_1.NoViableAltException(errMsg, this.LA(1), previousToken));
     };
     return ErrorHandler;
 }());
-
+exports.ErrorHandler = ErrorHandler;
 //# sourceMappingURL=error_handler.js.map
 
 /***/ }),
 /* 335 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ContentAssist; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContentAssist = void 0;
+var interpreter_1 = __webpack_require__(33);
+var utils_1 = __webpack_require__(2);
 var ContentAssist = /** @class */ (function () {
     function ContentAssist() {
     }
     ContentAssist.prototype.initContentAssist = function () { };
     ContentAssist.prototype.computeContentAssist = function (startRuleName, precedingInput) {
         var startRuleGast = this.gastProductionsCache[startRuleName];
-        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(startRuleGast)) {
+        if (utils_1.isUndefined(startRuleGast)) {
             throw Error("Rule ->" + startRuleName + "<- does not exist in this grammar.");
         }
-        return Object(__WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__["f" /* nextPossibleTokensAfter */])([startRuleGast], precedingInput, this.tokenMatcher, this.maxLookahead);
+        return interpreter_1.nextPossibleTokensAfter([startRuleGast], precedingInput, this.tokenMatcher, this.maxLookahead);
     };
     // TODO: should this be a member method or a utility? it does not have any state or usage of 'this'...
     // TODO: should this be more explicitly part of the public API?
     ContentAssist.prototype.getNextPossibleTokenTypes = function (grammarPath) {
-        var topRuleName = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(grammarPath.ruleStack);
+        var topRuleName = utils_1.first(grammarPath.ruleStack);
         var gastProductions = this.getGAstProductions();
         var topProduction = gastProductions[topRuleName];
-        var nextPossibleTokenTypes = new __WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__["a" /* NextAfterTokenWalker */](topProduction, grammarPath).startWalking();
+        var nextPossibleTokenTypes = new interpreter_1.NextAfterTokenWalker(topProduction, grammarPath).startWalking();
         return nextPossibleTokenTypes;
     };
     return ContentAssist;
 }());
-
+exports.ContentAssist = ContentAssist;
 //# sourceMappingURL=context_assist.js.map
 
 /***/ }),
 /* 336 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GastRecorder; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__grammar_keys__ = __webpack_require__(27);
 
-
-
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GastRecorder = void 0;
+var utils_1 = __webpack_require__(2);
+var gast_public_1 = __webpack_require__(8);
+var lexer_public_1 = __webpack_require__(29);
+var tokens_1 = __webpack_require__(24);
+var tokens_public_1 = __webpack_require__(17);
+var parser_1 = __webpack_require__(9);
+var keys_1 = __webpack_require__(45);
 var RECORDING_NULL_OBJECT = {
     description: "This Object indicates the Parser is during Recording Phase"
 };
 Object.freeze(RECORDING_NULL_OBJECT);
 var HANDLE_SEPARATOR = true;
-var MAX_METHOD_IDX = Math.pow(2, __WEBPACK_IMPORTED_MODULE_6__grammar_keys__["d" /* BITS_FOR_OCCURRENCE_IDX */]) - 1;
-var RFT = Object(__WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__["b" /* createToken */])({ name: "RECORDING_PHASE_TOKEN", pattern: __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["a" /* Lexer */].NA });
-Object(__WEBPACK_IMPORTED_MODULE_3__scan_tokens__["a" /* augmentTokenTypes */])([RFT]);
-var RECORDING_PHASE_TOKEN = Object(__WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__["c" /* createTokenInstance */])(RFT, "This IToken indicates the Parser is in Recording Phase\n\t" +
+var MAX_METHOD_IDX = Math.pow(2, keys_1.BITS_FOR_OCCURRENCE_IDX) - 1;
+var RFT = tokens_public_1.createToken({ name: "RECORDING_PHASE_TOKEN", pattern: lexer_public_1.Lexer.NA });
+tokens_1.augmentTokenTypes([RFT]);
+var RECORDING_PHASE_TOKEN = tokens_public_1.createTokenInstance(RFT, "This IToken indicates the Parser is in Recording Phase\n\t" +
     "" +
-    "See: https://sap.github.io/chevrotain/docs/guide/internals.html#grammar-recording for details", 
+    "See: https://chevrotain.io/docs/guide/internals.html#grammar-recording for details", 
 // Using "-1" instead of NaN (as in EOF) because an actual number is less likely to
 // cause errors if the output of LA or CONSUME would be (incorrectly) used during the recording phase.
 -1, -1, -1, -1, -1, -1);
 Object.freeze(RECORDING_PHASE_TOKEN);
 var RECORDING_PHASE_CSTNODE = {
     name: "This CSTNode indicates the Parser is in Recording Phase\n\t" +
-        "See: https://sap.github.io/chevrotain/docs/guide/internals.html#grammar-recording for details",
+        "See: https://chevrotain.io/docs/guide/internals.html#grammar-recording for details",
     children: {}
 };
 /**
@@ -89103,11 +88593,11 @@ var GastRecorder = /** @class */ (function () {
     GastRecorder.prototype.LA_RECORD = function (howMuch) {
         // We cannot use the RECORD_PHASE_TOKEN here because someone may depend
         // On LA return EOF at the end of the input so an infinite loop may occur.
-        return __WEBPACK_IMPORTED_MODULE_5__parser__["e" /* END_OF_FILE */];
+        return parser_1.END_OF_FILE;
     };
     GastRecorder.prototype.topLevelRuleRecord = function (name, def) {
         try {
-            var newTopLevelRule = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["j" /* Rule */]({ definition: [], name: name });
+            var newTopLevelRule = new gast_public_1.Rule({ definition: [], name: name });
             newTopLevelRule.name = name;
             this.recordingProdStack.push(newTopLevelRule);
             def.call(this);
@@ -89120,7 +88610,7 @@ var GastRecorder = /** @class */ (function () {
                     originalError.message =
                         originalError.message +
                             '\n\t This error was thrown during the "grammar recording phase" For more info see:\n\t' +
-                            "https://sap.github.io/chevrotain/docs/guide/internals.html#grammar-recording";
+                            "https://chevrotain.io/docs/guide/internals.html#grammar-recording";
                 }
                 catch (mutabilityError) {
                     // We may not be able to modify the original error object
@@ -89132,80 +88622,75 @@ var GastRecorder = /** @class */ (function () {
     };
     // Implementation of parsing DSL
     GastRecorder.prototype.optionInternalRecord = function (actionORMethodDef, occurrence) {
-        return recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["e" /* Option */], actionORMethodDef, occurrence);
+        return recordProd.call(this, gast_public_1.Option, actionORMethodDef, occurrence);
     };
     GastRecorder.prototype.atLeastOneInternalRecord = function (occurrence, actionORMethodDef) {
-        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["g" /* RepetitionMandatory */], actionORMethodDef, occurrence);
+        recordProd.call(this, gast_public_1.RepetitionMandatory, actionORMethodDef, occurrence);
     };
     GastRecorder.prototype.atLeastOneSepFirstInternalRecord = function (occurrence, options) {
-        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */], options, occurrence, HANDLE_SEPARATOR);
+        recordProd.call(this, gast_public_1.RepetitionMandatoryWithSeparator, options, occurrence, HANDLE_SEPARATOR);
     };
     GastRecorder.prototype.manyInternalRecord = function (occurrence, actionORMethodDef) {
-        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["f" /* Repetition */], actionORMethodDef, occurrence);
+        recordProd.call(this, gast_public_1.Repetition, actionORMethodDef, occurrence);
     };
     GastRecorder.prototype.manySepFirstInternalRecord = function (occurrence, options) {
-        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["i" /* RepetitionWithSeparator */], options, occurrence, HANDLE_SEPARATOR);
+        recordProd.call(this, gast_public_1.RepetitionWithSeparator, options, occurrence, HANDLE_SEPARATOR);
     };
     GastRecorder.prototype.orInternalRecord = function (altsOrOpts, occurrence) {
         return recordOrProd.call(this, altsOrOpts, occurrence);
     };
     GastRecorder.prototype.subruleInternalRecord = function (ruleToCall, occurrence, options) {
         assertMethodIdxIsValid(occurrence);
-        if (!ruleToCall || Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(ruleToCall, "ruleName") === false) {
+        if (!ruleToCall || utils_1.has(ruleToCall, "ruleName") === false) {
             var error = new Error("<SUBRULE" + getIdxSuffix(occurrence) + "> argument is invalid" +
                 (" expecting a Parser method reference but got: <" + JSON.stringify(ruleToCall) + ">") +
                 ("\n inside top level rule: <" + this.recordingProdStack[0].name + ">"));
             error.KNOWN_RECORDER_ERROR = true;
             throw error;
         }
-        var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
+        var prevProd = utils_1.peek(this.recordingProdStack);
         var ruleName = ruleToCall["ruleName"];
-        var newNoneTerminal = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["d" /* NonTerminal */]({
+        var newNoneTerminal = new gast_public_1.NonTerminal({
             idx: occurrence,
             nonTerminalName: ruleName,
+            label: options === null || options === void 0 ? void 0 : options.LABEL,
             // The resolving of the `referencedRule` property will be done once all the Rule's GASTs have been created
             referencedRule: undefined
         });
         prevProd.definition.push(newNoneTerminal);
-        return this.outputCst
-            ? RECORDING_PHASE_CSTNODE
-            : RECORDING_NULL_OBJECT;
+        return this.outputCst ? RECORDING_PHASE_CSTNODE : RECORDING_NULL_OBJECT;
     };
     GastRecorder.prototype.consumeInternalRecord = function (tokType, occurrence, options) {
         assertMethodIdxIsValid(occurrence);
-        if (!Object(__WEBPACK_IMPORTED_MODULE_3__scan_tokens__["b" /* hasShortKeyProperty */])(tokType)) {
+        if (!tokens_1.hasShortKeyProperty(tokType)) {
             var error = new Error("<CONSUME" + getIdxSuffix(occurrence) + "> argument is invalid" +
                 (" expecting a TokenType reference but got: <" + JSON.stringify(tokType) + ">") +
                 ("\n inside top level rule: <" + this.recordingProdStack[0].name + ">"));
             error.KNOWN_RECORDER_ERROR = true;
             throw error;
         }
-        var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
-        var newNoneTerminal = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["k" /* Terminal */]({
+        var prevProd = utils_1.peek(this.recordingProdStack);
+        var newNoneTerminal = new gast_public_1.Terminal({
             idx: occurrence,
-            terminalType: tokType
+            terminalType: tokType,
+            label: options === null || options === void 0 ? void 0 : options.LABEL
         });
         prevProd.definition.push(newNoneTerminal);
         return RECORDING_PHASE_TOKEN;
     };
     return GastRecorder;
 }());
-
+exports.GastRecorder = GastRecorder;
 function recordProd(prodConstructor, mainProdArg, occurrence, handleSep) {
     if (handleSep === void 0) { handleSep = false; }
     assertMethodIdxIsValid(occurrence);
-    var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
-    var grammarAction = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(mainProdArg)
-        ? mainProdArg
-        : mainProdArg.DEF;
+    var prevProd = utils_1.peek(this.recordingProdStack);
+    var grammarAction = utils_1.isFunction(mainProdArg) ? mainProdArg : mainProdArg.DEF;
     var newProd = new prodConstructor({ definition: [], idx: occurrence });
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "NAME")) {
-        newProd.name = mainProdArg.NAME;
-    }
     if (handleSep) {
         newProd.separator = mainProdArg.SEP;
     }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "MAX_LOOKAHEAD")) {
+    if (utils_1.has(mainProdArg, "MAX_LOOKAHEAD")) {
         newProd.maxLookahead = mainProdArg.MAX_LOOKAHEAD;
     }
     this.recordingProdStack.push(newProd);
@@ -89217,35 +88702,29 @@ function recordProd(prodConstructor, mainProdArg, occurrence, handleSep) {
 function recordOrProd(mainProdArg, occurrence) {
     var _this = this;
     assertMethodIdxIsValid(occurrence);
-    var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
+    var prevProd = utils_1.peek(this.recordingProdStack);
     // Only an array of alternatives
-    var hasOptions = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(mainProdArg) === false;
+    var hasOptions = utils_1.isArray(mainProdArg) === false;
     var alts = hasOptions === false ? mainProdArg : mainProdArg.DEF;
-    var newOrProd = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["b" /* Alternation */]({
+    var newOrProd = new gast_public_1.Alternation({
         definition: [],
         idx: occurrence,
         ignoreAmbiguities: hasOptions && mainProdArg.IGNORE_AMBIGUITIES === true
     });
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "NAME")) {
-        newOrProd.name = mainProdArg.NAME;
-    }
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "MAX_LOOKAHEAD")) {
+    if (utils_1.has(mainProdArg, "MAX_LOOKAHEAD")) {
         newOrProd.maxLookahead = mainProdArg.MAX_LOOKAHEAD;
     }
-    var hasPredicates = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["Q" /* some */])(alts, function (currAlt) { return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(currAlt.GATE); });
+    var hasPredicates = utils_1.some(alts, function (currAlt) { return utils_1.isFunction(currAlt.GATE); });
     newOrProd.hasPredicates = hasPredicates;
     prevProd.definition.push(newOrProd);
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(alts, function (currAlt) {
-        var currAltFlat = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["c" /* Flat */]({ definition: [] });
+    utils_1.forEach(alts, function (currAlt) {
+        var currAltFlat = new gast_public_1.Alternative({ definition: [] });
         newOrProd.definition.push(currAltFlat);
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(currAlt, "NAME")) {
-            currAltFlat.name = currAlt.NAME;
-        }
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(currAlt, "IGNORE_AMBIGUITIES")) {
+        if (utils_1.has(currAlt, "IGNORE_AMBIGUITIES")) {
             currAltFlat.ignoreAmbiguities = currAlt.IGNORE_AMBIGUITIES;
         }
         // **implicit** ignoreAmbiguities due to usage of gate
-        else if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(currAlt, "GATE")) {
+        else if (utils_1.has(currAlt, "GATE")) {
             currAltFlat.ignoreAmbiguities = true;
         }
         _this.recordingProdStack.push(currAltFlat);
@@ -89262,8 +88741,7 @@ function assertMethodIdxIsValid(idx) {
         var error = new Error(
         // The stack trace will contain all the needed details
         "Invalid DSL Method idx value: <" + idx + ">\n\t" +
-            ("Idx value must be a none negative value smaller than " + (MAX_METHOD_IDX +
-                1)));
+            ("Idx value must be a none negative value smaller than " + (MAX_METHOD_IDX + 1)));
         error.KNOWN_RECORDER_ERROR = true;
         throw error;
     }
@@ -89272,14 +88750,14 @@ function assertMethodIdxIsValid(idx) {
 
 /***/ }),
 /* 337 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PerformanceTracer; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser__ = __webpack_require__(9);
 
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PerformanceTracer = void 0;
+var utils_1 = __webpack_require__(2);
+var parser_1 = __webpack_require__(9);
 /**
  * Trait responsible for runtime parsing errors.
  */
@@ -89287,7 +88765,7 @@ var PerformanceTracer = /** @class */ (function () {
     function PerformanceTracer() {
     }
     PerformanceTracer.prototype.initPerformanceTracer = function (config) {
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "traceInitPerf")) {
+        if (utils_1.has(config, "traceInitPerf")) {
             var userTraceInitPerf = config.traceInitPerf;
             var traceIsNumber = typeof userTraceInitPerf === "number";
             this.traceInitMaxIdent = traceIsNumber
@@ -89299,7 +88777,7 @@ var PerformanceTracer = /** @class */ (function () {
         }
         else {
             this.traceInitMaxIdent = 0;
-            this.traceInitPerf = __WEBPACK_IMPORTED_MODULE_1__parser__["b" /* DEFAULT_PARSER_CONFIG */].traceInitPerf;
+            this.traceInitPerf = parser_1.DEFAULT_PARSER_CONFIG.traceInitPerf;
         }
         this.traceInitIndent = -1;
     };
@@ -89312,7 +88790,7 @@ var PerformanceTracer = /** @class */ (function () {
             if (this.traceInitIndent < this.traceInitMaxIdent) {
                 console.log(indent + "--> <" + phaseDesc + ">");
             }
-            var _a = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["R" /* timer */])(phaseImpl), time = _a.time, value = _a.value;
+            var _a = utils_1.timer(phaseImpl), time = _a.time, value = _a.value;
             /* istanbul ignore next - Difficult to reproduce specific performance behavior (>10ms) in tests */
             var traceMethod = time > 10 ? console.warn : console.log;
             if (this.traceInitIndent < this.traceInitMaxIdent) {
@@ -89327,19 +88805,50 @@ var PerformanceTracer = /** @class */ (function () {
     };
     return PerformanceTracer;
 }());
-
+exports.PerformanceTracer = PerformanceTracer;
 //# sourceMappingURL=perf_tracer.js.map
 
 /***/ }),
 /* 338 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = createSyntaxDiagramsCode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(214);
 
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.applyMixins = void 0;
+function applyMixins(derivedCtor, baseCtors) {
+    baseCtors.forEach(function (baseCtor) {
+        var baseProto = baseCtor.prototype;
+        Object.getOwnPropertyNames(baseProto).forEach(function (propName) {
+            if (propName === "constructor") {
+                return;
+            }
+            var basePropDescriptor = Object.getOwnPropertyDescriptor(baseProto, propName);
+            // Handle Accessors
+            if (basePropDescriptor &&
+                (basePropDescriptor.get || basePropDescriptor.set)) {
+                Object.defineProperty(derivedCtor.prototype, propName, basePropDescriptor);
+            }
+            else {
+                derivedCtor.prototype[propName] = baseCtor.prototype[propName];
+            }
+        });
+    });
+}
+exports.applyMixins = applyMixins;
+//# sourceMappingURL=apply_mixins.js.map
+
+/***/ }),
+/* 339 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createSyntaxDiagramsCode = void 0;
+var version_1 = __webpack_require__(211);
 function createSyntaxDiagramsCode(grammar, _a) {
-    var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/diagrams.css" : _d;
+    var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/diagrams.css" : _d;
     var header = "\n<!-- This is a generated file -->\n<!DOCTYPE html>\n<meta charset=\"utf-8\">\n<style>\n  body {\n    background-color: hsl(30, 20%, 95%)\n  }\n</style>\n\n";
     var cssHtml = "\n<link rel='stylesheet' href='" + css + "'>\n";
     var scripts = "\n<script src='" + resourceBase + "vendor/railroad-diagrams.js'></script>\n<script src='" + resourceBase + "src/diagrams_builder.js'></script>\n<script src='" + resourceBase + "src/diagrams_behavior.js'></script>\n<script src='" + resourceBase + "src/main.js'></script>\n";
@@ -89348,184 +88857,11 @@ function createSyntaxDiagramsCode(grammar, _a) {
     var initLogic = "\n<script>\n    var diagramsDiv = document.getElementById(\"diagrams\");\n    main.drawDiagramsFromSerializedGrammar(serializedGrammar, diagramsDiv);\n</script>\n";
     return (header + cssHtml + scripts + diagramsDiv + serializedGrammar + initLogic);
 }
+exports.createSyntaxDiagramsCode = createSyntaxDiagramsCode;
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 339 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = generateParserFactory;
-/* harmony export (immutable) */ __webpack_exports__["b"] = generateParserModule;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(340);
-
-function generateParserFactory(options) {
-    var wrapperText = Object(__WEBPACK_IMPORTED_MODULE_0__generate__["b" /* genWrapperFunction */])({
-        name: options.name,
-        rules: options.rules
-    });
-    var constructorWrapper = new Function("tokenVocabulary", "config", "chevrotain", wrapperText);
-    return function (config) {
-        return constructorWrapper(options.tokenVocabulary, config, 
-        // TODO: check how the require is transpiled/webpacked
-        __webpack_require__(213));
-    };
-}
-function generateParserModule(options) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__generate__["a" /* genUmdModule */])({ name: options.name, rules: options.rules });
-}
-//# sourceMappingURL=generate_public.js.map
-
-/***/ }),
 /* 340 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = genUmdModule;
-/* harmony export (immutable) */ __webpack_exports__["b"] = genWrapperFunction;
-/* unused harmony export genClass */
-/* unused harmony export genAllRules */
-/* unused harmony export genRule */
-/* unused harmony export genTerminal */
-/* unused harmony export genNonTerminal */
-/* unused harmony export genAlternation */
-/* unused harmony export genSingleAlt */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__ = __webpack_require__(6);
-
-
-/**
- * Missing features
- * 1. Rule arguments
- * 2. Gates
- * 3. embedded actions
- */
-var NL = "\n";
-function genUmdModule(options) {
-    return "\n(function (root, factory) {\n    if (typeof define === 'function' && define.amd) {\n        // AMD. Register as an anonymous module.\n        define(['chevrotain'], factory);\n    } else if (typeof module === 'object' && module.exports) {\n        // Node. Does not work with strict CommonJS, but\n        // only CommonJS-like environments that support module.exports,\n        // like Node.\n        module.exports = factory(require('chevrotain'));\n    } else {\n        // Browser globals (root is window)\n        root.returnExports = factory(root.b);\n    }\n}(typeof self !== 'undefined' ? self : this, function (chevrotain) {\n\n" + genClass(options) + "\n    \nreturn {\n    " + options.name + ": " + options.name + " \n}\n}));\n";
-}
-function genWrapperFunction(options) {
-    return "    \n" + genClass(options) + "\nreturn new " + options.name + "(tokenVocabulary, config)    \n";
-}
-function genClass(options) {
-    // TODO: how to pass the token vocabulary? Constructor? other?
-    var result = "\nfunction " + options.name + "(tokenVocabulary, config) {\n    // invoke super constructor\n    // No support for embedded actions currently, so we can 'hardcode'\n    // The use of CstParser.\n    chevrotain.CstParser.call(this, tokenVocabulary, config)\n\n    const $ = this\n\n    " + genAllRules(options.rules) + "\n\n    // very important to call this after all the rules have been defined.\n    // otherwise the parser may not work correctly as it will lack information\n    // derived during the self analysis phase.\n    this.performSelfAnalysis(this)\n}\n\n// inheritance as implemented in javascript in the previous decade... :(\n" + options.name + ".prototype = Object.create(chevrotain.CstParser.prototype)\n" + options.name + ".prototype.constructor = " + options.name + "    \n    ";
-    return result;
-}
-function genAllRules(rules) {
-    var rulesText = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(rules, function (currRule) {
-        return genRule(currRule, 1);
-    });
-    return rulesText.join("\n");
-}
-function genRule(prod, n) {
-    var result = indent(n, "$.RULE(\"" + prod.name + "\", function() {") + NL;
-    result += genDefinition(prod.definition, n + 1);
-    result += indent(n + 1, "})") + NL;
-    return result;
-}
-function genTerminal(prod, n) {
-    var name = prod.terminalType.name;
-    // TODO: potential performance optimization, avoid tokenMap Dictionary access
-    return indent(n, "$.CONSUME" + prod.idx + "(this.tokensMap." + name + ")" + NL);
-}
-function genNonTerminal(prod, n) {
-    return indent(n, "$.SUBRULE" + prod.idx + "($." + prod.nonTerminalName + ")" + NL);
-}
-function genAlternation(prod, n) {
-    var result = indent(n, "$.OR" + prod.idx + "([") + NL;
-    var alts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(prod.definition, function (altDef) { return genSingleAlt(altDef, n + 1); });
-    result += alts.join("," + NL);
-    result += NL + indent(n, "])" + NL);
-    return result;
-}
-function genSingleAlt(prod, n) {
-    var result = indent(n, "{") + NL;
-    if (prod.name) {
-        result += indent(n + 1, "NAME: \"" + prod.name + "\",") + NL;
-    }
-    result += indent(n + 1, "ALT: function() {") + NL;
-    result += genDefinition(prod.definition, n + 1);
-    result += indent(n + 1, "}") + NL;
-    result += indent(n, "}");
-    return result;
-}
-function genProd(prod, n) {
-    /* istanbul ignore else */
-    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["d" /* NonTerminal */]) {
-        return genNonTerminal(prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["e" /* Option */]) {
-        return genDSLRule("OPTION", prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["g" /* RepetitionMandatory */]) {
-        return genDSLRule("AT_LEAST_ONE", prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
-        return genDSLRule("AT_LEAST_ONE_SEP", prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["i" /* RepetitionWithSeparator */]) {
-        return genDSLRule("MANY_SEP", prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["f" /* Repetition */]) {
-        return genDSLRule("MANY", prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["b" /* Alternation */]) {
-        return genAlternation(prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["k" /* Terminal */]) {
-        return genTerminal(prod, n);
-    }
-    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["c" /* Flat */]) {
-        return genDefinition(prod.definition, n);
-    }
-    else {
-        throw Error("non exhaustive match");
-    }
-}
-function genDSLRule(dslName, prod, n) {
-    var result = indent(n, "$." + (dslName + prod.idx) + "(");
-    if (prod.name || prod.separator) {
-        result += "{" + NL;
-        if (prod.name) {
-            result += indent(n + 1, "NAME: \"" + prod.name + "\"") + "," + NL;
-        }
-        if (prod.separator) {
-            result +=
-                indent(n + 1, "SEP: this.tokensMap." + prod.separator.name) +
-                    "," +
-                    NL;
-        }
-        result += "DEF: " + genDefFunction(prod.definition, n + 2) + NL;
-        result += indent(n, "}") + NL;
-    }
-    else {
-        result += genDefFunction(prod.definition, n + 1);
-    }
-    result += indent(n, ")") + NL;
-    return result;
-}
-function genDefFunction(definition, n) {
-    var def = "function() {" + NL;
-    def += genDefinition(definition, n);
-    def += indent(n, "}") + NL;
-    return def;
-}
-function genDefinition(def, n) {
-    var result = "";
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(def, function (prod) {
-        result += genProd(prod, n + 1);
-    });
-    return result;
-}
-function indent(howMuch, text) {
-    var spaces = Array(howMuch * 4 + 1).join(" ");
-    return spaces + text;
-}
-//# sourceMappingURL=generate.js.map
-
-/***/ }),
-/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89545,19 +88881,19 @@ var _capMixin = __webpack_require__(16);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _rasterLayerPointMixin = __webpack_require__(210);
+var _rasterLayerPointMixin = __webpack_require__(208);
 
 var _rasterLayerPointMixin2 = _interopRequireDefault(_rasterLayerPointMixin);
 
-var _rasterLayerPolyMixin = __webpack_require__(211);
+var _rasterLayerPolyMixin = __webpack_require__(209);
 
 var _rasterLayerPolyMixin2 = _interopRequireDefault(_rasterLayerPolyMixin);
 
-var _rasterLayerHeatmapMixin = __webpack_require__(209);
+var _rasterLayerHeatmapMixin = __webpack_require__(207);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
-var _rasterLayerLineMixin = __webpack_require__(342);
+var _rasterLayerLineMixin = __webpack_require__(341);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
@@ -90156,7 +89492,7 @@ function rasterLayer(layerType) {
 }
 
 /***/ }),
-/* 342 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90649,7 +89985,7 @@ function rasterLayerLineMixin(_layer) {
 }
 
 /***/ }),
-/* 343 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91056,7 +90392,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 344 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91251,7 +90587,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 345 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91268,7 +90604,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(4);
 
-var _dcLegendMixin = __webpack_require__(346);
+var _dcLegendMixin = __webpack_require__(345);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -91525,7 +90861,7 @@ function legend() {
 }
 
 /***/ }),
-/* 346 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91624,7 +90960,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 347 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91821,6 +91157,12 @@ function legendCont() {
 }
 
 /***/ }),
+/* 347 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
 /* 348 */
 /***/ (function(module, exports) {
 
@@ -91840,12 +91182,6 @@ function legendCont() {
 
 /***/ }),
 /* 351 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92089,7 +91425,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 353 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.9.1/LICENSE.txt */
