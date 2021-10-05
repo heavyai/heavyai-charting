@@ -56444,6 +56444,8 @@ var _mapdDraw = __webpack_require__(13);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
@@ -56637,7 +56639,10 @@ function rasterLayerPointMixin(_layer) {
         fields: fields,
         ops: ops,
         as: alias,
-        groupby: transform.groupby.map(function (g, i) {
+        // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
+        //  in mapd-data-layer2. So, just gonna filter them out.
+        //  https://omnisci.atlassian.net/browse/FE-14213
+        groupby: [].concat(_toConsumableArray(new Set(transform.groupby))).map(function (g, i) {
           return {
             type: "project",
             expr: "" + (isDataExport && i === 0 ? "/*+ cpu_mode */ " : "") + g,
