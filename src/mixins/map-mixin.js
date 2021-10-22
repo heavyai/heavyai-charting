@@ -68,6 +68,7 @@ export default function mapMixin(
 
   const _minMaxCache = {}
   let _interactionsEnabled = true
+  let _shouldRedrawAll = false
 
   _chart.useLonLat = function(useLonLat) {
     if (!arguments.length) {
@@ -98,6 +99,10 @@ export default function mapMixin(
 
   _chart.setInitialBounds = function(newBounds) {
     _initialBounds = newBounds
+  }
+
+  _chart.setShouldRedrawAll = function(newShouldRedrawAll) {
+    _shouldRedrawAll = newShouldRedrawAll
   }
 
   function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
@@ -352,7 +357,7 @@ export default function mapMixin(
     }
     _lastMapUpdateTime = curTime
 
-    let redrawall = false
+    let redrawall = _shouldRedrawAll
     if (typeof _chart.getLayers === "function") {
       _chart.getLayers().forEach(layer => {
         if (

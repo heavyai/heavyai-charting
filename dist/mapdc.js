@@ -34540,6 +34540,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   var _minMaxCache = {};
   var _interactionsEnabled = true;
+  var _shouldRedrawAll = false;
 
   _chart.useLonLat = function (useLonLat) {
     if (!arguments.length) {
@@ -34570,6 +34571,10 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   _chart.setInitialBounds = function (newBounds) {
     _initialBounds = newBounds;
+  };
+
+  _chart.setShouldRedrawAll = function (newShouldRedrawAll) {
+    _shouldRedrawAll = newShouldRedrawAll;
   };
 
   function makeBoundsArrSafe(_ref) {
@@ -34786,7 +34791,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     }
     _lastMapUpdateTime = curTime;
 
-    var redrawall = false;
+    var redrawall = _shouldRedrawAll;
     if (typeof _chart.getLayers === "function") {
       _chart.getLayers().forEach(function (layer) {
         if (typeof layer.xDim === "function" && typeof layer.yDim === "function") {
