@@ -140,9 +140,9 @@ export default function mapdTable(parent, chartGroup) {
       dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
     }
 
-    return _sortColumn && _sortColumn.order === "asc" ?
-      dimOrGroup.getBottomQuery(_size, _offset) :
-      dimOrGroup.getTopQuery(_size, _offset)
+    return _sortColumn && _sortColumn.order === "asc"
+      ? dimOrGroup.getBottomQuery(_size, _offset)
+      : dimOrGroup.getTopQuery(_size, _offset)
   }
 
   _chart.getData = function(size, offset, callback) {
