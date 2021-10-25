@@ -126,12 +126,31 @@ export default function mapdTable(parent, chartGroup) {
 
   _chart.data(() => _chart.dataCache)
 
+  _chart.getQueryFunctionName = () =>
+    _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync"
+
+  _chart.isGroupedData = () => Boolean(_chart.dimension().value()[0])
+
+  _chart.getTableQuery = function() {
+    const isGroupedData = _chart.isGroupedData()
+    const dimOrGroup = isGroupedData ? _chart.group() : _chart.dimension()
+    dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null)
+
+    if (!isGroupedData) {
+      dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
+    }
+
+    return _sortColumn && _sortColumn.order === "asc" ?
+      dimOrGroup.getBottomQuery(_size, _offset) :
+      dimOrGroup.getTopQuery(_size, _offset)
+  }
+
   _chart.getData = function(size, offset, callback) {
-    _isGroupedData = _chart.dimension().value()[0]
+    _isGroupedData = _chart.isGroupedData()
     _dimOrGroup = _isGroupedData ? _chart.group() : _chart.dimension()
     _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null)
-    const sortFuncName =
-      _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync"
+
+    const sortFuncName = _chart.getQueryFunctionName()
 
     if (!_isGroupedData) {
       _dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
