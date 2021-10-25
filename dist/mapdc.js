@@ -85970,11 +85970,32 @@ function mapdTable(parent, chartGroup) {
     return _chart.dataCache;
   });
 
+  _chart.getQueryFunctionName = function () {
+    return _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync";
+  };
+
+  _chart.isGroupedData = function () {
+    return Boolean(_chart.dimension().value()[0]);
+  };
+
+  _chart.getTableQuery = function () {
+    var isGroupedData = _chart.isGroupedData();
+    var dimOrGroup = isGroupedData ? _chart.group() : _chart.dimension();
+    dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null);
+
+    if (!isGroupedData) {
+      dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "");
+    }
+
+    return _sortColumn && _sortColumn.order === "asc" ? dimOrGroup.getBottomQuery(_size, _offset) : dimOrGroup.getTopQuery(_size, _offset);
+  };
+
   _chart.getData = function (size, offset, callback) {
-    _isGroupedData = _chart.dimension().value()[0];
+    _isGroupedData = _chart.isGroupedData();
     _dimOrGroup = _isGroupedData ? _chart.group() : _chart.dimension();
     _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null);
-    var sortFuncName = _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync";
+
+    var sortFuncName = _chart.getQueryFunctionName();
 
     if (!_isGroupedData) {
       _dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "");
