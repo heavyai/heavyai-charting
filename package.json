@@ -61,7 +61,7 @@
     "chevrotain": "~6.5.0",
     "d3": "^3.5.17",
     "fast-deep-equal": "^2.0.1",
-    "legendables": "git+ssh://git@github.com/omnisci/legendables.git#4de5dd71cdc857d06c9a226facf3c35a20d8aff9",
+    "legendables": "https://github.com/omnisci/legendables.git#4de5dd71cdc857d06c9a226facf3c35a20d8aff9",
     "mapbox-gl": "1.9.1",
     "mapd-data-layer-2": "0.0.24",
     "moment": "^2.19.3",
