@@ -85979,6 +85979,8 @@ function mapdTable(parent, chartGroup) {
   };
 
   _chart.getTableQuery = function () {
+    var unbinned = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
     var isGroupedData = _chart.isGroupedData();
     var dimOrGroup = isGroupedData ? _chart.group() : _chart.dimension();
     dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null);
@@ -85987,7 +85989,8 @@ function mapdTable(parent, chartGroup) {
       dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "");
     }
 
-    return _sortColumn && _sortColumn.order === "asc" ? dimOrGroup.getBottomQuery(_size, _offset) : dimOrGroup.getTopQuery(_size, _offset);
+    var query = _sortColumn && _sortColumn.order === "asc" ? dimOrGroup.getBottomQuery(_size, _offset) : dimOrGroup.getTopQuery(_size, _offset);
+    return unbinned ? dimOrGroup.getUnbinnedQuery(query) : query;
   };
 
   _chart.getData = function (size, offset, callback) {
