@@ -140,9 +140,10 @@ export default function mapdTable(parent, chartGroup) {
       dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
     }
 
-    const query =  _sortColumn && _sortColumn.order === "asc"
-      ? dimOrGroup.getBottomQuery(_size, _offset)
-      : dimOrGroup.getTopQuery(_size, _offset)
+    const query =
+      _sortColumn && _sortColumn.order === "asc"
+        ? dimOrGroup.getBottomQuery(_size, _offset)
+        : dimOrGroup.getTopQuery(_size, _offset)
     return unbinned ? dimOrGroup.getUnbinnedQuery(query) : query
   }
 
