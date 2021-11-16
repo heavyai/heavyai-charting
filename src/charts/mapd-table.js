@@ -131,7 +131,7 @@ export default function mapdTable(parent, chartGroup) {
 
   _chart.isGroupedData = () => Boolean(_chart.dimension().value()[0])
 
-  _chart.getTableQuery = function() {
+  _chart.getTableQuery = function(unbinned = false) {
     const isGroupedData = _chart.isGroupedData()
     const dimOrGroup = isGroupedData ? _chart.group() : _chart.dimension()
     dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null)
@@ -140,9 +140,11 @@ export default function mapdTable(parent, chartGroup) {
       dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
     }
 
-    return _sortColumn && _sortColumn.order === "asc"
-      ? dimOrGroup.getBottomQuery(_size, _offset)
-      : dimOrGroup.getTopQuery(_size, _offset)
+    const query =
+      _sortColumn && _sortColumn.order === "asc"
+        ? dimOrGroup.getBottomQuery(_size, _offset)
+        : dimOrGroup.getTopQuery(_size, _offset)
+    return unbinned ? dimOrGroup.getUnbinnedQuery(query) : query
   }
 
   _chart.getData = function(size, offset, callback) {
