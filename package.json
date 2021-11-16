@@ -58,7 +58,7 @@
     "@turf/bbox": "^6.0.1",
     "@turf/bbox-clip": "^6.0.3",
     "axios": "^0.19.0",
-    "chevrotain": "~6.5.0",
+    "chevrotain": "^9.0.0",
     "d3": "^3.5.17",
     "fast-deep-equal": "^2.0.1",
     "legendables": "https://github.com/omnisci/legendables.git#4de5dd71cdc857d06c9a226facf3c35a20d8aff9",
