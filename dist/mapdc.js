@@ -8986,21 +8986,21 @@ module.exports = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CstParser; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return EmbeddedActionsParser; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(325);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(326);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(219);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(329);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(331);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(332);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(333);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(334);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(335);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(336);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(337);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(329);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(332);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(333);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(334);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(337);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(338);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -59273,9 +59273,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "resolveGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "validateGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(338);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(339);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createSyntaxDiagramsCode", function() { return __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(339);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(340);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserFactory", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserModule", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["b"]; });
 // semantic version
@@ -59353,7 +59353,7 @@ var VERSION = "6.5.0";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(326);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(327);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(46);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -60346,7 +60346,7 @@ var IN = "_~IN~_";
 /* harmony export (immutable) */ __webpack_exports__["c"] = validateGrammar;
 /* harmony export (immutable) */ __webpack_exports__["a"] = assignOccurrenceIndices;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(327);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(328);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__checks__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast__ = __webpack_require__(26);
@@ -60970,7 +60970,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(320);
+var _rowChart = __webpack_require__(321);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -60979,7 +60979,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(321);
+var _scatterPlot = __webpack_require__(322);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -60988,7 +60988,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(322);
+var _mapdTable = __webpack_require__(323);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -60997,7 +60997,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(323);
+var _boxPlot = __webpack_require__(324);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -61006,7 +61006,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(324);
+var _countWidget = __webpack_require__(325);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -61132,7 +61132,7 @@ Object.defineProperty(exports, "rasterLayerPolyMixin", {
   }
 });
 
-var _rasterLayer = __webpack_require__(341);
+var _rasterLayer = __webpack_require__(342);
 
 Object.defineProperty(exports, "rasterLayer", {
   enumerable: true,
@@ -61141,7 +61141,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(343);
+var _rasterMixin = __webpack_require__(344);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -61168,7 +61168,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(344);
+var _legendContinuous = __webpack_require__(345);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -61177,7 +61177,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(345);
+var _legend = __webpack_require__(346);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -61186,7 +61186,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(347);
+var _dcLegendCont = __webpack_require__(348);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -61214,14 +61214,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(348);
 __webpack_require__(349);
 __webpack_require__(350);
 __webpack_require__(351);
 __webpack_require__(352);
+__webpack_require__(353);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(353);
+  window.mapboxgl = __webpack_require__(354);
 }
 
 exports.d3 = _d; // eslint-disable-line
@@ -79795,6 +79795,8 @@ var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
 
+var _paused = __webpack_require__(320);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -80106,7 +80108,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart._vegaSpec = genLayeredVega(_chart);
     _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
-      if (!window || !window.paused) {
+      // matzy: I'm not sure if window.paused is supposed to start as true or false
+      // if (!window || !window.paused) {
+      if (!_paused.paused) {
         _renderBoundsMap[result.nonce] = bounds;
       }
       callback(null, result);
@@ -84856,6 +84860,25 @@ function defaultLocale(definition) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.setPaused = setPaused;
+var paused = exports.paused = false;
+
+function setPaused(status) {
+  console.log(paused);
+  exports.paused = paused = status;
+  console.log(paused);
+}
+
+/***/ }),
+/* 321 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = rowChart;
 
 var _baseMixin = __webpack_require__(7);
@@ -85516,7 +85539,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85818,7 +85841,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86391,7 +86414,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86649,7 +86672,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86778,7 +86801,7 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86855,7 +86878,7 @@ function buildInProdFollowPrefix(terminal) {
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87130,7 +87153,7 @@ function canMatchCharCode(charCodes, pattern) {
 //# sourceMappingURL=reg_exp.js.map
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87197,7 +87220,7 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87315,14 +87338,14 @@ var LooksAhead = /** @class */ (function () {
 //# sourceMappingURL=looksahead.js.map
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TreeBuilder; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cst_cst__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(331);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
@@ -87615,7 +87638,7 @@ var TreeBuilder = /** @class */ (function () {
 //# sourceMappingURL=tree_builder.js.map
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87752,7 +87775,7 @@ function validateRedundantMethods(visitorInstance, ruleNames) {
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 331 */
+/* 332 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87834,7 +87857,7 @@ var LexerAdapter = /** @class */ (function () {
 //# sourceMappingURL=lexer_adapter.js.map
 
 /***/ }),
-/* 332 */
+/* 333 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88188,7 +88211,7 @@ var RecognizerApi = /** @class */ (function () {
 //# sourceMappingURL=recognizer_api.js.map
 
 /***/ }),
-/* 333 */
+/* 334 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88848,7 +88871,7 @@ var RecognizerEngine = /** @class */ (function () {
 //# sourceMappingURL=recognizer_engine.js.map
 
 /***/ }),
-/* 334 */
+/* 335 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88940,7 +88963,7 @@ var ErrorHandler = /** @class */ (function () {
 //# sourceMappingURL=error_handler.js.map
 
 /***/ }),
-/* 335 */
+/* 336 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88975,7 +88998,7 @@ var ContentAssist = /** @class */ (function () {
 //# sourceMappingURL=context_assist.js.map
 
 /***/ }),
-/* 336 */
+/* 337 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89305,7 +89328,7 @@ function assertMethodIdxIsValid(idx) {
 //# sourceMappingURL=gast_recorder.js.map
 
 /***/ }),
-/* 337 */
+/* 338 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89365,7 +89388,7 @@ var PerformanceTracer = /** @class */ (function () {
 //# sourceMappingURL=perf_tracer.js.map
 
 /***/ }),
-/* 338 */
+/* 339 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89385,13 +89408,13 @@ function createSyntaxDiagramsCode(grammar, _a) {
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 339 */
+/* 340 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = generateParserFactory;
 /* harmony export (immutable) */ __webpack_exports__["b"] = generateParserModule;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(340);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(341);
 
 function generateParserFactory(options) {
     var wrapperText = Object(__WEBPACK_IMPORTED_MODULE_0__generate__["b" /* genWrapperFunction */])({
@@ -89411,7 +89434,7 @@ function generateParserModule(options) {
 //# sourceMappingURL=generate_public.js.map
 
 /***/ }),
-/* 340 */
+/* 341 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89559,7 +89582,7 @@ function indent(howMuch, text) {
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-/* 341 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89591,7 +89614,7 @@ var _rasterLayerHeatmapMixin = __webpack_require__(209);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
-var _rasterLayerLineMixin = __webpack_require__(342);
+var _rasterLayerLineMixin = __webpack_require__(343);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
@@ -90190,7 +90213,7 @@ function rasterLayer(layerType) {
 }
 
 /***/ }),
-/* 342 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90683,7 +90706,7 @@ function rasterLayerLineMixin(_layer) {
 }
 
 /***/ }),
-/* 343 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91090,7 +91113,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 344 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91285,7 +91308,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 345 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91302,7 +91325,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(4);
 
-var _dcLegendMixin = __webpack_require__(346);
+var _dcLegendMixin = __webpack_require__(347);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -91559,7 +91582,7 @@ function legend() {
 }
 
 /***/ }),
-/* 346 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91658,7 +91681,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 347 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91855,12 +91878,6 @@ function legendCont() {
 }
 
 /***/ }),
-/* 348 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 349 */
 /***/ (function(module, exports) {
 
@@ -91880,6 +91897,12 @@ function legendCont() {
 
 /***/ }),
 /* 352 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92123,7 +92146,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 353 */
+/* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.9.1/LICENSE.txt */
