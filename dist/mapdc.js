@@ -80108,8 +80108,6 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart._vegaSpec = genLayeredVega(_chart);
     _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
-      // matzy: I'm not sure if window.paused is supposed to start as true or false
-      // if (!window || !window.paused) {
       if (!_paused.paused) {
         _renderBoundsMap[result.nonce] = bounds;
       }
