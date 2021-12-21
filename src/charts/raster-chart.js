@@ -14,6 +14,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
+import { paused } from "../constants/paused"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -347,7 +348,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       .con()
       .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
       .then(result => {
-        if (!window || !window.paused) {
+        if (!paused) {
           _renderBoundsMap[result.nonce] = bounds
         }
         callback(null, result)
