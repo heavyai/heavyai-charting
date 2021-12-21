@@ -84864,9 +84864,7 @@ exports.setPaused = setPaused;
 var paused = exports.paused = false;
 
 function setPaused(status) {
-  console.log(paused);
   exports.paused = paused = status;
-  console.log(paused);
 }
 
 /***/ }),
