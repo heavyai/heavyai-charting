@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 
 services:
   charting:
@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8080:8080
-      - 9229:9229
     volumes:
-      - ./src:/usr/src/app/src
+      - ./src:/app/src
+      - ./example:/app/example
+      - ./scripts:/app/scripts
+      - ./dist:/app/dist
