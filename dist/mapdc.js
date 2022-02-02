@@ -56942,7 +56942,7 @@ function rasterLayerPointMixin(_layer) {
     var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
-      type: markType === "airplane" ? "legacysymbol" : "symbol",
+      type: "symbol",
       from: {
         data: layerName
       },
