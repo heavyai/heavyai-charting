@@ -25,7 +25,7 @@ function convertFeatureToCircleStmt({ geometry: { radius, center } }, px, py) {
   const lat2 = center[1]
   const lon2 = center[0]
   const meters = radius * 1000
-  return `DISTANCE_IN_METERS(${lon2}, ${lat2}, ${px}, ${py}) < ${meters}`
+  return `ST_DWithin(CAST(ST_SetSRID(ST_Point(${lon2}, ${lat2}), 4326) as GEOGRAPHY), CAST(ST_SetSRID(ST_Point(${px}, ${py}), 4326) as GEOGRAPHY), ${meters})`
 }
 
 function convertFeatureToContainsStmt({ geometry }, px, py) {

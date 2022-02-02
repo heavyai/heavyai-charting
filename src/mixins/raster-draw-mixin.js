@@ -235,7 +235,7 @@ export function rasterDrawMixin(chart) {
                 LatLonUtils.conv900913To4326(pos, pos)
                 const meters = shape.radius * 1000
                 filterObj.shapeFilters.push(
-                  `DISTANCE_IN_METERS(${pos[0]}, ${pos[1]}, ${px}, ${py}) < ${meters}`
+                  `ST_DWithin(CAST(ST_SetSRID(ST_Point(${pos[0]}, ${pos[1]}), 4326) as GEOGRAPHY), CAST(ST_SetSRID(ST_Point(${px}, ${py}), 4326) as GEOGRAPHY), ${meters})`
                 )
               } else if (shape instanceof MapdDraw.Circle) {
                 const radsqr = Math.pow(shape.radius, 2)
