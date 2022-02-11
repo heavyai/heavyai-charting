@@ -61,7 +61,7 @@ describe("convertGeojsonToSql", () => {
     ]
 
     expect(utils.convertGeojsonToSql(features, "lon", "lat")).to.equal(
-      "((DISTANCE_IN_METERS(0, 0, lon, lat) < 1000000))"
+      "((ST_DWithin(CAST(ST_SetSRID(ST_Point(0, 0), 4326) as GEOGRAPHY), CAST(ST_SetSRID(ST_Point(lon, lat), 4326) as GEOGRAPHY), 1000000)))"
     )
   })
 
@@ -138,7 +138,7 @@ describe("convertGeojsonToSql", () => {
     ]
 
     expect(utils.convertGeojsonToSql(features, "lon", "lat")).to.equal(
-      "(UNLIKELY( lon >= -128.320313 AND lon <= -40.429688 AND lat >= -9.661713 AND lat <= 51.483925)) AND ((ST_Contains('POLYGON ((-84.023438 51.483925, -40.429688 22.069062, -124.453125 -9.661713, -128.320313 29.958472, -84.023438 51.483925))', ST_Point(lon, lat))) OR (DISTANCE_IN_METERS(0, 0, lon, lat) < 1000000))"
+      "(UNLIKELY( lon >= -128.320313 AND lon <= -40.429688 AND lat >= -9.661713 AND lat <= 51.483925)) AND ((ST_Contains('POLYGON ((-84.023438 51.483925, -40.429688 22.069062, -124.453125 -9.661713, -128.320313 29.958472, -84.023438 51.483925))', ST_Point(lon, lat))) OR (ST_DWithin(CAST(ST_SetSRID(ST_Point(0, 0), 4326) as GEOGRAPHY), CAST(ST_SetSRID(ST_Point(lon, lat), 4326) as GEOGRAPHY), 1000000)))"
     )
   })
 

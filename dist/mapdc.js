@@ -51740,7 +51740,7 @@ function rasterDrawMixin(chart) {
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos);
                 var meters = shape.radius * 1000;
-                filterObj.shapeFilters.push("DISTANCE_IN_METERS(" + pos[0] + ", " + pos[1] + ", " + px + ", " + py + ") < " + meters);
+                filterObj.shapeFilters.push("ST_DWithin(CAST(ST_SetSRID(ST_Point(" + pos[0] + ", " + pos[1] + "), 4326) as GEOGRAPHY), CAST(ST_SetSRID(ST_Point(" + px + ", " + py + "), 4326) as GEOGRAPHY), " + meters + ")");
               } else if (shape instanceof MapdDraw.Circle) {
                 var radsqr = Math.pow(shape.radius, 2);
                 var mat = MapdDraw.Mat2d.clone(shape.globalXform);
@@ -56942,7 +56942,7 @@ function rasterLayerPointMixin(_layer) {
     var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
-      type: markType === "airplane" ? "legacysymbol" : "symbol",
+      type: "symbol",
       from: {
         data: layerName
       },

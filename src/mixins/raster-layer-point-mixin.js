@@ -581,7 +581,7 @@ export default function rasterLayerPointMixin(_layer) {
 
     const marks = [
       {
-        type: markType === "airplane" ? "legacysymbol" : "symbol",
+        type: "symbol",
         from: {
           data: layerName
         },
