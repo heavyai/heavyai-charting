@@ -747,7 +747,7 @@ export default function mapMixin(
     let firstSymbolId = null
     const currentStyle = _map.getStyle()
 
-    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of heavyai layer
     if (
       currentStyle.name === "Mapbox Outdoors" ||
       currentStyle.name === "Mapbox Streets"

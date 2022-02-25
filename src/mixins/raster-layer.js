@@ -7,7 +7,7 @@ import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega"
-import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
 import moment from "moment"
 
 const validLayerTypes = ["points", "polys", "heat", "lines"]

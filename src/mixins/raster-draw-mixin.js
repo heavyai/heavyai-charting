@@ -1,21 +1,21 @@
 import * as LatLonUtils from "../utils/utils-latlon"
 import LassoButtonGroupController from "./ui/lasso-tool-ui"
 import * as _ from "lodash"
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/mapd-draw"
 import { redrawAllAsync } from "../core/core-async"
 import LatLonCircle from "./ui/lasso-shapes/LatLonCircle"
 import LatLonPoly from "./ui/lasso-shapes/LatLonPoly"
 
-/** Configure MapD Draw */
-MapdDraw.Configure.setMatrixArrayType(Float64Array)
+/** Configure HeavyAI Draw */
+Draw.Configure.setMatrixArrayType(Float64Array)
 
 // set a very low epsilon to account for the large precision provided us
 // with 64-bit floating pt. If we left this at the default, if you made a lasso
 // shape at a tight zoom (i.e. a shape with that was 100 meters^2 in area),
 // the shape wouldn't align right because the camera would not be considered dirty
 // even tho the map was moving slightly in world space.
-MapdDraw.Configure.setEpsilon(0.00000000000001)
-/** Done configuring MapdDraw */
+Draw.Configure.setEpsilon(0.00000000000001)
+/** Done configuring Draw */
 
 function chartUsesLonLat(chart) {
   return typeof chart.useLonLat === "function" && chart.useLonLat()
@@ -24,10 +24,10 @@ function chartUsesLonLat(chart) {
 /* istanbul ignore next */
 function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   const aabox = shape.aabox
-  let xmin = aabox[MapdDraw.AABox2d.MINX]
-  let xmax = aabox[MapdDraw.AABox2d.MAXX]
-  let ymin = aabox[MapdDraw.AABox2d.MINY]
-  let ymax = aabox[MapdDraw.AABox2d.MAXY]
+  let xmin = aabox[Draw.AABox2d.MINX]
+  let xmax = aabox[Draw.AABox2d.MAXX]
+  let ymin = aabox[Draw.AABox2d.MINY]
+  let ymax = aabox[Draw.AABox2d.MAXY]
   let cast = true
   if (useLonLat) {
     xmin = LatLonUtils.conv900913To4326X(xmin)
@@ -45,8 +45,8 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
 }
 
 function createSTContainsStatementFromShape(px, py, shape, srid) {
-  const first_point = MapdDraw.Point2d.create()
-  const point = MapdDraw.Point2d.create()
+  const first_point = Draw.Point2d.create()
+  const point = Draw.Point2d.create()
   const verts = shape.vertsRef
   const xform = shape.globalXform
 
@@ -55,21 +55,21 @@ function createSTContainsStatementFromShape(px, py, shape, srid) {
     let wkt_str = "POLYGON(("
     if (srid === 4326) {
       verts.forEach((vert, curr_idx) => {
-        MapdDraw.Point2d.transformMat2d(point, vert, xform)
+        Draw.Point2d.transformMat2d(point, vert, xform)
         LatLonUtils.conv900913To4326(point, point)
         wkt_str += `${point[0]} ${point[1]},`
 
         if (curr_idx === 0) {
-          MapdDraw.Point2d.copy(first_point, point)
+          Draw.Point2d.copy(first_point, point)
         }
       })
     } else {
       verts.forEach((vert, curr_idx) => {
-        MapdDraw.Point2d.transformMat2d(point, vert, xform)
+        Draw.Point2d.transformMat2d(point, vert, xform)
         wkt_str += `${point[0]} ${point[1]},`
 
         if (curr_idx === 0) {
-          MapdDraw.Point2d.copy(first_point, point)
+          Draw.Point2d.copy(first_point, point)
         }
       })
     }
@@ -237,10 +237,10 @@ export function rasterDrawMixin(chart) {
                 filterObj.shapeFilters.push(
                   `ST_DWithin(CAST(ST_SetSRID(ST_Point(${pos[0]}, ${pos[1]}), 4326) as GEOGRAPHY), CAST(ST_SetSRID(ST_Point(${px}, ${py}), 4326) as GEOGRAPHY), ${meters})`
                 )
-              } else if (shape instanceof MapdDraw.Circle) {
+              } else if (shape instanceof Draw.Circle) {
                 const radsqr = Math.pow(shape.radius, 2)
-                const mat = MapdDraw.Mat2d.clone(shape.globalXform)
-                MapdDraw.Mat2d.invert(mat, mat)
+                const mat = Draw.Mat2d.clone(shape.globalXform)
+                Draw.Mat2d.invert(mat, mat)
                 filterObj.shapeFilters.push(
                   `${createUnlikelyStmtFromShape(
                     shape,
@@ -259,7 +259,7 @@ export function rasterDrawMixin(chart) {
                 )
               } else if (
                 shape instanceof LatLonPoly ||
-                shape instanceof MapdDraw.Poly
+                shape instanceof Draw.Poly
               ) {
                 let srid = 0
                 if (shape instanceof LatLonPoly) {
@@ -334,15 +334,15 @@ export function rasterDrawMixin(chart) {
                 }
               } else if (
                 shape instanceof LatLonPoly ||
-                shape instanceof MapdDraw.Poly
+                shape instanceof Draw.Poly
               ) {
-                const p0 = MapdDraw.Point2d.create()
+                const p0 = Draw.Point2d.create()
                 const convertedVerts = []
 
                 const verts = shape.vertsRef
                 const xform = shape.globalXform
                 verts.forEach(vert => {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
+                  Draw.Point2d.transformMat2d(p0, vert, xform)
                   if (useLonLat) {
                     LatLonUtils.conv900913To4326(p0, p0)
                   }
@@ -472,12 +472,12 @@ export function rasterDrawMixin(chart) {
           PolyClass = LatLonPoly
           args.push(drawEngine)
         } else {
-          PolyClass = MapdDraw.Poly
+          PolyClass = Draw.Poly
         }
         args.push(filterArg)
         newShape = new PolyClass(...args)
-      } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
-        newShape = new MapdDraw[filterArg.type](filterArg)
+      } else if (typeof Draw[filterArg.type] !== "undefined") {
+        newShape = new Draw[filterArg.type](filterArg)
       } else {
         origFilterFunc(filterArg)
       }
@@ -540,7 +540,7 @@ export function rasterDrawMixin(chart) {
       engineOpts.margins = margins
     }
 
-    drawEngine = new MapdDraw.ShapeBuilder(parent, engineOpts)
+    drawEngine = new Draw.ShapeBuilder(parent, engineOpts)
     buttonController = new LassoButtonGroupController(
       parent,
       chart,

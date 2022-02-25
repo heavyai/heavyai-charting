@@ -6,13 +6,13 @@ var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
   context: __dirname,
   entry: {
-    "mapdc": "./index.js"
+    "charting": "./index.js"
   },
   output: {
     path: __dirname + "/dist",
     filename: "[name].js",
     libraryTarget: "umd",
-    library: "mapdc"
+    library: "charting"
   },
   externals: {
     "d3": "d3",
@@ -51,7 +51,7 @@ module.exports = {
         NODE_ENV: JSON.stringify("production")
       }
     }),
-    new ExtractTextPlugin("mapdc.css"),
+    new ExtractTextPlugin("charting.css"),
     // new UglifyJSPlugin()
   ]
 };

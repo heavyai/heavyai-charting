@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function init() {
-    // A MapdCon instance is used for performing raw queries on a MapD GPU database.
-    new MapdCon()
+    // A connector-js instance is used for performing raw queries on a HeavyDB GPU database.
+    new DbCon()
       .protocol("https")
       .host("metis.mapd.com")
       .port("443")
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function init() {
       .connect(function(error, con) {
         // Get a table from the database
         var tableName = 'tweets_nov_feb';
-        // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
+        // A CrossFilter instance is used for generating the raw query strings for your connector-js.
         var crossFilter = crossfilter.crossfilter(con, tableName)
           .then(function(cf) {
             createCharts(cf, con, tableName)
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
   /*
    * This is example code that shows how to make a cross-filtered dashboard with a
-   * backend-rendered scatterplot using the mapdc.js API. This example is not
+   * backend-rendered scatterplot using the connector-js API. This example is not
    * meant to be a replacement for dc.js documentation.  For the dc.js API docs,
    * see here:
    * - https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md.

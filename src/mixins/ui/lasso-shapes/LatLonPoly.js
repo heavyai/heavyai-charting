@@ -1,13 +1,13 @@
 "use strict"
 
 import * as LatLonUtils from "../../../utils/utils-latlon"
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/mapd-draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
 
-const { AABox2d, Mat2d, Point2d } = MapdDraw
-const MathExt = MapdDraw.Math
+const { AABox2d, Mat2d, Point2d } = Draw
+const MathExt = Draw.Math
 
-export default class LatLonPoly extends MapdDraw.Poly {
+export default class LatLonPoly extends Draw.Poly {
   constructor(draw_engine, opts) {
     if (opts.debug === undefined) {
       // if true, will activate the use of the _drawDebug method for drawing

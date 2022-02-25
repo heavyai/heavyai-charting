@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>MapD</title>
+    <title>HEAVY.AI</title>
     <meta charset="UTF-8">
     <style>
 
@@ -11,8 +11,8 @@
     <script src="assets/app.bundle.js"></script>
 <script>
 /*
-See examples in the Vega editor http://vega-demo.mapd.com
-And documentation https://www.omnisci.com/docs/latest/6_VegaAtaGlance.html#connecting-to-the-server-and-rendering-the-visualization-1
+See examples in the Vega editor http://vega-demo.heavy.ai
+And documentation https://www.heavy.ai/docs/latest/6_VegaAtaGlance.html#connecting-to-the-server-and-rendering-the-visualization-1
 Start examples with `npm run start`
 */
 var exampleVega = {
@@ -77,7 +77,7 @@ var exampleVega = {
 }
 
 var vegaOptions = {}
-var connector = new MapdCon()
+var connector = new DbCon()
   .protocol("http")
   .host("vega-demo.mapd.com")
   .port("9092")

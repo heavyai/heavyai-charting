@@ -1,4 +1,4 @@
-import { createParser } from "mapd-data-layer-2"
+import { createParser } from "@heavyai/data-layer"
 import R from "ramda"
 
 const TABLE = "tweets_nov_feb"
@@ -11,7 +11,7 @@ const shapeSize = (bins, size, gap = GAP_SIZE) => size/bins
 
 let HeatLayer
 
-const Connector = new MapdCon()
+const Connector = new DbCon()
   .protocol("https")
   .host("metis.mapd.com")
   .port("443")

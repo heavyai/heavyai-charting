@@ -18,10 +18,10 @@ const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
   // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
-  verts_LEGACY: "mapd_geo_coords",
-  indices_LEGACY: "mapd_geo_indices",
-  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
-  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
+  verts_LEGACY: "heavyai_geo_coords",
+  indices_LEGACY: "heavyai_geo_indices",
+  linedrawinfo_LEGACY: "heavyai_geo_linedrawinfo",
+  polydrawinfo_LEGACY: "heavyai_geo_polydrawinfo"
 }
 
 function validateLineJoin(newLineJoin, currLineJoin) {

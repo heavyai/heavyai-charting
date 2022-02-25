@@ -9,7 +9,7 @@ import {
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
-import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -235,7 +235,7 @@ export default function rasterLayerPointMixin(_layer) {
         ops,
         as: alias,
         // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
-        //  in mapd-data-layer2. So, just gonna filter them out.
+        //  in heavyai-data-layer2. So, just gonna filter them out.
         //  https://omnisci.atlassian.net/browse/FE-14213
         groupby: [...new Set(transform.groupby)].map((g, i) => ({
           type: "project",

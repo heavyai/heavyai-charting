@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define(["d3"], factory);
 	else if(typeof exports === 'object')
-		exports["mapdc"] = factory(require("d3"));
+		exports["charting"] = factory(require("d3"));
 	else
-		root["mapdc"] = factory(root["d3"]);
+		root["charting"] = factory(root["d3"]);
 })(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -5587,7 +5587,7 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(225);
+var _dataLayer = __webpack_require__(225);
 
 var _formattingHelpers = __webpack_require__(10);
 
@@ -5609,7 +5609,7 @@ var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var parser = exports.parser = (0, _mapdDataLayer.createParser)();
+var parser = exports.parser = (0, _dataLayer.createParser)();
 
 function hexBinSQL(sql, _ref, parser) {
   var width = _ref.width,
@@ -6844,7 +6844,7 @@ function baseMixin(_chart) {
   // stay that same random number for as long as the chart exists in memory.
   //
   // The main reason for this is to support the raster chart and mixins, where
-  // the renderVega and getResultRowForPixel methods to mapd-connector (.con())
+  // the renderVega and getResultRowForPixel methods to connector-js (.con())
   // expect to get a integer id unique to a given active rendered chart, and
   // the same for that chart across its active lifetime.
   _chart.__dcFlag__ = _utils.utils.uniqueId();
@@ -8437,7 +8437,7 @@ function baseMixin(_chart) {
   };
 
   /**
-   * MAPDC-extension function
+   * charting-extension function
    * Destroy all leftover parts of the chart.
    * @name destroyChart
    * @memberof dc.baseMixin
@@ -30132,7 +30132,7 @@ exports.conv4326To900913 = conv4326To900913;
 
 var _mapdDraw = __webpack_require__(13);
 
-var MapdDraw = _interopRequireWildcard(_mapdDraw);
+var Draw = _interopRequireWildcard(_mapdDraw);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -30145,13 +30145,13 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
  * @return {number}         Distance in meters from two lon/lat coords
  */
 function distance_in_meters(fromlon, fromlat, tolon, tolat) {
-  var latitudeArc = (fromlat - tolat) * MapdDraw.Math.DEG_TO_RAD;
-  var longitudeArc = (fromlon - tolon) * MapdDraw.Math.DEG_TO_RAD;
+  var latitudeArc = (fromlat - tolat) * Draw.Math.DEG_TO_RAD;
+  var longitudeArc = (fromlon - tolon) * Draw.Math.DEG_TO_RAD;
   var latitudeH = Math.sin(latitudeArc * 0.5);
   latitudeH = latitudeH * latitudeH;
   var lontitudeH = Math.sin(longitudeArc * 0.5);
   lontitudeH = lontitudeH * lontitudeH;
-  var tmp = Math.cos(fromlat * MapdDraw.Math.DEG_TO_RAD) * Math.cos(tolat * MapdDraw.Math.DEG_TO_RAD);
+  var tmp = Math.cos(fromlat * Draw.Math.DEG_TO_RAD) * Math.cos(tolat * Draw.Math.DEG_TO_RAD);
   return 6372797.560856 * (2.0 * Math.asin(Math.sqrt(latitudeH + tmp * lontitudeH)));
 }
 
@@ -30180,7 +30180,7 @@ function conv900913To4326Y(y) {
  * @return {Point2d}       Point referred to by the out arg
  */
 function conv900913To4326(out, coord) {
-  return MapdDraw.Point2d.set(out, conv900913To4326X(coord[0]), conv900913To4326Y(coord[1]));
+  return Draw.Point2d.set(out, conv900913To4326X(coord[0]), conv900913To4326Y(coord[1]));
 }
 
 /**
@@ -30208,7 +30208,7 @@ function conv4326To900913Y(y) {
  * @return {Point2d}       Point referred to by the out arg
  */
 function conv4326To900913(out, coord) {
-  return MapdDraw.Point2d.set(out, conv4326To900913X(coord[0]), conv4326To900913Y(coord[1]));
+  return Draw.Point2d.set(out, conv4326To900913X(coord[0]), conv4326To900913Y(coord[1]));
 }
 
 /***/ }),
@@ -34378,7 +34378,7 @@ function lockAxisMixin(chart) {
     lockWrapper.append("div").attr("class", "hit-box").style("width", hitBoxDim.width).style("height", hitBoxDim.height).style("top", hitBoxDim.top).style("left", hitBoxDim.left);
 
     // Occasionally, the x-axis domain of a chart can be empty due to a global
-    // or chart filter. mapd-charting will see the domain extent as [NaN, NaN],
+    // or chart filter. heavyai-charting will see the domain extent as [NaN, NaN],
     // and we don't want the user to lock the chart with this faulty extent. So,
     // we're going to use this funciton to see if we should disable the axis
     // lock feature. Conditions:
@@ -35148,7 +35148,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     var firstSymbolId = null;
     var currentStyle = _map.getStyle();
 
-    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of heavyai layer
     if (currentStyle.name === "Mapbox Outdoors" || currentStyle.name === "Mapbox Streets") {
       firstSymbolId = "road-label-large";
     } else {
@@ -50608,7 +50608,7 @@ function heatMapRowsLabel(key) {
   }
 
   // For binned data:
-  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // customDateFormatter is set to `autoFormatter` (d3-combo-chart), which processes raw values in an array
   // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
   // of objects with additional information (like timeBin info)
   var rawValues = Array.isArray(value) ? value.map(function (v) {
@@ -50632,7 +50632,7 @@ function heatMapColsLabel(key) {
   }
 
   // For binned data:
-  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // customDateFormatter is set to `autoFormatter` (d3-combo-chart), which processes raw values in an array
   // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
   // of objects with additional information (like timeBin info)
   var rawValues = Array.isArray(value) ? value.map(function (v) {
@@ -51514,7 +51514,7 @@ var _ = _interopRequireWildcard(_lodash);
 
 var _mapdDraw = __webpack_require__(13);
 
-var MapdDraw = _interopRequireWildcard(_mapdDraw);
+var Draw = _interopRequireWildcard(_mapdDraw);
 
 var _coreAsync = __webpack_require__(5);
 
@@ -51532,16 +51532,16 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-/** Configure MapD Draw */
-MapdDraw.Configure.setMatrixArrayType(Float64Array);
+/** Configure HeavyAI Draw */
+Draw.Configure.setMatrixArrayType(Float64Array);
 
 // set a very low epsilon to account for the large precision provided us
 // with 64-bit floating pt. If we left this at the default, if you made a lasso
 // shape at a tight zoom (i.e. a shape with that was 100 meters^2 in area),
 // the shape wouldn't align right because the camera would not be considered dirty
 // even tho the map was moving slightly in world space.
-MapdDraw.Configure.setEpsilon(0.00000000000001);
-/** Done configuring MapdDraw */
+Draw.Configure.setEpsilon(0.00000000000001);
+/** Done configuring Draw */
 
 function chartUsesLonLat(chart) {
   return typeof chart.useLonLat === "function" && chart.useLonLat();
@@ -51550,10 +51550,10 @@ function chartUsesLonLat(chart) {
 /* istanbul ignore next */
 function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   var aabox = shape.aabox;
-  var xmin = aabox[MapdDraw.AABox2d.MINX];
-  var xmax = aabox[MapdDraw.AABox2d.MAXX];
-  var ymin = aabox[MapdDraw.AABox2d.MINY];
-  var ymax = aabox[MapdDraw.AABox2d.MAXY];
+  var xmin = aabox[Draw.AABox2d.MINX];
+  var xmax = aabox[Draw.AABox2d.MAXX];
+  var ymin = aabox[Draw.AABox2d.MINY];
+  var ymax = aabox[Draw.AABox2d.MAXY];
   var cast = true;
   if (useLonLat) {
     xmin = LatLonUtils.conv900913To4326X(xmin);
@@ -51571,8 +51571,8 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
 }
 
 function createSTContainsStatementFromShape(px, py, shape, srid) {
-  var first_point = MapdDraw.Point2d.create();
-  var point = MapdDraw.Point2d.create();
+  var first_point = Draw.Point2d.create();
+  var point = Draw.Point2d.create();
   var verts = shape.vertsRef;
   var xform = shape.globalXform;
 
@@ -51581,21 +51581,21 @@ function createSTContainsStatementFromShape(px, py, shape, srid) {
     var wkt_str = "POLYGON((";
     if (srid === 4326) {
       verts.forEach(function (vert, curr_idx) {
-        MapdDraw.Point2d.transformMat2d(point, vert, xform);
+        Draw.Point2d.transformMat2d(point, vert, xform);
         LatLonUtils.conv900913To4326(point, point);
         wkt_str += point[0] + " " + point[1] + ",";
 
         if (curr_idx === 0) {
-          MapdDraw.Point2d.copy(first_point, point);
+          Draw.Point2d.copy(first_point, point);
         }
       });
     } else {
       verts.forEach(function (vert, curr_idx) {
-        MapdDraw.Point2d.transformMat2d(point, vert, xform);
+        Draw.Point2d.transformMat2d(point, vert, xform);
         wkt_str += point[0] + " " + point[1] + ",";
 
         if (curr_idx === 0) {
-          MapdDraw.Point2d.copy(first_point, point);
+          Draw.Point2d.copy(first_point, point);
         }
       });
     }
@@ -51741,12 +51741,12 @@ function rasterDrawMixin(chart) {
                 LatLonUtils.conv900913To4326(pos, pos);
                 var meters = shape.radius * 1000;
                 filterObj.shapeFilters.push("ST_DWithin(CAST(ST_SetSRID(ST_Point(" + pos[0] + ", " + pos[1] + "), 4326) as GEOGRAPHY), CAST(ST_SetSRID(ST_Point(" + px + ", " + py + "), 4326) as GEOGRAPHY), " + meters + ")");
-              } else if (shape instanceof MapdDraw.Circle) {
+              } else if (shape instanceof Draw.Circle) {
                 var radsqr = Math.pow(shape.radius, 2);
-                var mat = MapdDraw.Mat2d.clone(shape.globalXform);
-                MapdDraw.Mat2d.invert(mat, mat);
+                var mat = Draw.Mat2d.clone(shape.globalXform);
+                Draw.Mat2d.invert(mat, mat);
                 filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (POWER(" + mat[0] + " * CAST(" + px + " AS FLOAT) + " + mat[2] + " * CAST(" + py + " AS FLOAT) + " + mat[4] + ", 2.0) + POWER(" + mat[1] + " * CAST(" + px + " AS FLOAT) + " + mat[3] + " * CAST(" + py + " AS FLOAT) + " + mat[5] + ", 2.0)) / " + radsqr + " <= 1.0");
-              } else if (shape instanceof _LatLonPoly2.default || shape instanceof MapdDraw.Poly) {
+              } else if (shape instanceof _LatLonPoly2.default || shape instanceof Draw.Poly) {
                 var srid = 0;
                 if (shape instanceof _LatLonPoly2.default) {
                   console.assert(useLonLat);
@@ -51802,14 +51802,14 @@ function rasterDrawMixin(chart) {
                 if (!_.find(_filterObj.shapeFilters, shapeFilter)) {
                   _filterObj.shapeFilters.push(shapeFilter);
                 }
-              } else if (shape instanceof _LatLonPoly2.default || shape instanceof MapdDraw.Poly) {
-                var p0 = MapdDraw.Point2d.create();
+              } else if (shape instanceof _LatLonPoly2.default || shape instanceof Draw.Poly) {
+                var p0 = Draw.Point2d.create();
                 var convertedVerts = [];
 
                 var verts = shape.vertsRef;
                 var xform = shape.globalXform;
                 verts.forEach(function (vert) {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform);
+                  Draw.Point2d.transformMat2d(p0, vert, xform);
                   if (useLonLat) {
                     LatLonUtils.conv900913To4326(p0, p0);
                   }
@@ -51920,12 +51920,12 @@ function rasterDrawMixin(chart) {
           PolyClass = _LatLonPoly2.default;
           args.push(drawEngine);
         } else {
-          PolyClass = MapdDraw.Poly;
+          PolyClass = Draw.Poly;
         }
         args.push(filterArg);
         newShape = new (Function.prototype.bind.apply(PolyClass, [null].concat(args)))();
-      } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
-        newShape = new MapdDraw[filterArg.type](filterArg);
+      } else if (typeof Draw[filterArg.type] !== "undefined") {
+        newShape = new Draw[filterArg.type](filterArg);
       } else {
         origFilterFunc(filterArg);
       }
@@ -51982,7 +51982,7 @@ function rasterDrawMixin(chart) {
       engineOpts.margins = margins;
     }
 
-    drawEngine = new MapdDraw.ShapeBuilder(parent, engineOpts);
+    drawEngine = new Draw.ShapeBuilder(parent, engineOpts);
     buttonController = new _lassoToolUi2.default(parent, chart, drawEngine, defaultStyle, defaultSelectStyle);
 
     function updateDraw() {
@@ -52105,7 +52105,7 @@ var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
 var _mapdDraw = __webpack_require__(13);
 
-var MapdDraw = _interopRequireWildcard(_mapdDraw);
+var Draw = _interopRequireWildcard(_mapdDraw);
 
 var _LatLonViewIntersectUtils = __webpack_require__(191);
 
@@ -52123,12 +52123,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var AABox2d = MapdDraw.AABox2d,
-    Mat2d = MapdDraw.Mat2d,
-    Point2d = MapdDraw.Point2d,
-    Vec2d = MapdDraw.Vec2d;
+var AABox2d = Draw.AABox2d,
+    Mat2d = Draw.Mat2d,
+    Point2d = Draw.Point2d,
+    Vec2d = Draw.Vec2d;
 
-var MathExt = MapdDraw.Math;
+var MathExt = Draw.Math;
 
 /**
  * @typedef CircleDescriptor
@@ -52568,8 +52568,8 @@ function getBoundsDistanceData(center_lonlat, bounds_lonlat) {
   };
 }
 
-var LatLonCircle = function (_MapdDraw$Circle) {
-  _inherits(LatLonCircle, _MapdDraw$Circle);
+var LatLonCircle = function (_Draw$Circle) {
+  _inherits(LatLonCircle, _Draw$Circle);
 
   function LatLonCircle(draw_engine, opts) {
     _classCallCheck(this, LatLonCircle);
@@ -52950,7 +52950,7 @@ var LatLonCircle = function (_MapdDraw$Circle) {
   }]);
 
   return LatLonCircle;
-}(MapdDraw.Circle);
+}(Draw.Circle);
 
 exports.default = LatLonCircle;
 
@@ -52971,16 +52971,16 @@ var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
 var _mapdDraw = __webpack_require__(13);
 
-var MapdDraw = _interopRequireWildcard(_mapdDraw);
+var Draw = _interopRequireWildcard(_mapdDraw);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var AABox2d = MapdDraw.AABox2d,
-    Mat2d = MapdDraw.Mat2d,
-    Point2d = MapdDraw.Point2d,
-    Vec2d = MapdDraw.Vec2d;
+var AABox2d = Draw.AABox2d,
+    Mat2d = Draw.Mat2d,
+    Point2d = Draw.Point2d,
+    Vec2d = Draw.Vec2d;
 
-var MathExt = MapdDraw.Math;
+var MathExt = Draw.Math;
 
 /**
  * Does an initial check to see if two line segments might intersect. The numerator/denominator
@@ -53387,7 +53387,7 @@ var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
 var _mapdDraw = __webpack_require__(13);
 
-var MapdDraw = _interopRequireWildcard(_mapdDraw);
+var Draw = _interopRequireWildcard(_mapdDraw);
 
 var _LatLonViewIntersectUtils = __webpack_require__(191);
 
@@ -53403,14 +53403,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var AABox2d = MapdDraw.AABox2d,
-    Mat2d = MapdDraw.Mat2d,
-    Point2d = MapdDraw.Point2d;
+var AABox2d = Draw.AABox2d,
+    Mat2d = Draw.Mat2d,
+    Point2d = Draw.Point2d;
 
-var MathExt = MapdDraw.Math;
+var MathExt = Draw.Math;
 
-var LatLonPoly = function (_MapdDraw$Poly) {
-  _inherits(LatLonPoly, _MapdDraw$Poly);
+var LatLonPoly = function (_Draw$Poly) {
+  _inherits(LatLonPoly, _Draw$Poly);
 
   function LatLonPoly(draw_engine, opts) {
     _classCallCheck(this, LatLonPoly);
@@ -53623,7 +53623,7 @@ var LatLonPoly = function (_MapdDraw$Poly) {
   }]);
 
   return LatLonPoly;
-}(MapdDraw.Poly);
+}(Draw.Poly);
 
 exports.default = LatLonPoly;
 
@@ -56645,7 +56645,7 @@ function rasterLayerPointMixin(_layer) {
         ops: ops,
         as: alias,
         // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
-        //  in mapd-data-layer2. So, just gonna filter them out.
+        //  in heavyai-data-layer2. So, just gonna filter them out.
         //  https://omnisci.atlassian.net/browse/FE-14213
         groupby: [].concat(_toConsumableArray(new Set(transform.groupby))).map(function (g, i) {
           return {
@@ -57253,10 +57253,10 @@ var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
   // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
-  verts_LEGACY: "mapd_geo_coords",
-  indices_LEGACY: "mapd_geo_indices",
-  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
-  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
+  verts_LEGACY: "heavyai_geo_coords",
+  indices_LEGACY: "heavyai_geo_indices",
+  linedrawinfo_LEGACY: "heavyai_geo_linedrawinfo",
+  polydrawinfo_LEGACY: "heavyai_geo_polydrawinfo"
 };
 
 function validateLineJoin(newLineJoin, currLineJoin) {
@@ -60779,7 +60779,7 @@ __webpack_require__(223);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.parseFactsFromCustomSQL = exports.legendCont = exports.legend = exports.legendContinuous = exports.spinnerMixin = exports.scatterMixin = exports.rasterMixin = exports.rasterLayer = exports.rasterLayerPolyMixin = exports.rasterLayerPointMixin = exports.rasterLayerHeatmapMixin = exports.mapMixin = exports.marginMixin = exports.stackMixin = exports.coordinateGridRasterMixin = exports.coordinateGridMixin = exports.colorMixin = exports.capMixin = exports.bubbleMixin = exports.baseMixin = exports.asyncMixin = exports.countWidget = exports.boxPlot = exports.mapdTable = exports.scatterPlot = exports.rowChart = exports.rasterChart = exports.numberChart = exports.lineChart = exports.pieChart = exports.heatMap = exports.geoChoroplethChart = exports.dataGrid = exports.dataCount = exports.compositeChart = exports.cloudChart = exports.bubbleChart = exports.barChart = exports.bubbleOverlay = exports.errors = exports.d3 = undefined;
+exports.parseFactsFromCustomSQL = exports.legendCont = exports.legend = exports.legendContinuous = exports.spinnerMixin = exports.scatterMixin = exports.rasterMixin = exports.rasterLayer = exports.rasterLayerPolyMixin = exports.rasterLayerPointMixin = exports.rasterLayerHeatmapMixin = exports.mapMixin = exports.marginMixin = exports.stackMixin = exports.coordinateGridRasterMixin = exports.coordinateGridMixin = exports.colorMixin = exports.capMixin = exports.bubbleMixin = exports.baseMixin = exports.asyncMixin = exports.countWidget = exports.boxPlot = exports.heavyaiTable = exports.scatterPlot = exports.rowChart = exports.rasterChart = exports.numberChart = exports.lineChart = exports.pieChart = exports.heatMap = exports.geoChoroplethChart = exports.dataGrid = exports.dataCount = exports.compositeChart = exports.cloudChart = exports.bubbleChart = exports.barChart = exports.bubbleOverlay = exports.errors = exports.d3 = undefined;
 
 var _core = __webpack_require__(3);
 
@@ -60988,12 +60988,12 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(323);
+var _heavyaiTable = __webpack_require__(323);
 
-Object.defineProperty(exports, "mapdTable", {
+Object.defineProperty(exports, "heavyaiTable", {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_mapdTable).default;
+    return _interopRequireDefault(_heavyaiTable).default;
   }
 });
 
@@ -75297,7 +75297,7 @@ var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
 var _mapdDraw = __webpack_require__(13);
 
-var MapdDraw = _interopRequireWildcard(_mapdDraw);
+var Draw = _interopRequireWildcard(_mapdDraw);
 
 var _simplifyJs = __webpack_require__(260);
 
@@ -75323,12 +75323,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var AABox2d = MapdDraw.AABox2d,
-    Mat2 = MapdDraw.Mat2,
-    Point2d = MapdDraw.Point2d,
-    Vec2d = MapdDraw.Vec2d;
+var AABox2d = Draw.AABox2d,
+    Mat2 = Draw.Mat2,
+    Point2d = Draw.Point2d,
+    Vec2d = Draw.Vec2d;
 
-var MathExt = MapdDraw.Math;
+var MathExt = Draw.Math;
 
 /* istanbul ignore next */
 
@@ -75576,7 +75576,7 @@ var CircleShapeHandler = function (_ShapeHandler) {
         selectOpts.centerScaleOnly = true;
         selectOpts.rotatable = false;
       } else {
-        this.activeShape = new MapdDraw.Circle(Object.assign({
+        this.activeShape = new Draw.Circle(Object.assign({
           position: this.startmouseworldpos,
           radius: 0
         }, this.defaultSelectStyle));
@@ -75706,7 +75706,7 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
           PolyClass = _LatLonPoly2.default;
           args.push(this.drawEngine);
         } else {
-          PolyClass = MapdDraw.Poly;
+          PolyClass = Draw.Poly;
         }
         args.push(Object.assign({
           verts: verts
@@ -75743,11 +75743,11 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
         this.drawEngine.project(mouseworldpos, mousepos);
 
         if (!this.startVert) {
-          this.lineShape = new MapdDraw.PolyLine(Object.assign({
+          this.lineShape = new Draw.PolyLine(Object.assign({
             verts: [mouseworldpos]
           }, this.defaultSelectStyle));
           this.addShape(this.lineShape);
-          this.startVert = new MapdDraw.Point({
+          this.startVert = new Draw.Point({
             position: mouseworldpos,
             size: 5
           });
@@ -75757,7 +75757,7 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
           this.activeIdx = 0;
         } else if (!this.lastVert && this.lineShape.numVerts > 1) {
           var verts = this.lineShape.vertsRef;
-          this.lastVert = new MapdDraw.Point({
+          this.lastVert = new Draw.Point({
             position: verts[1],
             size: 5
           });
@@ -75934,7 +75934,7 @@ var LassoShapeHandler = function (_ShapeHandler3) {
         this.drawEngine.project(currWorldPos, currPos);
         if (!Point2d.equals(currPos, this.lastPos)) {
           if (!this.activeShape) {
-            this.activeShape = new MapdDraw.PolyLine(Object.assign({
+            this.activeShape = new Draw.PolyLine(Object.assign({
               verts: [this.lastWorldPos, currWorldPos]
             }, this.defaultSelectStyle));
             this.addShape(this.activeShape);
@@ -75982,7 +75982,7 @@ var LassoShapeHandler = function (_ShapeHandler3) {
             PolyClass = _LatLonPoly2.default;
             args.push(this.drawEngine);
           } else {
-            PolyClass = MapdDraw.Poly;
+            PolyClass = Draw.Poly;
           }
           args.push(Object.assign({
             verts: newverts
@@ -76041,9 +76041,9 @@ var LassoButtonGroupController = function () {
         this._polylineHandler.deactivate();
         this._lassoHandler.deactivate();
 
-        this._drawEngine.off(MapdDraw.ShapeBuilder.EventConstants.DRAG_END, this._dragendCB);
-        this._drawEngine.off(MapdDraw.ShapeBuilder.EventConstants.DRAG_END, this._dragbeginCB);
-        this._drawEngine.off(MapdDraw.ShapeBuilder.EventConstants.SELECTION_CHANGED, this._selectionchangedCB);
+        this._drawEngine.off(Draw.ShapeBuilder.EventConstants.DRAG_END, this._dragendCB);
+        this._drawEngine.off(Draw.ShapeBuilder.EventConstants.DRAG_END, this._dragbeginCB);
+        this._drawEngine.off(Draw.ShapeBuilder.EventConstants.SELECTION_CHANGED, this._selectionchangedCB);
 
         this._controlContainer.removeChild(this._controlGroup);
         this._container.removeChild(this._controlContainer);
@@ -76057,7 +76057,7 @@ var LassoButtonGroupController = function () {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       var button = document.createElement("button");
-      button.className = "mapd-draw-button " + options.className;
+      button.className = "heavyai-draw-button " + options.className;
       button.setAttribute("title", options.title);
       this._controlGroup.appendChild(button);
 
@@ -76113,7 +76113,7 @@ var LassoButtonGroupController = function () {
 
       var shapeHandler = new ShapeHandlerClass(this._container, this._drawEngine, this._chart, this, id, defaultStyle, defaultSelectStyle);
       this._buttonElements[id] = this._createControlButton(id, {
-        className: "mapd-draw-button-" + id,
+        className: "heavyai-draw-button-" + id,
         title: "Create a " + id + (keybindingStr ? " [" + keybindingStr + "]" : ""),
         onActivate: function onActivate() {
           _this6._drawEngine.disableInteractions();
@@ -76144,7 +76144,7 @@ var LassoButtonGroupController = function () {
     key: "deactivateButtons",
     value: function deactivateButtons() {
       if (this._activeButton) {
-        this._activeButton.button.classList.remove("mapd-draw-active-button");
+        this._activeButton.button.classList.remove("heavyai-draw-active-button");
         if (this._activeButton.options && this._activeButton.options.onDeactivate) {
           this._activeButton.options.onDeactivate();
         }
@@ -76169,7 +76169,7 @@ var LassoButtonGroupController = function () {
 
       if (button && id !== "trash") {
         this.deactivateButtons();
-        button.classList.add("mapd-draw-active-button");
+        button.classList.add("heavyai-draw-active-button");
         this._activeButton = {
           button: button,
           id: id,
@@ -76253,7 +76253,7 @@ var LassoButtonGroupController = function () {
       this._controlContainer.style.top = (margins && margins.top ? margins.top : 0) + "px";
       this._controlContainer.style.left = (margins && margins.left ? margins.left : 0) + "px";
       this._controlContainer.style.position = "absolute";
-      this._controlContainer.className = "mapd-draw-button-container";
+      this._controlContainer.className = "heavyai-draw-button-container";
       this._container.appendChild(this._controlContainer);
 
       var canvas = this._drawEngine.getCanvas();
@@ -76263,12 +76263,12 @@ var LassoButtonGroupController = function () {
       canvas.style.outline = "none";
 
       this._controlGroup = document.createElement("div");
-      this._controlGroup.className = "mapd-draw-button-control-group";
+      this._controlGroup.className = "heavyai-draw-button-control-group";
       this._controlContainer.appendChild(this._controlGroup);
 
-      this._drawEngine.on(MapdDraw.ShapeBuilder.EventConstants.SELECTION_CHANGED, this._selectionchangedCB);
-      this._drawEngine.on(MapdDraw.ShapeBuilder.EventConstants.DRAG_BEGIN, this._dragbeginCB);
-      this._drawEngine.on(MapdDraw.ShapeBuilder.EventConstants.DRAG_END, this._dragendCB);
+      this._drawEngine.on(Draw.ShapeBuilder.EventConstants.SELECTION_CHANGED, this._selectionchangedCB);
+      this._drawEngine.on(Draw.ShapeBuilder.EventConstants.DRAG_BEGIN, this._dragbeginCB);
+      this._drawEngine.on(Draw.ShapeBuilder.EventConstants.DRAG_END, this._dragendCB);
 
       this._circleHandler = this._createButtonControl("circle", CircleShapeHandler, defaultStyle, defaultSelectStyle);
       this._polylineHandler = this._createButtonControl("polyline", PolylineShapeHandler, defaultStyle, defaultSelectStyle);
@@ -80693,7 +80693,7 @@ function handleLegendDoneRender() {
     var legendNode = _this2.root().select(".legendables").node();
     var isHorizontal = legendNode && legendNode.clientHeight > _this2.height() - LASSO_TOOL_VERTICAL_SPACE;
 
-    _this2.root().select(".mapd-draw-button-control-group").style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto");
+    _this2.root().select(".heavyai-draw-button-control-group").style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto");
 
     return isHorizontal;
   });
@@ -85847,7 +85847,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.splitStrOnLastAs = undefined;
-exports.default = mapdTable;
+exports.default = heavyaiTable;
 
 var _d = __webpack_require__(1);
 
@@ -85879,7 +85879,7 @@ var splitStrOnLastAs = exports.splitStrOnLastAs = function splitStrOnLastAs(str)
   return splitStr;
 };
 
-function mapdTable(parent, chartGroup) {
+function heavyaiTable(parent, chartGroup) {
   var _chart = (0, _baseMixin2.default)({});
   var _tableWrapper = null;
 

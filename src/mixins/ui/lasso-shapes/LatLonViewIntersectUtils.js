@@ -1,10 +1,10 @@
 "use strict"
 
 import * as LatLonUtils from "../../../utils/utils-latlon"
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/mapd-draw"
 
-const { AABox2d, Mat2d, Point2d, Vec2d } = MapdDraw
-const MathExt = MapdDraw.Math
+const { AABox2d, Mat2d, Point2d, Vec2d } = Draw
+const MathExt = Draw.Math
 
 /**
  * Does an initial check to see if two line segments might intersect. The numerator/denominator

@@ -1,4 +1,4 @@
-# MapD Charting
+# HEAVY.AI Charting
 
 Dimensional charting built to work natively with crossfilter rendered using d3.js.
 
@@ -12,13 +12,13 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 ![example2](https://user-images.githubusercontent.com/4845281/28191946-21bb7ec0-67e8-11e7-855e-8922939d1241.gif)
 
-#### Tweets Dataset: Using MapD-Draw tool on pointmap to select specific areas on a map
+#### Tweets Dataset: Using draw-js tool on pointmap to select specific areas on a map
 
 ![example5](https://user-images.githubusercontent.com/4845281/28191947-21bd2ad6-67e8-11e7-9c8d-a5ddcd0f07fc.gif)
 
 # Examples
 
-Visit our [examples page](https://omnisci.github.io/mapd-charting/example/) for ideas of what can be created MapD Charting
+Visit our [examples page](https://omnisci.github.io/mapd-charting/example/) for ideas of what can be created with HEAVY.AI Charting
 
 # Quick Start
 
@@ -37,17 +37,17 @@ npm run watch
 
 # Synopsis
 
-MapD-Charting is a superfast charting library that works natively with [crossfilter](https://github.com/square/crossfilter) that is based off [dc.js](https://github.com/dc-js/dc.js).  It is designed to work with MapD-Connector and MapD-Crossfilter to create charts instantly with our MapD-Core SQL Database.  Please see [examples](#examples) for further understanding to quickly create interactive charts.
+HEAVY.AI Charting is a superfast charting library that works natively with [crossfilter](https://github.com/square/crossfilter) that is based off [dc.js](https://github.com/dc-js/dc.js).  It is designed to work with HEAVY.AI Connector and HEAVY.AI Crossfilter to create charts instantly with our HeavyDB SQL Database.  Please see [examples](#examples) for further understanding to quickly create interactive charts.
 
-Our [Tweetmap Demo](https://www.mapd.com/demos/tweetmap/) was made only using MapD-Charting.
+Our [Tweetmap Demo](https://www.mapd.com/demos/tweetmap/) was made only using HEAVY.AI Charting.
 
 # Documentation
 
-Visit our [API Docs](http://omnisci.github.io/mapd-charting/docs/) for additional information on MapD Charting
+Visit our [API Docs](http://omnisci.github.io/mapd-charting/docs/) for additional information on HEAVY.AI Charting
 
 # Testing
 
-New components in MapD-Charting should be unit-tested and linted.  All tests will be in the same folder as the new component.
+New components in HEAVY.AI Charting should be unit-tested and linted.  All tests will be in the same folder as the new component.
 
 ```
 +-- src
@@ -67,7 +67,7 @@ npm run test:unit
 
 ### Linting
 
-Please lint all your code in `mapd-charting/`. The lint config file can be found in `.eslintrc.json`.  For new components, please fix all lint warnings and errors.
+Please lint all your code in `@heavyai/charting/`. The lint config file can be found in `.eslintrc.json`.  For new components, please fix all lint warnings and errors.
 
 # Scripts
 

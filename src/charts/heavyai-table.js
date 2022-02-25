@@ -18,7 +18,7 @@ export const splitStrOnLastAs = str => {
   return splitStr
 }
 
-export default function mapdTable(parent, chartGroup) {
+export default function heavyaiTable(parent, chartGroup) {
   const _chart = baseMixin({})
   let _tableWrapper = null
 

@@ -1,11 +1,11 @@
 "use strict"
 
 import * as LatLonUtils from "../../../utils/utils-latlon"
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/mapd-draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
 
-const { AABox2d, Mat2d, Point2d, Vec2d } = MapdDraw
-const MathExt = MapdDraw.Math
+const { AABox2d, Mat2d, Point2d, Vec2d } = Draw
+const MathExt = Draw.Math
 
 /**
  * @typedef CircleDescriptor
@@ -570,7 +570,7 @@ function getBoundsDistanceData(center_lonlat, bounds_lonlat) {
   }
 }
 
-export default class LatLonCircle extends MapdDraw.Circle {
+export default class LatLonCircle extends Draw.Circle {
   constructor(draw_engine, opts) {
     if (opts.debug === undefined) {
       // if true, will activate the use of the _drawDebug method for drawing

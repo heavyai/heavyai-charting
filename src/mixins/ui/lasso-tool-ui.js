@@ -1,14 +1,14 @@
 "use strict"
 
 import * as LatLonUtils from "../../utils/utils-latlon"
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/mapd-draw"
 import simplify from "simplify-js"
 import { logger } from "../../utils/logger"
 import LatLonCircle from "./lasso-shapes/LatLonCircle"
 import LatLonPoly from "./lasso-shapes/LatLonPoly"
 
-const { AABox2d, Mat2, Point2d, Vec2d } = MapdDraw
-const MathExt = MapdDraw.Math
+const { AABox2d, Mat2, Point2d, Vec2d } = Draw
+const MathExt = Draw.Math
 
 /* istanbul ignore next */
 class ShapeHandler {
@@ -257,7 +257,7 @@ class CircleShapeHandler extends ShapeHandler {
       selectOpts.centerScaleOnly = true
       selectOpts.rotatable = false
     } else {
-      this.activeShape = new MapdDraw.Circle(
+      this.activeShape = new Draw.Circle(
         Object.assign(
           {
             position: this.startmouseworldpos,
@@ -406,7 +406,7 @@ class PolylineShapeHandler extends ShapeHandler {
         PolyClass = LatLonPoly
         args.push(this.drawEngine)
       } else {
-        PolyClass = MapdDraw.Poly
+        PolyClass = Draw.Poly
       }
       args.push(
         Object.assign(
@@ -446,7 +446,7 @@ class PolylineShapeHandler extends ShapeHandler {
       this.drawEngine.project(mouseworldpos, mousepos)
 
       if (!this.startVert) {
-        this.lineShape = new MapdDraw.PolyLine(
+        this.lineShape = new Draw.PolyLine(
           Object.assign(
             {
               verts: [mouseworldpos]
@@ -455,7 +455,7 @@ class PolylineShapeHandler extends ShapeHandler {
           )
         )
         this.addShape(this.lineShape)
-        this.startVert = new MapdDraw.Point({
+        this.startVert = new Draw.Point({
           position: mouseworldpos,
           size: 5
         })
@@ -465,7 +465,7 @@ class PolylineShapeHandler extends ShapeHandler {
         this.activeIdx = 0
       } else if (!this.lastVert && this.lineShape.numVerts > 1) {
         const verts = this.lineShape.vertsRef
-        this.lastVert = new MapdDraw.Point({
+        this.lastVert = new Draw.Point({
           position: verts[1],
           size: 5
         })
@@ -649,7 +649,7 @@ class LassoShapeHandler extends ShapeHandler {
       this.drawEngine.project(currWorldPos, currPos)
       if (!Point2d.equals(currPos, this.lastPos)) {
         if (!this.activeShape) {
-          this.activeShape = new MapdDraw.PolyLine(
+          this.activeShape = new Draw.PolyLine(
             Object.assign(
               {
                 verts: [this.lastWorldPos, currWorldPos]
@@ -701,7 +701,7 @@ class LassoShapeHandler extends ShapeHandler {
           PolyClass = LatLonPoly
           args.push(this.drawEngine)
         } else {
-          PolyClass = MapdDraw.Poly
+          PolyClass = Draw.Poly
         }
         args.push(
           Object.assign(
@@ -766,15 +766,15 @@ export default class LassoButtonGroupController {
       this._lassoHandler.deactivate()
 
       this._drawEngine.off(
-        MapdDraw.ShapeBuilder.EventConstants.DRAG_END,
+        Draw.ShapeBuilder.EventConstants.DRAG_END,
         this._dragendCB
       )
       this._drawEngine.off(
-        MapdDraw.ShapeBuilder.EventConstants.DRAG_END,
+        Draw.ShapeBuilder.EventConstants.DRAG_END,
         this._dragbeginCB
       )
       this._drawEngine.off(
-        MapdDraw.ShapeBuilder.EventConstants.SELECTION_CHANGED,
+        Draw.ShapeBuilder.EventConstants.SELECTION_CHANGED,
         this._selectionchangedCB
       )
 
@@ -785,7 +785,7 @@ export default class LassoButtonGroupController {
 
   _createControlButton(id, options = {}) {
     const button = document.createElement("button")
-    button.className = `mapd-draw-button ${options.className}`
+    button.className = `heavyai-draw-button ${options.className}`
     button.setAttribute("title", options.title)
     this._controlGroup.appendChild(button)
 
@@ -854,7 +854,7 @@ export default class LassoButtonGroupController {
       defaultSelectStyle
     )
     this._buttonElements[id] = this._createControlButton(id, {
-      className: `mapd-draw-button-${id}`,
+      className: `heavyai-draw-button-${id}`,
       title: `Create a ${id}${keybindingStr ? ` [${keybindingStr}]` : ""}`,
       onActivate: () => {
         this._drawEngine.disableInteractions()
@@ -885,7 +885,7 @@ export default class LassoButtonGroupController {
 
   deactivateButtons() {
     if (this._activeButton) {
-      this._activeButton.button.classList.remove("mapd-draw-active-button")
+      this._activeButton.button.classList.remove("heavyai-draw-active-button")
       if (
         this._activeButton.options &&
         this._activeButton.options.onDeactivate
@@ -912,7 +912,7 @@ export default class LassoButtonGroupController {
 
     if (button && id !== "trash") {
       this.deactivateButtons()
-      button.classList.add("mapd-draw-active-button")
+      button.classList.add("heavyai-draw-active-button")
       this._activeButton = {
         button,
         id,
@@ -998,7 +998,7 @@ export default class LassoButtonGroupController {
       margins && margins.left ? margins.left : 0
     }px`
     this._controlContainer.style.position = "absolute"
-    this._controlContainer.className = "mapd-draw-button-container"
+    this._controlContainer.className = "heavyai-draw-button-container"
     this._container.appendChild(this._controlContainer)
 
     const canvas = this._drawEngine.getCanvas()
@@ -1008,19 +1008,19 @@ export default class LassoButtonGroupController {
     canvas.style.outline = "none"
 
     this._controlGroup = document.createElement("div")
-    this._controlGroup.className = "mapd-draw-button-control-group"
+    this._controlGroup.className = "heavyai-draw-button-control-group"
     this._controlContainer.appendChild(this._controlGroup)
 
     this._drawEngine.on(
-      MapdDraw.ShapeBuilder.EventConstants.SELECTION_CHANGED,
+      Draw.ShapeBuilder.EventConstants.SELECTION_CHANGED,
       this._selectionchangedCB
     )
     this._drawEngine.on(
-      MapdDraw.ShapeBuilder.EventConstants.DRAG_BEGIN,
+      Draw.ShapeBuilder.EventConstants.DRAG_BEGIN,
       this._dragbeginCB
     )
     this._drawEngine.on(
-      MapdDraw.ShapeBuilder.EventConstants.DRAG_END,
+      Draw.ShapeBuilder.EventConstants.DRAG_END,
       this._dragendCB
     )
 
