@@ -39,7 +39,7 @@ npm run watch
 
 HEAVY.AI Charting is a superfast charting library that works natively with [crossfilter](https://github.com/square/crossfilter) that is based off [dc.js](https://github.com/dc-js/dc.js).  It is designed to work with HEAVY.AI Connector and HEAVY.AI Crossfilter to create charts instantly with our HeavyDB SQL Database.  Please see [examples](#examples) for further understanding to quickly create interactive charts.
 
-Our [Tweetmap Demo](https://www.mapd.com/demos/tweetmap/) was made only using HEAVY.AI Charting.
+Our [Tweetmap Demo](https://www.heavy.ai/demos/tweetmap/) was made only using HEAVY.AI Charting.
 
 # Documentation
 
