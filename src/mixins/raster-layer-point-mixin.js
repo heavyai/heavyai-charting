@@ -236,7 +236,7 @@ export default function rasterLayerPointMixin(_layer) {
         as: alias,
         // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
         //  in heavyai-data-layer2. So, just gonna filter them out.
-        //  https://omnisci.atlassian.net/browse/FE-14213
+        //  https://heavyai.atlassian.net/browse/FE-14213
         groupby: [...new Set(transform.groupby)].map((g, i) => ({
           type: "project",
           expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
