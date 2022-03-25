@@ -605,6 +605,18 @@ body {
             &.disabled {
                 pointer-events: none;
             }
+
+            &.cell-align-left {
+                text-align: left;
+            }
+
+            &.cell-align-right {
+                text-align: right;
+            }
+
+            &.cell-align-center {
+                text-align: center;
+            }
         }
 
         th {
@@ -1247,18 +1259,6 @@ body {
 
         td {
             cursor: pointer;
-        }
-
-        td.cell-align-left {
-            text-align: left;
-        }
-
-        td.cell-align-right {
-            text-align: right;
-        }
-
-        td.cell-align-center {
-            text-align: center;
         }
 
         th {

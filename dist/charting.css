@@ -751,6 +751,12 @@ body {
         color: #22A7F0; }
       .dc-chart .md-table-wrapper td.disabled {
         pointer-events: none; }
+      .dc-chart .md-table-wrapper td.cell-align-left {
+        text-align: left; }
+      .dc-chart .md-table-wrapper td.cell-align-right {
+        text-align: right; }
+      .dc-chart .md-table-wrapper td.cell-align-center {
+        text-align: center; }
     .dc-chart .md-table-wrapper th {
       border-bottom: 1px solid #e2e2e2;
       color: #868686;
@@ -1138,12 +1144,6 @@ body {
         text-align: left; }
     .chart-popup .popup-table td {
       cursor: pointer; }
-    .chart-popup .popup-table td.cell-align-left {
-      text-align: left; }
-    .chart-popup .popup-table td.cell-align-right {
-      text-align: right; }
-    .chart-popup .popup-table td.cell-align-center {
-      text-align: center; }
     .chart-popup .popup-table th {
       position: relative; }
       .chart-popup .popup-table th .ellipse-text {
