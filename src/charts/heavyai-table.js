@@ -549,6 +549,12 @@ export default function heavyaiTable(parent, chartGroup) {
             _chart.redrawAsync()
           }
         })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width -
+          (48 * 3) +
+          "px"
+        )
         .append("svg")
         .attr("class", "svg-icon")
         .classed("icon-caret-left", true)
@@ -568,6 +574,12 @@ export default function heavyaiTable(parent, chartGroup) {
             _chart.redrawAsync()
           }
         })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width -
+          (48 * 2) +
+          "px"
+        )
         .append("svg")
         .attr("class", "svg-icon")
         .classed("icon-align-center", true)
@@ -587,6 +599,12 @@ export default function heavyaiTable(parent, chartGroup) {
             _chart.redrawAsync()
           }
         })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width -
+          48 +
+          "px"
+        )
         .append("svg")
         .attr("class", "svg-icon")
         .classed("icon-caret-right", true)

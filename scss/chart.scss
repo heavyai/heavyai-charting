@@ -665,24 +665,34 @@ body {
         white-space: nowrap;
 
         .left-align-btn, .center-align-btn, .right-align-btn {
-            width: 24px;
-            height: 24px;
+            width: 48px;
+            height: 48px;
             position: absolute;
             right: 0;
-            top: 0;
+            top: 3px;
             padding: 4px;
             cursor: pointer;
             display: none;
-        }
 
-        &.isFiltered {
-            .unfilter-btn {
-                display: block;
+            .svg-icon.active {
+                fill: $blue-main;
+            }
+
+            &:hover {
+                .svg-icon {
+                    fill: $blue-main;
+                }
             }
         }
 
         &:hover {
             .left-align-btn, .center-align-btn, .right-align-btn {
+                display: block;
+            }
+        }
+
+        &.isFiltered {
+            .unfilter-btn {
                 display: block;
             }
         }
