@@ -94,7 +94,9 @@ export default function heavyaiTable(parent, chartGroup) {
   }
 
   _chart.isColLeftAligned = function(colIndex) {
-    return _columnAlignments[colIndex] === "left" || !_columnAlignments[colIndex]
+    return (
+      _columnAlignments[colIndex] === "left" || !_columnAlignments[colIndex]
+    )
   }
 
   _chart.isColCenterAligned = function(colIndex) {
@@ -551,9 +553,7 @@ export default function heavyaiTable(parent, chartGroup) {
         })
         .style(
           "left",
-          headerItem.node().getBoundingClientRect().width -
-          54 +
-          "px"
+          headerItem.node().getBoundingClientRect().width - 54 + "px"
         )
         .append("svg")
         .attr("class", "svg-icon")
@@ -576,9 +576,7 @@ export default function heavyaiTable(parent, chartGroup) {
         })
         .style(
           "left",
-          headerItem.node().getBoundingClientRect().width -
-          36 +
-          "px"
+          headerItem.node().getBoundingClientRect().width - 36 + "px"
         )
         .append("svg")
         .attr("class", "svg-icon")
@@ -601,9 +599,7 @@ export default function heavyaiTable(parent, chartGroup) {
         })
         .style(
           "left",
-          headerItem.node().getBoundingClientRect().width -
-          18 +
-          "px"
+          headerItem.node().getBoundingClientRect().width - 18 + "px"
         )
         .append("svg")
         .attr("class", "svg-icon")
