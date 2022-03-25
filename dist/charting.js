@@ -56646,7 +56646,7 @@ function rasterLayerPointMixin(_layer) {
         as: alias,
         // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
         //  in heavyai-data-layer2. So, just gonna filter them out.
-        //  https://omnisci.atlassian.net/browse/FE-14213
+        //  https://heavyai.atlassian.net/browse/FE-14213
         groupby: [].concat(_toConsumableArray(new Set(transform.groupby))).map(function (g, i) {
           return {
             type: "project",
@@ -61539,21 +61539,19 @@ function parseBin(sql, _ref) {
       extent = _ref.extent,
       maxbins = _ref.maxbins;
 
+  if (extent[0] >= extent[1]) {
+    // Why "1 - 1"? There is a bug in calcite that will throw an error if you
+    // try to SELECT a constant integer with a group by clause. This gets
+    // around it by returning an expression ¯\_(ツ)_/¯
+    sql.select.push("1 - 1 AS " + as);
+  } else {
+    sql.select.push("CASE WHEN " + field + " >= " + extent[1] + " THEN " + maxbins + " ELSE WIDTH_BUCKET(" + field + ", " + extent[0] + ", " + extent[1] + ", " + maxbins + ") END - 1 AS " + as);
+  }
 
-  // numBins is used conditionally in our query building below.
-  // first of all, if we're going to fall into the overflow bin AND we have
-  // 0 bins, then we should land in bin 0. Otherwise, we should land in the last
-  // bin.
-  //
-  // later, we calculate the binning magic number based on numBins - dividing either
-  // by it or 1 if it doesn't exist, to prevent a divide by zero / infinity error.
-  //
-  // The logic used by mapd-crossfilter's getBinnedDimExpression is completely different.
-  var numBins = extent[1] - extent[0];
-
-  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (numBins === 0 ? 0 : maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (numBins || 1) + " as int)\n    end\n    AS " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
+
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
+
   return sql;
 }
 
@@ -85893,13 +85891,14 @@ function heavyaiTable(parent, chartGroup) {
   var _crossfilter = null;
   var _tableFilter = null;
   var _sortColumn = null;
+  var _columnAlignments = [];
   var _dimOrGroup = null;
   var _isGroupedData = false;
   var _colAliases = null;
   var _sampling = false;
   var _nullsOrder = "";
 
-  var _table_events = ["sort"];
+  var _table_events = ["sort", "align"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, _table_events);
   var _on = _chart.on.bind(_chart);
 
@@ -85915,6 +85914,12 @@ function heavyaiTable(parent, chartGroup) {
   _chart._invokeSortListener = function (f) {
     if (f !== "undefined") {
       _listeners.sort(_chart, f);
+    }
+  };
+
+  _chart._invokeAlignListener = function (f) {
+    if (f !== "undefined") {
+      _listeners.align(_chart, f);
     }
   };
 
@@ -85937,6 +85942,26 @@ function heavyaiTable(parent, chartGroup) {
     }
     _sortColumn = _;
     return _chart;
+  };
+
+  _chart.columnAlignments = function (_) {
+    if (!arguments.length) {
+      return _columnAlignments;
+    }
+    _columnAlignments = _;
+    return _chart;
+  };
+
+  _chart.isColLeftAligned = function (colIndex) {
+    return _columnAlignments[colIndex] === "left" || !_columnAlignments[colIndex];
+  };
+
+  _chart.isColCenterAligned = function (colIndex) {
+    return _columnAlignments[colIndex] === "center";
+  };
+
+  _chart.isColRightAligned = function (colIndex) {
+    return _columnAlignments[colIndex] === "right";
   };
 
   _chart.nullsOrder = function (_) {
@@ -86181,7 +86206,7 @@ function heavyaiTable(parent, chartGroup) {
       return tableRowCls;
     });
 
-    cols.forEach(function (col) {
+    cols.forEach(function (col, i) {
       rowItem.append("td").html(function (d) {
         // use custom formatter or default one
         var customFormatter = void 0;
@@ -86197,7 +86222,13 @@ function heavyaiTable(parent, chartGroup) {
 
         var key = val && val[0] && val[0].isExtract ? null : col.formatKey;
         return customFormatter && customFormatter(val, key) || (0, _formattingHelpers.formatDataValue)(val);
-      }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
+      }).classed("filtered", col.expression in _filteredColumns).classed("cell-align-left", function () {
+        return _chart.isColLeftAligned(i);
+      }).classed("cell-align-center", function () {
+        return _chart.isColCenterAligned(i);
+      }).classed("cell-align-right", function () {
+        return _chart.isColRightAligned(i);
+      }).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();
         if (s.length) {
@@ -86278,6 +86309,39 @@ function heavyaiTable(parent, chartGroup) {
       sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-sort");
 
       sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort-arrow", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-arrow1");
+
+      // left align button
+      headerItem.append("div").attr("class", "left-align-btn").classed("active", function () {
+        return _chart.isColLeftAligned(i);
+      }).on("click", function () {
+        if (!_chart.isColLeftAligned(i)) {
+          _columnAlignments[i] = "left";
+          _chart._invokeAlignListener(_columnAlignments);
+          _chart.redrawAsync();
+        }
+      }).append("svg").attr("class", "svg-icon").classed("icon-caret-left", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-caret-left");
+
+      // center align button
+      headerItem.append("div").attr("class", "center-align-btn").classed("active", function () {
+        return _chart.isColCenterAligned(i);
+      }).on("click", function () {
+        if (!_chart.isColCenterAligned(i)) {
+          _columnAlignments[i] = "left";
+          _chart._invokeAlignListener(_columnAlignments);
+          _chart.redrawAsync();
+        }
+      }).append("svg").attr("class", "svg-icon").classed("icon-align-center", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-align-center");
+
+      // right align button
+      headerItem.append("div").attr("class", "right-align-btn").classed("active", function () {
+        return _chart.isColRightAligned(i);
+      }).on("click", function () {
+        if (!_chart.isColRightAligned(i)) {
+          _columnAlignments[i] = "right";
+          _chart._invokeAlignListener(_columnAlignments);
+          _chart.redrawAsync();
+        }
+      }).append("svg").attr("class", "svg-icon").classed("icon-caret-right", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-caret-right");
 
       headerItem.append("div").attr("class", "unfilter-btn").attr("data-expr", d.expression).on("click", function () {
         clearColFilter(_d2.default.select(this).attr("data-expr"));
