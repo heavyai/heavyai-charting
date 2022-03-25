@@ -664,8 +664,25 @@ body {
         position: relative;
         white-space: nowrap;
 
+        .left-align-btn, .center-align-btn, .right-align-btn {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 4px;
+            cursor: pointer;
+            display: none;
+        }
+
         &.isFiltered {
             .unfilter-btn {
+                display: block;
+            }
+        }
+
+        &:hover {
+            .left-align-btn, .center-align-btn, .right-align-btn {
                 display: block;
             }
         }

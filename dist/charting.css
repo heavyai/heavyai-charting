@@ -785,7 +785,18 @@ body {
   .dc-chart .table-header-item {
     position: relative;
     white-space: nowrap; }
+    .dc-chart .table-header-item .left-align-btn, .dc-chart .table-header-item .center-align-btn, .dc-chart .table-header-item .right-align-btn {
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 4px;
+      cursor: pointer;
+      display: none; }
     .dc-chart .table-header-item.isFiltered .unfilter-btn {
+      display: block; }
+    .dc-chart .table-header-item:hover .left-align-btn, .dc-chart .table-header-item:hover .center-align-btn, .dc-chart .table-header-item:hover .right-align-btn {
       display: block; }
     .dc-chart .table-header-item .unfilter-btn {
       width: 24px;
