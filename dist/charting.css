@@ -794,7 +794,7 @@ body {
       padding: 4px;
       cursor: pointer;
       display: none; }
-      .dc-chart .table-header-item .left-align-btn .svg-icon.active, .dc-chart .table-header-item .center-align-btn .svg-icon.active, .dc-chart .table-header-item .right-align-btn .svg-icon.active {
+      .dc-chart .table-header-item .left-align-btn.active .svg-icon, .dc-chart .table-header-item .center-align-btn.active .svg-icon, .dc-chart .table-header-item .right-align-btn.active .svg-icon {
         fill: #22A7F0; }
       .dc-chart .table-header-item .left-align-btn:hover .svg-icon, .dc-chart .table-header-item .center-align-btn:hover .svg-icon, .dc-chart .table-header-item .right-align-btn:hover .svg-icon {
         fill: #22A7F0; }

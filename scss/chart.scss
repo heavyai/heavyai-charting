@@ -674,8 +674,10 @@ body {
             cursor: pointer;
             display: none;
 
-            .svg-icon.active {
-                fill: $blue-main;
+            &.active {
+                .svg-icon {
+                    fill: $blue-main;
+                }
             }
 
             &:hover {
