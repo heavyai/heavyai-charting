@@ -86319,7 +86319,7 @@ function heavyaiTable(parent, chartGroup) {
           _chart._invokeAlignListener(_columnAlignments);
           _chart.redrawAsync();
         }
-      }).style("left", headerItem.node().getBoundingClientRect().width - 60 + "px").append("svg").attr("class", "svg-icon").classed("icon-caret-left", true).attr("viewBox", "0 0 16 16").append("use").attr("xlink:href", "#icon-caret-left");
+      }).style("left", headerItem.node().getBoundingClientRect().width - 54 + "px").append("svg").attr("class", "svg-icon").classed("icon-caret-left", true).attr("viewBox", "0 0 16 16").append("use").attr("xlink:href", "#icon-caret-left");
 
       // center align button
       headerItem.append("div").attr("class", "center-align-btn").classed("active", function () {
@@ -86330,7 +86330,7 @@ function heavyaiTable(parent, chartGroup) {
           _chart._invokeAlignListener(_columnAlignments);
           _chart.redrawAsync();
         }
-      }).style("left", headerItem.node().getBoundingClientRect().width - 40 + "px").append("svg").attr("class", "svg-icon").classed("icon-align-center", true).attr("viewBox", "0 0 16 16").append("use").attr("xlink:href", "#icon-align-center");
+      }).style("left", headerItem.node().getBoundingClientRect().width - 36 + "px").append("svg").attr("class", "svg-icon").classed("icon-align-center", true).attr("viewBox", "0 0 16 16").append("use").attr("xlink:href", "#icon-align-center");
 
       // right align button
       headerItem.append("div").attr("class", "right-align-btn").classed("active", function () {
@@ -86341,7 +86341,7 @@ function heavyaiTable(parent, chartGroup) {
           _chart._invokeAlignListener(_columnAlignments);
           _chart.redrawAsync();
         }
-      }).style("left", headerItem.node().getBoundingClientRect().width - 20 + "px").append("svg").attr("class", "svg-icon").classed("icon-caret-right", true).attr("viewBox", "0 0 16 16").append("use").attr("xlink:href", "#icon-caret-right");
+      }).style("left", headerItem.node().getBoundingClientRect().width - 18 + "px").append("svg").attr("class", "svg-icon").classed("icon-caret-right", true).attr("viewBox", "0 0 16 16").append("use").attr("xlink:href", "#icon-caret-right");
 
       headerItem.append("div").attr("class", "unfilter-btn").attr("data-expr", d.expression).on("click", function () {
         clearColFilter(_d2.default.select(this).attr("data-expr"));

@@ -552,7 +552,7 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           headerItem.node().getBoundingClientRect().width -
-          60 +
+          54 +
           "px"
         )
         .append("svg")
@@ -577,7 +577,7 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           headerItem.node().getBoundingClientRect().width -
-          40 +
+          36 +
           "px"
         )
         .append("svg")
@@ -602,7 +602,7 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           headerItem.node().getBoundingClientRect().width -
-          20 +
+          18 +
           "px"
         )
         .append("svg")

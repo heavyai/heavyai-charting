@@ -677,12 +677,12 @@ body {
         white-space: nowrap;
 
         .left-align-btn, .center-align-btn, .right-align-btn {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 24px;
             position: absolute;
             right: 0;
-            top: 0;
-            padding: 4px;
+            top: 1px;
+            padding: 4px 0px;
             cursor: pointer;
             display: none;
 
