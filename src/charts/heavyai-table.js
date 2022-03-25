@@ -552,13 +552,13 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           headerItem.node().getBoundingClientRect().width -
-          (GROUP_DATA_WIDTH * 2) +
+          60 +
           "px"
         )
         .append("svg")
         .attr("class", "svg-icon")
         .classed("icon-caret-left", true)
-        .attr("viewBox", "0 0 48 48")
+        .attr("viewBox", "0 0 16 16")
         .append("use")
         .attr("xlink:href", "#icon-caret-left")
 
@@ -577,13 +577,13 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           headerItem.node().getBoundingClientRect().width -
-          (GROUP_DATA_WIDTH * 1.5) +
+          40 +
           "px"
         )
         .append("svg")
         .attr("class", "svg-icon")
         .classed("icon-align-center", true)
-        .attr("viewBox", "0 0 48 48")
+        .attr("viewBox", "0 0 16 16")
         .append("use")
         .attr("xlink:href", "#icon-align-center")
 
@@ -602,13 +602,13 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           headerItem.node().getBoundingClientRect().width -
-          GROUP_DATA_WIDTH +
+          20 +
           "px"
         )
         .append("svg")
         .attr("class", "svg-icon")
         .classed("icon-caret-right", true)
-        .attr("viewBox", "0 0 48 48")
+        .attr("viewBox", "0 0 16 16")
         .append("use")
         .attr("xlink:href", "#icon-caret-right")
 
