@@ -86319,14 +86319,14 @@ function heavyaiTable(parent, chartGroup) {
           _chart._invokeAlignListener(_columnAlignments);
           _chart.redrawAsync();
         }
-      }).style("left", headerItem.node().getBoundingClientRect().width - GROUP_DATA_WIDTH * 3 + "px").append("svg").attr("class", "svg-icon").classed("icon-caret-left", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-caret-left");
+      }).style("left", headerItem.node().getBoundingClientRect().width - GROUP_DATA_WIDTH * 2 + "px").append("svg").attr("class", "svg-icon").classed("icon-caret-left", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-caret-left");
 
       // center align button
       headerItem.append("div").attr("class", "center-align-btn").classed("active", function () {
         return _chart.isColCenterAligned(i);
       }).on("click", function () {
         if (!_chart.isColCenterAligned(i)) {
-          _columnAlignments[i] = "left";
+          _columnAlignments[i] = "center";
           _chart._invokeAlignListener(_columnAlignments);
           _chart.redrawAsync();
         }

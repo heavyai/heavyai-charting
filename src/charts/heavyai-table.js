@@ -552,7 +552,7 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           headerItem.node().getBoundingClientRect().width -
-          (GROUP_DATA_WIDTH * 3) +
+          (GROUP_DATA_WIDTH * 2) +
           "px"
         )
         .append("svg")
@@ -569,7 +569,7 @@ export default function heavyaiTable(parent, chartGroup) {
         .classed("active", () => _chart.isColCenterAligned(i))
         .on("click", () => {
           if (!_chart.isColCenterAligned(i)) {
-            _columnAlignments[i] = "left"
+            _columnAlignments[i] = "center"
             _chart._invokeAlignListener(_columnAlignments)
             _chart.redrawAsync()
           }

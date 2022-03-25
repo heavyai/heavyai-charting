@@ -1249,6 +1249,18 @@ body {
             cursor: pointer;
         }
 
+        td.cell-align-left {
+            text-align: left;
+        }
+
+        td.cell-align-right {
+            text-align: right;
+        }
+
+        td.cell-align-center {
+            text-align: center;
+        }
+
         th {
             position: relative;
 

@@ -1138,6 +1138,12 @@ body {
         text-align: left; }
     .chart-popup .popup-table td {
       cursor: pointer; }
+    .chart-popup .popup-table td.cell-align-left {
+      text-align: left; }
+    .chart-popup .popup-table td.cell-align-right {
+      text-align: right; }
+    .chart-popup .popup-table td.cell-align-center {
+      text-align: center; }
     .chart-popup .popup-table th {
       position: relative; }
       .chart-popup .popup-table th .ellipse-text {
