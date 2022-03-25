@@ -605,6 +605,18 @@ body {
             &.disabled {
                 pointer-events: none;
             }
+
+            &.cell-align-left {
+                text-align: left;
+            }
+
+            &.cell-align-right {
+                text-align: right;
+            }
+
+            &.cell-align-center {
+                text-align: center;
+            }
         }
 
         th {
@@ -663,6 +675,35 @@ body {
     .table-header-item {
         position: relative;
         white-space: nowrap;
+
+        .left-align-btn, .center-align-btn, .right-align-btn {
+            width: 18px;
+            height: 24px;
+            position: absolute;
+            right: 0;
+            top: 1px;
+            padding: 4px 0px;
+            cursor: pointer;
+            display: none;
+
+            &.active {
+                .svg-icon {
+                    fill: $blue-main;
+                }
+            }
+
+            &:hover {
+                .svg-icon {
+                    fill: $blue-main;
+                }
+            }
+        }
+
+        &:hover {
+            .left-align-btn, .center-align-btn, .right-align-btn {
+                display: block;
+            }
+        }
 
         &.isFiltered {
             .unfilter-btn {

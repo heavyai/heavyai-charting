@@ -751,6 +751,12 @@ body {
         color: #22A7F0; }
       .dc-chart .md-table-wrapper td.disabled {
         pointer-events: none; }
+      .dc-chart .md-table-wrapper td.cell-align-left {
+        text-align: left; }
+      .dc-chart .md-table-wrapper td.cell-align-right {
+        text-align: right; }
+      .dc-chart .md-table-wrapper td.cell-align-center {
+        text-align: center; }
     .dc-chart .md-table-wrapper th {
       border-bottom: 1px solid #e2e2e2;
       color: #868686;
@@ -785,6 +791,21 @@ body {
   .dc-chart .table-header-item {
     position: relative;
     white-space: nowrap; }
+    .dc-chart .table-header-item .left-align-btn, .dc-chart .table-header-item .center-align-btn, .dc-chart .table-header-item .right-align-btn {
+      width: 18px;
+      height: 24px;
+      position: absolute;
+      right: 0;
+      top: 1px;
+      padding: 4px 0px;
+      cursor: pointer;
+      display: none; }
+      .dc-chart .table-header-item .left-align-btn.active .svg-icon, .dc-chart .table-header-item .center-align-btn.active .svg-icon, .dc-chart .table-header-item .right-align-btn.active .svg-icon {
+        fill: #22A7F0; }
+      .dc-chart .table-header-item .left-align-btn:hover .svg-icon, .dc-chart .table-header-item .center-align-btn:hover .svg-icon, .dc-chart .table-header-item .right-align-btn:hover .svg-icon {
+        fill: #22A7F0; }
+    .dc-chart .table-header-item:hover .left-align-btn, .dc-chart .table-header-item:hover .center-align-btn, .dc-chart .table-header-item:hover .right-align-btn {
+      display: block; }
     .dc-chart .table-header-item.isFiltered .unfilter-btn {
       display: block; }
     .dc-chart .table-header-item .unfilter-btn {

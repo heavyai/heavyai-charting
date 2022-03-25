@@ -32,13 +32,14 @@ export default function heavyaiTable(parent, chartGroup) {
   let _crossfilter = null
   let _tableFilter = null
   let _sortColumn = null
+  let _columnAlignments = []
   let _dimOrGroup = null
   let _isGroupedData = false
   let _colAliases = null
   let _sampling = false
   let _nullsOrder = ""
 
-  const _table_events = ["sort"]
+  const _table_events = ["sort", "align"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
   const _on = _chart.on.bind(_chart)
 
@@ -54,6 +55,12 @@ export default function heavyaiTable(parent, chartGroup) {
   _chart._invokeSortListener = function(f) {
     if (f !== "undefined") {
       _listeners.sort(_chart, f)
+    }
+  }
+
+  _chart._invokeAlignListener = function(f) {
+    if (f !== "undefined") {
+      _listeners.align(_chart, f)
     }
   }
 
@@ -76,6 +83,28 @@ export default function heavyaiTable(parent, chartGroup) {
     }
     _sortColumn = _
     return _chart
+  }
+
+  _chart.columnAlignments = function(_) {
+    if (!arguments.length) {
+      return _columnAlignments
+    }
+    _columnAlignments = _
+    return _chart
+  }
+
+  _chart.isColLeftAligned = function(colIndex) {
+    return (
+      _columnAlignments[colIndex] === "left" || !_columnAlignments[colIndex]
+    )
+  }
+
+  _chart.isColCenterAligned = function(colIndex) {
+    return _columnAlignments[colIndex] === "center"
+  }
+
+  _chart.isColRightAligned = function(colIndex) {
+    return _columnAlignments[colIndex] === "right"
   }
 
   _chart.nullsOrder = function(_) {
@@ -349,7 +378,7 @@ export default function heavyaiTable(parent, chartGroup) {
       return tableRowCls
     })
 
-    cols.forEach(col => {
+    cols.forEach((col, i) => {
       rowItem
         .append("td")
         .html(d => {
@@ -372,6 +401,9 @@ export default function heavyaiTable(parent, chartGroup) {
           )
         })
         .classed("filtered", col.expression in _filteredColumns)
+        .classed("cell-align-left", () => _chart.isColLeftAligned(i))
+        .classed("cell-align-center", () => _chart.isColCenterAligned(i))
+        .classed("cell-align-right", () => _chart.isColRightAligned(i))
         .on("click", d => {
           // detect if user is selecting text or clicking a value, if so don't filter data
           const s = window.getSelection().toString()
@@ -506,6 +538,75 @@ export default function heavyaiTable(parent, chartGroup) {
         .attr("viewBox", "0 0 48 48")
         .append("use")
         .attr("xlink:href", "#icon-arrow1")
+
+      // left align button
+      headerItem
+        .append("div")
+        .attr("class", "left-align-btn")
+        .classed("active", () => _chart.isColLeftAligned(i))
+        .on("click", () => {
+          if (!_chart.isColLeftAligned(i)) {
+            _columnAlignments[i] = "left"
+            _chart._invokeAlignListener(_columnAlignments)
+            _chart.redrawAsync()
+          }
+        })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width - 54 + "px"
+        )
+        .append("svg")
+        .attr("class", "svg-icon")
+        .classed("icon-caret-left", true)
+        .attr("viewBox", "0 0 16 16")
+        .append("use")
+        .attr("xlink:href", "#icon-caret-left")
+
+      // center align button
+      headerItem
+        .append("div")
+        .attr("class", "center-align-btn")
+        .classed("active", () => _chart.isColCenterAligned(i))
+        .on("click", () => {
+          if (!_chart.isColCenterAligned(i)) {
+            _columnAlignments[i] = "center"
+            _chart._invokeAlignListener(_columnAlignments)
+            _chart.redrawAsync()
+          }
+        })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width - 36 + "px"
+        )
+        .append("svg")
+        .attr("class", "svg-icon")
+        .classed("icon-align-center", true)
+        .attr("viewBox", "0 0 16 16")
+        .append("use")
+        .attr("xlink:href", "#icon-align-center")
+
+      // right align button
+      headerItem
+        .append("div")
+        .attr("class", "right-align-btn")
+        .classed("active", () => _chart.isColRightAligned(i))
+        .on("click", () => {
+          if (!_chart.isColRightAligned(i)) {
+            _columnAlignments[i] = "right"
+            _chart._invokeAlignListener(_columnAlignments)
+            _chart.redrawAsync()
+          }
+        })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width - 18 + "px"
+        )
+        .append("svg")
+        .attr("class", "svg-icon")
+        .classed("icon-caret-right", true)
+        .attr("viewBox", "0 0 16 16")
+        .append("use")
+        .attr("xlink:href", "#icon-caret-right")
 
       headerItem
         .append("div")
