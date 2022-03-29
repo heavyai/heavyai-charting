@@ -38,6 +38,7 @@ export default function heavyaiTable(parent, chartGroup) {
   let _colAliases = null
   let _sampling = false
   let _nullsOrder = ""
+  let _borders = "none"
 
   const _table_events = ["sort", "align"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
@@ -82,6 +83,14 @@ export default function heavyaiTable(parent, chartGroup) {
       return _sortColumn
     }
     _sortColumn = _
+    return _chart
+  }
+
+  _chart.borders = function(_) {
+    if (!arguments.length) {
+      return _borders
+    }
+    _borders = _
     return _chart
   }
 
@@ -371,10 +380,14 @@ export default function heavyaiTable(parent, chartGroup) {
           tableRowCls =
             tableRowCls +
             (!_chart.hasFilter(key) ^ _chart.filtersInverse()
-              ? "deselected"
-              : "selected")
+              ? "deselected "
+              : "selected ")
         }
       }
+      if (_borders) {
+        tableRowCls += `borders-${_borders}`
+      }
+
       return tableRowCls
     })
 
