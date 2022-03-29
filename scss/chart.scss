@@ -642,6 +642,23 @@ body {
                     color: $blue-main;
                 }
             }
+
+            &.borders-each {
+                td {
+                    border: 1px solid $gray2;
+                }
+            }
+
+            &.borders-between-rows:not(:last-child) {
+                border-bottom: 1px solid $gray2;
+            }
+
+            &.borders-between-columns {
+                td:not(:last-child) {
+                    border-right: 1px solid $gray2;
+                }
+            }
+
         }
     }
 
@@ -2387,14 +2404,3 @@ body {
   }
 }
 
-tr.borders-between-rows:not(:last-child) {
-  border-bottom: 1px solid $gray2;
-}
-
-tr.borders-between-columns td:not(:last-child) {
-  border-right: 1px solid $gray2;
-}
-
-tr.borders-each td {
-  border: 1px solid $gray2;
-}
