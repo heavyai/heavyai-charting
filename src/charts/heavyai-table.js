@@ -39,6 +39,7 @@ export default function heavyaiTable(parent, chartGroup) {
   let _sampling = false
   let _nullsOrder = ""
   let _borders = "none"
+  let _zebraStriping = null
 
   const _table_events = ["sort", "align"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
@@ -91,6 +92,14 @@ export default function heavyaiTable(parent, chartGroup) {
       return _borders
     }
     _borders = _
+    return _chart
+  }
+
+  _chart.zebraStriping = function(_) {
+    if (!arguments.length) {
+      return _zebraStriping
+    }
+    _zebraStriping = _
     return _chart
   }
 
@@ -385,7 +394,10 @@ export default function heavyaiTable(parent, chartGroup) {
         }
       }
       if (_borders) {
-        tableRowCls += `borders-${_borders}`
+        tableRowCls += `borders-${_borders} `
+      }
+      if (_zebraStriping) {
+        tableRowCls += "zebra-striping"
       }
 
       return tableRowCls
