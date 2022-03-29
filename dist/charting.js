@@ -85897,6 +85897,7 @@ function heavyaiTable(parent, chartGroup) {
   var _colAliases = null;
   var _sampling = false;
   var _nullsOrder = "";
+  var _borders = "none";
 
   var _table_events = ["sort", "align"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, _table_events);
@@ -85941,6 +85942,14 @@ function heavyaiTable(parent, chartGroup) {
       return _sortColumn;
     }
     _sortColumn = _;
+    return _chart;
+  };
+
+  _chart.borders = function (_) {
+    if (!arguments.length) {
+      return _borders;
+    }
+    _borders = _;
     return _chart;
   };
 
@@ -86200,9 +86209,13 @@ function heavyaiTable(parent, chartGroup) {
 
         if (_chart.hasFilter()) {
           var key = _chart.keyAccessor()(d);
-          tableRowCls = tableRowCls + (!_chart.hasFilter(key) ^ _chart.filtersInverse() ? "deselected" : "selected");
+          tableRowCls = tableRowCls + (!_chart.hasFilter(key) ^ _chart.filtersInverse() ? "deselected " : "selected ");
         }
       }
+      if (_borders) {
+        tableRowCls += _borders;
+      }
+
       return tableRowCls;
     });
 
