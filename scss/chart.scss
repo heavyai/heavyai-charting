@@ -645,7 +645,7 @@ body {
 
             &.borders-each {
                 td {
-                    border: 1px solid $gray2;
+                    border: 1px solid $gray2 !important;
                 }
             }
 
