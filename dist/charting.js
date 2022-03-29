@@ -86213,7 +86213,7 @@ function heavyaiTable(parent, chartGroup) {
         }
       }
       if (_borders) {
-        tableRowCls += _borders;
+        tableRowCls += "borders-" + _borders;
       }
 
       return tableRowCls;
