@@ -280,9 +280,9 @@ export default function heavyaiTable(parent, chartGroup) {
     if (
       tableNode.scrollHeight > 0 &&
       tableNode.scrollHeight <=
-      scrollDivNode.scrollTop +
-      scrollDivNode.getBoundingClientRect().height +
-      ADDITIONAL_HEIGHT
+        scrollDivNode.scrollTop +
+          scrollDivNode.getBoundingClientRect().height +
+          ADDITIONAL_HEIGHT
     ) {
       _chart.addRows()
     }
@@ -479,7 +479,7 @@ export default function heavyaiTable(parent, chartGroup) {
           if (
             tableScrollElm.scrollTop > _scrollTop &&
             table.node().scrollHeight <=
-            scrollHeight + scrollHeight / SCROLL_DIVISOR
+              scrollHeight + scrollHeight / SCROLL_DIVISOR
           ) {
             _chart.addRows()
           }
@@ -631,8 +631,8 @@ export default function heavyaiTable(parent, chartGroup) {
         .style(
           "left",
           textSpan.node().getBoundingClientRect().width +
-          GROUP_DATA_WIDTH +
-          "px"
+            GROUP_DATA_WIDTH +
+            "px"
         )
         .append("svg")
         .attr("class", "svg-icon")
