@@ -44,6 +44,7 @@ export default function heavyaiTable(parent, chartGroup) {
   const _table_events = ["sort", "align"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
   const _on = _chart.on.bind(_chart)
+debugger
   console.log(_chart)
 
   _chart.on = function(event, listener) {
@@ -89,6 +90,7 @@ export default function heavyaiTable(parent, chartGroup) {
   }
 
   _chart.borders = function(_) {
+  debugger
     console.log(_)
     console.log(_chart)
     if (!arguments.length) {
@@ -308,6 +310,7 @@ export default function heavyaiTable(parent, chartGroup) {
   }
 
   function renderTable(data = []) {
+  debugger
     console.log(_chart)
     const table = _chart
       .tableWrapper()
