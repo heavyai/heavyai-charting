@@ -39,7 +39,7 @@ export default function heavyaiTable(parent, chartGroup) {
   let _sampling = false
   let _nullsOrder = ""
   let _borders = "none"
-  let _zebraStriping = null
+  let _zebraStriping = false
 
   const _table_events = ["sort", "align"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
