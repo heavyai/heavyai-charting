@@ -96,6 +96,7 @@ export default function heavyaiTable(parent, chartGroup) {
   }
 
   _chart.zebraStriping = function(_) {
+    console.log(_chart)
     if (!arguments.length) {
       return _zebraStriping
     }
