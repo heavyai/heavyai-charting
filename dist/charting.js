@@ -85898,6 +85898,7 @@ function heavyaiTable(parent, chartGroup) {
   var _sampling = false;
   var _nullsOrder = "";
   var _borders = "none";
+  var _zebraStriping = false;
 
   var _table_events = ["sort", "align"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, _table_events);
@@ -85950,6 +85951,14 @@ function heavyaiTable(parent, chartGroup) {
       return _borders;
     }
     _borders = _;
+    return _chart;
+  };
+
+  _chart.zebraStriping = function (_) {
+    if (!arguments.length) {
+      return _zebraStriping;
+    }
+    _zebraStriping = _;
     return _chart;
   };
 
@@ -86213,7 +86222,10 @@ function heavyaiTable(parent, chartGroup) {
         }
       }
       if (_borders) {
-        tableRowCls += "borders-" + _borders;
+        tableRowCls += "borders-" + _borders + " ";
+      }
+      if (_zebraStriping) {
+        tableRowCls += "zebra-striping";
       }
 
       return tableRowCls;
