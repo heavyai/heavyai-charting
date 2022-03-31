@@ -643,22 +643,6 @@ body {
                 }
             }
 
-            &.borders-each {
-                td {
-                    border: 1px solid $gray2 !important;
-                }
-            }
-
-            &.borders-between-rows:not(:last-child) {
-                border-bottom: 1px solid $gray2;
-            }
-
-            &.borders-between-columns {
-                td:not(:last-child) {
-                    border-right: 1px solid $gray2;
-                }
-            }
-
         }
     }
 
