@@ -769,12 +769,6 @@ body {
         color: #868686; }
     .dc-chart .md-table-wrapper tr.grouped-data:hover td {
       color: #22A7F0; }
-    .dc-chart .md-table-wrapper tr.borders-each td {
-      border: 1px solid #e2e2e2 !important; }
-    .dc-chart .md-table-wrapper tr.borders-between-rows:not(:last-child) {
-      border-bottom: 1px solid #e2e2e2; }
-    .dc-chart .md-table-wrapper tr.borders-between-columns td:not(:last-child) {
-      border-right: 1px solid #e2e2e2; }
   .dc-chart .md-header-spacer {
     width: 100%;
     height: 27px;
