@@ -86,7 +86,7 @@
     "babel-register": "^6.4.3",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
-    "codecov": "^2.1.0",
+    "codecov": "^3.7.1",
     "cross-env": "^5.0.1",
     "css-loader": "^0.22.0",
     "documentation": "4.0.0-rc.1",
