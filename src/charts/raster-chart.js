@@ -616,7 +616,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.getClosestResult = function getClosestResult(point, callback) {
+  _chart.getClosestResult = function getClosestResult(
+    point,
+    callback,
+    fetchEvenIfEmpty = false
+  ) {
     const height =
       typeof _chart.effectiveHeight === "function"
         ? _chart.effectiveHeight()
@@ -646,7 +650,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     })
 
     // TODO best to fail, skip cb, or call cb wo args?
-    if (!cnt) {
+    if (!cnt && !fetchEvenIfEmpty) {
       return
     }
 
