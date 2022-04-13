@@ -866,15 +866,19 @@ export default function mapMixin(
           _clientClickX === event.point.x &&
           _clientClickY === event.point.y
         ) {
-          _chart.getClosestResult(event.point, result => {
-            const data = result.row_set[0]
-            _chart.getLayerNames().forEach(layerName => {
-              const layer = _chart.getLayer(layerName)
-              if (typeof layer.onClick === "function") {
-                layer.onClick(_chart, data, event.originalEvent)
-              }
-            })
-          })
+          _chart.getClosestResult(
+            event.point,
+            result => {
+              const data = { rowid: result.row_id[0], ...result.row_set[0] }
+              _chart.getLayerNames().forEach(layerName => {
+                const layer = _chart.getLayer(layerName)
+                if (typeof layer.onClick === "function") {
+                  layer.onClick(_chart, data, event.originalEvent)
+                }
+              })
+            },
+            true
+          )
         }
       })
       _map.on("mousemove", e => {
