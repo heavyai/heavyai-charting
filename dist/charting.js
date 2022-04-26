@@ -57951,9 +57951,7 @@ function rasterLayerPolyMixin(_layer) {
     }
     var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
 
-    var filterKey = Object.keys(data).find(function (k) {
-      return k === "rowid" || k === "key0";
-    });
+    var filterKey = "key0" in data ? "key0" : "rowid";
 
     chart.hidePopup();
     _events.events.trigger(function () {
