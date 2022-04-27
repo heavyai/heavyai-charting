@@ -799,7 +799,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
-    const filterKey = Object.keys(data).find(k => k === "rowid" || k === "key0")
+    const filterKey = "key0" in data ? "key0" : "rowid"
 
     chart.hidePopup()
     events.trigger(() => {
