@@ -82,6 +82,7 @@ export function createVegaAttrMixin(
     )
 
     layerObj["_build" + capAttrName + "Scale"] = function(chart, layerName) {
+      console.log("first function")
       const scale = layerObj[scaleFunc]()
       if (
         scale &&
@@ -691,6 +692,7 @@ export function getScales(
   scaleDomainFields,
   xformDataSource
 ) {
+  console.log("second function")
   const scales = []
 
   if (
