@@ -82,7 +82,7 @@ export function createVegaAttrMixin(
     )
 
     layerObj["_build" + capAttrName + "Scale"] = function(chart, layerName) {
-      console.log("first function")
+      debugger
       const scale = layerObj[scaleFunc]()
       if (
         scale &&
@@ -687,12 +687,11 @@ export function getColorScaleName(layerName) {
 }
 
 export function getScales(
-  { size, color, orientation },
+  { size, color, orientation, colorRamps },
   layerName,
   scaleDomainFields,
   xformDataSource
 ) {
-  console.log("second function")
   const scales = []
 
   if (
@@ -707,6 +706,26 @@ export function getScales(
           ? { data: xformDataSource, fields: scaleDomainFields.size }
           : size.domain,
       range: size.range,
+      clamp: true
+    })
+  }
+
+  if (typeof color === "object" && color.type === "density" && (colorRamps && colorRamps.length > 0)) {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "threshold",
+      domain: color.colorRamps,
+      range: color.range
+        .map(c => adjustOpacity(c, color.opacity))
+        .map((c, i, colorArray) => {
+          const normVal = i / (colorArray.length - 1)
+          let interp = Math.min(normVal / 0.65, 1.0)
+          interp = interp * 0.375 + 0.625
+          return adjustRGBAOpacity(c, interp)
+        }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
       clamp: true
     })
   }
