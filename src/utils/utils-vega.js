@@ -730,7 +730,7 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density") {
+  if (typeof color === "object" && color.type === "density" && (!colorRamps || colorRamps.length === 0)) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
