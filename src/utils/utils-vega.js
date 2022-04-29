@@ -714,7 +714,11 @@ export function getScales(
     scales.push({
       name: getColorScaleName(layerName),
       type: "threshold",
-      domain: color.colorRamps,
+      domain: color.colorRamps.flatMap((c) => {
+        if (c[0] === "min") return c[1]
+        else if (c[1] === "max") return c[0]
+        else return c
+      }),
       range: color.range
         .map(c => adjustOpacity(c, color.opacity))
         .map((c, i, colorArray) => {
