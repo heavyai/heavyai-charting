@@ -797,10 +797,12 @@ export function getScales(
 }
 
 function colorRampsValid(colorRamps) {
-  let valid
-  colorRamps.forEach((i) => {
-    typeof i[0] === "number" && typeof i[1] === "number" ? valid = true : valid = false
-  })
+  let valid = false
+  if (colorRamps) {
+    colorRamps.forEach((i) => {
+      typeof i[0] === "number" && typeof i[1] === "number" ? valid = true : valid = false
+    })
+  }
   return valid
 }
 /**
