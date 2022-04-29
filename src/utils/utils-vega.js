@@ -710,7 +710,7 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && (colorRamps && colorRamps.length > 0)) {
+  if (typeof color === "object" && color.type === "density" && colorRampsValid) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "threshold",
@@ -730,7 +730,7 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && (!colorRamps || colorRamps.length === 0)) {
+  if (typeof color === "object" && color.type === "density" && !colorRampsValid) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
@@ -796,6 +796,13 @@ export function getScales(
   return scales
 }
 
+function colorRampsValid(colorRamps) {
+  let valid
+  colorRamps.forEach((i) => {
+    typeof i[0] === "number" && typeof i[1] === "number" ? valid = true : valid = false
+  })
+  return valid
+}
 /**
  * Filters z-indexed layers and returns non duplicate layer. Z-indexed layers is for temporary hack FE-13136
  * For z-indexed layer (layer that has top color category applied), only returns the first z-index, z_0
