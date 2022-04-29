@@ -710,7 +710,7 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && colorRampsValid()) {
+  if (typeof color === "object" && color.type === "density" && colorRampsValid(color.colorRamps)) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "threshold",
@@ -730,7 +730,7 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && !colorRampsValid()) {
+  if (typeof color === "object" && color.type === "density" && !colorRampsValid(color.colorRamps)) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
