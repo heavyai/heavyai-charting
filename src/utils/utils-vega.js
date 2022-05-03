@@ -710,11 +710,11 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && colorRampsValid(color.colorRamps)) {
+  if (typeof color === "object" && color.type === "density" && colorRampsValid(colorRamps)) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "threshold",
-      domain: color.colorRamps.flatMap((c) => {
+      domain: colorRamps.flatMap((c) => {
         if (c[0] === "min") return c[1]
         else if (c[1] === "max") return c[0]
         else return c
@@ -734,7 +734,7 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && !colorRampsValid(color.colorRamps)) {
+  if (typeof color === "object" && color.type === "density" && !colorRampsValid(colorRamps)) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
