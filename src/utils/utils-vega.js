@@ -30,6 +30,14 @@ export function adjustRGBAOpacity(rgba, opacity) {
   return `rgba(${r},${g},${b},${a})`
 }
 
+export function parseColorRamps(cr) {
+  let cr_arr = cr.flatMap((a) => {
+    if (a !== "min" && a !== "max" && a !== "") return a
+  })
+
+  return cr_arr.filter((a, i) => cr_arr.indexOf(a) === i)
+}
+
 const ordScale = d3.scale.ordinal()
 const quantScale = d3.scale.quantize()
 const linearScale = d3.scale.linear()
@@ -710,15 +718,11 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && colorRampsValid(colorRamps)) {
+  if (typeof color === "object" && color.type === "density" && parseColorRamps(colorRamps).length === (color.range.length - 1)) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "threshold",
-      domain: colorRamps.flatMap((c) => {
-        if (c[0] === "min") return c[1]
-        else if (c[1] === "max") return c[0]
-        else return c
-      }),
+      domain: parseColorRamps(colorRamps),
       range: color.range
         .map(c => adjustOpacity(c, color.opacity))
         .map((c, i, colorArray) => {
@@ -734,7 +738,7 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && !colorRampsValid(colorRamps)) {
+  if (typeof color === "object" && color.type === "density" && parseColorRamps(colorRamps).length !== (color.range.length - 1)) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
@@ -800,15 +804,6 @@ export function getScales(
   return scales
 }
 
-function colorRampsValid(colorRamps) {
-  let valid = false
-  if (colorRamps) {
-    colorRamps.forEach((i) => {
-      typeof i[0] === "number" && typeof i[1] === "number" ? valid = true : valid = false
-    })
-  }
-  return valid
-}
 /**
  * Filters z-indexed layers and returns non duplicate layer. Z-indexed layers is for temporary hack FE-13136
  * For z-indexed layer (layer that has top color category applied), only returns the first z-index, z_0
