@@ -31,9 +31,7 @@ export function adjustRGBAOpacity(rgba, opacity) {
 }
 
 export function parseColorRamps(cr) {
-  let cr_arr = cr.flatMap((a) => {
-    if (a !== "min" && a !== "max" && a !== "") return a
-  })
+  let cr_arr = cr.flatMap((a) => a.filter((b) => b !== "min" && b !== "max" && b !== "" ))
 
   return cr_arr.filter((a, i) => cr_arr.indexOf(a) === i)
 }
