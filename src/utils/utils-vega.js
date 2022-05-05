@@ -31,9 +31,7 @@ export function adjustRGBAOpacity(rgba, opacity) {
 }
 
 export function parseColorRamps(cr) {
-  console.log(cr)
-  console.log(typeof cr)
-  if (cr) {
+  if (cr && typeof cr === "object") {
     const cr_arr = cr
       .flatMap(a => a.filter(b => b !== "min" && b !== "max" && b !== ""))
       .map(a => parseFloat(a))
@@ -725,39 +723,18 @@ export function getScales(
 
   if (
     typeof color === "object" &&
-    color.type === "density" &&
-    parseColorRamps(colorRamps).length === color.range.length - 1
+    color.type === "density"
   ) {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "threshold",
-      domain: parseColorRamps(colorRamps),
-      range: color.range
-        .map(c => adjustOpacity(c, color.opacity))
-        .map((c, i, colorArray) => {
-          const normVal = i / (colorArray.length - 1)
-          let interp = Math.min(normVal / 0.65, 1.0)
-          interp = interp * 0.375 + 0.625
-          return adjustRGBAOpacity(c, interp)
-        }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    })
-  }
+    const parsedColorRamps = parseColorRamps(colorRamps)
 
-  if (
-    typeof color === "object" &&
-    color.type === "density" &&
-    parseColorRamps(colorRamps).length !== color.range.length - 1
-  ) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
-      domain: color.range.map(
-        (c, i) => (i * 100) / (color.range.length - 1) / 100
-      ),
+      domain: parsedColorRamps.length === color.range.length - 1
+        ? parsedColorRamps
+        : color.range.map(
+          (c, i) => (i * 100) / (color.range.length - 1) / 100
+        ),
       range: color.range
         .map(c => adjustOpacity(c, color.opacity))
         .map((c, i, colorArray) => {
