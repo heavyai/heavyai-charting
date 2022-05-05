@@ -31,6 +31,8 @@ export function adjustRGBAOpacity(rgba, opacity) {
 }
 
 export function parseColorRamps(cr) {
+  console.log(cr)
+  console.log(typeof cr)
   if (cr) {
     const cr_arr = cr
       .flatMap(a => a.filter(b => b !== "min" && b !== "max" && b !== ""))
