@@ -31,7 +31,9 @@ export function adjustRGBAOpacity(rgba, opacity) {
 }
 
 export function parseColorRamps(cr) {
-  const cr_arr = cr.flatMap((a) => a.filter((b) => b !== "min" && b !== "max" && b !== "" )).map((a) => parseFloat(a))
+  const cr_arr = cr
+    .flatMap(a => a.filter(b => b !== "min" && b !== "max" && b !== ""))
+    .map(a => parseFloat(a))
 
   return cr_arr.filter((a, i) => cr_arr.indexOf(a) === i)
 }
@@ -715,7 +717,11 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && parseColorRamps(colorRamps).length === (color.range.length - 1)) {
+  if (
+    typeof color === "object" &&
+    color.type === "density" &&
+    parseColorRamps(colorRamps).length === color.range.length - 1
+  ) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "threshold",
@@ -735,7 +741,11 @@ export function getScales(
     })
   }
 
-  if (typeof color === "object" && color.type === "density" && parseColorRamps(colorRamps).length !== (color.range.length - 1)) {
+  if (
+    typeof color === "object" &&
+    color.type === "density" &&
+    parseColorRamps(colorRamps).length !== color.range.length - 1
+  ) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
