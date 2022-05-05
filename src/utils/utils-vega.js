@@ -31,7 +31,7 @@ export function adjustRGBAOpacity(rgba, opacity) {
 }
 
 export function parseColorRamps(cr) {
-  let cr_arr = cr.flatMap((a) => a.filter((b) => b !== "min" && b !== "max" && b !== "" )).map((a) => parseFloat(a))
+  const cr_arr = cr.flatMap((a) => a.filter((b) => b !== "min" && b !== "max" && b !== "" )).map((a) => parseFloat(a))
 
   return cr_arr.filter((a, i) => cr_arr.indexOf(a) === i)
 }
@@ -88,7 +88,6 @@ export function createVegaAttrMixin(
     )
 
     layerObj["_build" + capAttrName + "Scale"] = function(chart, layerName) {
-      debugger
       const scale = layerObj[scaleFunc]()
       if (
         scale &&
