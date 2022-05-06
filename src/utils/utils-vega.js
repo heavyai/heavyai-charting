@@ -721,20 +721,18 @@ export function getScales(
     })
   }
 
-  if (
-    typeof color === "object" &&
-    color.type === "density"
-  ) {
+  if (typeof color === "object" && color.type === "density") {
     const parsedColorRamps = parseColorRamps(colorRamps)
 
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
-      domain: parsedColorRamps.length === color.range.length - 1
-        ? parsedColorRamps
-        : color.range.map(
-          (c, i) => (i * 100) / (color.range.length - 1) / 100
-        ),
+      domain:
+        parsedColorRamps.length === color.range.length - 1
+          ? parsedColorRamps
+          : color.range.map(
+              (c, i) => (i * 100) / (color.range.length - 1) / 100
+            ),
       range: color.range
         .map(c => adjustOpacity(c, color.opacity))
         .map((c, i, colorArray) => {
