@@ -12003,6 +12003,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 exports.notNull = notNull;
 exports.adjustOpacity = adjustOpacity;
 exports.adjustRGBAOpacity = adjustRGBAOpacity;
+exports.parseColorRamps = parseColorRamps;
 exports.createVegaAttrMixin = createVegaAttrMixin;
 exports.createRasterLayerGetterSetter = createRasterLayerGetterSetter;
 exports.__displayPopup = __displayPopup;
@@ -12061,6 +12062,24 @@ function adjustRGBAOpacity(rgba, opacity) {
     a = opacity;
   }
   return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+}
+
+function parseColorRamps(cr) {
+  if (cr && cr.length > 0 && Array.isArray(cr)) {
+    var cr_arr = cr.map(function (a) {
+      return a.filter(function (b) {
+        return b !== "min" && b !== "max" && b !== "";
+      });
+    }).flat(1).map(function (a) {
+      return parseFloat(a);
+    });
+
+    return cr_arr.filter(function (a, i) {
+      return cr_arr.indexOf(a) === i;
+    });
+  } else {
+    return [];
+  }
 }
 
 var ordScale = _d3.default.scale.ordinal();
@@ -12582,7 +12601,8 @@ function getColorScaleName(layerName) {
 function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   var size = _ref.size,
       color = _ref.color,
-      orientation = _ref.orientation;
+      orientation = _ref.orientation,
+      colorRamps = _ref.colorRamps;
 
   var scales = [];
 
@@ -12597,10 +12617,12 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   }
 
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
+    var parsedColorRamps = parseColorRamps(colorRamps);
+
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
-      domain: color.range.map(function (c, i) {
+      domain: parsedColorRamps.length === color.range.length - 1 ? parsedColorRamps : color.range.map(function (c, i) {
         return i * 100 / (color.range.length - 1) / 100;
       }),
       range: color.range.map(function (c) {
