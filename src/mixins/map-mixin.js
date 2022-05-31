@@ -118,7 +118,7 @@ export default function mapMixin(
       _chart.lonMin(bounds[0][0])
       _chart.latMin(bounds[0][1])
       _chart.lonMax(bounds[1][0])
-      _chart.latMax(bounds[1][0])
+      _chart.latMax(bounds[1][1])
     }
     return _mapboxgl.LngLatBounds.convert([
       [_chart.lonMin(), _chart.latMin()],
