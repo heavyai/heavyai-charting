@@ -34579,8 +34579,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   var _lonMin = LONMIN;
   var _lonMax = LONMAX;
-  var _latMin = LONMIN;
-  var _latMax = LONMAX;
+  var _latMin = LATMIN;
+  var _latMax = LATMAX;
   _chart.lonMin = function (lonMin) {
     if (lonMin !== undefined) {
       _lonMin = lonMin;

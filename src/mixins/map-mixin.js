@@ -83,8 +83,8 @@ export default function mapMixin(
 
   let _lonMin = LONMIN
   let _lonMax = LONMAX
-  let _latMin = LONMIN
-  let _latMax = LONMAX
+  let _latMin = LATMIN
+  let _latMax = LATMAX
   _chart.lonMin = function(lonMin) {
     if (lonMin !== undefined) {
       _lonMin = lonMin
