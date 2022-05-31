@@ -81,20 +81,49 @@ export default function mapMixin(
     return _map
   }
 
-  _chart.lonMin = function() {
-    return LONMIN
+  let _lonMin = LONMIN
+  let _lonMax = LONMAX
+  let _latMin = LONMIN
+  let _latMax = LONMAX
+  _chart.lonMin = function(lonMin) {
+    if (lonMin !== undefined) {
+      _lonMin = lonMin
+    }
+    return _lonMin
   }
 
-  _chart.lonMax = function() {
-    return LONMAX
+  _chart.lonMax = function(lonMax) {
+    if (lonMax !== undefined) {
+      _lonMax = lonMax
+    }
+    return _lonMax
   }
 
-  _chart.latMin = function() {
-    return LATMIN
+  _chart.latMin = function(latMin) {
+    if (latMin !== undefined) {
+      _latMin = latMin
+    }
+    return _latMin
   }
 
-  _chart.latMax = function() {
-    return LATMAX
+  _chart.latMax = function(latMax) {
+    if (latMax !== undefined) {
+      _latMax = latMax
+    }
+    return _latMax
+  }
+
+  _chart.maxBounds = function(bounds) {
+    if (bounds !== undefined) {
+      _chart.lonMin(bounds[0][0])
+      _chart.latMin(bounds[0][1])
+      _chart.lonMax(bounds[1][0])
+      _chart.latMax(bounds[1][0])
+    }
+    return _mapboxgl.LngLatBounds.convert([
+      [_chart.lonMin(), _chart.latMin()],
+      [_chart.lonMax(), _chart.latMax()]
+    ])
   }
 
   _chart.setInitialBounds = function(newBounds) {
@@ -677,7 +706,7 @@ export default function mapMixin(
       interactive: true,
       center: _center, // starting position
       zoom: _zoom, // starting zoom
-      maxBounds: _llb,
+      maxBounds: _chart.maxBounds(),
       preserveDrawingBuffer: true,
       attributionControl: false,
       logoPosition: "bottom-right"
