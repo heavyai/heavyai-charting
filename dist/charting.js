@@ -35309,6 +35309,10 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         if (_clientClickX === event.point.x && _clientClickY === event.point.y) {
           _chart.getClosestResult(event.point, function (result) {
             var data = _extends({ rowid: result.row_id[0] }, result.row_set[0]);
+            if (data.rowid === -1) {
+              return;
+            }
+
             _chart.getLayerNames().forEach(function (layerName) {
               var layer = _chart.getLayer(layerName);
               if (typeof layer.onClick === "function") {
