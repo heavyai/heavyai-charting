@@ -899,6 +899,10 @@ export default function mapMixin(
             event.point,
             result => {
               const data = { rowid: result.row_id[0], ...result.row_set[0] }
+              if (data.rowid === -1) {
+                return
+              }
+
               _chart.getLayerNames().forEach(layerName => {
                 const layer = _chart.getLayer(layerName)
                 if (typeof layer.onClick === "function") {
