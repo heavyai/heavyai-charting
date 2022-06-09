@@ -1,6 +1,8 @@
 import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"
 import d3 from "d3"
 import moment from "moment"
+import * as linkify from "linkifyjs"
+import linkifyStr from "linkify-string"
 
 const commafy = d3.format(",")
 
@@ -32,12 +34,23 @@ export const normalizeArrayByValue = collection =>
   isArrayOfObjects(collection) ? collection.map(data => data.value) : collection
 
 export function formatDataValue(data) {
+  const linkifyTest = linkify.find(data, "url")
+  console.log(linkifyTest)
+  if (linkifyTest.length && linkifyTest.length > 0) {
+    console.log(linkifyStr(data))
+  }
+  // TODO: Chris - this is where I should detect links and build out html for them
+  // try and return a string with the html for the link inside of it
   if (typeof data === "number") {
     return formatNumber(data)
   } else if (Array.isArray(data)) {
     return formatArrayValue(data)
   } else if (data instanceof Date) {
     return genericDateTimeFormat(data)
+  } else if (linkify.find(data).length > 0) {
+    // if we have a url
+    // TODO: Chris - need option to only enable if user wants url detection
+    return linkifyStr(data)
   } else if (data === null) {
     return nullLabelHtml
   }
