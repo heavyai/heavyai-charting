@@ -34,25 +34,17 @@ export const normalizeArrayByValue = collection =>
   isArrayOfObjects(collection) ? collection.map(data => data.value) : collection
 
 export function formatDataValue(data) {
-  if (typeof data === "string") {
-    const linkifyTest = linkify.find(data, "url")
-    console.log(linkifyTest)
-    if (linkifyTest.length && linkifyTest.length > 0) {
-        console.log(linkifyStr(data))
-    }
-  }
-  // TODO: Chris - this is where I should detect links and build out html for them
-  // try and return a string with the html for the link inside of it
   if (typeof data === "number") {
     return formatNumber(data)
   } else if (Array.isArray(data)) {
     return formatArrayValue(data)
   } else if (data instanceof Date) {
     return genericDateTimeFormat(data)
-  } else if (typeof data === "string" && linkify.find(data).length > 0) {
+  } else if (typeof data === "string" && linkify.find(data, "url").length > 0) {
     // if we have a url
-    // TODO: Chris - need option to only enable if user wants url detection
-    return linkifyStr(data)
+    return linkifyStr(data, {
+      target: "_blank"
+    })
   } else if (data === null) {
     return nullLabelHtml
   }
