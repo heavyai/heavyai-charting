@@ -1,8 +1,6 @@
 import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"
 import d3 from "d3"
 import moment from "moment"
-import * as linkify from "linkifyjs"
-import linkifyStr from "linkify-string"
 
 const commafy = d3.format(",")
 
@@ -40,11 +38,6 @@ export function formatDataValue(data) {
     return formatArrayValue(data)
   } else if (data instanceof Date) {
     return genericDateTimeFormat(data)
-  } else if (typeof data === "string" && linkify.find(data, "url").length > 0) {
-    // if we have a url
-    return linkifyStr(data, {
-      target: "_blank"
-    })
   } else if (data === null) {
     return nullLabelHtml
   }
