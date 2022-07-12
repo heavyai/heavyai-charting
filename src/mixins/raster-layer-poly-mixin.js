@@ -18,10 +18,10 @@ const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
   // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
-  verts_LEGACY: "mapd_geo_coords",
-  indices_LEGACY: "mapd_geo_indices",
-  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
-  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
+  verts_LEGACY: "heavyai_geo_coords",
+  indices_LEGACY: "heavyai_geo_indices",
+  linedrawinfo_LEGACY: "heavyai_geo_linedrawinfo",
+  polydrawinfo_LEGACY: "heavyai_geo_polydrawinfo"
 }
 
 function validateLineJoin(newLineJoin, currLineJoin) {
@@ -78,6 +78,19 @@ export default function rasterLayerPolyMixin(_layer) {
 
   const _scaledPopups = {}
 
+  let _customFetchColorAggregate = aggregate => aggregate
+
+  _layer.setCustomFetchColorAggregate = function(func) {
+    _customFetchColorAggregate = func
+  }
+
+  let _customColorProjectionPostProcessor = (aggregate, projections) =>
+    projections
+
+  _layer.setCustomColorProjectionPostProcessor = function(func) {
+    _customColorProjectionPostProcessor = func
+  }
+
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -133,6 +146,7 @@ export default function rasterLayerPolyMixin(_layer) {
     lastFilteredSize,
     isDataExport
   }) {
+    /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
     const {
       encoding: { color, geocol, geoTable }
     } = state
@@ -169,9 +183,20 @@ export default function rasterLayerPolyMixin(_layer) {
         } = parseFactsFromCustomSQL(
           state.data[0].table,
           withAlias,
-          color.aggregate
+          _customFetchColorAggregate(color.aggregate)
         ))
       }
+
+      // eslint-disable-next-line no-extra-semi
+      ;({
+        colorProjection,
+        colorProjectionAs,
+        colorField
+      } = _customColorProjectionPostProcessor(color.aggregate, {
+        colorProjection,
+        colorProjectionAs,
+        colorField
+      }))
 
       const withClauseTransforms = []
 
@@ -774,7 +799,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
-    const filterKey = Object.keys(data).find(k => k === "rowid" || k === "key0")
+    const filterKey = "key0" in data ? "key0" : "rowid"
 
     chart.hidePopup()
     events.trigger(() => {

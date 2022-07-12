@@ -1168,6 +1168,14 @@ function applyReplacements(sql, withAlias, replacements) {
 }
 
 export default function parseFactsFromCustomSQL(factTable, withAlias, sql) {
+  // okay, if our sql has -any- parameters, just bomb out. We don't know how to deal with those yet
+  if (sql.includes("${")) {
+    return {
+      factProjections: [sql],
+      factAliases: [withAlias],
+      expression: sql
+    }
+  }
   const factProjections = []
   const factAliases = []
   let expression = sql

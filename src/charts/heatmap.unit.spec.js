@@ -5,7 +5,7 @@ import * as dc from "../index"
 
 chai.use(spies)
 
-describe("MapD Heatmap Chart", () => {
+describe("HEAVY.AI Heatmap Chart", () => {
   let heat
   beforeEach(() => {
     const node = window.document.createElement("DIV")

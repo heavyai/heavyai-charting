@@ -68,6 +68,7 @@ export default function mapMixin(
 
   const _minMaxCache = {}
   let _interactionsEnabled = true
+  let _shouldRedrawAll = false
 
   _chart.useLonLat = function(useLonLat) {
     if (!arguments.length) {
@@ -80,24 +81,57 @@ export default function mapMixin(
     return _map
   }
 
-  _chart.lonMin = function() {
-    return LONMIN
+  let _lonMin = LONMIN
+  let _lonMax = LONMAX
+  let _latMin = LATMIN
+  let _latMax = LATMAX
+  _chart.lonMin = function(lonMin) {
+    if (lonMin !== undefined) {
+      _lonMin = lonMin
+    }
+    return _lonMin
   }
 
-  _chart.lonMax = function() {
-    return LONMAX
+  _chart.lonMax = function(lonMax) {
+    if (lonMax !== undefined) {
+      _lonMax = lonMax
+    }
+    return _lonMax
   }
 
-  _chart.latMin = function() {
-    return LATMIN
+  _chart.latMin = function(latMin) {
+    if (latMin !== undefined) {
+      _latMin = latMin
+    }
+    return _latMin
   }
 
-  _chart.latMax = function() {
-    return LATMAX
+  _chart.latMax = function(latMax) {
+    if (latMax !== undefined) {
+      _latMax = latMax
+    }
+    return _latMax
+  }
+
+  _chart.maxBounds = function(bounds) {
+    if (bounds !== undefined) {
+      _chart.lonMin(bounds[0][0])
+      _chart.latMin(bounds[0][1])
+      _chart.lonMax(bounds[1][0])
+      _chart.latMax(bounds[1][1])
+    }
+    return _mapboxgl.LngLatBounds.convert([
+      [_chart.lonMin(), _chart.latMin()],
+      [_chart.lonMax(), _chart.latMax()]
+    ])
   }
 
   _chart.setInitialBounds = function(newBounds) {
     _initialBounds = newBounds
+  }
+
+  _chart.setShouldRedrawAll = function(newShouldRedrawAll) {
+    _shouldRedrawAll = newShouldRedrawAll
   }
 
   function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
@@ -352,7 +386,7 @@ export default function mapMixin(
     }
     _lastMapUpdateTime = curTime
 
-    let redrawall = false
+    let redrawall = _shouldRedrawAll
     if (typeof _chart.getLayers === "function") {
       _chart.getLayers().forEach(layer => {
         if (
@@ -672,7 +706,7 @@ export default function mapMixin(
       interactive: true,
       center: _center, // starting position
       zoom: _zoom, // starting zoom
-      maxBounds: _llb,
+      maxBounds: _chart.maxBounds(),
       preserveDrawingBuffer: true,
       attributionControl: false,
       logoPosition: "bottom-right"
@@ -742,7 +776,7 @@ export default function mapMixin(
     let firstSymbolId = null
     const currentStyle = _map.getStyle()
 
-    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of heavyai layer
     if (
       currentStyle.name === "Mapbox Outdoors" ||
       currentStyle.name === "Mapbox Streets"
@@ -861,15 +895,23 @@ export default function mapMixin(
           _clientClickX === event.point.x &&
           _clientClickY === event.point.y
         ) {
-          _chart.getClosestResult(event.point, result => {
-            const data = result.row_set[0]
-            _chart.getLayerNames().forEach(layerName => {
-              const layer = _chart.getLayer(layerName)
-              if (typeof layer.onClick === "function") {
-                layer.onClick(_chart, data, event.originalEvent)
+          _chart.getClosestResult(
+            event.point,
+            result => {
+              const data = { rowid: result.row_id[0], ...result.row_set[0] }
+              if (data.rowid === -1) {
+                return
               }
-            })
-          })
+
+              _chart.getLayerNames().forEach(layerName => {
+                const layer = _chart.getLayer(layerName)
+                if (typeof layer.onClick === "function") {
+                  layer.onClick(_chart, data, event.originalEvent)
+                }
+              })
+            },
+            true
+          )
         }
       })
       _map.on("mousemove", e => {

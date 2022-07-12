@@ -1,12 +1,12 @@
 import { expect } from "chai"
 import * as dc from "../index"
-import { splitStrOnLastAs } from "./mapd-table"
+import { splitStrOnLastAs } from "./heavyai-table"
 
-describe("MapD Table Chart", () => {
+describe("HEAVY.AI Table Chart", () => {
   describe("constructor", () => {
-    it("should create a MapD Table chart", () => {
+    it("should create a HeavyAI Table chart", () => {
       const node = window.document.createElement("DIV")
-      const number = dc.mapdTable(node)
+      const number = dc.heavyaiTable(node)
       expect(number.anchor()).to.equal(node)
     })
   })
@@ -24,7 +24,7 @@ describe("MapD Table Chart", () => {
   describe("Nulls Order", () => {
     it("should return nullsOrder", () => {
       const node = window.document.createElement("DIV")
-      const tableChart = dc.mapdTable(node)
+      const tableChart = dc.heavyaiTable(node)
       tableChart.nullsOrder(" NULLS LAST")
       expect(tableChart.nullsOrder()).to.equal(" NULLS LAST")
     })

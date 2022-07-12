@@ -1,6 +1,6 @@
 import d3 from "d3"
 import wellknown from "wellknown"
-import { AABox2d, Point2d, PolyLine } from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d, PolyLine } from "@heavyai/draw/dist/mapd-draw"
 export function notNull(value) {
   return value != null /* double-equals also catches undefined */
 }
@@ -28,6 +28,19 @@ export function adjustRGBAOpacity(rgba, opacity) {
     a = opacity
   }
   return `rgba(${r},${g},${b},${a})`
+}
+
+export function parseColorRamps(cr) {
+  if (cr && cr.length > 0 && Array.isArray(cr)) {
+    const cr_arr = cr
+      .map(a => a.filter(b => b !== "min" && b !== "max" && b !== ""))
+      .flat(1)
+      .map(a => parseFloat(a))
+
+    return cr_arr.filter((a, i) => cr_arr.indexOf(a) === i)
+  } else {
+    return []
+  }
 }
 
 const ordScale = d3.scale.ordinal()
@@ -686,7 +699,7 @@ export function getColorScaleName(layerName) {
 }
 
 export function getScales(
-  { size, color, orientation },
+  { size, color, orientation, colorRamps },
   layerName,
   scaleDomainFields,
   xformDataSource
@@ -710,12 +723,17 @@ export function getScales(
   }
 
   if (typeof color === "object" && color.type === "density") {
+    const parsedColorRamps = parseColorRamps(colorRamps)
+
     scales.push({
       name: getColorScaleName(layerName),
       type: "linear",
-      domain: color.range.map(
-        (c, i) => (i * 100) / (color.range.length - 1) / 100
-      ),
+      domain:
+        parsedColorRamps.length === color.range.length - 1
+          ? parsedColorRamps
+          : color.range.map(
+              (c, i) => (i * 100) / (color.range.length - 1) / 100
+            ),
       range: color.range
         .map(c => adjustOpacity(c, color.opacity))
         .map((c, i, colorArray) => {

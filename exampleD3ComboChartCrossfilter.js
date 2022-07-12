@@ -1,9 +1,9 @@
-/* global dc, mapd3, d3, crossfilter, MapdCon  */
-require("mapd3/dist/mapd3.css")
+/* global dc, d3ComboChart, d3, crossfilter, DbCon  */
+require("@heavyai/d3-combo-chart/dist/d3-combo-chart.css")
 
 /*
  * This is example code that shows how to make 3 cross-filtered charts with the
- * dc.mapd.js and mapd3.js APIs. This example is not meant to be a replacement
+ * charting.js and d3-combo-chart.js APIs. This example is not meant to be a replacement
  * for dc.js documentation. For the dc.js API docs, see here
  * - https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md.
  *   For an annotated example of using dc.js - see here:
@@ -22,9 +22,9 @@ function createCharts(crossFilter, connector) {
   // NEW: create a hash map to associate DC Chart properties by their id (__dcFlag__) so we can access them later
   const dcCharts = {}
 
-  // select the DOM node for the combo chart to mount to, then pass it to mapd3.Chart
+  // select the DOM node for the combo chart to mount to, then pass it to d3ComboChart.Chart
   const parentNode = document.querySelector(".chart3-example")
-  const comboChart = mapd3.Chart(parentNode)
+  const comboChart = d3ComboChart.Chart(parentNode)
 
   /*
  * crossFilter is an object that handles cross-filtered the different
@@ -67,7 +67,7 @@ function createCharts(crossFilter, connector) {
  *  flights by destination state ("dest_state") - so we create a crossfilter dimension
  *  on "dest_state"
  *
- *  Here lies one of the chief differences between crossfilter.mapd.js and the
+ *  Here lies one of the chief differences between crossfilter.js and the
  *  original crossfilter.js.  In the original crossfilter you could provide
  *  javascript expressions like d.dest_state.toLowerCase() as part of
  *  dimension, group and order functions.  However since ultimately our
@@ -109,7 +109,7 @@ function createCharts(crossFilter, connector) {
  *  ordinalColors(colorScheme) - we want to color the bars by dimension, i.e. dest_state,
  *  using the color ramp defined above (an array of rgb or hex values)
  *
- *  measureLabelsOn(true) - a mapd.dc.js add-on which allows not only the dimension
+ *  measureLabelsOn(true) - a charting.js add-on which allows not only the dimension
  *  labels (i.e. Texas) to be displayed but also the measures (i.e. the number
  *  of flights with Texas as dest_state)
  *
@@ -153,7 +153,7 @@ function createCharts(crossFilter, connector) {
   const scatterPlotDimension = crossFilter.dimension("carrier_name")
 
   /*
- *  MapD created a reduceMulti function in order to handle multiple measures.
+ *  HEAVY.AI created a reduceMulti function in order to handle multiple measures.
  *  It takes an array of objects, each corresponding to a measure.
  *  Each measure object requires 3 arguments:
  *  'expression' which is the measure
@@ -282,11 +282,11 @@ function createCharts(crossFilter, connector) {
   }
 
   /*  We create the bubble chart with the following parameters:
- *  dc.mapd.js allows functions to be applied at specific points in the chart's
+ *  charting.js allows functions to be applied at specific points in the chart's
  *  lifecycle.  Here we want to re-adjust our chart's x,y and r (radius) scales
  *  as data is filtered in an out to take into account the changing range of
  *  the data along these different measures.  Here we set the charts scale
- *  using standard d3 functions - telling dc.mapd.js to do this before each
+ *  using standard d3 functions - telling charting.js to do this before each
  *  render and redraw */
 
   const setScales = function(chart, type) {
@@ -312,13 +312,13 @@ function createCharts(crossFilter, connector) {
   setScales(dcScatterPlot, "preRender")
   setScales(dcScatterPlot, "preRedraw")
 
-  /* ----------------------MAPD3 COMBO CHART EXAMPLE----------------------------------------*/
+  /* ----------------------D3-COMBO-CHART EXAMPLE----------------------------*/
 
   // create an adapter utility function that lets us tie into DC and Crossfilter
   function dcAdapter(groupName) {
     // eslint-disable-next-line no-underscore-dangle
     let _dimension = null
-    const events = mapd3.d3.dispatch("redrawGroup")
+    const events = d3ComboChart.d3.dispatch("redrawGroup")
 
     // eslint-disable-next-line consistent-return
     function setDimension(dim) {
@@ -468,11 +468,11 @@ function createCharts(crossFilter, connector) {
     })
   })
 
-  // Helper function to request data using mapd-connector's browser connector
+  // Helper function to request data using connector-js's browser connector
   async function queryDB(query) {
     try {
       const response = await connector.queryAsync(query, {})
-      // transform the data from the response to be compatible with mapd3.Chart().setData()
+      // transform the data from the response to be compatible with d3ComboChart.Chart().setData()
       const data = await transformData(response)
       return data
     } catch (error) {
@@ -480,7 +480,7 @@ function createCharts(crossFilter, connector) {
     }
   }
 
-  // currently mapd3 expects data in a particular data structure, so we need to process the "raw" data returned by the database to match it
+  // currently d3-combo-chart expects data in a particular data structure, so we need to process the "raw" data returned by the database to match it
   function transformData(_data) {
     const series = [
       {
@@ -515,7 +515,7 @@ function createCharts(crossFilter, connector) {
 
   // render combo chart when data is formatted
   function renderComboChart(dataTransformed) {
-    // the `setConfig` method determines how a chart renders in mapd3
+    // the `setConfig` method determines how a chart renders in d3-combo-chart
     // more info on the options is available here: https://mapd.github.io/mapd3/doc/
     comboChart
       .setConfig({
@@ -663,9 +663,9 @@ function throttle(func, limit) {
 }
 
 function init() {
-  /* Before doing anything we must set up a mapd connection, specifying
+  /* Before doing anything we must set up a heavyai connection, specifying
    * username, password, host, port, and database name */
-  new MapdCon()
+  new DbCon()
     .protocol("https")
     .host("metis.mapd.com")
     .port("443")
@@ -676,7 +676,7 @@ function init() {
       if (error) { throw error }
       /*
        *  This instantiates a new crossfilter.
-       *  Pass in mapdcon as the first argument to crossfilter, then the
+       *  Pass in connector-js as the first argument to crossfilter, then the
        *  table name, then a label for the data (unused in this example).
        *
        *  to see all availables --  con.getTables()

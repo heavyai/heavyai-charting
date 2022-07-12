@@ -99,7 +99,7 @@ export function heatMapRowsLabel(key) {
   }
 
   // For binned data:
-  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // customDateFormatter is set to `autoFormatter` (d3-combo-chart), which processes raw values in an array
   // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
   // of objects with additional information (like timeBin info)
   const rawValues = Array.isArray(value) ? value.map(v => v.value) : null
@@ -125,7 +125,7 @@ export function heatMapColsLabel(key) {
   }
 
   // For binned data:
-  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // customDateFormatter is set to `autoFormatter` (d3-combo-chart), which processes raw values in an array
   // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
   // of objects with additional information (like timeBin info)
   const rawValues = Array.isArray(value) ? value.map(v => v.value) : null

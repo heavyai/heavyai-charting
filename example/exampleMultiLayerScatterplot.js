@@ -4,8 +4,8 @@
  */
 
 document.addEventListener("DOMContentLoaded", function init() {
-  // A MapdCon instance is used for performing raw queries on a MapD GPU database.
-  new MapdCon()
+  // A connector-js instance is used for performing raw queries on a HeavyDB GPU database.
+  new DbCon()
     .protocol("https")
     .host("metis.mapd.com")
     .port("443")
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function init() {
       var tableName3 = 'contributions_donotmodify';
 
       // make 3 crossfilters for all 3 layers
-      // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
+      // A CrossFilter instance is used for generating the raw query strings for your connector-js.
 
       // first layer
       var crossFilter = crossfilter.crossfilter(con, tableName1, table1Joins).then(function(cf1) {

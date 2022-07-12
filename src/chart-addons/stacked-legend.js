@@ -170,7 +170,7 @@ export function handleLegendDoneRender() {
       legendNode.clientHeight > this.height() - LASSO_TOOL_VERTICAL_SPACE
 
     this.root()
-      .select(".mapd-draw-button-control-group")
+      .select(".heavyai-draw-button-control-group")
       .style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto")
 
     return isHorizontal

@@ -14,6 +14,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
+import { paused } from "../constants/paused"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -347,7 +348,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       .con()
       .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
       .then(result => {
-        if (!window || !window.paused) {
+        if (!paused) {
           _renderBoundsMap[result.nonce] = bounds
         }
         callback(null, result)
@@ -615,7 +616,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.getClosestResult = function getClosestResult(point, callback) {
+  _chart.getClosestResult = function getClosestResult(
+    point,
+    callback,
+    fetchEvenIfEmpty = false
+  ) {
     const height =
       typeof _chart.effectiveHeight === "function"
         ? _chart.effectiveHeight()
@@ -645,7 +650,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     })
 
     // TODO best to fail, skip cb, or call cb wo args?
-    if (!cnt) {
+    if (!cnt && !fetchEvenIfEmpty) {
       return
     }
 
@@ -740,6 +745,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _legend.on("input", handleLegendInput.bind(_chart))
   _legend.on("toggle", handleLegendToggle.bind(_chart))
   _legend.on("doneRender", handleLegendDoneRender.bind(_chart))
+  _legend.on("doneRender", function(state) {
+    // Sometimes the legend gets disconnected from the DOM?
+    if (this.node.elm && !this.node.elm.isConnected) {
+      const root = _chart.root()
+      root.select(".legend").remove()
+      root.node().append(this.node.elm)
+    }
+  })
 
   _chart.legend = function(l) {
     return _legend

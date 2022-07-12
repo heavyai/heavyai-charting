@@ -460,7 +460,8 @@ describe("rasterLayerPointMixin", () => {
             color: {
               type: "density",
               range: ["#115f9a", "#1984c5", "#22a7f0", "#48b5c4", "#76c68f", "#a6d75b", "#c9e52f", "#d0ee11", "#d0f400"]
-            }
+            },
+            colorRamps: []
           })
         })
 

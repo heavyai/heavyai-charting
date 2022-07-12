@@ -50,7 +50,7 @@ export default function baseMixin(_chart) {
   // stay that same random number for as long as the chart exists in memory.
   //
   // The main reason for this is to support the raster chart and mixins, where
-  // the renderVega and getResultRowForPixel methods to mapd-connector (.con())
+  // the renderVega and getResultRowForPixel methods to connector-js (.con())
   // expect to get a integer id unique to a given active rendered chart, and
   // the same for that chart across its active lifetime.
   _chart.__dcFlag__ = utils.uniqueId()
@@ -1724,7 +1724,7 @@ export default function baseMixin(_chart) {
   }
 
   /**
-   * MAPDC-extension function
+   * charting-extension function
    * Destroy all leftover parts of the chart.
    * @name destroyChart
    * @memberof dc.baseMixin

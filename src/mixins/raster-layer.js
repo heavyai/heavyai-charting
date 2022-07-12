@@ -7,7 +7,7 @@ import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega"
-import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
 import moment from "moment"
 
 const validLayerTypes = ["points", "polys", "heat", "lines"]
@@ -306,7 +306,7 @@ export default function rasterLayer(layerType) {
         }
       }
     }
-    return popupColSet.add(colAttr)
+    return popupColSet.add(colAttr.replace(/\n/g, " "))
   }
 
   _layer.getPopupAndRenderColumns = function(chart) {
@@ -353,7 +353,7 @@ export default function rasterLayer(layerType) {
             ? _layer.getProjections()
             : dim.getProjectOn(true)
 
-        const regex = /^\s*(.*?[\s\S].+)\s+as\s+(\S+)/i
+        const regex = /^\s*([\s\S]+)\s+as\s+(\S+)/i
         for (let i = 0; i < projExprs.length; ++i) {
           const projExpr = projExprs[i]
           const regexRtn = projExpr.match(regex)

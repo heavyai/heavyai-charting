@@ -9,7 +9,7 @@ import {
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
-import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -22,7 +22,8 @@ const AGGREGATES = {
   count: "COUNT",
   min: "MIN",
   max: "MAX",
-  sum: "SUM"
+  sum: "SUM",
+  sample: "SAMPLE"
 }
 
 function validSymbol(type) {
@@ -40,6 +41,7 @@ function validSymbol(type) {
     case "hexagon-horiz":
     case "wedge":
     case "arrow":
+    case "airplane":
       return true
     default:
       return false
@@ -132,15 +134,18 @@ function isValidPostFilter(postFilter) {
   if (value && (aggType || custom)) {
     if (
       (operator === "not between" || operator === "between") &&
-      (typeof min === "number" && !isNaN(min)) &&
-      (typeof max === "number" && !isNaN(max))
+      typeof min === "number" &&
+      !isNaN(min) &&
+      typeof max === "number" &&
+      !isNaN(max)
     ) {
       return true
     } else if (
       (operator === "equals" ||
         operator === "not equals" ||
         operator === "greater than or equals") &&
-      (typeof min === "number" && !isNaN(min))
+      typeof min === "number" &&
+      !isNaN(min)
     ) {
       return true
     } else if (
@@ -229,10 +234,13 @@ export default function rasterLayerPointMixin(_layer) {
         fields,
         ops,
         as: alias,
-        groupby: transform.groupby.map((g, i) => ({
+        // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
+        //  in heavyai-data-layer2. So, just gonna filter them out.
+        //  https://heavyai.atlassian.net/browse/FE-14213
+        groupby: [...new Set(transform.groupby)].map((g, i) => ({
           type: "project",
           expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
-          as: `key${i}`
+          as: isDataExport ? g : `key${i}`
         }))
       })
       if (isDataExport) {
@@ -240,7 +248,7 @@ export default function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
             AGGREGATES[y.aggregate]
-          }(${y.field})), 4326)`
+          }(${y.field})), 4326) AS location`
         })
       }
     } else {

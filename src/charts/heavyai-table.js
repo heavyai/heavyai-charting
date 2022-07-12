@@ -18,7 +18,7 @@ export const splitStrOnLastAs = str => {
   return splitStr
 }
 
-export default function mapdTable(parent, chartGroup) {
+export default function heavyaiTable(parent, chartGroup) {
   const _chart = baseMixin({})
   let _tableWrapper = null
 
@@ -32,13 +32,16 @@ export default function mapdTable(parent, chartGroup) {
   let _crossfilter = null
   let _tableFilter = null
   let _sortColumn = null
+  let _columnAlignments = []
   let _dimOrGroup = null
   let _isGroupedData = false
   let _colAliases = null
   let _sampling = false
   let _nullsOrder = ""
+  let _borders = "none"
+  let _zebraStriping = false
 
-  const _table_events = ["sort"]
+  const _table_events = ["sort", "align"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
   const _on = _chart.on.bind(_chart)
 
@@ -54,6 +57,12 @@ export default function mapdTable(parent, chartGroup) {
   _chart._invokeSortListener = function(f) {
     if (f !== "undefined") {
       _listeners.sort(_chart, f)
+    }
+  }
+
+  _chart._invokeAlignListener = function(f) {
+    if (f !== "undefined") {
+      _listeners.align(_chart, f)
     }
   }
 
@@ -76,6 +85,44 @@ export default function mapdTable(parent, chartGroup) {
     }
     _sortColumn = _
     return _chart
+  }
+
+  _chart.borders = function(_) {
+    if (!arguments.length) {
+      return _borders
+    }
+    _borders = _
+    return _chart
+  }
+
+  _chart.zebraStriping = function(_) {
+    if (!arguments.length) {
+      return _zebraStriping
+    }
+    _zebraStriping = _
+    return _chart
+  }
+
+  _chart.columnAlignments = function(_) {
+    if (!arguments.length) {
+      return _columnAlignments
+    }
+    _columnAlignments = _
+    return _chart
+  }
+
+  _chart.isColLeftAligned = function(colIndex) {
+    return (
+      _columnAlignments[colIndex] === "left" || !_columnAlignments[colIndex]
+    )
+  }
+
+  _chart.isColCenterAligned = function(colIndex) {
+    return _columnAlignments[colIndex] === "center"
+  }
+
+  _chart.isColRightAligned = function(colIndex) {
+    return _columnAlignments[colIndex] === "right"
   }
 
   _chart.nullsOrder = function(_) {
@@ -126,12 +173,33 @@ export default function mapdTable(parent, chartGroup) {
 
   _chart.data(() => _chart.dataCache)
 
+  _chart.getQueryFunctionName = () =>
+    _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync"
+
+  _chart.isGroupedData = () => Boolean(_chart.dimension().value()[0])
+
+  _chart.getTableQuery = function(unbinned = false) {
+    const isGroupedData = _chart.isGroupedData()
+    const dimOrGroup = isGroupedData ? _chart.group() : _chart.dimension()
+    dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null)
+
+    if (!isGroupedData) {
+      dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
+    }
+
+    const query =
+      _sortColumn && _sortColumn.order === "asc"
+        ? dimOrGroup.getBottomQuery(_size, _offset)
+        : dimOrGroup.getTopQuery(_size, _offset)
+    return unbinned ? dimOrGroup.getUnbinnedQuery(query) : query
+  }
+
   _chart.getData = function(size, offset, callback) {
-    _isGroupedData = _chart.dimension().value()[0]
+    _isGroupedData = _chart.isGroupedData()
     _dimOrGroup = _isGroupedData ? _chart.group() : _chart.dimension()
     _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null)
-    const sortFuncName =
-      _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync"
+
+    const sortFuncName = _chart.getQueryFunctionName()
 
     if (!_isGroupedData) {
       _dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
@@ -321,14 +389,21 @@ export default function mapdTable(parent, chartGroup) {
           tableRowCls =
             tableRowCls +
             (!_chart.hasFilter(key) ^ _chart.filtersInverse()
-              ? "deselected"
-              : "selected")
+              ? "deselected "
+              : "selected ")
         }
       }
+      if (_borders) {
+        tableRowCls += `borders-${_borders} `
+      }
+      if (_zebraStriping) {
+        tableRowCls += "zebra-striping"
+      }
+
       return tableRowCls
     })
 
-    cols.forEach(col => {
+    cols.forEach((col, i) => {
       rowItem
         .append("td")
         .html(d => {
@@ -351,6 +426,9 @@ export default function mapdTable(parent, chartGroup) {
           )
         })
         .classed("filtered", col.expression in _filteredColumns)
+        .classed("cell-align-left", () => _chart.isColLeftAligned(i))
+        .classed("cell-align-center", () => _chart.isColCenterAligned(i))
+        .classed("cell-align-right", () => _chart.isColRightAligned(i))
         .on("click", d => {
           // detect if user is selecting text or clicking a value, if so don't filter data
           const s = window.getSelection().toString()
@@ -467,7 +545,7 @@ export default function mapdTable(parent, chartGroup) {
           }
 
           _chart._invokeSortListener(_sortColumn)
-          redrawAllAsync(_chart.chartGroup())
+          _chart.redrawAsync()
         })
 
       sortButton
@@ -485,6 +563,75 @@ export default function mapdTable(parent, chartGroup) {
         .attr("viewBox", "0 0 48 48")
         .append("use")
         .attr("xlink:href", "#icon-arrow1")
+
+      // left align button
+      headerItem
+        .append("div")
+        .attr("class", "left-align-btn")
+        .classed("active", () => _chart.isColLeftAligned(i))
+        .on("click", () => {
+          if (!_chart.isColLeftAligned(i)) {
+            _columnAlignments[i] = "left"
+            _chart._invokeAlignListener(_columnAlignments)
+            _chart.redrawAsync()
+          }
+        })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width - 54 + "px"
+        )
+        .append("svg")
+        .attr("class", "svg-icon")
+        .classed("icon-caret-left", true)
+        .attr("viewBox", "0 0 16 16")
+        .append("use")
+        .attr("xlink:href", "#icon-caret-left")
+
+      // center align button
+      headerItem
+        .append("div")
+        .attr("class", "center-align-btn")
+        .classed("active", () => _chart.isColCenterAligned(i))
+        .on("click", () => {
+          if (!_chart.isColCenterAligned(i)) {
+            _columnAlignments[i] = "center"
+            _chart._invokeAlignListener(_columnAlignments)
+            _chart.redrawAsync()
+          }
+        })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width - 36 + "px"
+        )
+        .append("svg")
+        .attr("class", "svg-icon")
+        .classed("icon-align-center", true)
+        .attr("viewBox", "0 0 16 16")
+        .append("use")
+        .attr("xlink:href", "#icon-align-center")
+
+      // right align button
+      headerItem
+        .append("div")
+        .attr("class", "right-align-btn")
+        .classed("active", () => _chart.isColRightAligned(i))
+        .on("click", () => {
+          if (!_chart.isColRightAligned(i)) {
+            _columnAlignments[i] = "right"
+            _chart._invokeAlignListener(_columnAlignments)
+            _chart.redrawAsync()
+          }
+        })
+        .style(
+          "left",
+          headerItem.node().getBoundingClientRect().width - 18 + "px"
+        )
+        .append("svg")
+        .attr("class", "svg-icon")
+        .classed("icon-caret-right", true)
+        .attr("viewBox", "0 0 16 16")
+        .append("use")
+        .attr("xlink:href", "#icon-caret-right")
 
       headerItem
         .append("div")
@@ -508,10 +655,30 @@ export default function mapdTable(parent, chartGroup) {
     })
   }
 
+  // our default retriever just takes the expr (column), sticks the column on it, then snags
+  // the type from the columns list. Being careful not to blow up if it doesn't exist.
+  let _retrieveFilterColType = ({ expr, table, columns }) => {
+    const key = `${table}.${expr}`
+    return columns[key] ? columns[key].type : undefined
+  }
+
+  // but we can also change the type via a custom accessor, if necesary
+  _chart.setCustomRetrieveFilterColType = function(func) {
+    _retrieveFilterColType = func
+  }
+
   function filterCol(expr, val) {
-    const key = _crossfilter.getTable()[0] + "." + expr
-    const columns = _crossfilter.getColumns()
-    const type = columns[key].type
+    const type = _retrieveFilterColType({
+      expr,
+      table: _crossfilter.getTable()[0],
+      columns: _crossfilter.getColumns()
+    })
+
+    // escape clause - certain values cannot be filtered upon, so if there's no type
+    // we escape. By default, we won't filter on anything that isn't a column in the table.
+    if (!type) {
+      return
+    }
 
     if (type === "TIMESTAMP") {
       val = `TIMESTAMP(3) '${val

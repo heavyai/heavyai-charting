@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     numTimeBins: 423
   }
 
-  new MapdCon()
+  new DbCon()
     .protocol("https")
     .host("metis.mapd.com")
     .port("443")

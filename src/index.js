@@ -1,4 +1,4 @@
-require("../mapdc.css")
+require("../charting.css")
 require("../scss/chart.scss")
 require("mapbox-gl/dist/mapbox-gl.css")
 require("legendables/src/styles.css")
@@ -43,7 +43,7 @@ export { default as numberChart } from "./charts/number-chart"
 export { default as rasterChart } from "./charts/raster-chart"
 export { default as rowChart } from "./charts/row-chart"
 export { default as scatterPlot } from "./charts/scatter-plot"
-export { default as mapdTable } from "./charts/mapd-table"
+export { default as heavyaiTable } from "./charts/heavyai-table"
 export { default as boxPlot } from "./charts/box-plot"
 export { default as countWidget } from "./charts/count-widget"
 

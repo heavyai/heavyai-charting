@@ -9,7 +9,7 @@
             font-weight: bold;
             text-align:center;
         }
-        .mapd{
+        .heavyai{
             position: relative;
             top: 2px;
         }
@@ -27,7 +27,7 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header" style="margin-top:10px">
-            <span class="mapd">OmniSci Demo</span>
+            <span class="heavyai">HEAVY.AI Demo</span>
         </div>
         <div class="navbar-text navbar-right">
             <div class="data-count"></div>
@@ -218,11 +218,11 @@
   function init() {
     const config = {
       table: "ca_roads_tiger",
-      geoMeasure: "omnisci_geo",
+      geoMeasure: "heavyai_geo",
       colorMeasure: "COUNTYFP"
     }
 
-    const con = new MapdCon()
+    const con = new DbCon()
       .protocol("https")
       .host("metis.mapd.com")
       .port("443")

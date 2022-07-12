@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>MapD</title>
+    <title>HEAVY.AI</title>
     <meta charset="UTF-8">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
@@ -10,14 +10,14 @@
         font-weight: bold;
         text-align:center;
       }
-      .mapd{
+      .heavyai {
         position: relative;
         top: 2px;
       }
-      .data-count{
+      .data-count {
         padding-right:20px;
       }
-      .filter-count{
+      .filter-count {
         font-weight: bold;
         color:  #45B1E8;
       }
@@ -30,7 +30,7 @@
       <div class="container-fluid">
         <div class="navbar-header" style="margin-top:10px">
             <img alt="Brand" src="images/favicon.png" height="30" width="30">
-            <span class="mapd">MapD Demo</span>
+            <span class="heavyai">HEAVY.AI Demo</span>
         </div>
         <div class="navbar-text navbar-right">
         <div class="data-count">
@@ -61,7 +61,7 @@
     <script>
   /*
    * This is example code that shows how to make 3 cross-filtered charts with the
-   * dc.mapd.js API. This example is not meant to be a replacement for dc.js
+   * charting-js API. This example is not meant to be a replacement for dc.js
    * documentation.  For the dc.js API docs, see here
    * - https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md.
    *   For an annotated example of using dc.js - see here:
@@ -110,7 +110,7 @@
    *  flights by destination state ("dest_state") - so we create a crossfilter dimension
    *  on "dest_state"
    *
-   *  Here lies one of the chief differences between crossfilter.mapd.js and the
+   *  Here lies one of the chief differences between crossfilter.js and the
    *  original crossfilter.js.  In the original crossfilter you could provide
    *  javascript expressions like d.dest_state.toLowerCase() as part of
    *  dimension, group and order functions.  However since ultimately our
@@ -152,7 +152,7 @@
    *  ordinalColors(colorScheme) - we want to color the bars by dimension, i.e. dest_state,
    *  using the color ramp defined above (an array of rgb or hex values)
    *
-   *  measureLabelsOn(true) - a mapd.dc.js add-on which allows not only the dimension
+   *  measureLabelsOn(true) - a charting add-on which allows not only the dimension
    *  labels (i.e. Texas) to be displayed but also the measures (i.e. the number
    *  of flights with Texas as dest_state)
    *
@@ -190,7 +190,7 @@
       var scatterPlotDimension = crossFilter.dimension("carrier_name");
 
   /*
-   *  MapD created a reduceMulti function in order to handle multiple measures.
+   *  HEAVY.AI created a reduceMulti function in order to handle multiple measures.
    *  It takes an array of objects, each corresponding to a measure.
    *  Each measure object requires 3 arguments:
    *  'expression' which is the measure
@@ -318,11 +318,11 @@
                         .group(scatterPlotGroup);
 
   /*  We create the bubble chart with the following parameters:
-   *  dc.mapd.js allows functions to be applied at specific points in the chart's
+   *  charting-js allows functions to be applied at specific points in the chart's
    *  lifecycle.  Here we want to re-adjust our chart's x,y and r (radius) scales
    *  as data is filtered in an out to take into account the changing range of
    *  the data along these different measures.  Here we set the charts scale
-   *  using standard d3 functions - telling dc.mapd.js to do this before each
+   *  using standard d3 functions - telling charting-js to do this before each
    *  render and redraw */
 
       var setScales = function(chart, type){
@@ -525,9 +525,9 @@
 
   function init() {
 
-    /* Before doing anything we must set up a mapd connection, specifying
+    /* Before doing anything we must set up a heavyai connection, specifying
      * username, password, host, port, and database name */
-    new MapdCon()
+    new DbCon()
       .protocol("https")
       .host("metis.mapd.com")
       .port("443")
@@ -537,7 +537,7 @@
       .connect(function(error, con) {
         /*
          *  This instaniates a new crossfilter.
-         *  Pass in mapdcon as the first argument to crossfilter, then the
+         *  Pass in connector-js as the first argument to crossfilter, then the
          *  table name, then a label for the data (unused in this example).
          *
          *  to see all availables --  con.getTables()
