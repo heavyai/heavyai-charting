@@ -90302,9 +90302,20 @@ function rasterLayer(layerType) {
     // Copy from popup content
     var copyPopupContent = function copyPopupContent() {
       var copyRange = document.createRange();
-      copyRange.selectNodeContents(document.getElementsByClassName(_popup_box_item_wrap_class).item(0));
-      debugger;
+      var allNodes = document.getElementsByClassName(_popup_box_item_wrap_class).item(0).querySelectorAll();
+      console.log(allNodes);
+      var nodesToCopy = document.getElementsByClassName(_popup_box_item_wrap_class).item(0).querySelectorAll(":not(img)");
+      console.log(nodesToCopy);
+      copyRange.setStartBefore(nodesToCopy[0]);
+      copyRange.setEndAfter(nodesToCopy[nodesToCopy.length - 1]);
+      //debugger;
+      //copyRange.selectNodeContents(
+      //  //document.getElementsByClassName(_popup_box_item_wrap_class).item(0)
+      //  document.getElementsByClassName(_popup_box_item_wrap_class).item(0).querySelectorAll(":not(img)")
+      //)
+      //debugger;
       console.log(copyRange);
+
       window.getSelection().removeAllRanges();
       window.getSelection().addRange(copyRange);
       document.execCommand("copy");
