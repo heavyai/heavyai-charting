@@ -393,7 +393,8 @@ export default function rasterLayer(layerType) {
         const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg"]
         let urlContent = url
         if (filenameHasExtension(hyperlink, imageExtensions)) {
-          urlContent = '<img class="' +
+          urlContent =
+            '<img class="' +
             _popup_box_image_class +
             '" src="' +
             hyperlink +
@@ -711,12 +712,18 @@ export default function rasterLayer(layerType) {
     // Copy from popup content
     const copyPopupContent = () => {
       const copyRange = document.createRange()
-      const allNodes = document.getElementsByClassName(_popup_box_item_wrap_class).item(0).querySelectorAll()
+      const allNodes = document
+        .getElementsByClassName(_popup_box_item_wrap_class)
+        .item(0)
+        .querySelectorAll()
       console.log(allNodes)
-      const nodesToCopy = document.getElementsByClassName(_popup_box_item_wrap_class).item(0).querySelectorAll(":not(img)")
+      const nodesToCopy = document
+        .getElementsByClassName(_popup_box_item_wrap_class)
+        .item(0)
+        .querySelectorAll(":not(img)")
       console.log(nodesToCopy)
-      copyRange.setStartBefore(nodesToCopy[0]) 
-      copyRange.setEndAfter(nodesToCopy[nodesToCopy.length - 1]) 
+      copyRange.setStartBefore(nodesToCopy[0])
+      copyRange.setEndAfter(nodesToCopy[nodesToCopy.length - 1])
       //debugger;
       //copyRange.selectNodeContents(
       //  //document.getElementsByClassName(_popup_box_item_wrap_class).item(0)
