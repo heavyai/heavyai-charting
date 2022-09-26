@@ -1,5 +1,6 @@
 import d3 from "d3"
 import * as _ from "lodash"
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { rasterDrawMixin } from "./raster-draw-mixin"
@@ -700,6 +701,19 @@ export default function mapMixin(
       .style("width", _chart.width() + "px")
       .style("height", _chart.height() + "px")
 
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+
+      // Select which mapbox-gl-draw control buttons to add to the map.
+      controls: {
+        draw_line_string: true,
+        trash: true
+      },
+
+      // FIXME: toggle off by default when done testing
+      defaultMode: 'draw_line_string'
+    });
+
     _map = new _mapboxgl.Map({
       container: _mapId, // container id
       style: _mapStyle,
@@ -723,6 +737,10 @@ export default function mapMixin(
       new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }),
       "bottom-right"
     )
+
+    // FIXME: move this somewhere conditional
+    _map.addControl(draw)
+
     _chart.addMapListeners()
     _mapInitted = true
     _chart.enableInteractions(_interactionsEnabled)
