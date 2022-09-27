@@ -71,6 +71,24 @@ export default function mapMixin(
   let _interactionsEnabled = true
   let _shouldRedrawAll = false
 
+  const vertexLabelGeoJson = {
+    'type': 'FeatureCollection',
+    'features': []
+  }
+
+  function makePoint(coordinates, text) {
+    return {
+        type: "Feature",
+          geometry: {
+            type: "Point",
+              coordinates: coordinates
+            },
+        properties: {
+          title: text
+        }
+      }
+  }
+
   _chart.useLonLat = function(useLonLat) {
     if (!arguments.length) {
       return _useLonLat
@@ -482,6 +500,47 @@ export default function mapMixin(
     })
   }
 
+
+
+  _chart.addLabelLayer = function() {
+
+    if (!_map.getSource("vertex-labels")) {
+      _map.addSource("vertex-labels", {
+        type: "geojson",
+        "data": vertexLabelGeoJson
+      });
+    }
+
+    const initLabelLayer = {
+      "id": "points",
+      "type": "symbol",
+      "source": "vertex-labels",
+      "layout": {
+        "text-field": "{title}",
+        "text-offset": [0, 0.6],
+        "text-anchor": "top",
+      },
+      paint: {
+        "text-color": "orange"
+      }
+    }
+
+    if (!_map.getLayer("points")) {
+      _map.addLayer(initLabelLayer);
+    }
+  }
+
+  _chart.addLabel = function(features) {
+
+    const [start, end] = features[0].geometry.coordinates
+    // TODO: decide if multiple transects are allowed per chart, patch labels accordingly
+    vertexLabelGeoJson.features.push(makePoint(start, "A"))
+    vertexLabelGeoJson.features.push(makePoint(end, "B"))
+
+    console.log(start, end)
+    _map.getSource("vertex-labels").setData(vertexLabelGeoJson);
+  }
+
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
   // the render layer is deleted, so we need to save the render layer source and layer from the old style
   // in savedLayers and savedSource and reapply to the newly styled map in _map.on("style.load", ...)
@@ -740,6 +799,9 @@ export default function mapMixin(
 
     // FIXME: move this somewhere conditional
     _map.addControl(draw)
+    _map.on("draw.create", (e) => {
+      _chart.addLabel(e.features)
+    })
 
     _chart.addMapListeners()
     _mapInitted = true
