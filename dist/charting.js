@@ -6801,7 +6801,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _errors = __webpack_require__(37);
+var _errors = __webpack_require__(38);
 
 var errors = _interopRequireWildcard(_errors);
 
@@ -6813,7 +6813,7 @@ var _labelMixin = __webpack_require__(248);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
-var _logger = __webpack_require__(36);
+var _logger = __webpack_require__(37);
 
 var _multipleKeyAccessors = __webpack_require__(183);
 
@@ -8639,7 +8639,7 @@ function baseMixin(_chart) {
 
 
 var bind = __webpack_require__(194);
-var isBuffer = __webpack_require__(277);
+var isBuffer = __webpack_require__(278);
 
 /*global toString:true*/
 
@@ -8986,21 +8986,21 @@ module.exports = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CstParser; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return EmbeddedActionsParser; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(326);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(327);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(219);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(329);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(330);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(332);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(333);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(334);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(335);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(336);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(337);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(338);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(331);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(333);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(334);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(337);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(338);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(339);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -9793,7 +9793,7 @@ var _events = __webpack_require__(15);
 
 var _filters = __webpack_require__(21);
 
-var _lockAxisMixin = __webpack_require__(40);
+var _lockAxisMixin = __webpack_require__(41);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -12016,7 +12016,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _wellknown = __webpack_require__(271);
+var _wellknown = __webpack_require__(272);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
 
@@ -30132,7 +30132,7 @@ var getFirstNonNullDatumForAxis = exports.getFirstNonNullDatumForAxis = function
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48), __webpack_require__(53)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36), __webpack_require__(53)(module)))
 
 /***/ }),
 /* 24 */
@@ -30717,7 +30717,7 @@ var TIME_LABEL_TO_SECONDS = exports.TIME_LABEL_TO_SECONDS = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(44);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x) {
@@ -30736,7 +30736,7 @@ var TIME_LABEL_TO_SECONDS = exports.TIME_LABEL_TO_SECONDS = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(47);
 
 
 
@@ -31654,7 +31654,7 @@ var defaultGrammarValidatorErrorProvider = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_parser__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lookahead__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interpreter__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__ = __webpack_require__(20);
@@ -32252,7 +32252,7 @@ function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
 /* unused harmony export areTokenCategoriesNotUsed */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__interpreter__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__ = __webpack_require__(20);
@@ -32760,7 +32760,7 @@ function areTokenCategoriesNotUsed(lookAheadPaths) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return NextTerminalAfterAtLeastOneSepWalker; });
 /* harmony export (immutable) */ __webpack_exports__["g"] = possiblePathsFrom;
 /* harmony export (immutable) */ __webpack_exports__["f"] = nextPossibleTokensAfter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(217);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(6);
@@ -33311,6 +33311,33 @@ function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack
 
 /***/ }),
 /* 36 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33364,7 +33391,7 @@ logger.deprecate = function (fn, msg) {
 };
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33431,7 +33458,7 @@ var DestroyedChartError = exports.DestroyedChartError = function (_Error) {
 }(Error);
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33750,7 +33777,7 @@ function bubbleMixin(_chart) {
 }
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34164,7 +34191,7 @@ function stackMixin(_chart) {
 }
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34467,7 +34494,7 @@ function lockAxisMixin(chart) {
 }
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34491,11 +34518,21 @@ var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
 
+var _mapboxGlDraw = __webpack_require__(259);
+
+var _mapboxGlDraw2 = _interopRequireDefault(_mapboxGlDraw);
+
 var _coreAsync = __webpack_require__(5);
 
 var _utils = __webpack_require__(4);
 
 var _rasterDrawMixin = __webpack_require__(189);
+
+var _drawSimpleLineMode = __webpack_require__(362);
+
+var _drawDirectSelectWithoutMiddleVertex = __webpack_require__(364);
+
+var _drawDirectSelectWithoutMiddleVertex2 = _interopRequireDefault(_drawDirectSelectWithoutMiddleVertex);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -34565,6 +34602,36 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var _minMaxCache = {};
   var _interactionsEnabled = true;
   var _shouldRedrawAll = false;
+
+  var vertexLabelGeoJson = {
+    'type': 'FeatureCollection',
+    'features': []
+
+    // TODO remove
+  };var testPoint = {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-122.414, 37.776]
+    },
+    "properties": {
+      "title": "Mapbox SF",
+      "icon": "harbor"
+    }
+  };
+
+  function makePoint(coordinates, text) {
+    return {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: coordinates
+      },
+      properties: {
+        title: text
+      }
+    };
+  }
 
   _chart.useLonLat = function (useLonLat) {
     if (!arguments.length) {
@@ -34930,6 +34997,48 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     });
   }
 
+  _chart.addLabelLayer = function () {
+
+    if (!_map.getSource("vertex-labels")) {
+      _map.addSource("vertex-labels", {
+        type: "geojson",
+        "data": vertexLabelGeoJson
+      });
+    }
+
+    var initLabelLayer = {
+      "id": "points",
+      "type": "symbol",
+      "source": "vertex-labels",
+      "layout": {
+        "text-field": "{title}",
+        "text-offset": [0, 0.6],
+        "text-anchor": "top"
+      },
+      paint: {
+        "text-color": "orange"
+      }
+    };
+
+    if (!_map.getLayer("points")) {
+      _map.addLayer(initLabelLayer);
+    }
+  };
+
+  _chart.addLabel = function (features) {
+    var _features$0$geometry$ = _slicedToArray(features[0].geometry.coordinates, 2),
+        start = _features$0$geometry$[0],
+        end = _features$0$geometry$[1];
+    // TODO: decide if multiple transects are allowed per chart, patch labels accordingly
+
+
+    vertexLabelGeoJson.features.push(makePoint(start, "A"));
+    vertexLabelGeoJson.features.push(makePoint(end, "B"));
+
+    console.log(start, end);
+    _map.getSource("vertex-labels").setData(vertexLabelGeoJson);
+  };
+
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
   // the render layer is deleted, so we need to save the render layer source and layer from the old style
   // in savedLayers and savedSource and reapply to the newly styled map in _map.on("style.load", ...)
@@ -35129,6 +35238,21 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
     _chart.root().style("width", _chart.width() + "px").style("height", _chart.height() + "px");
 
+    var draw = new _mapboxGlDraw2.default({
+      displayControlsDefault: false,
+
+      // Select which mapbox-gl-draw control buttons to add to the map.
+      controls: {
+        draw_line_string: true
+        // draw_simple_line: true
+      },
+
+      // FIXME: toggle off by default when done testing
+      defaultMode: "draw_line_string" //'draw_simple_line',
+      // modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode, direct_select: DirectSelectWithoutMiddleVertexMode}
+      // modes: { ...MapboxDraw.modes, direct_select: DirectSelectWithoutMiddleVertexMode}
+    });
+
     _map = new _mapboxgl.Map({
       container: _mapId, // container id
       style: _mapStyle,
@@ -35149,6 +35273,41 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right");
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation);
     _map.addControl(new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }), "bottom-right");
+
+    // FIXME: move this somewhere conditional
+    _map.addControl(draw, "bottom-left");
+
+    // Test adding saved lines
+    // const testLine = {
+    //   "id": "999567ec77c30b58b831f44ac792c477",
+    //   "type": "Feature",
+    //   "properties": {},
+    //   "geometry": {
+    //     "coordinates": [
+    //       [
+    //         -2.1486758213529242,
+    //         19.656944908779792
+    //       ],
+    //       [
+    //         6.923510979902375,
+    //         4.293328217277576
+    //       ]
+    //     ],
+    //     "type": "LineString"
+    //   }
+    // }
+
+    // draw.add(testLine)
+    _map.on("draw.create", function (e) {
+      _chart.addLabel(e.features);
+    });
+
+    _map.on("draw.update", function (e) {
+      // _chart.addLabel(e.features)
+      // hmmmm
+      console.log("DRAWEVENT update", e);
+    });
+
     _chart.addMapListeners();
     _mapInitted = true;
     _chart.enableInteractions(_interactionsEnabled);
@@ -35428,7 +35587,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 }
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36168,7 +36327,7 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36189,7 +36348,7 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36308,7 +36467,7 @@ function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
 //# sourceMappingURL=rest.js.map
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;;(function(root, factory) {
@@ -37289,13 +37448,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = getRegExpAst;
 /* harmony export (immutable) */ __webpack_exports__["a"] = clearRegExpParserCache;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 
 var regExpAstCache = {};
@@ -37317,7 +37476,7 @@ function clearRegExpParserCache() {
 //# sourceMappingURL=reg_exp_parser.js.map
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37518,33 +37677,6 @@ function expandAllNestedRuleNames(topRules, fullToShortName) {
     return result;
 }
 //# sourceMappingURL=cst.js.map
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
 
 /***/ }),
 /* 49 */
@@ -51558,7 +51690,7 @@ var _utilsLatlon = __webpack_require__(24);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(259);
+var _lassoToolUi = __webpack_require__(260);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
@@ -53702,7 +53834,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(272);
+var _coordinateGridRasterMixinUi = __webpack_require__(273);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -53718,15 +53850,15 @@ var _marginMixin = __webpack_require__(18);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _axios = __webpack_require__(275);
+var _axios = __webpack_require__(276);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _lockAxisMixin = __webpack_require__(40);
+var _lockAxisMixin = __webpack_require__(41);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _errors = __webpack_require__(37);
+var _errors = __webpack_require__(38);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55215,7 +55347,7 @@ module.exports = function isCancel(value) {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(8);
-var normalizeHeaderName = __webpack_require__(283);
+var normalizeHeaderName = __webpack_require__(284);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -55311,7 +55443,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(283)))
 
 /***/ }),
 /* 198 */
@@ -55321,10 +55453,10 @@ module.exports = defaults;
 
 
 var utils = __webpack_require__(8);
-var settle = __webpack_require__(284);
+var settle = __webpack_require__(285);
 var buildURL = __webpack_require__(195);
-var parseHeaders = __webpack_require__(286);
-var isURLSameOrigin = __webpack_require__(287);
+var parseHeaders = __webpack_require__(287);
+var isURLSameOrigin = __webpack_require__(288);
 var createError = __webpack_require__(199);
 
 module.exports = function xhrAdapter(config) {
@@ -55417,7 +55549,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(288);
+      var cookies = __webpack_require__(289);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -55501,7 +55633,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(285);
+var enhanceError = __webpack_require__(286);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -55949,13 +56081,13 @@ function h(sel, b, c) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(311);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(313);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(313);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(315);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(316);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(317);
 
 
 
@@ -56150,7 +56282,7 @@ FormatSpecifier.prototype.toString = function() {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return prefixExponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(44);
 
 
 var prefixExponent;
@@ -59325,9 +59457,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "resolveGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "validateGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(339);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(340);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createSyntaxDiagramsCode", function() { return __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(340);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(341);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserFactory", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserModule", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["b"]; });
 // semantic version
@@ -59401,12 +59533,12 @@ var VERSION = "6.5.0";
 /* unused harmony export buildLineBreakIssueMessage */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return minOptimizationVal; });
 /* harmony export (immutable) */ __webpack_exports__["e"] = charCodeToOptimizedIndex;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(327);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(328);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(47);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -60398,7 +60530,7 @@ var IN = "_~IN~_";
 /* harmony export (immutable) */ __webpack_exports__["c"] = validateGrammar;
 /* harmony export (immutable) */ __webpack_exports__["a"] = assignOccurrenceIndices;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(328);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(329);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__checks__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast__ = __webpack_require__(26);
@@ -60819,7 +60951,7 @@ __webpack_require__(223);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(224);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36)))
 
 /***/ }),
 /* 224 */
@@ -60893,7 +61025,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _logger = __webpack_require__(36);
+var _logger = __webpack_require__(37);
 
 Object.keys(_logger).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -60986,7 +61118,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(266);
+var _pieChart = __webpack_require__(267);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -60995,7 +61127,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(267);
+var _lineChart = __webpack_require__(268);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -61004,7 +61136,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(268);
+var _numberChart = __webpack_require__(269);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -61013,7 +61145,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(269);
+var _rasterChart = __webpack_require__(270);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -61022,7 +61154,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(321);
+var _rowChart = __webpack_require__(322);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -61031,7 +61163,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(322);
+var _scatterPlot = __webpack_require__(323);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -61040,7 +61172,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _heavyaiTable = __webpack_require__(323);
+var _heavyaiTable = __webpack_require__(324);
 
 Object.defineProperty(exports, "heavyaiTable", {
   enumerable: true,
@@ -61049,7 +61181,7 @@ Object.defineProperty(exports, "heavyaiTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(324);
+var _boxPlot = __webpack_require__(325);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -61058,7 +61190,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(325);
+var _countWidget = __webpack_require__(326);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -61085,7 +61217,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(38);
+var _bubbleMixin = __webpack_require__(39);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -61130,7 +61262,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(39);
+var _stackMixin = __webpack_require__(40);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -61148,7 +61280,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(41);
+var _mapMixin = __webpack_require__(42);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -61184,7 +61316,7 @@ Object.defineProperty(exports, "rasterLayerPolyMixin", {
   }
 });
 
-var _rasterLayer = __webpack_require__(342);
+var _rasterLayer = __webpack_require__(343);
 
 Object.defineProperty(exports, "rasterLayer", {
   enumerable: true,
@@ -61193,7 +61325,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(344);
+var _rasterMixin = __webpack_require__(345);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -61220,7 +61352,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(345);
+var _legendContinuous = __webpack_require__(346);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -61229,7 +61361,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(346);
+var _legend = __webpack_require__(347);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -61238,7 +61370,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(348);
+var _dcLegendCont = __webpack_require__(349);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -61260,20 +61392,20 @@ var _d2 = __webpack_require__(1);
 
 var _d = _interopRequireWildcard(_d2);
 
-var _errors = __webpack_require__(37);
+var _errors = __webpack_require__(38);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(349);
 __webpack_require__(350);
 __webpack_require__(351);
 __webpack_require__(352);
 __webpack_require__(353);
+__webpack_require__(354);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(354);
+  window.mapboxgl = __webpack_require__(355);
 }
 
 exports.d3 = _d; // eslint-disable-line
@@ -62776,7 +62908,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(38);
+var _bubbleMixin = __webpack_require__(39);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -63730,7 +63862,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(39);
+var _stackMixin = __webpack_require__(40);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -73266,7 +73398,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(38);
+var _bubbleMixin = __webpack_require__(39);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -74891,7 +75023,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _mapMixin = __webpack_require__(41);
+var _mapMixin = __webpack_require__(42);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -74899,11 +75031,11 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _bbox = __webpack_require__(261);
+var _bbox = __webpack_require__(262);
 
 var _bbox2 = _interopRequireDefault(_bbox);
 
-var _bboxClip = __webpack_require__(263);
+var _bboxClip = __webpack_require__(264);
 
 var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
@@ -75332,6 +75464,15 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 /* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(global) {!function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define(e):(t=t||self).MapboxDraw=e()}(this,(function(){"use strict";var t=function(t,e){var n={drag:[],click:[],mousemove:[],mousedown:[],mouseup:[],mouseout:[],keydown:[],keyup:[],touchstart:[],touchmove:[],touchend:[],tap:[]},o={on:function(t,e,o){if(void 0===n[t])throw new Error("Invalid event type: "+t);n[t].push({selector:e,fn:o})},render:function(t){e.store.featureChanged(t)}},r=function(t,r){for(var i=n[t],a=i.length;a--;){var s=i[a];if(s.selector(r)){s.fn.call(o,r)||e.store.render(),e.ui.updateMapClasses();break}}};return t.start.call(o),{render:t.render,stop:function(){t.stop&&t.stop()},trash:function(){t.trash&&(t.trash(),e.store.render())},combineFeatures:function(){t.combineFeatures&&t.combineFeatures()},uncombineFeatures:function(){t.uncombineFeatures&&t.uncombineFeatures()},drag:function(t){r("drag",t)},click:function(t){r("click",t)},mousemove:function(t){r("mousemove",t)},mousedown:function(t){r("mousedown",t)},mouseup:function(t){r("mouseup",t)},mouseout:function(t){r("mouseout",t)},keydown:function(t){r("keydown",t)},keyup:function(t){r("keyup",t)},touchstart:function(t){r("touchstart",t)},touchmove:function(t){r("touchmove",t)},touchend:function(t){r("touchend",t)},tap:function(t){r("tap",t)}}},e=6378137;function n(t){var e=0;if(t&&t.length>0){e+=Math.abs(o(t[0]));for(var n=1;n<t.length;n++)e-=Math.abs(o(t[n]))}return e}function o(t){var n,o,i,a,s,u,c=0,l=t.length;if(l>2){for(u=0;u<l;u++)u===l-2?(i=l-2,a=l-1,s=0):u===l-1?(i=l-1,a=0,s=1):(i=u,a=u+1,s=u+2),n=t[i],o=t[a],c+=(r(t[s][0])-r(n[0]))*Math.sin(r(o[1]));c=c*e*e/2}return c}function r(t){return t*Math.PI/180}var i={geometry:function t(e){var o,r=0;switch(e.type){case"Polygon":return n(e.coordinates);case"MultiPolygon":for(o=0;o<e.coordinates.length;o++)r+=n(e.coordinates[o]);return r;case"Point":case"MultiPoint":case"LineString":case"MultiLineString":return 0;case"GeometryCollection":for(o=0;o<e.geometries.length;o++)r+=t(e.geometries[o]);return r}},ring:o},a="mapboxgl-ctrl",s="mapbox-gl-draw_ctrl-draw-btn",u="mapbox-gl-draw_line",c="mapbox-gl-draw_polygon",l="mapbox-gl-draw_point",d="mapbox-gl-draw_trash",p="mapbox-gl-draw_combine",f="mapbox-gl-draw_uncombine",h="mapboxgl-ctrl-group",g="active",y="mapbox-gl-draw_boxselect",v="mapbox-gl-draw-hot",m="mapbox-gl-draw-cold",b="add",_="move",S="drag",x="pointer",C="none",E={POLYGON:"polygon",LINE:"line_string",POINT:"point"},M="Feature",w="Polygon",I="LineString",L="Point",P="FeatureCollection",F="Multi",O="MultiPoint",k="MultiLineString",T="MultiPolygon",j={DRAW_LINE_STRING:"draw_line_string",DRAW_POLYGON:"draw_polygon",DRAW_POINT:"draw_point",SIMPLE_SELECT:"simple_select",DIRECT_SELECT:"direct_select",STATIC:"static"},A="draw.create",D="draw.delete",N="draw.update",U="draw.selectionchange",R="draw.modechange",B="draw.actionable",V="draw.render",J="draw.combine",G="draw.uncombine",z="move",$="change_coordinates",W="feature",q="midpoint",Y="vertex",Z="true",K="false",X=["scrollZoom","boxZoom","dragRotate","dragPan","keyboard","doubleClickZoom","touchZoomRotate"],H={Point:0,LineString:1,Polygon:2};function Q(t,e){var n=H[t.geometry.type]-H[e.geometry.type];return 0===n&&t.geometry.type===w?t.area-e.area:n}function tt(t){if(this._items={},this._nums={},this._length=t?t.length:0,t)for(var e=0,n=t.length;e<n;e++)this.add(t[e]),void 0!==t[e]&&("string"==typeof t[e]?this._items[t[e]]=e:this._nums[t[e]]=e)}tt.prototype.add=function(t){return this.has(t)||(this._length++,"string"==typeof t?this._items[t]=this._length:this._nums[t]=this._length),this},tt.prototype.delete=function(t){return!1===this.has(t)||(this._length--,delete this._items[t],delete this._nums[t]),this},tt.prototype.has=function(t){return("string"==typeof t||"number"==typeof t)&&(void 0!==this._items[t]||void 0!==this._nums[t])},tt.prototype.values=function(){var t=this,e=[];return Object.keys(this._items).forEach((function(n){e.push({k:n,v:t._items[n]})})),Object.keys(this._nums).forEach((function(n){e.push({k:JSON.parse(n),v:t._nums[n]})})),e.sort((function(t,e){return t.v-e.v})).map((function(t){return t.k}))},tt.prototype.clear=function(){return this._length=0,this._items={},this._nums={},this};var et=[W,q,Y],nt={click:function(t,e,n){return ot(t,e,n,n.options.clickBuffer)},touch:function(t,e,n){return ot(t,e,n,n.options.touchBuffer)}};function ot(t,e,n,o){if(null===n.map)return[];var r=t?function(t,e){return void 0===e&&(e=0),[[t.point.x-e,t.point.y-e],[t.point.x+e,t.point.y+e]]}(t,o):e,a={};n.options.styles&&(a.layers=n.options.styles.map((function(t){return t.id})));var s=n.map.queryRenderedFeatures(r,a).filter((function(t){return-1!==et.indexOf(t.properties.meta)})),u=new tt,c=[];return s.forEach((function(t){var e=t.properties.id;u.has(e)||(u.add(e),c.push(t))})),function(t){return t.map((function(t){return t.geometry.type===w&&(t.area=i.geometry({type:M,property:{},geometry:t.geometry})),t})).sort(Q).map((function(t){return delete t.area,t}))}(c)}function rt(t,e){var n=nt.click(t,null,e),o={mouse:C};return n[0]&&(o.mouse=n[0].properties.active===Z?_:x,o.feature=n[0].properties.meta),-1!==e.events.currentModeName().indexOf("draw")&&(o.mouse=b),e.ui.queueMapClasses(o),e.ui.updateMapClasses(),n[0]}function it(t,e){var n=t.x-e.x,o=t.y-e.y;return Math.sqrt(n*n+o*o)}function at(t,e,n){void 0===n&&(n={});var o=null!=n.fineTolerance?n.fineTolerance:4,r=null!=n.grossTolerance?n.grossTolerance:12,i=null!=n.interval?n.interval:500;t.point=t.point||e.point,t.time=t.time||e.time;var a=it(t.point,e.point);return a<o||a<r&&e.time-t.time<i}function st(t,e,n){void 0===n&&(n={});var o=null!=n.tolerance?n.tolerance:25,r=null!=n.interval?n.interval:250;return t.point=t.point||e.point,t.time=t.time||e.time,it(t.point,e.point)<o&&e.time-t.time<r}function ut(t,e){return t(e={exports:{}},e.exports),e.exports}var ct=ut((function(t){var e=t.exports=function(t,n){if(n||(n=16),void 0===t&&(t=128),t<=0)return"0";for(var o=Math.log(Math.pow(2,t))/Math.log(n),r=2;o===1/0;r*=2)o=Math.log(Math.pow(2,t/r))/Math.log(n)*r;var i=o-Math.floor(o),a="";for(r=0;r<Math.floor(o);r++){a=Math.floor(Math.random()*n).toString(n)+a}if(i){var s=Math.pow(n,i);a=Math.floor(Math.random()*s).toString(n)+a}var u=parseInt(a,n);return u!==1/0&&u>=Math.pow(2,t)?e(t,n):a};e.rack=function(t,n,o){var r=function(r){var a=0;do{if(a++>10){if(!o)throw new Error("too many ID collisions, use more bits");t+=o}var s=e(t,n)}while(Object.hasOwnProperty.call(i,s));return i[s]=r,s},i=r.hats={};return r.get=function(t){return r.hats[t]},r.set=function(t,e){return r.hats[t]=e,r},r.bits=t||128,r.base=n||16,r}})),lt=function(t,e){this.ctx=t,this.properties=e.properties||{},this.coordinates=e.geometry.coordinates,this.id=e.id||ct(),this.type=e.geometry.type};lt.prototype.changed=function(){this.ctx.store.featureChanged(this.id)},lt.prototype.incomingCoords=function(t){this.setCoordinates(t)},lt.prototype.setCoordinates=function(t){this.coordinates=t,this.changed()},lt.prototype.getCoordinates=function(){return JSON.parse(JSON.stringify(this.coordinates))},lt.prototype.setProperty=function(t,e){this.properties[t]=e},lt.prototype.toGeoJSON=function(){return JSON.parse(JSON.stringify({id:this.id,type:M,properties:this.properties,geometry:{coordinates:this.getCoordinates(),type:this.type}}))},lt.prototype.internal=function(t){var e={id:this.id,meta:W,"meta:type":this.type,active:K,mode:t};if(this.ctx.options.userProperties)for(var n in this.properties)e["user_"+n]=this.properties[n];return{type:M,properties:e,geometry:{coordinates:this.getCoordinates(),type:this.type}}};var dt=function(t,e){lt.call(this,t,e)};(dt.prototype=Object.create(lt.prototype)).isValid=function(){return"number"==typeof this.coordinates[0]&&"number"==typeof this.coordinates[1]},dt.prototype.updateCoordinate=function(t,e,n){this.coordinates=3===arguments.length?[e,n]:[t,e],this.changed()},dt.prototype.getCoordinate=function(){return this.getCoordinates()};var pt=function(t,e){lt.call(this,t,e)};(pt.prototype=Object.create(lt.prototype)).isValid=function(){return this.coordinates.length>1},pt.prototype.addCoordinate=function(t,e,n){this.changed();var o=parseInt(t,10);this.coordinates.splice(o,0,[e,n])},pt.prototype.getCoordinate=function(t){var e=parseInt(t,10);return JSON.parse(JSON.stringify(this.coordinates[e]))},pt.prototype.removeCoordinate=function(t){this.changed(),this.coordinates.splice(parseInt(t,10),1)},pt.prototype.updateCoordinate=function(t,e,n){var o=parseInt(t,10);this.coordinates[o]=[e,n],this.changed()};var ft=function(t,e){lt.call(this,t,e),this.coordinates=this.coordinates.map((function(t){return t.slice(0,-1)}))};(ft.prototype=Object.create(lt.prototype)).isValid=function(){return 0!==this.coordinates.length&&this.coordinates.every((function(t){return t.length>2}))},ft.prototype.incomingCoords=function(t){this.coordinates=t.map((function(t){return t.slice(0,-1)})),this.changed()},ft.prototype.setCoordinates=function(t){this.coordinates=t,this.changed()},ft.prototype.addCoordinate=function(t,e,n){this.changed();var o=t.split(".").map((function(t){return parseInt(t,10)}));this.coordinates[o[0]].splice(o[1],0,[e,n])},ft.prototype.removeCoordinate=function(t){this.changed();var e=t.split(".").map((function(t){return parseInt(t,10)})),n=this.coordinates[e[0]];n&&(n.splice(e[1],1),n.length<3&&this.coordinates.splice(e[0],1))},ft.prototype.getCoordinate=function(t){var e=t.split(".").map((function(t){return parseInt(t,10)})),n=this.coordinates[e[0]];return JSON.parse(JSON.stringify(n[e[1]]))},ft.prototype.getCoordinates=function(){return this.coordinates.map((function(t){return t.concat([t[0]])}))},ft.prototype.updateCoordinate=function(t,e,n){this.changed();var o=t.split("."),r=parseInt(o[0],10),i=parseInt(o[1],10);void 0===this.coordinates[r]&&(this.coordinates[r]=[]),this.coordinates[r][i]=[e,n]};var ht={MultiPoint:dt,MultiLineString:pt,MultiPolygon:ft},gt=function(t,e,n,o,r){var i=n.split("."),a=parseInt(i[0],10),s=i[1]?i.slice(1).join("."):null;return t[a][e](s,o,r)},yt=function(t,e){if(lt.call(this,t,e),delete this.coordinates,this.model=ht[e.geometry.type],void 0===this.model)throw new TypeError(e.geometry.type+" is not a valid type");this.features=this._coordinatesToFeatures(e.geometry.coordinates)};function vt(t){this.map=t.map,this.drawConfig=JSON.parse(JSON.stringify(t.options||{})),this._ctx=t}(yt.prototype=Object.create(lt.prototype))._coordinatesToFeatures=function(t){var e=this,n=this.model.bind(this);return t.map((function(t){return new n(e.ctx,{id:ct(),type:M,properties:{},geometry:{coordinates:t,type:e.type.replace("Multi","")}})}))},yt.prototype.isValid=function(){return this.features.every((function(t){return t.isValid()}))},yt.prototype.setCoordinates=function(t){this.features=this._coordinatesToFeatures(t),this.changed()},yt.prototype.getCoordinate=function(t){return gt(this.features,"getCoordinate",t)},yt.prototype.getCoordinates=function(){return JSON.parse(JSON.stringify(this.features.map((function(t){return t.type===w?t.getCoordinates():t.coordinates}))))},yt.prototype.updateCoordinate=function(t,e,n){gt(this.features,"updateCoordinate",t,e,n),this.changed()},yt.prototype.addCoordinate=function(t,e,n){gt(this.features,"addCoordinate",t,e,n),this.changed()},yt.prototype.removeCoordinate=function(t){gt(this.features,"removeCoordinate",t),this.changed()},yt.prototype.getFeatures=function(){return this.features},vt.prototype.setSelected=function(t){return this._ctx.store.setSelected(t)},vt.prototype.setSelectedCoordinates=function(t){var e=this;this._ctx.store.setSelectedCoordinates(t),t.reduce((function(t,n){return void 0===t[n.feature_id]&&(t[n.feature_id]=!0,e._ctx.store.get(n.feature_id).changed()),t}),{})},vt.prototype.getSelected=function(){return this._ctx.store.getSelected()},vt.prototype.getSelectedIds=function(){return this._ctx.store.getSelectedIds()},vt.prototype.isSelected=function(t){return this._ctx.store.isSelected(t)},vt.prototype.getFeature=function(t){return this._ctx.store.get(t)},vt.prototype.select=function(t){return this._ctx.store.select(t)},vt.prototype.deselect=function(t){return this._ctx.store.deselect(t)},vt.prototype.deleteFeature=function(t,e){return void 0===e&&(e={}),this._ctx.store.delete(t,e)},vt.prototype.addFeature=function(t){return this._ctx.store.add(t)},vt.prototype.clearSelectedFeatures=function(){return this._ctx.store.clearSelected()},vt.prototype.clearSelectedCoordinates=function(){return this._ctx.store.clearSelectedCoordinates()},vt.prototype.setActionableState=function(t){void 0===t&&(t={});var e={trash:t.trash||!1,combineFeatures:t.combineFeatures||!1,uncombineFeatures:t.uncombineFeatures||!1};return this._ctx.events.actionable(e)},vt.prototype.changeMode=function(t,e,n){return void 0===e&&(e={}),void 0===n&&(n={}),this._ctx.events.changeMode(t,e,n)},vt.prototype.updateUIClasses=function(t){return this._ctx.ui.queueMapClasses(t)},vt.prototype.activateUIButton=function(t){return this._ctx.ui.setActiveButton(t)},vt.prototype.featuresAt=function(t,e,n){if(void 0===n&&(n="click"),"click"!==n&&"touch"!==n)throw new Error("invalid buffer type");return nt[n](t,e,this._ctx)},vt.prototype.newFeature=function(t){var e=t.geometry.type;return e===L?new dt(this._ctx,t):e===I?new pt(this._ctx,t):e===w?new ft(this._ctx,t):new yt(this._ctx,t)},vt.prototype.isInstanceOf=function(t,e){if(t===L)return e instanceof dt;if(t===I)return e instanceof pt;if(t===w)return e instanceof ft;if("MultiFeature"===t)return e instanceof yt;throw new Error("Unknown feature class: "+t)},vt.prototype.doRender=function(t){return this._ctx.store.featureChanged(t)},vt.prototype.onSetup=function(){},vt.prototype.onDrag=function(){},vt.prototype.onClick=function(){},vt.prototype.onMouseMove=function(){},vt.prototype.onMouseDown=function(){},vt.prototype.onMouseUp=function(){},vt.prototype.onMouseOut=function(){},vt.prototype.onKeyUp=function(){},vt.prototype.onKeyDown=function(){},vt.prototype.onTouchStart=function(){},vt.prototype.onTouchMove=function(){},vt.prototype.onTouchEnd=function(){},vt.prototype.onTap=function(){},vt.prototype.onStop=function(){},vt.prototype.onTrash=function(){},vt.prototype.onCombineFeature=function(){},vt.prototype.onUncombineFeature=function(){},vt.prototype.toDisplayFeatures=function(){throw new Error("You must overwrite toDisplayFeatures")};var mt={drag:"onDrag",click:"onClick",mousemove:"onMouseMove",mousedown:"onMouseDown",mouseup:"onMouseUp",mouseout:"onMouseOut",keyup:"onKeyUp",keydown:"onKeyDown",touchstart:"onTouchStart",touchmove:"onTouchMove",touchend:"onTouchEnd",tap:"onTap"},bt=Object.keys(mt);function _t(t){var e=Object.keys(t);return function(n,o){void 0===o&&(o={});var r={},i=e.reduce((function(e,n){return e[n]=t[n],e}),new vt(n));return{start:function(){var e=this;r=i.onSetup(o),bt.forEach((function(n){var o,a=mt[n],s=function(){return!1};t[a]&&(s=function(){return!0}),e.on(n,s,(o=a,function(t){return i[o](r,t)}))}))},stop:function(){i.onStop(r)},trash:function(){i.onTrash(r)},combineFeatures:function(){i.onCombineFeatures(r)},uncombineFeatures:function(){i.onUncombineFeatures(r)},render:function(t,e){i.toDisplayFeatures(r,t,e)}}}}function St(t){return[].concat(t).filter((function(t){return void 0!==t}))}function xt(){var t=this;if(!(t.ctx.map&&void 0!==t.ctx.map.getSource(v)))return u();var e=t.ctx.events.currentModeName();t.ctx.ui.queueMapClasses({mode:e});var n=[],o=[];t.isDirty?o=t.getAllIds():(n=t.getChangedIds().filter((function(e){return void 0!==t.get(e)})),o=t.sources.hot.filter((function(e){return e.properties.id&&-1===n.indexOf(e.properties.id)&&void 0!==t.get(e.properties.id)})).map((function(t){return t.properties.id}))),t.sources.hot=[];var r=t.sources.cold.length;t.sources.cold=t.isDirty?[]:t.sources.cold.filter((function(t){var e=t.properties.id||t.properties.parent;return-1===n.indexOf(e)}));var i=r!==t.sources.cold.length||o.length>0;function a(n,o){var r=t.get(n).internal(e);t.ctx.events.currentModeRender(r,(function(e){t.sources[o].push(e)}))}if(n.forEach((function(t){return a(t,"hot")})),o.forEach((function(t){return a(t,"cold")})),i&&t.ctx.map.getSource(m).setData({type:P,features:t.sources.cold}),t.ctx.map.getSource(v).setData({type:P,features:t.sources.hot}),t._emitSelectionChange&&(t.ctx.map.fire(U,{features:t.getSelected().map((function(t){return t.toGeoJSON()})),points:t.getSelectedCoordinates().map((function(t){return{type:M,properties:{},geometry:{type:L,coordinates:t.coordinates}}}))}),t._emitSelectionChange=!1),t._deletedFeaturesToEmit.length){var s=t._deletedFeaturesToEmit.map((function(t){return t.toGeoJSON()}));t._deletedFeaturesToEmit=[],t.ctx.map.fire(D,{features:s})}function u(){t.isDirty=!1,t.clearChangedIds()}u(),t.ctx.map.fire(V,{})}function Ct(t){var e,n=this;this._features={},this._featureIds=new tt,this._selectedFeatureIds=new tt,this._selectedCoordinates=[],this._changedFeatureIds=new tt,this._deletedFeaturesToEmit=[],this._emitSelectionChange=!1,this._mapInitialConfig={},this.ctx=t,this.sources={hot:[],cold:[]},this.render=function(){e||(e=requestAnimationFrame((function(){e=null,xt.call(n)})))},this.isDirty=!1}function Et(t,e){var n=t._selectedCoordinates.filter((function(e){return t._selectedFeatureIds.has(e.feature_id)}));t._selectedCoordinates.length===n.length||e.silent||(t._emitSelectionChange=!0),t._selectedCoordinates=n}Ct.prototype.createRenderBatch=function(){var t=this,e=this.render,n=0;return this.render=function(){n++},function(){t.render=e,n>0&&t.render()}},Ct.prototype.setDirty=function(){return this.isDirty=!0,this},Ct.prototype.featureChanged=function(t){return this._changedFeatureIds.add(t),this},Ct.prototype.getChangedIds=function(){return this._changedFeatureIds.values()},Ct.prototype.clearChangedIds=function(){return this._changedFeatureIds.clear(),this},Ct.prototype.getAllIds=function(){return this._featureIds.values()},Ct.prototype.add=function(t){return this.featureChanged(t.id),this._features[t.id]=t,this._featureIds.add(t.id),this},Ct.prototype.delete=function(t,e){var n=this;return void 0===e&&(e={}),St(t).forEach((function(t){n._featureIds.has(t)&&(n._featureIds.delete(t),n._selectedFeatureIds.delete(t),e.silent||-1===n._deletedFeaturesToEmit.indexOf(n._features[t])&&n._deletedFeaturesToEmit.push(n._features[t]),delete n._features[t],n.isDirty=!0)})),Et(this,e),this},Ct.prototype.get=function(t){return this._features[t]},Ct.prototype.getAll=function(){var t=this;return Object.keys(this._features).map((function(e){return t._features[e]}))},Ct.prototype.select=function(t,e){var n=this;return void 0===e&&(e={}),St(t).forEach((function(t){n._selectedFeatureIds.has(t)||(n._selectedFeatureIds.add(t),n._changedFeatureIds.add(t),e.silent||(n._emitSelectionChange=!0))})),this},Ct.prototype.deselect=function(t,e){var n=this;return void 0===e&&(e={}),St(t).forEach((function(t){n._selectedFeatureIds.has(t)&&(n._selectedFeatureIds.delete(t),n._changedFeatureIds.add(t),e.silent||(n._emitSelectionChange=!0))})),Et(this,e),this},Ct.prototype.clearSelected=function(t){return void 0===t&&(t={}),this.deselect(this._selectedFeatureIds.values(),{silent:t.silent}),this},Ct.prototype.setSelected=function(t,e){var n=this;return void 0===e&&(e={}),t=St(t),this.deselect(this._selectedFeatureIds.values().filter((function(e){return-1===t.indexOf(e)})),{silent:e.silent}),this.select(t.filter((function(t){return!n._selectedFeatureIds.has(t)})),{silent:e.silent}),this},Ct.prototype.setSelectedCoordinates=function(t){return this._selectedCoordinates=t,this._emitSelectionChange=!0,this},Ct.prototype.clearSelectedCoordinates=function(){return this._selectedCoordinates=[],this._emitSelectionChange=!0,this},Ct.prototype.getSelectedIds=function(){return this._selectedFeatureIds.values()},Ct.prototype.getSelected=function(){var t=this;return this._selectedFeatureIds.values().map((function(e){return t.get(e)}))},Ct.prototype.getSelectedCoordinates=function(){var t=this;return this._selectedCoordinates.map((function(e){return{coordinates:t.get(e.feature_id).getCoordinate(e.coord_path)}}))},Ct.prototype.isSelected=function(t){return this._selectedFeatureIds.has(t)},Ct.prototype.setFeatureProperty=function(t,e,n){this.get(t).setProperty(e,n),this.featureChanged(t)},Ct.prototype.storeMapConfig=function(){var t=this;X.forEach((function(e){t.ctx.map[e]&&(t._mapInitialConfig[e]=t.ctx.map[e].isEnabled())}))},Ct.prototype.restoreMapConfig=function(){var t=this;Object.keys(this._mapInitialConfig).forEach((function(e){t._mapInitialConfig[e]?t.ctx.map[e].enable():t.ctx.map[e].disable()}))},Ct.prototype.getInitialConfigValue=function(t){return void 0===this._mapInitialConfig[t]||this._mapInitialConfig[t]};var Mt=function(){for(var t=arguments,e={},n=0;n<arguments.length;n++){var o=t[n];for(var r in o)wt.call(o,r)&&(e[r]=o[r])}return e},wt=Object.prototype.hasOwnProperty;var It=["mode","feature","mouse"];function Lt(e){var n=null,o=null,r={onRemove:function(){return e.map.off("load",r.connect),clearInterval(o),r.removeLayers(),e.store.restoreMapConfig(),e.ui.removeButtons(),e.events.removeEventListeners(),e.ui.clearMapClasses(),e.map=null,e.container=null,e.store=null,n&&n.parentNode&&n.parentNode.removeChild(n),n=null,this},connect:function(){e.map.off("load",r.connect),clearInterval(o),r.addLayers(),e.store.storeMapConfig(),e.events.addEventListeners()},onAdd:function(i){var y=i.fire;return i.fire=function(t,e){var n=arguments;return 1===y.length&&1!==arguments.length&&(n=[Mt({},{type:t},e)]),y.apply(i,n)},e.map=i,e.events=function(e){var n=Object.keys(e.options.modes).reduce((function(t,n){return t[n]=_t(e.options.modes[n]),t}),{}),o={},r={},i={},a=null,s=null;i.drag=function(t,n){n({point:t.point,time:(new Date).getTime()})?(e.ui.queueMapClasses({mouse:S}),s.drag(t)):t.originalEvent.stopPropagation()},i.mousedrag=function(t){i.drag(t,(function(t){return!at(o,t)}))},i.touchdrag=function(t){i.drag(t,(function(t){return!st(r,t)}))},i.mousemove=function(t){if(1===(void 0!==t.originalEvent.buttons?t.originalEvent.buttons:t.originalEvent.which))return i.mousedrag(t);var n=rt(t,e);t.featureTarget=n,s.mousemove(t)},i.mousedown=function(t){o={time:(new Date).getTime(),point:t.point};var n=rt(t,e);t.featureTarget=n,s.mousedown(t)},i.mouseup=function(t){var n=rt(t,e);t.featureTarget=n,at(o,{point:t.point,time:(new Date).getTime()})?s.click(t):s.mouseup(t)},i.mouseout=function(t){s.mouseout(t)},i.touchstart=function(t){if(t.originalEvent.preventDefault(),e.options.touchEnabled){r={time:(new Date).getTime(),point:t.point};var n=nt.touch(t,null,e)[0];t.featureTarget=n,s.touchstart(t)}},i.touchmove=function(t){if(t.originalEvent.preventDefault(),e.options.touchEnabled)return s.touchmove(t),i.touchdrag(t)},i.touchend=function(t){if(t.originalEvent.preventDefault(),e.options.touchEnabled){var n=nt.touch(t,null,e)[0];t.featureTarget=n,st(r,{time:(new Date).getTime(),point:t.point})?s.tap(t):s.touchend(t)}};var u=function(t){return!(8===t||46===t||t>=48&&t<=57)};function c(o,r,i){void 0===i&&(i={}),s.stop();var u=n[o];if(void 0===u)throw new Error(o+" is not valid");a=o;var c=u(e,r);s=t(c,e),i.silent||e.map.fire(R,{mode:o}),e.store.setDirty(),e.store.render()}i.keydown=function(t){"mapboxgl-canvas"===(t.srcElement||t.target).classList[0]&&(8!==t.keyCode&&46!==t.keyCode||!e.options.controls.trash?u(t.keyCode)?s.keydown(t):49===t.keyCode&&e.options.controls.point?c(j.DRAW_POINT):50===t.keyCode&&e.options.controls.line_string?c(j.DRAW_LINE_STRING):51===t.keyCode&&e.options.controls.polygon&&c(j.DRAW_POLYGON):(t.preventDefault(),s.trash()))},i.keyup=function(t){u(t.keyCode)&&s.keyup(t)},i.zoomend=function(){e.store.changeZoom()},i.data=function(t){if("style"===t.dataType){var n=e.setup,o=e.map,r=e.options,i=e.store;r.styles.some((function(t){return o.getLayer(t.id)}))||(n.addLayers(),i.setDirty(),i.render())}};var l={trash:!1,combineFeatures:!1,uncombineFeatures:!1};return{start:function(){a=e.options.defaultMode,s=t(n[a](e),e)},changeMode:c,actionable:function(t){var n=!1;Object.keys(t).forEach((function(e){if(void 0===l[e])throw new Error("Invalid action type");l[e]!==t[e]&&(n=!0),l[e]=t[e]})),n&&e.map.fire(B,{actions:l})},currentModeName:function(){return a},currentModeRender:function(t,e){return s.render(t,e)},fire:function(t,e){i[t]&&i[t](e)},addEventListeners:function(){e.map.on("mousemove",i.mousemove),e.map.on("mousedown",i.mousedown),e.map.on("mouseup",i.mouseup),e.map.on("data",i.data),e.map.on("touchmove",i.touchmove),e.map.on("touchstart",i.touchstart),e.map.on("touchend",i.touchend),e.container.addEventListener("mouseout",i.mouseout),e.options.keybindings&&(e.container.addEventListener("keydown",i.keydown),e.container.addEventListener("keyup",i.keyup))},removeEventListeners:function(){e.map.off("mousemove",i.mousemove),e.map.off("mousedown",i.mousedown),e.map.off("mouseup",i.mouseup),e.map.off("data",i.data),e.map.off("touchmove",i.touchmove),e.map.off("touchstart",i.touchstart),e.map.off("touchend",i.touchend),e.container.removeEventListener("mouseout",i.mouseout),e.options.keybindings&&(e.container.removeEventListener("keydown",i.keydown),e.container.removeEventListener("keyup",i.keyup))},trash:function(t){s.trash(t)},combineFeatures:function(){s.combineFeatures()},uncombineFeatures:function(){s.uncombineFeatures()},getMode:function(){return a}}}(e),e.ui=function(t){var e={},n=null,o={mode:null,feature:null,mouse:null},r={mode:null,feature:null,mouse:null};function i(t){r=Mt(r,t)}function y(){var e,n;if(t.container){var i=[],a=[];It.forEach((function(t){r[t]!==o[t]&&(i.push(t+"-"+o[t]),null!==r[t]&&a.push(t+"-"+r[t]))})),i.length>0&&(e=t.container.classList).remove.apply(e,i),a.length>0&&(n=t.container.classList).add.apply(n,a),o=Mt(o,r)}}function v(t,e){void 0===e&&(e={});var o=document.createElement("button");return o.className=s+" "+e.className,o.setAttribute("title",e.title),e.container.appendChild(o),o.addEventListener("click",(function(o){if(o.preventDefault(),o.stopPropagation(),o.target===n)return m(),void e.onDeactivate();b(t),e.onActivate()}),!0),o}function m(){n&&(n.classList.remove(g),n=null)}function b(t){m();var o=e[t];o&&o&&"trash"!==t&&(o.classList.add(g),n=o)}return{setActiveButton:b,queueMapClasses:i,updateMapClasses:y,clearMapClasses:function(){i({mode:null,feature:null,mouse:null}),y()},addButtons:function(){var n=t.options.controls,o=document.createElement("div");return o.className=h+" "+a,n?(n[E.LINE]&&(e[E.LINE]=v(E.LINE,{container:o,className:u,title:"LineString tool "+(t.options.keybindings?"(l)":""),onActivate:function(){return t.events.changeMode(j.DRAW_LINE_STRING)},onDeactivate:function(){return t.events.trash()}})),n[E.POLYGON]&&(e[E.POLYGON]=v(E.POLYGON,{container:o,className:c,title:"Polygon tool "+(t.options.keybindings?"(p)":""),onActivate:function(){return t.events.changeMode(j.DRAW_POLYGON)},onDeactivate:function(){return t.events.trash()}})),n[E.POINT]&&(e[E.POINT]=v(E.POINT,{container:o,className:l,title:"Marker tool "+(t.options.keybindings?"(m)":""),onActivate:function(){return t.events.changeMode(j.DRAW_POINT)},onDeactivate:function(){return t.events.trash()}})),n.trash&&(e.trash=v("trash",{container:o,className:d,title:"Delete",onActivate:function(){t.events.trash()}})),n.combine_features&&(e.combine_features=v("combineFeatures",{container:o,className:p,title:"Combine",onActivate:function(){t.events.combineFeatures()}})),n.uncombine_features&&(e.uncombine_features=v("uncombineFeatures",{container:o,className:f,title:"Uncombine",onActivate:function(){t.events.uncombineFeatures()}})),o):o},removeButtons:function(){Object.keys(e).forEach((function(t){var n=e[t];n.parentNode&&n.parentNode.removeChild(n),delete e[t]}))}}}(e),e.container=i.getContainer(),e.store=new Ct(e),n=e.ui.addButtons(),e.options.boxSelect&&(i.boxZoom.disable(),i.dragPan.disable(),i.dragPan.enable()),i.loaded()?r.connect():(i.on("load",r.connect),o=setInterval((function(){i.loaded()&&r.connect()}),16)),e.events.start(),n},addLayers:function(){e.map.addSource(m,{data:{type:P,features:[]},type:"geojson"}),e.map.addSource(v,{data:{type:P,features:[]},type:"geojson"}),e.options.styles.forEach((function(t){e.map.addLayer(t)})),e.store.setDirty(!0),e.store.render()},removeLayers:function(){e.options.styles.forEach((function(t){e.map.getLayer(t.id)&&e.map.removeLayer(t.id)})),e.map.getSource(m)&&e.map.removeSource(m),e.map.getSource(v)&&e.map.removeSource(v)}};return e.setup=r,r}function Pt(t){return function(e){var n=e.featureTarget;return!!n&&(!!n.properties&&n.properties.meta===t)}}function Ft(t){return!!t.featureTarget&&(!!t.featureTarget.properties&&(t.featureTarget.properties.active===Z&&t.featureTarget.properties.meta===W))}function Ot(t){return!!t.featureTarget&&(!!t.featureTarget.properties&&(t.featureTarget.properties.active===K&&t.featureTarget.properties.meta===W))}function kt(t){return void 0===t.featureTarget}function Tt(t){var e=t.featureTarget;return!!e&&(!!e.properties&&e.properties.meta===Y)}function jt(t){return!!t.originalEvent&&!0===t.originalEvent.shiftKey}function At(t){return 27===t.keyCode}function Dt(t){return 13===t.keyCode}var Nt=Ut;function Ut(t,e){this.x=t,this.y=e}function Rt(t,e){var n=e.getBoundingClientRect();return new Nt(t.clientX-n.left-(e.clientLeft||0),t.clientY-n.top-(e.clientTop||0))}function Bt(t,e,n,o){return{type:M,properties:{meta:Y,parent:t,coord_path:n,active:o?Z:K},geometry:{type:L,coordinates:e}}}function Vt(t,e,n){void 0===e&&(e={}),void 0===n&&(n=null);var o,r=t.geometry,i=r.type,a=r.coordinates,s=t.properties&&t.properties.id,u=[];function c(t,n){var o="",r=null;t.forEach((function(t,i){var a=null!=n?n+"."+i:String(i),c=Bt(s,t,a,l(a));if(e.midpoints&&r){var d=function(t,e,n){var o=e.geometry.coordinates,r=n.geometry.coordinates;if(o[1]>85||o[1]<-85||r[1]>85||r[1]<-85)return null;var i={lng:(o[0]+r[0])/2,lat:(o[1]+r[1])/2};return{type:M,properties:{meta:q,parent:t,lng:i.lng,lat:i.lat,coord_path:n.properties.coord_path},geometry:{type:L,coordinates:[i.lng,i.lat]}}}(s,r,c);d&&u.push(d)}r=c;var p=JSON.stringify(t);o!==p&&u.push(c),0===i&&(o=p)}))}function l(t){return!!e.selectedPaths&&-1!==e.selectedPaths.indexOf(t)}return i===L?u.push(Bt(s,a,n,l(n))):i===w?a.forEach((function(t,e){c(t,null!==n?n+"."+e:String(e))})):i===I?c(a,n):0===i.indexOf(F)&&(o=i.replace(F,""),a.forEach((function(n,r){var i={type:M,properties:t.properties,geometry:{type:o,coordinates:n}};u=u.concat(Vt(i,e,r))}))),u}Ut.prototype={clone:function(){return new Ut(this.x,this.y)},add:function(t){return this.clone()._add(t)},sub:function(t){return this.clone()._sub(t)},multByPoint:function(t){return this.clone()._multByPoint(t)},divByPoint:function(t){return this.clone()._divByPoint(t)},mult:function(t){return this.clone()._mult(t)},div:function(t){return this.clone()._div(t)},rotate:function(t){return this.clone()._rotate(t)},rotateAround:function(t,e){return this.clone()._rotateAround(t,e)},matMult:function(t){return this.clone()._matMult(t)},unit:function(){return this.clone()._unit()},perp:function(){return this.clone()._perp()},round:function(){return this.clone()._round()},mag:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},equals:function(t){return this.x===t.x&&this.y===t.y},dist:function(t){return Math.sqrt(this.distSqr(t))},distSqr:function(t){var e=t.x-this.x,n=t.y-this.y;return e*e+n*n},angle:function(){return Math.atan2(this.y,this.x)},angleTo:function(t){return Math.atan2(this.y-t.y,this.x-t.x)},angleWith:function(t){return this.angleWithSep(t.x,t.y)},angleWithSep:function(t,e){return Math.atan2(this.x*e-this.y*t,this.x*t+this.y*e)},_matMult:function(t){var e=t[0]*this.x+t[1]*this.y,n=t[2]*this.x+t[3]*this.y;return this.x=e,this.y=n,this},_add:function(t){return this.x+=t.x,this.y+=t.y,this},_sub:function(t){return this.x-=t.x,this.y-=t.y,this},_mult:function(t){return this.x*=t,this.y*=t,this},_div:function(t){return this.x/=t,this.y/=t,this},_multByPoint:function(t){return this.x*=t.x,this.y*=t.y,this},_divByPoint:function(t){return this.x/=t.x,this.y/=t.y,this},_unit:function(){return this._div(this.mag()),this},_perp:function(){var t=this.y;return this.y=this.x,this.x=-t,this},_rotate:function(t){var e=Math.cos(t),n=Math.sin(t),o=e*this.x-n*this.y,r=n*this.x+e*this.y;return this.x=o,this.y=r,this},_rotateAround:function(t,e){var n=Math.cos(t),o=Math.sin(t),r=e.x+n*(this.x-e.x)-o*(this.y-e.y),i=e.y+o*(this.x-e.x)+n*(this.y-e.y);return this.x=r,this.y=i,this},_round:function(){return this.x=Math.round(this.x),this.y=Math.round(this.y),this}},Ut.convert=function(t){return t instanceof Ut?t:Array.isArray(t)?new Ut(t[0],t[1]):t};var Jt=function(t){setTimeout((function(){t.map&&t.map.doubleClickZoom&&t._ctx&&t._ctx.store&&t._ctx.store.getInitialConfigValue&&t._ctx.store.getInitialConfigValue("doubleClickZoom")&&t.map.doubleClickZoom.enable()}),0)},Gt=function(t){setTimeout((function(){t.map&&t.map.doubleClickZoom&&t.map.doubleClickZoom.disable()}),0)},zt=function(t){if(!t||!t.type)return null;var e=$t[t.type];if(!e)return null;if("geometry"===e)return{type:"FeatureCollection",features:[{type:"Feature",properties:{},geometry:t}]};if("feature"===e)return{type:"FeatureCollection",features:[t]};if("featurecollection"===e)return t},$t={Point:"geometry",MultiPoint:"geometry",LineString:"geometry",MultiLineString:"geometry",Polygon:"geometry",MultiPolygon:"geometry",GeometryCollection:"geometry",Feature:"feature",FeatureCollection:"featurecollection"};function Wt(t){switch(t&&t.type||null){case"FeatureCollection":return t.features=t.features.reduce((function(t,e){return t.concat(Wt(e))}),[]),t;case"Feature":return t.geometry?Wt(t.geometry).map((function(e){var n={type:"Feature",properties:JSON.parse(JSON.stringify(t.properties)),geometry:e};return void 0!==t.id&&(n.id=t.id),n})):[t];case"MultiPoint":return t.coordinates.map((function(t){return{type:"Point",coordinates:t}}));case"MultiPolygon":return t.coordinates.map((function(t){return{type:"Polygon",coordinates:t}}));case"MultiLineString":return t.coordinates.map((function(t){return{type:"LineString",coordinates:t}}));case"GeometryCollection":return t.geometries.map(Wt).reduce((function(t,e){return t.concat(e)}),[]);case"Point":case"Polygon":case"LineString":return[t]}}var qt=function(t){if(!t)return[];var e=Wt(zt(t)),n=[];return e.features.forEach((function(t){t.geometry&&(n=n.concat(function t(e){return Array.isArray(e)&&e.length&&"number"==typeof e[0]?[e]:e.reduce((function(e,n){return Array.isArray(n)&&Array.isArray(n[0])?e.concat(t(n)):(e.push(n),e)}),[])}(t.geometry.coordinates)))})),n},Yt=ut((function(t){var e=t.exports=function(t){return new n(t)};function n(t){this.value=t}function o(t,e,n){var o=[],a=[],l=!0;return function t(d){var p=n?r(d):d,f={},h=!0,g={node:p,node_:d,path:[].concat(o),parent:a[a.length-1],parents:a,key:o.slice(-1)[0],isRoot:0===o.length,level:o.length,circular:null,update:function(t,e){g.isRoot||(g.parent.node[g.key]=t),g.node=t,e&&(h=!1)},delete:function(t){delete g.parent.node[g.key],t&&(h=!1)},remove:function(t){s(g.parent.node)?g.parent.node.splice(g.key,1):delete g.parent.node[g.key],t&&(h=!1)},keys:null,before:function(t){f.before=t},after:function(t){f.after=t},pre:function(t){f.pre=t},post:function(t){f.post=t},stop:function(){l=!1},block:function(){h=!1}};if(!l)return g;function y(){if("object"==typeof g.node&&null!==g.node){g.keys&&g.node_===g.node||(g.keys=i(g.node)),g.isLeaf=0==g.keys.length;for(var t=0;t<a.length;t++)if(a[t].node_===d){g.circular=a[t];break}}else g.isLeaf=!0,g.keys=null;g.notLeaf=!g.isLeaf,g.notRoot=!g.isRoot}y();var v=e.call(g,g.node);return void 0!==v&&g.update&&g.update(v),f.before&&f.before.call(g,g.node),h?("object"!=typeof g.node||null===g.node||g.circular||(a.push(g),y(),u(g.keys,(function(e,r){o.push(e),f.pre&&f.pre.call(g,g.node[e],e);var i=t(g.node[e]);n&&c.call(g.node,e)&&(g.node[e]=i.node),i.isLast=r==g.keys.length-1,i.isFirst=0==r,f.post&&f.post.call(g,i),o.pop()})),a.pop()),f.after&&f.after.call(g,g.node),g):g}(t).node}function r(t){if("object"==typeof t&&null!==t){var e;if(s(t))e=[];else if("[object Date]"===a(t))e=new Date(t.getTime?t.getTime():t);else if(function(t){return"[object RegExp]"===a(t)}(t))e=new RegExp(t);else if(function(t){return"[object Error]"===a(t)}(t))e={message:t.message};else if(function(t){return"[object Boolean]"===a(t)}(t))e=new Boolean(t);else if(function(t){return"[object Number]"===a(t)}(t))e=new Number(t);else if(function(t){return"[object String]"===a(t)}(t))e=new String(t);else if(Object.create&&Object.getPrototypeOf)e=Object.create(Object.getPrototypeOf(t));else if(t.constructor===Object)e={};else{var n=t.constructor&&t.constructor.prototype||t.__proto__||{},o=function(){};o.prototype=n,e=new o}return u(i(t),(function(n){e[n]=t[n]})),e}return t}n.prototype.get=function(t){for(var e=this.value,n=0;n<t.length;n++){var o=t[n];if(!e||!c.call(e,o)){e=void 0;break}e=e[o]}return e},n.prototype.has=function(t){for(var e=this.value,n=0;n<t.length;n++){var o=t[n];if(!e||!c.call(e,o))return!1;e=e[o]}return!0},n.prototype.set=function(t,e){for(var n=this.value,o=0;o<t.length-1;o++){var r=t[o];c.call(n,r)||(n[r]={}),n=n[r]}return n[t[o]]=e,e},n.prototype.map=function(t){return o(this.value,t,!0)},n.prototype.forEach=function(t){return this.value=o(this.value,t,!1),this.value},n.prototype.reduce=function(t,e){var n=1===arguments.length,o=n?this.value:e;return this.forEach((function(e){this.isRoot&&n||(o=t.call(this,o,e))})),o},n.prototype.paths=function(){var t=[];return this.forEach((function(e){t.push(this.path)})),t},n.prototype.nodes=function(){var t=[];return this.forEach((function(e){t.push(this.node)})),t},n.prototype.clone=function(){var t=[],e=[];return function n(o){for(var a=0;a<t.length;a++)if(t[a]===o)return e[a];if("object"==typeof o&&null!==o){var s=r(o);return t.push(o),e.push(s),u(i(o),(function(t){s[t]=n(o[t])})),t.pop(),e.pop(),s}return o}(this.value)};var i=Object.keys||function(t){var e=[];for(var n in t)e.push(n);return e};function a(t){return Object.prototype.toString.call(t)}var s=Array.isArray||function(t){return"[object Array]"===Object.prototype.toString.call(t)},u=function(t,e){if(t.forEach)return t.forEach(e);for(var n=0;n<t.length;n++)e(t[n],n,t)};u(i(n.prototype),(function(t){e[t]=function(e){var o=[].slice.call(arguments,1),r=new n(e);return r[t].apply(r,o)}}));var c=Object.hasOwnProperty||function(t,e){return e in t}})),Zt=Kt;function Kt(t){if(!(this instanceof Kt))return new Kt(t);this._bbox=t||[1/0,1/0,-1/0,-1/0],this._valid=!!t}Kt.prototype.include=function(t){return this._valid=!0,this._bbox[0]=Math.min(this._bbox[0],t[0]),this._bbox[1]=Math.min(this._bbox[1],t[1]),this._bbox[2]=Math.max(this._bbox[2],t[0]),this._bbox[3]=Math.max(this._bbox[3],t[1]),this},Kt.prototype.equals=function(t){var e;return e=t instanceof Kt?t.bbox():t,this._bbox[0]==e[0]&&this._bbox[1]==e[1]&&this._bbox[2]==e[2]&&this._bbox[3]==e[3]},Kt.prototype.center=function(t){return this._valid?[(this._bbox[0]+this._bbox[2])/2,(this._bbox[1]+this._bbox[3])/2]:null},Kt.prototype.union=function(t){var e;return this._valid=!0,e=t instanceof Kt?t.bbox():t,this._bbox[0]=Math.min(this._bbox[0],e[0]),this._bbox[1]=Math.min(this._bbox[1],e[1]),this._bbox[2]=Math.max(this._bbox[2],e[2]),this._bbox[3]=Math.max(this._bbox[3],e[3]),this},Kt.prototype.bbox=function(){return this._valid?this._bbox:null},Kt.prototype.contains=function(t){if(!t)return this._fastContains();if(!this._valid)return null;var e=t[0],n=t[1];return this._bbox[0]<=e&&this._bbox[1]<=n&&this._bbox[2]>=e&&this._bbox[3]>=n},Kt.prototype.intersect=function(t){return this._valid?(e=t instanceof Kt?t.bbox():t,!(this._bbox[0]>e[2]||this._bbox[2]<e[0]||this._bbox[3]<e[1]||this._bbox[1]>e[3])):null;var e},Kt.prototype._fastContains=function(){if(!this._valid)return new Function("return null;");var t="return "+this._bbox[0]+"<= ll[0] &&"+this._bbox[1]+"<= ll[1] &&"+this._bbox[2]+">= ll[0] &&"+this._bbox[3]+">= ll[1]";return new Function("ll",t)},Kt.prototype.polygon=function(){return this._valid?{type:"Polygon",coordinates:[[[this._bbox[0],this._bbox[1]],[this._bbox[2],this._bbox[1]],[this._bbox[2],this._bbox[3]],[this._bbox[0],this._bbox[3]],[this._bbox[0],this._bbox[1]]]]}:null};var Xt={features:["FeatureCollection"],coordinates:["Point","MultiPoint","LineString","MultiLineString","Polygon","MultiPolygon"],geometry:["Feature"],geometries:["GeometryCollection"]},Ht=Object.keys(Xt),Qt=function(t){return te(t).bbox()};function te(t){for(var e=Zt(),n=qt(t),o=0;o<n.length;o++)e.include(n[o]);return e}Qt.polygon=function(t){return te(t).polygon()},Qt.bboxify=function(t){return Yt(t).map((function(t){t&&(Ht.some((function(e){return!!t[e]&&-1!==Xt[e].indexOf(t.type)}))&&(t.bbox=te(t).bbox(),this.update(t)))}))};function ee(t,e){var n=-90,o=90,r=-90,i=90,a=270,s=-270;t.forEach((function(t){var e=Qt(t),u=e[1],c=e[3],l=e[0],d=e[2];u>n&&(n=u),c<o&&(o=c),c>r&&(r=c),u<i&&(i=u),l<a&&(a=l),d>s&&(s=d)}));var u=e;return n+u.lat>85&&(u.lat=85-n),r+u.lat>90&&(u.lat=90-r),o+u.lat<-85&&(u.lat=-85-o),i+u.lat<-90&&(u.lat=-90-i),a+u.lng<=-270&&(u.lng+=360*Math.ceil(Math.abs(u.lng)/360)),s+u.lng>=270&&(u.lng-=360*Math.ceil(Math.abs(u.lng)/360)),u}function ne(t,e){var n=ee(t.map((function(t){return t.toGeoJSON()})),e);t.forEach((function(t){var e,o=t.getCoordinates(),r=function(t){var e={lng:t[0]+n.lng,lat:t[1]+n.lat};return[e.lng,e.lat]},i=function(t){return t.map((function(t){return r(t)}))};t.type===L?e=r(o):t.type===I||t.type===O?e=o.map(r):t.type===w||t.type===k?e=o.map(i):t.type===T&&(e=o.map((function(t){return t.map((function(t){return i(t)}))}))),t.incomingCoords(e)}))}var oe={onSetup:function(t){var e=this,n={dragMoveLocation:null,boxSelectStartLocation:null,boxSelectElement:void 0,boxSelecting:!1,canBoxSelect:!1,dragMoving:!1,canDragMove:!1,initiallySelectedFeatureIds:t.featureIds||[]};return this.setSelected(n.initiallySelectedFeatureIds.filter((function(t){return void 0!==e.getFeature(t)}))),this.fireActionable(),this.setActionableState({combineFeatures:!0,uncombineFeatures:!0,trash:!0}),n},fireUpdate:function(){this.map.fire(N,{action:z,features:this.getSelected().map((function(t){return t.toGeoJSON()}))})},fireActionable:function(){var t=this,e=this.getSelected(),n=e.filter((function(e){return t.isInstanceOf("MultiFeature",e)})),o=!1;if(e.length>1){o=!0;var r=e[0].type.replace("Multi","");e.forEach((function(t){t.type.replace("Multi","")!==r&&(o=!1)}))}var i=n.length>0,a=e.length>0;this.setActionableState({combineFeatures:o,uncombineFeatures:i,trash:a})},getUniqueIds:function(t){return t.length?t.map((function(t){return t.properties.id})).filter((function(t){return void 0!==t})).reduce((function(t,e){return t.add(e),t}),new tt).values():[]},stopExtendedInteractions:function(t){t.boxSelectElement&&(t.boxSelectElement.parentNode&&t.boxSelectElement.parentNode.removeChild(t.boxSelectElement),t.boxSelectElement=null),this.map.dragPan.enable(),t.boxSelecting=!1,t.canBoxSelect=!1,t.dragMoving=!1,t.canDragMove=!1},onStop:function(){Jt(this)},onMouseMove:function(t){return this.stopExtendedInteractions(t),!0},onMouseOut:function(t){return!t.dragMoving||this.fireUpdate()}};oe.onTap=oe.onClick=function(t,e){return kt(e)?this.clickAnywhere(t,e):Pt(Y)(e)?this.clickOnVertex(t,e):function(t){return!!t.featureTarget&&(!!t.featureTarget.properties&&t.featureTarget.properties.meta===W)}(e)?this.clickOnFeature(t,e):void 0},oe.clickAnywhere=function(t){var e=this,n=this.getSelectedIds();n.length&&(this.clearSelectedFeatures(),n.forEach((function(t){return e.doRender(t)}))),Jt(this),this.stopExtendedInteractions(t)},oe.clickOnVertex=function(t,e){this.changeMode(j.DIRECT_SELECT,{featureId:e.featureTarget.properties.parent,coordPath:e.featureTarget.properties.coord_path,startPos:e.lngLat}),this.updateUIClasses({mouse:_})},oe.startOnActiveFeature=function(t,e){this.stopExtendedInteractions(t),this.map.dragPan.disable(),this.doRender(e.featureTarget.properties.id),t.canDragMove=!0,t.dragMoveLocation=e.lngLat},oe.clickOnFeature=function(t,e){var n=this;Gt(this),this.stopExtendedInteractions(t);var o=jt(e),r=this.getSelectedIds(),i=e.featureTarget.properties.id,a=this.isSelected(i);if(!o&&a&&this.getFeature(i).type!==L)return this.changeMode(j.DIRECT_SELECT,{featureId:i});a&&o?(this.deselect(i),this.updateUIClasses({mouse:x}),1===r.length&&Jt(this)):!a&&o?(this.select(i),this.updateUIClasses({mouse:_})):a||o||(r.forEach((function(t){return n.doRender(t)})),this.setSelected(i),this.updateUIClasses({mouse:_})),this.doRender(i)},oe.onMouseDown=function(t,e){return Ft(e)?this.startOnActiveFeature(t,e):this.drawConfig.boxSelect&&function(t){return!!t.originalEvent&&(!!t.originalEvent.shiftKey&&0===t.originalEvent.button)}(e)?this.startBoxSelect(t,e):void 0},oe.startBoxSelect=function(t,e){this.stopExtendedInteractions(t),this.map.dragPan.disable(),t.boxSelectStartLocation=Rt(e.originalEvent,this.map.getContainer()),t.canBoxSelect=!0},oe.onTouchStart=function(t,e){if(Ft(e))return this.startOnActiveFeature(t,e)},oe.onDrag=function(t,e){return t.canDragMove?this.dragMove(t,e):this.drawConfig.boxSelect&&t.canBoxSelect?this.whileBoxSelect(t,e):void 0},oe.whileBoxSelect=function(t,e){t.boxSelecting=!0,this.updateUIClasses({mouse:b}),t.boxSelectElement||(t.boxSelectElement=document.createElement("div"),t.boxSelectElement.classList.add(y),this.map.getContainer().appendChild(t.boxSelectElement));var n=Rt(e.originalEvent,this.map.getContainer()),o=Math.min(t.boxSelectStartLocation.x,n.x),r=Math.max(t.boxSelectStartLocation.x,n.x),i=Math.min(t.boxSelectStartLocation.y,n.y),a=Math.max(t.boxSelectStartLocation.y,n.y),s="translate("+o+"px, "+i+"px)";t.boxSelectElement.style.transform=s,t.boxSelectElement.style.WebkitTransform=s,t.boxSelectElement.style.width=r-o+"px",t.boxSelectElement.style.height=a-i+"px"},oe.dragMove=function(t,e){t.dragMoving=!0,e.originalEvent.stopPropagation();var n={lng:e.lngLat.lng-t.dragMoveLocation.lng,lat:e.lngLat.lat-t.dragMoveLocation.lat};ne(this.getSelected(),n),t.dragMoveLocation=e.lngLat},oe.onMouseUp=function(t,e){var n=this;if(t.dragMoving)this.fireUpdate();else if(t.boxSelecting){var o=[t.boxSelectStartLocation,Rt(e.originalEvent,this.map.getContainer())],r=this.featuresAt(null,o,"click"),i=this.getUniqueIds(r).filter((function(t){return!n.isSelected(t)}));i.length&&(this.select(i),i.forEach((function(t){return n.doRender(t)})),this.updateUIClasses({mouse:_}))}this.stopExtendedInteractions(t)},oe.toDisplayFeatures=function(t,e,n){e.properties.active=this.isSelected(e.properties.id)?Z:K,n(e),this.fireActionable(),e.properties.active===Z&&e.geometry.type!==L&&Vt(e).forEach(n)},oe.onTrash=function(){this.deleteFeature(this.getSelectedIds()),this.fireActionable()},oe.onCombineFeatures=function(){var t=this.getSelected();if(!(0===t.length||t.length<2)){for(var e=[],n=[],o=t[0].type.replace("Multi",""),r=0;r<t.length;r++){var i=t[r];if(i.type.replace("Multi","")!==o)return;i.type.includes("Multi")?i.getCoordinates().forEach((function(t){e.push(t)})):e.push(i.getCoordinates()),n.push(i.toGeoJSON())}if(n.length>1){var a=this.newFeature({type:M,properties:n[0].properties,geometry:{type:"Multi"+o,coordinates:e}});this.addFeature(a),this.deleteFeature(this.getSelectedIds(),{silent:!0}),this.setSelected([a.id]),this.map.fire(J,{createdFeatures:[a.toGeoJSON()],deletedFeatures:n})}this.fireActionable()}},oe.onUncombineFeatures=function(){var t=this,e=this.getSelected();if(0!==e.length){for(var n=[],o=[],r=function(r){var i=e[r];t.isInstanceOf("MultiFeature",i)&&(i.getFeatures().forEach((function(e){t.addFeature(e),e.properties=i.properties,n.push(e.toGeoJSON()),t.select([e.id])})),t.deleteFeature(i.id,{silent:!0}),o.push(i.toGeoJSON()))},i=0;i<e.length;i++)r(i);n.length>1&&this.map.fire(G,{createdFeatures:n,deletedFeatures:o}),this.fireActionable()}};var re=Pt(Y),ie=Pt(q),ae={fireUpdate:function(){this.map.fire(N,{action:$,features:this.getSelected().map((function(t){return t.toGeoJSON()}))})},fireActionable:function(t){this.setActionableState({combineFeatures:!1,uncombineFeatures:!1,trash:t.selectedCoordPaths.length>0})},startDragging:function(t,e){this.map.dragPan.disable(),t.canDragMove=!0,t.dragMoveLocation=e.lngLat},stopDragging:function(t){this.map.dragPan.enable(),t.dragMoving=!1,t.canDragMove=!1,t.dragMoveLocation=null},onVertex:function(t,e){this.startDragging(t,e);var n=e.featureTarget.properties,o=t.selectedCoordPaths.indexOf(n.coord_path);jt(e)||-1!==o?jt(e)&&-1===o&&t.selectedCoordPaths.push(n.coord_path):t.selectedCoordPaths=[n.coord_path];var r=this.pathsToCoordinates(t.featureId,t.selectedCoordPaths);this.setSelectedCoordinates(r)},onMidpoint:function(t,e){this.startDragging(t,e);var n=e.featureTarget.properties;t.feature.addCoordinate(n.coord_path,n.lng,n.lat),this.fireUpdate(),t.selectedCoordPaths=[n.coord_path]},pathsToCoordinates:function(t,e){return e.map((function(e){return{feature_id:t,coord_path:e}}))},onFeature:function(t,e){0===t.selectedCoordPaths.length?this.startDragging(t,e):this.stopDragging(t)},dragFeature:function(t,e,n){ne(this.getSelected(),n),t.dragMoveLocation=e.lngLat},dragVertex:function(t,e,n){for(var o=t.selectedCoordPaths.map((function(e){return t.feature.getCoordinate(e)})),r=ee(o.map((function(t){return{type:M,properties:{},geometry:{type:L,coordinates:t}}})),n),i=0;i<o.length;i++){var a=o[i];t.feature.updateCoordinate(t.selectedCoordPaths[i],a[0]+r.lng,a[1]+r.lat)}},clickNoTarget:function(){this.changeMode(j.SIMPLE_SELECT)},clickInactive:function(){this.changeMode(j.SIMPLE_SELECT)},clickActiveFeature:function(t){t.selectedCoordPaths=[],this.clearSelectedCoordinates(),t.feature.changed()},onSetup:function(t){var e=t.featureId,n=this.getFeature(e);if(!n)throw new Error("You must provide a featureId to enter direct_select mode");if(n.type===L)throw new TypeError("direct_select mode doesn't handle point features");var o={featureId:e,feature:n,dragMoveLocation:t.startPos||null,dragMoving:!1,canDragMove:!1,selectedCoordPaths:t.coordPath?[t.coordPath]:[]};return this.setSelectedCoordinates(this.pathsToCoordinates(e,o.selectedCoordPaths)),this.setSelected(e),Gt(this),this.setActionableState({trash:!0}),o},onStop:function(){Jt(this),this.clearSelectedCoordinates()},toDisplayFeatures:function(t,e,n){t.featureId===e.properties.id?(e.properties.active=Z,n(e),Vt(e,{map:this.map,midpoints:!0,selectedPaths:t.selectedCoordPaths}).forEach(n)):(e.properties.active=K,n(e)),this.fireActionable(t)},onTrash:function(t){t.selectedCoordPaths.sort((function(t,e){return e.localeCompare(t,"en",{numeric:!0})})).forEach((function(e){return t.feature.removeCoordinate(e)})),this.fireUpdate(),t.selectedCoordPaths=[],this.clearSelectedCoordinates(),this.fireActionable(t),!1===t.feature.isValid()&&(this.deleteFeature([t.featureId]),this.changeMode(j.SIMPLE_SELECT,{}))},onMouseMove:function(t,e){var n=Ft(e),o=re(e),r=0===t.selectedCoordPaths.length;return n&&r||o&&!r?this.updateUIClasses({mouse:_}):this.updateUIClasses({mouse:C}),this.stopDragging(t),!0},onMouseOut:function(t){return t.dragMoving&&this.fireUpdate(),!0}};ae.onTouchStart=ae.onMouseDown=function(t,e){return re(e)?this.onVertex(t,e):Ft(e)?this.onFeature(t,e):ie(e)?this.onMidpoint(t,e):void 0},ae.onDrag=function(t,e){if(!0===t.canDragMove){t.dragMoving=!0,e.originalEvent.stopPropagation();var n={lng:e.lngLat.lng-t.dragMoveLocation.lng,lat:e.lngLat.lat-t.dragMoveLocation.lat};t.selectedCoordPaths.length>0?this.dragVertex(t,e,n):this.dragFeature(t,e,n),t.dragMoveLocation=e.lngLat}},ae.onClick=function(t,e){return kt(e)?this.clickNoTarget(t,e):Ft(e)?this.clickActiveFeature(t,e):Ot(e)?this.clickInactive(t,e):void this.stopDragging(t)},ae.onTap=function(t,e){return kt(e)?this.clickNoTarget(t,e):Ft(e)?this.clickActiveFeature(t,e):Ot(e)?this.clickInactive(t,e):void 0},ae.onTouchEnd=ae.onMouseUp=function(t){t.dragMoving&&this.fireUpdate(),this.stopDragging(t)};var se={};function ue(t,e){return!!t.lngLat&&(t.lngLat.lng===e[0]&&t.lngLat.lat===e[1])}se.onSetup=function(){var t=this.newFeature({type:M,properties:{},geometry:{type:L,coordinates:[]}});return this.addFeature(t),this.clearSelectedFeatures(),this.updateUIClasses({mouse:b}),this.activateUIButton(E.POINT),this.setActionableState({trash:!0}),{point:t}},se.stopDrawingAndRemove=function(t){this.deleteFeature([t.point.id],{silent:!0}),this.changeMode(j.SIMPLE_SELECT)},se.onTap=se.onClick=function(t,e){this.updateUIClasses({mouse:_}),t.point.updateCoordinate("",e.lngLat.lng,e.lngLat.lat),this.map.fire(A,{features:[t.point.toGeoJSON()]}),this.changeMode(j.SIMPLE_SELECT,{featureIds:[t.point.id]})},se.onStop=function(t){this.activateUIButton(),t.point.getCoordinate().length||this.deleteFeature([t.point.id],{silent:!0})},se.toDisplayFeatures=function(t,e,n){var o=e.properties.id===t.point.id;if(e.properties.active=o?Z:K,!o)return n(e)},se.onTrash=se.stopDrawingAndRemove,se.onKeyUp=function(t,e){if(At(e)||Dt(e))return this.stopDrawingAndRemove(t,e)};var ce={onSetup:function(){var t=this.newFeature({type:M,properties:{},geometry:{type:w,coordinates:[[]]}});return this.addFeature(t),this.clearSelectedFeatures(),Gt(this),this.updateUIClasses({mouse:b}),this.activateUIButton(E.POLYGON),this.setActionableState({trash:!0}),{polygon:t,currentVertexPosition:0}},clickAnywhere:function(t,e){if(t.currentVertexPosition>0&&ue(e,t.polygon.coordinates[0][t.currentVertexPosition-1]))return this.changeMode(j.SIMPLE_SELECT,{featureIds:[t.polygon.id]});this.updateUIClasses({mouse:b}),t.polygon.updateCoordinate("0."+t.currentVertexPosition,e.lngLat.lng,e.lngLat.lat),t.currentVertexPosition++,t.polygon.updateCoordinate("0."+t.currentVertexPosition,e.lngLat.lng,e.lngLat.lat)},clickOnVertex:function(t){return this.changeMode(j.SIMPLE_SELECT,{featureIds:[t.polygon.id]})},onMouseMove:function(t,e){t.polygon.updateCoordinate("0."+t.currentVertexPosition,e.lngLat.lng,e.lngLat.lat),Tt(e)&&this.updateUIClasses({mouse:x})}};ce.onTap=ce.onClick=function(t,e){return Tt(e)?this.clickOnVertex(t,e):this.clickAnywhere(t,e)},ce.onKeyUp=function(t,e){At(e)?(this.deleteFeature([t.polygon.id],{silent:!0}),this.changeMode(j.SIMPLE_SELECT)):Dt(e)&&this.changeMode(j.SIMPLE_SELECT,{featureIds:[t.polygon.id]})},ce.onStop=function(t){this.updateUIClasses({mouse:C}),Jt(this),this.activateUIButton(),void 0!==this.getFeature(t.polygon.id)&&(t.polygon.removeCoordinate("0."+t.currentVertexPosition),t.polygon.isValid()?this.map.fire(A,{features:[t.polygon.toGeoJSON()]}):(this.deleteFeature([t.polygon.id],{silent:!0}),this.changeMode(j.SIMPLE_SELECT,{},{silent:!0})))},ce.toDisplayFeatures=function(t,e,n){var o=e.properties.id===t.polygon.id;if(e.properties.active=o?Z:K,!o)return n(e);if(0!==e.geometry.coordinates.length){var r=e.geometry.coordinates[0].length;if(!(r<3)){if(e.properties.meta=W,n(Bt(t.polygon.id,e.geometry.coordinates[0][0],"0.0",!1)),r>3){var i=e.geometry.coordinates[0].length-3;n(Bt(t.polygon.id,e.geometry.coordinates[0][i],"0."+i,!1))}if(r<=4){var a=[[e.geometry.coordinates[0][0][0],e.geometry.coordinates[0][0][1]],[e.geometry.coordinates[0][1][0],e.geometry.coordinates[0][1][1]]];if(n({type:M,properties:e.properties,geometry:{coordinates:a,type:I}}),3===r)return}return n(e)}}},ce.onTrash=function(t){this.deleteFeature([t.polygon.id],{silent:!0}),this.changeMode(j.SIMPLE_SELECT)};var le={onSetup:function(t){var e,n,o=(t=t||{}).featureId,r="forward";if(o){if(!(e=this.getFeature(o)))throw new Error("Could not find a feature with the provided featureId");var i=t.from;if(i&&"Feature"===i.type&&i.geometry&&"Point"===i.geometry.type&&(i=i.geometry),i&&"Point"===i.type&&i.coordinates&&2===i.coordinates.length&&(i=i.coordinates),!i||!Array.isArray(i))throw new Error("Please use the `from` property to indicate which point to continue the line from");var a=e.coordinates.length-1;if(e.coordinates[a][0]===i[0]&&e.coordinates[a][1]===i[1])n=a+1,e.addCoordinate.apply(e,[n].concat(e.coordinates[a]));else{if(e.coordinates[0][0]!==i[0]||e.coordinates[0][1]!==i[1])throw new Error("`from` should match the point at either the start or the end of the provided LineString");r="backwards",n=0,e.addCoordinate.apply(e,[n].concat(e.coordinates[0]))}}else e=this.newFeature({type:M,properties:{},geometry:{type:I,coordinates:[]}}),n=0,this.addFeature(e);return this.clearSelectedFeatures(),Gt(this),this.updateUIClasses({mouse:b}),this.activateUIButton(E.LINE),this.setActionableState({trash:!0}),{line:e,currentVertexPosition:n,direction:r}},clickAnywhere:function(t,e){if(t.currentVertexPosition>0&&ue(e,t.line.coordinates[t.currentVertexPosition-1])||"backwards"===t.direction&&ue(e,t.line.coordinates[t.currentVertexPosition+1]))return this.changeMode(j.SIMPLE_SELECT,{featureIds:[t.line.id]});this.updateUIClasses({mouse:b}),t.line.updateCoordinate(t.currentVertexPosition,e.lngLat.lng,e.lngLat.lat),"forward"===t.direction?(t.currentVertexPosition++,t.line.updateCoordinate(t.currentVertexPosition,e.lngLat.lng,e.lngLat.lat)):t.line.addCoordinate(0,e.lngLat.lng,e.lngLat.lat)},clickOnVertex:function(t){return this.changeMode(j.SIMPLE_SELECT,{featureIds:[t.line.id]})},onMouseMove:function(t,e){t.line.updateCoordinate(t.currentVertexPosition,e.lngLat.lng,e.lngLat.lat),Tt(e)&&this.updateUIClasses({mouse:x})}};le.onTap=le.onClick=function(t,e){if(Tt(e))return this.clickOnVertex(t,e);this.clickAnywhere(t,e)},le.onKeyUp=function(t,e){Dt(e)?this.changeMode(j.SIMPLE_SELECT,{featureIds:[t.line.id]}):At(e)&&(this.deleteFeature([t.line.id],{silent:!0}),this.changeMode(j.SIMPLE_SELECT))},le.onStop=function(t){Jt(this),this.activateUIButton(),void 0!==this.getFeature(t.line.id)&&(t.line.removeCoordinate(""+t.currentVertexPosition),t.line.isValid()?this.map.fire(A,{features:[t.line.toGeoJSON()]}):(this.deleteFeature([t.line.id],{silent:!0}),this.changeMode(j.SIMPLE_SELECT,{},{silent:!0})))},le.onTrash=function(t){this.deleteFeature([t.line.id],{silent:!0}),this.changeMode(j.SIMPLE_SELECT)},le.toDisplayFeatures=function(t,e,n){var o=e.properties.id===t.line.id;if(e.properties.active=o?Z:K,!o)return n(e);e.geometry.coordinates.length<2||(e.properties.meta=W,n(Bt(t.line.id,e.geometry.coordinates["forward"===t.direction?e.geometry.coordinates.length-2:1],""+("forward"===t.direction?e.geometry.coordinates.length-2:1),!1)),n(e))};var de={simple_select:oe,direct_select:ae,draw_point:se,draw_polygon:ce,draw_line_string:le},pe={defaultMode:j.SIMPLE_SELECT,keybindings:!0,touchEnabled:!0,clickBuffer:2,touchBuffer:25,boxSelect:!0,displayControlsDefault:!0,styles:[{id:"gl-draw-polygon-fill-inactive",type:"fill",filter:["all",["==","active","false"],["==","$type","Polygon"],["!=","mode","static"]],paint:{"fill-color":"#3bb2d0","fill-outline-color":"#3bb2d0","fill-opacity":.1}},{id:"gl-draw-polygon-fill-active",type:"fill",filter:["all",["==","active","true"],["==","$type","Polygon"]],paint:{"fill-color":"#fbb03b","fill-outline-color":"#fbb03b","fill-opacity":.1}},{id:"gl-draw-polygon-midpoint",type:"circle",filter:["all",["==","$type","Point"],["==","meta","midpoint"]],paint:{"circle-radius":3,"circle-color":"#fbb03b"}},{id:"gl-draw-polygon-stroke-inactive",type:"line",filter:["all",["==","active","false"],["==","$type","Polygon"],["!=","mode","static"]],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":"#3bb2d0","line-width":2}},{id:"gl-draw-polygon-stroke-active",type:"line",filter:["all",["==","active","true"],["==","$type","Polygon"]],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":"#fbb03b","line-dasharray":[.2,2],"line-width":2}},{id:"gl-draw-line-inactive",type:"line",filter:["all",["==","active","false"],["==","$type","LineString"],["!=","mode","static"]],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":"#3bb2d0","line-width":2}},{id:"gl-draw-line-active",type:"line",filter:["all",["==","$type","LineString"],["==","active","true"]],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":"#fbb03b","line-dasharray":[.2,2],"line-width":2}},{id:"gl-draw-polygon-and-line-vertex-stroke-inactive",type:"circle",filter:["all",["==","meta","vertex"],["==","$type","Point"],["!=","mode","static"]],paint:{"circle-radius":5,"circle-color":"#fff"}},{id:"gl-draw-polygon-and-line-vertex-inactive",type:"circle",filter:["all",["==","meta","vertex"],["==","$type","Point"],["!=","mode","static"]],paint:{"circle-radius":3,"circle-color":"#fbb03b"}},{id:"gl-draw-point-point-stroke-inactive",type:"circle",filter:["all",["==","active","false"],["==","$type","Point"],["==","meta","feature"],["!=","mode","static"]],paint:{"circle-radius":5,"circle-opacity":1,"circle-color":"#fff"}},{id:"gl-draw-point-inactive",type:"circle",filter:["all",["==","active","false"],["==","$type","Point"],["==","meta","feature"],["!=","mode","static"]],paint:{"circle-radius":3,"circle-color":"#3bb2d0"}},{id:"gl-draw-point-stroke-active",type:"circle",filter:["all",["==","$type","Point"],["==","active","true"],["!=","meta","midpoint"]],paint:{"circle-radius":7,"circle-color":"#fff"}},{id:"gl-draw-point-active",type:"circle",filter:["all",["==","$type","Point"],["!=","meta","midpoint"],["==","active","true"]],paint:{"circle-radius":5,"circle-color":"#fbb03b"}},{id:"gl-draw-polygon-fill-static",type:"fill",filter:["all",["==","mode","static"],["==","$type","Polygon"]],paint:{"fill-color":"#404040","fill-outline-color":"#404040","fill-opacity":.1}},{id:"gl-draw-polygon-stroke-static",type:"line",filter:["all",["==","mode","static"],["==","$type","Polygon"]],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":"#404040","line-width":2}},{id:"gl-draw-line-static",type:"line",filter:["all",["==","mode","static"],["==","$type","LineString"]],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":"#404040","line-width":2}},{id:"gl-draw-point-static",type:"circle",filter:["all",["==","mode","static"],["==","$type","Point"]],paint:{"circle-radius":5,"circle-color":"#404040"}}],modes:de,controls:{},userProperties:!1},fe={point:!0,line_string:!0,polygon:!0,trash:!0,combine_features:!0,uncombine_features:!0},he={point:!1,line_string:!1,polygon:!1,trash:!1,combine_features:!1,uncombine_features:!1};function ge(t,e){return t.map((function(t){return t.source?t:Mt(t,{id:t.id+"."+e,source:"hot"===e?v:m})}))}var ye=ut((function(t,e){var n="[object Arguments]",o="[object Map]",r="[object Object]",i="[object Set]",a=/^\[object .+?Constructor\]$/,s=/^(?:0|[1-9]\d*)$/,u={};u["[object Float32Array]"]=u["[object Float64Array]"]=u["[object Int8Array]"]=u["[object Int16Array]"]=u["[object Int32Array]"]=u["[object Uint8Array]"]=u["[object Uint8ClampedArray]"]=u["[object Uint16Array]"]=u["[object Uint32Array]"]=!0,u[n]=u["[object Array]"]=u["[object ArrayBuffer]"]=u["[object Boolean]"]=u["[object DataView]"]=u["[object Date]"]=u["[object Error]"]=u["[object Function]"]=u[o]=u["[object Number]"]=u[r]=u["[object RegExp]"]=u[i]=u["[object String]"]=u["[object WeakMap]"]=!1;var c="object"==typeof global&&global&&global.Object===Object&&global,l="object"==typeof self&&self&&self.Object===Object&&self,d=c||l||Function("return this")(),p=e&&!e.nodeType&&e,f=p&&t&&!t.nodeType&&t,h=f&&f.exports===p,g=h&&c.process,y=function(){try{return g&&g.binding&&g.binding("util")}catch(t){}}(),v=y&&y.isTypedArray;function m(t,e){for(var n=-1,o=null==t?0:t.length;++n<o;)if(e(t[n],n,t))return!0;return!1}function b(t){var e=-1,n=Array(t.size);return t.forEach((function(t,o){n[++e]=[o,t]})),n}function _(t){var e=-1,n=Array(t.size);return t.forEach((function(t){n[++e]=t})),n}var S,x,C,E=Array.prototype,M=Function.prototype,w=Object.prototype,I=d["__core-js_shared__"],L=M.toString,P=w.hasOwnProperty,F=(S=/[^.]+$/.exec(I&&I.keys&&I.keys.IE_PROTO||""))?"Symbol(src)_1."+S:"",O=w.toString,k=RegExp("^"+L.call(P).replace(/[\\^$.*+?()[\]{}|]/g,"\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,"$1.*?")+"$"),T=h?d.Buffer:void 0,j=d.Symbol,A=d.Uint8Array,D=w.propertyIsEnumerable,N=E.splice,U=j?j.toStringTag:void 0,R=Object.getOwnPropertySymbols,B=T?T.isBuffer:void 0,V=(x=Object.keys,C=Object,function(t){return x(C(t))}),J=yt(d,"DataView"),G=yt(d,"Map"),z=yt(d,"Promise"),$=yt(d,"Set"),W=yt(d,"WeakMap"),q=yt(Object,"create"),Y=_t(J),Z=_t(G),K=_t(z),X=_t($),H=_t(W),Q=j?j.prototype:void 0,tt=Q?Q.valueOf:void 0;function et(t){var e=-1,n=null==t?0:t.length;for(this.clear();++e<n;){var o=t[e];this.set(o[0],o[1])}}function nt(t){var e=-1,n=null==t?0:t.length;for(this.clear();++e<n;){var o=t[e];this.set(o[0],o[1])}}function ot(t){var e=-1,n=null==t?0:t.length;for(this.clear();++e<n;){var o=t[e];this.set(o[0],o[1])}}function rt(t){var e=-1,n=null==t?0:t.length;for(this.__data__=new ot;++e<n;)this.add(t[e])}function it(t){var e=this.__data__=new nt(t);this.size=e.size}function at(t,e){var n=Ct(t),o=!n&&xt(t),r=!n&&!o&&Et(t),i=!n&&!o&&!r&&Pt(t),a=n||o||r||i,s=a?function(t,e){for(var n=-1,o=Array(t);++n<t;)o[n]=e(n);return o}(t.length,String):[],u=s.length;for(var c in t)!e&&!P.call(t,c)||a&&("length"==c||r&&("offset"==c||"parent"==c)||i&&("buffer"==c||"byteLength"==c||"byteOffset"==c)||bt(c,u))||s.push(c);return s}function st(t,e){for(var n=t.length;n--;)if(St(t[n][0],e))return n;return-1}function ut(t){return null==t?void 0===t?"[object Undefined]":"[object Null]":U&&U in Object(t)?function(t){var e=P.call(t,U),n=t[U];try{t[U]=void 0;var o=!0}catch(t){}var r=O.call(t);o&&(e?t[U]=n:delete t[U]);return r}(t):function(t){return O.call(t)}(t)}function ct(t){return Lt(t)&&ut(t)==n}function lt(t,e,a,s,u){return t===e||(null==t||null==e||!Lt(t)&&!Lt(e)?t!=t&&e!=e:function(t,e,a,s,u,c){var l=Ct(t),d=Ct(e),p=l?"[object Array]":mt(t),f=d?"[object Array]":mt(e),h=(p=p==n?r:p)==r,g=(f=f==n?r:f)==r,y=p==f;if(y&&Et(t)){if(!Et(e))return!1;l=!0,h=!1}if(y&&!h)return c||(c=new it),l||Pt(t)?ft(t,e,a,s,u,c):function(t,e,n,r,a,s,u){switch(n){case"[object DataView]":if(t.byteLength!=e.byteLength||t.byteOffset!=e.byteOffset)return!1;t=t.buffer,e=e.buffer;case"[object ArrayBuffer]":return!(t.byteLength!=e.byteLength||!s(new A(t),new A(e)));case"[object Boolean]":case"[object Date]":case"[object Number]":return St(+t,+e);case"[object Error]":return t.name==e.name&&t.message==e.message;case"[object RegExp]":case"[object String]":return t==e+"";case o:var c=b;case i:var l=1&r;if(c||(c=_),t.size!=e.size&&!l)return!1;var d=u.get(t);if(d)return d==e;r|=2,u.set(t,e);var p=ft(c(t),c(e),r,a,s,u);return u.delete(t),p;case"[object Symbol]":if(tt)return tt.call(t)==tt.call(e)}return!1}(t,e,p,a,s,u,c);if(!(1&a)){var v=h&&P.call(t,"__wrapped__"),m=g&&P.call(e,"__wrapped__");if(v||m){var S=v?t.value():t,x=m?e.value():e;return c||(c=new it),u(S,x,a,s,c)}}if(!y)return!1;return c||(c=new it),function(t,e,n,o,r,i){var a=1&n,s=ht(t),u=s.length,c=ht(e).length;if(u!=c&&!a)return!1;var l=u;for(;l--;){var d=s[l];if(!(a?d in e:P.call(e,d)))return!1}var p=i.get(t);if(p&&i.get(e))return p==e;var f=!0;i.set(t,e),i.set(e,t);var h=a;for(;++l<u;){d=s[l];var g=t[d],y=e[d];if(o)var v=a?o(y,g,d,e,t,i):o(g,y,d,t,e,i);if(!(void 0===v?g===y||r(g,y,n,o,i):v)){f=!1;break}h||(h="constructor"==d)}if(f&&!h){var m=t.constructor,b=e.constructor;m==b||!("constructor"in t)||!("constructor"in e)||"function"==typeof m&&m instanceof m&&"function"==typeof b&&b instanceof b||(f=!1)}return i.delete(t),i.delete(e),f}(t,e,a,s,u,c)}(t,e,a,s,lt,u))}function dt(t){return!(!It(t)||function(t){return!!F&&F in t}(t))&&(Mt(t)?k:a).test(_t(t))}function pt(t){if(n=(e=t)&&e.constructor,o="function"==typeof n&&n.prototype||w,e!==o)return V(t);var e,n,o,r=[];for(var i in Object(t))P.call(t,i)&&"constructor"!=i&&r.push(i);return r}function ft(t,e,n,o,r,i){var a=1&n,s=t.length,u=e.length;if(s!=u&&!(a&&u>s))return!1;var c=i.get(t);if(c&&i.get(e))return c==e;var l=-1,d=!0,p=2&n?new rt:void 0;for(i.set(t,e),i.set(e,t);++l<s;){var f=t[l],h=e[l];if(o)var g=a?o(h,f,l,e,t,i):o(f,h,l,t,e,i);if(void 0!==g){if(g)continue;d=!1;break}if(p){if(!m(e,(function(t,e){if(a=e,!p.has(a)&&(f===t||r(f,t,n,o,i)))return p.push(e);var a}))){d=!1;break}}else if(f!==h&&!r(f,h,n,o,i)){d=!1;break}}return i.delete(t),i.delete(e),d}function ht(t){return function(t,e,n){var o=e(t);return Ct(t)?o:function(t,e){for(var n=-1,o=e.length,r=t.length;++n<o;)t[r+n]=e[n];return t}(o,n(t))}(t,Ft,vt)}function gt(t,e){var n,o,r=t.__data__;return("string"==(o=typeof(n=e))||"number"==o||"symbol"==o||"boolean"==o?"__proto__"!==n:null===n)?r["string"==typeof e?"string":"hash"]:r.map}function yt(t,e){var n=function(t,e){return null==t?void 0:t[e]}(t,e);return dt(n)?n:void 0}et.prototype.clear=function(){this.__data__=q?q(null):{},this.size=0},et.prototype.delete=function(t){var e=this.has(t)&&delete this.__data__[t];return this.size-=e?1:0,e},et.prototype.get=function(t){var e=this.__data__;if(q){var n=e[t];return"__lodash_hash_undefined__"===n?void 0:n}return P.call(e,t)?e[t]:void 0},et.prototype.has=function(t){var e=this.__data__;return q?void 0!==e[t]:P.call(e,t)},et.prototype.set=function(t,e){var n=this.__data__;return this.size+=this.has(t)?0:1,n[t]=q&&void 0===e?"__lodash_hash_undefined__":e,this},nt.prototype.clear=function(){this.__data__=[],this.size=0},nt.prototype.delete=function(t){var e=this.__data__,n=st(e,t);return!(n<0)&&(n==e.length-1?e.pop():N.call(e,n,1),--this.size,!0)},nt.prototype.get=function(t){var e=this.__data__,n=st(e,t);return n<0?void 0:e[n][1]},nt.prototype.has=function(t){return st(this.__data__,t)>-1},nt.prototype.set=function(t,e){var n=this.__data__,o=st(n,t);return o<0?(++this.size,n.push([t,e])):n[o][1]=e,this},ot.prototype.clear=function(){this.size=0,this.__data__={hash:new et,map:new(G||nt),string:new et}},ot.prototype.delete=function(t){var e=gt(this,t).delete(t);return this.size-=e?1:0,e},ot.prototype.get=function(t){return gt(this,t).get(t)},ot.prototype.has=function(t){return gt(this,t).has(t)},ot.prototype.set=function(t,e){var n=gt(this,t),o=n.size;return n.set(t,e),this.size+=n.size==o?0:1,this},rt.prototype.add=rt.prototype.push=function(t){return this.__data__.set(t,"__lodash_hash_undefined__"),this},rt.prototype.has=function(t){return this.__data__.has(t)},it.prototype.clear=function(){this.__data__=new nt,this.size=0},it.prototype.delete=function(t){var e=this.__data__,n=e.delete(t);return this.size=e.size,n},it.prototype.get=function(t){return this.__data__.get(t)},it.prototype.has=function(t){return this.__data__.has(t)},it.prototype.set=function(t,e){var n=this.__data__;if(n instanceof nt){var o=n.__data__;if(!G||o.length<199)return o.push([t,e]),this.size=++n.size,this;n=this.__data__=new ot(o)}return n.set(t,e),this.size=n.size,this};var vt=R?function(t){return null==t?[]:(t=Object(t),function(t,e){for(var n=-1,o=null==t?0:t.length,r=0,i=[];++n<o;){var a=t[n];e(a,n,t)&&(i[r++]=a)}return i}(R(t),(function(e){return D.call(t,e)})))}:function(){return[]},mt=ut;function bt(t,e){return!!(e=null==e?9007199254740991:e)&&("number"==typeof t||s.test(t))&&t>-1&&t%1==0&&t<e}function _t(t){if(null!=t){try{return L.call(t)}catch(t){}try{return t+""}catch(t){}}return""}function St(t,e){return t===e||t!=t&&e!=e}(J&&"[object DataView]"!=mt(new J(new ArrayBuffer(1)))||G&&mt(new G)!=o||z&&"[object Promise]"!=mt(z.resolve())||$&&mt(new $)!=i||W&&"[object WeakMap]"!=mt(new W))&&(mt=function(t){var e=ut(t),n=e==r?t.constructor:void 0,a=n?_t(n):"";if(a)switch(a){case Y:return"[object DataView]";case Z:return o;case K:return"[object Promise]";case X:return i;case H:return"[object WeakMap]"}return e});var xt=ct(function(){return arguments}())?ct:function(t){return Lt(t)&&P.call(t,"callee")&&!D.call(t,"callee")},Ct=Array.isArray;var Et=B||function(){return!1};function Mt(t){if(!It(t))return!1;var e=ut(t);return"[object Function]"==e||"[object GeneratorFunction]"==e||"[object AsyncFunction]"==e||"[object Proxy]"==e}function wt(t){return"number"==typeof t&&t>-1&&t%1==0&&t<=9007199254740991}function It(t){var e=typeof t;return null!=t&&("object"==e||"function"==e)}function Lt(t){return null!=t&&"object"==typeof t}var Pt=v?function(t){return function(e){return t(e)}}(v):function(t){return Lt(t)&&wt(t.length)&&!!u[ut(t)]};function Ft(t){return null!=(e=t)&&wt(e.length)&&!Mt(e)?at(t):pt(t);var e}t.exports=function(t,e){return lt(t,e)}}));var ve={Polygon:ft,LineString:pt,Point:dt,MultiPolygon:yt,MultiLineString:yt,MultiPoint:yt};function me(t,e){return e.modes=j,e.getFeatureIdsAt=function(e){return nt.click({point:e},null,t).map((function(t){return t.properties.id}))},e.getSelectedIds=function(){return t.store.getSelectedIds()},e.getSelected=function(){return{type:P,features:t.store.getSelectedIds().map((function(e){return t.store.get(e)})).map((function(t){return t.toGeoJSON()}))}},e.getSelectedPoints=function(){return{type:P,features:t.store.getSelectedCoordinates().map((function(t){return{type:M,properties:{},geometry:{type:L,coordinates:t.coordinates}}}))}},e.set=function(n){if(void 0===n.type||n.type!==P||!Array.isArray(n.features))throw new Error("Invalid FeatureCollection");var o=t.store.createRenderBatch(),r=t.store.getAllIds().slice(),i=e.add(n),a=new tt(i);return(r=r.filter((function(t){return!a.has(t)}))).length&&e.delete(r),o(),i},e.add=function(e){var n=JSON.parse(JSON.stringify(zt(e))).features.map((function(e){if(e.id=e.id||ct(),null===e.geometry)throw new Error("Invalid geometry: null");if(void 0===t.store.get(e.id)||t.store.get(e.id).type!==e.geometry.type){var n=ve[e.geometry.type];if(void 0===n)throw new Error("Invalid geometry type: "+e.geometry.type+".");var o=new n(t,e);t.store.add(o)}else{var r=t.store.get(e.id);r.properties=e.properties,ye(r.getCoordinates(),e.geometry.coordinates)||r.incomingCoords(e.geometry.coordinates)}return e.id}));return t.store.render(),n},e.get=function(e){var n=t.store.get(e);if(n)return n.toGeoJSON()},e.getAll=function(){return{type:P,features:t.store.getAll().map((function(t){return t.toGeoJSON()}))}},e.delete=function(n){return t.store.delete(n,{silent:!0}),e.getMode()!==j.DIRECT_SELECT||t.store.getSelectedIds().length?t.store.render():t.events.changeMode(j.SIMPLE_SELECT,void 0,{silent:!0}),e},e.deleteAll=function(){return t.store.delete(t.store.getAllIds(),{silent:!0}),e.getMode()===j.DIRECT_SELECT?t.events.changeMode(j.SIMPLE_SELECT,void 0,{silent:!0}):t.store.render(),e},e.changeMode=function(n,o){return void 0===o&&(o={}),n===j.SIMPLE_SELECT&&e.getMode()===j.SIMPLE_SELECT?(r=o.featureIds||[],i=t.store.getSelectedIds(),r.length===i.length&&JSON.stringify(r.map((function(t){return t})).sort())===JSON.stringify(i.map((function(t){return t})).sort())||(t.store.setSelected(o.featureIds,{silent:!0}),t.store.render()),e):(n===j.DIRECT_SELECT&&e.getMode()===j.DIRECT_SELECT&&o.featureId===t.store.getSelectedIds()[0]||t.events.changeMode(n,o,{silent:!0}),e);var r,i},e.getMode=function(){return t.events.getMode()},e.trash=function(){return t.events.trash({silent:!0}),e},e.combineFeatures=function(){return t.events.combineFeatures({silent:!0}),e},e.uncombineFeatures=function(){return t.events.uncombineFeatures({silent:!0}),e},e.setFeatureProperty=function(n,o,r){return t.store.setFeatureProperty(n,o,r),e},e}var be=function(t,e){var n={options:t=function(t){void 0===t&&(t={});var e=Mt(t);return t.controls||(e.controls={}),!1===t.displayControlsDefault?e.controls=Mt(he,t.controls):e.controls=Mt(fe,t.controls),(e=Mt(pe,e)).styles=ge(e.styles,"cold").concat(ge(e.styles,"hot")),e}(t)};e=me(n,e),n.api=e;var o=Lt(n);return e.onAdd=o.onAdd,e.onRemove=o.onRemove,e.types=E,e.options=t,e};function _e(t){be(t,this)}return _e.modes=de,_e}));
+//# sourceMappingURL=mapbox-gl-draw.js.map
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36)))
+
+/***/ }),
+/* 260 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -75349,11 +75490,11 @@ var _mapdDraw = __webpack_require__(13);
 
 var Draw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(260);
+var _simplifyJs = __webpack_require__(261);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
-var _logger = __webpack_require__(36);
+var _logger = __webpack_require__(37);
 
 var _LatLonCircle = __webpack_require__(190);
 
@@ -76339,7 +76480,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 260 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -76469,13 +76610,13 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(262);
+var meta_1 = __webpack_require__(263);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -76512,7 +76653,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76520,7 +76661,7 @@ exports.default = bbox;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var helpers = __webpack_require__(42);
+var helpers = __webpack_require__(43);
 
 /**
  * Callback for coordEach
@@ -77651,7 +77792,7 @@ exports.findPoint = findPoint;
 
 
 /***/ }),
-/* 263 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77664,9 +77805,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(42);
-var invariant_1 = __webpack_require__(264);
-var lineclip = __importStar(__webpack_require__(265));
+var helpers_1 = __webpack_require__(43);
+var invariant_1 = __webpack_require__(265);
+var lineclip = __importStar(__webpack_require__(266));
 /**
  * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
  * [lineclip](https://github.com/mapbox/lineclip).
@@ -77734,13 +77875,13 @@ function clipPolygon(rings, bbox) {
 
 
 /***/ }),
-/* 264 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(42);
+var helpers_1 = __webpack_require__(43);
 /**
  * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
  *
@@ -77952,7 +78093,7 @@ exports.getType = getType;
 
 
 /***/ }),
-/* 265 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78084,7 +78225,7 @@ function bitCode(p, bbox) {
 
 
 /***/ }),
-/* 266 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79094,7 +79235,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 267 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79121,7 +79262,7 @@ var _elasticDimensionMixin = __webpack_require__(186);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(39);
+var _stackMixin = __webpack_require__(40);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -79717,7 +79858,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 268 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79801,7 +79942,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 269 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79819,13 +79960,13 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackedLegend = __webpack_require__(270);
+var _stackedLegend = __webpack_require__(271);
 
 var _coordinateGridRasterMixin = __webpack_require__(193);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(41);
+var _mapMixin = __webpack_require__(42);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -79839,13 +79980,13 @@ var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
 var _coreAsync = __webpack_require__(5);
 
-var _legendables = __webpack_require__(293);
+var _legendables = __webpack_require__(294);
 
 var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _paused = __webpack_require__(320);
+var _paused = __webpack_require__(321);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -80344,6 +80485,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var state = (0, _stackedLegend.getLegendStateFromChart)(_chart, useMap, selectedLayer);
     _legend.setState(state);
 
+    // TODO maybe relocate this
+    _chart.addLabelLayer();
+
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
         _chart._setOverlay({
@@ -80577,7 +80721,7 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 270 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80923,7 +81067,7 @@ function isNullLegend(domain) {
 }
 
 /***/ }),
-/* 271 */
+/* 272 */
 /***/ (function(module, exports) {
 
 /*eslint-disable no-cond-assign */
@@ -81199,7 +81343,7 @@ function stringify (gj) {
 
 
 /***/ }),
-/* 272 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81215,7 +81359,7 @@ exports.default = bindEventHandlers;
 
 var _coreAsync = __webpack_require__(5);
 
-var _mapboxPortedFunctions = __webpack_require__(273);
+var _mapboxPortedFunctions = __webpack_require__(274);
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -82302,7 +82446,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 273 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82314,7 +82458,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.timed = undefined;
 exports.bezier = bezier;
 
-var _unitbezier = __webpack_require__(274);
+var _unitbezier = __webpack_require__(275);
 
 var _unitbezier2 = _interopRequireDefault(_unitbezier);
 
@@ -82391,7 +82535,7 @@ var timed = exports.timed = function timed(fn, dur, ctx) {
 };
 
 /***/ }),
-/* 274 */
+/* 275 */
 /***/ (function(module, exports) {
 
 /*
@@ -82502,13 +82646,13 @@ UnitBezier.prototype.solve = function(x, epsilon) {
 
 
 /***/ }),
-/* 275 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(276);
+module.exports = __webpack_require__(277);
 
 /***/ }),
-/* 276 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82516,7 +82660,7 @@ module.exports = __webpack_require__(276);
 
 var utils = __webpack_require__(8);
 var bind = __webpack_require__(194);
-var Axios = __webpack_require__(278);
+var Axios = __webpack_require__(279);
 var mergeConfig = __webpack_require__(200);
 var defaults = __webpack_require__(197);
 
@@ -82552,14 +82696,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(201);
-axios.CancelToken = __webpack_require__(291);
+axios.CancelToken = __webpack_require__(292);
 axios.isCancel = __webpack_require__(196);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(292);
+axios.spread = __webpack_require__(293);
 
 module.exports = axios;
 
@@ -82568,7 +82712,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 277 */
+/* 278 */
 /***/ (function(module, exports) {
 
 /*!
@@ -82585,7 +82729,7 @@ module.exports = function isBuffer (obj) {
 
 
 /***/ }),
-/* 278 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82593,8 +82737,8 @@ module.exports = function isBuffer (obj) {
 
 var utils = __webpack_require__(8);
 var buildURL = __webpack_require__(195);
-var InterceptorManager = __webpack_require__(279);
-var dispatchRequest = __webpack_require__(280);
+var InterceptorManager = __webpack_require__(280);
+var dispatchRequest = __webpack_require__(281);
 var mergeConfig = __webpack_require__(200);
 
 /**
@@ -82678,7 +82822,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 279 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82737,18 +82881,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 280 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(8);
-var transformData = __webpack_require__(281);
+var transformData = __webpack_require__(282);
 var isCancel = __webpack_require__(196);
 var defaults = __webpack_require__(197);
-var isAbsoluteURL = __webpack_require__(289);
-var combineURLs = __webpack_require__(290);
+var isAbsoluteURL = __webpack_require__(290);
+var combineURLs = __webpack_require__(291);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -82830,7 +82974,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 281 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82857,7 +83001,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -83047,7 +83191,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83066,7 +83210,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83098,7 +83242,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83147,7 +83291,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83207,7 +83351,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83282,7 +83426,7 @@ module.exports = (
 
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83342,7 +83486,7 @@ module.exports = (
 
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83363,7 +83507,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83384,7 +83528,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83448,7 +83592,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83482,18 +83626,18 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(294);
+var legend_1 = __webpack_require__(295);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83507,10 +83651,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(295);
-var vdom_1 = __webpack_require__(298);
-var d3_dispatch_1 = __webpack_require__(307);
-var d3_format_1 = __webpack_require__(309);
+var h_1 = __webpack_require__(296);
+var vdom_1 = __webpack_require__(299);
+var d3_dispatch_1 = __webpack_require__(308);
+var d3_format_1 = __webpack_require__(310);
 var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -83702,14 +83846,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(296);
-var is = __webpack_require__(297);
+var vnode_1 = __webpack_require__(297);
+var is = __webpack_require__(298);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -83767,7 +83911,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83783,7 +83927,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83797,18 +83941,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(299);
-var attributes_1 = __webpack_require__(302);
-var class_1 = __webpack_require__(303);
-var props_1 = __webpack_require__(304);
-var style_1 = __webpack_require__(305);
-var eventlisteners_1 = __webpack_require__(306);
+var snabbdom_1 = __webpack_require__(300);
+var attributes_1 = __webpack_require__(303);
+var class_1 = __webpack_require__(304);
+var props_1 = __webpack_require__(305);
+var style_1 = __webpack_require__(306);
+var eventlisteners_1 = __webpack_require__(307);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -83819,7 +83963,7 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83827,10 +83971,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(203);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(300);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(301);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(205);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(301);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(302);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -84138,7 +84282,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84209,7 +84353,7 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84262,7 +84406,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84323,7 +84467,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84354,7 +84498,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84386,7 +84530,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84487,7 +84631,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84588,18 +84732,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(309);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84690,12 +84834,12 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(311);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["c"]; });
@@ -84703,11 +84847,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__locale__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(207);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(317);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(318);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(318);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(319);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(319);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(320);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__precisionRound__["a"]; });
 
 
@@ -84718,7 +84862,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84748,7 +84892,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84773,7 +84917,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84787,7 +84931,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84805,12 +84949,12 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(315);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(316);
 
 
 
@@ -84832,11 +84976,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(44);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
@@ -84851,7 +84995,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84861,7 +85005,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84874,7 +85018,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84887,7 +85031,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84901,7 +85045,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84918,7 +85062,7 @@ function setPaused(status) {
 }
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84945,7 +85089,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _lockAxisMixin = __webpack_require__(40);
+var _lockAxisMixin = __webpack_require__(41);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -85587,7 +85731,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85889,7 +86033,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86553,7 +86697,7 @@ function heavyaiTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86811,7 +86955,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86940,7 +87084,7 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86948,7 +87092,7 @@ function countWidget(parent, chartGroup) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = computeAllProdsFollows;
 /* unused harmony export buildBetweenProdsFollowPrefix */
 /* unused harmony export buildInProdFollowPrefix */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(217);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(218);
@@ -87017,7 +87161,7 @@ function buildInProdFollowPrefix(terminal) {
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87025,10 +87169,10 @@ function buildInProdFollowPrefix(terminal) {
 /* harmony export (immutable) */ __webpack_exports__["c"] = getOptimizedStartCodesIndices;
 /* unused harmony export firstCharOptimizedIndices */
 /* harmony export (immutable) */ __webpack_exports__["a"] = canMatchCharCode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(215);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -87292,7 +87436,7 @@ function canMatchCharCode(charCodes, pattern) {
 //# sourceMappingURL=reg_exp.js.map
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87359,7 +87503,7 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87477,14 +87621,14 @@ var LooksAhead = /** @class */ (function () {
 //# sourceMappingURL=looksahead.js.map
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TreeBuilder; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cst_cst__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cst_cst__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(331);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(332);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
@@ -87777,7 +87921,7 @@ var TreeBuilder = /** @class */ (function () {
 //# sourceMappingURL=tree_builder.js.map
 
 /***/ }),
-/* 331 */
+/* 332 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87914,7 +88058,7 @@ function validateRedundantMethods(visitorInstance, ruleNames) {
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 332 */
+/* 333 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -87996,7 +88140,7 @@ var LexerAdapter = /** @class */ (function () {
 //# sourceMappingURL=lexer_adapter.js.map
 
 /***/ }),
-/* 333 */
+/* 334 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88350,7 +88494,7 @@ var RecognizerApi = /** @class */ (function () {
 //# sourceMappingURL=recognizer_api.js.map
 
 /***/ }),
-/* 334 */
+/* 335 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89010,7 +89154,7 @@ var RecognizerEngine = /** @class */ (function () {
 //# sourceMappingURL=recognizer_engine.js.map
 
 /***/ }),
-/* 335 */
+/* 336 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89102,7 +89246,7 @@ var ErrorHandler = /** @class */ (function () {
 //# sourceMappingURL=error_handler.js.map
 
 /***/ }),
-/* 336 */
+/* 337 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89137,7 +89281,7 @@ var ContentAssist = /** @class */ (function () {
 //# sourceMappingURL=context_assist.js.map
 
 /***/ }),
-/* 337 */
+/* 338 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89467,7 +89611,7 @@ function assertMethodIdxIsValid(idx) {
 //# sourceMappingURL=gast_recorder.js.map
 
 /***/ }),
-/* 338 */
+/* 339 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89527,7 +89671,7 @@ var PerformanceTracer = /** @class */ (function () {
 //# sourceMappingURL=perf_tracer.js.map
 
 /***/ }),
-/* 339 */
+/* 340 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89547,13 +89691,13 @@ function createSyntaxDiagramsCode(grammar, _a) {
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 340 */
+/* 341 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = generateParserFactory;
 /* harmony export (immutable) */ __webpack_exports__["b"] = generateParserModule;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(341);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(342);
 
 function generateParserFactory(options) {
     var wrapperText = Object(__WEBPACK_IMPORTED_MODULE_0__generate__["b" /* genWrapperFunction */])({
@@ -89573,7 +89717,7 @@ function generateParserModule(options) {
 //# sourceMappingURL=generate_public.js.map
 
 /***/ }),
-/* 341 */
+/* 342 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89721,7 +89865,7 @@ function indent(howMuch, text) {
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-/* 342 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89753,7 +89897,7 @@ var _rasterLayerHeatmapMixin = __webpack_require__(209);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
-var _rasterLayerLineMixin = __webpack_require__(343);
+var _rasterLayerLineMixin = __webpack_require__(344);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
@@ -90352,7 +90496,7 @@ function rasterLayer(layerType) {
 }
 
 /***/ }),
-/* 343 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90845,7 +90989,7 @@ function rasterLayerLineMixin(_layer) {
 }
 
 /***/ }),
-/* 344 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91252,7 +91396,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 345 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91447,7 +91591,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 346 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91464,7 +91608,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(4);
 
-var _dcLegendMixin = __webpack_require__(347);
+var _dcLegendMixin = __webpack_require__(348);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -91721,7 +91865,7 @@ function legend() {
 }
 
 /***/ }),
-/* 347 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91820,7 +91964,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 348 */
+/* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92017,12 +92161,6 @@ function legendCont() {
 }
 
 /***/ }),
-/* 349 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 350 */
 /***/ (function(module, exports) {
 
@@ -92042,6 +92180,12 @@ function legendCont() {
 
 /***/ }),
 /* 353 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92285,7 +92429,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 354 */
+/* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.9.1/LICENSE.txt */
@@ -92328,6 +92472,417 @@ return mapboxgl;
 
 })));
 //# sourceMappingURL=mapbox-gl.js.map
+
+
+/***/ }),
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.SimpleLineMode = undefined;
+
+var _mapboxGlDraw = __webpack_require__(259);
+
+var _mapboxGlDraw2 = _interopRequireDefault(_mapboxGlDraw);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SimpleLineMode = exports.SimpleLineMode = _mapboxGlDraw2.default.modes.draw_line_string;
+
+SimpleLineMode.clickAnywhere = function (state, e) {
+    // this ends the drawing after the user creates a second point, triggering this.onStop
+    if (state.currentVertexPosition === 1) {
+        console.log(e);
+        state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
+        return this.changeMode('simple_select', { featureIds: [state.line.id] });
+    }
+
+    if (state.currentVertexPosition > 0 && isEventAtCoordinates(e, state.line.coordinates[state.currentVertexPosition - 1]) || state.direction === 'backwards' && isEventAtCoordinates(e, state.line.coordinates[state.currentVertexPosition + 1])) {
+        return this.changeMode('simple_select', { featureIds: [state.line.id] });
+    }
+    this.updateUIClasses({ mouse: "add" });
+    state.line.updateCoordinate(state.currentVertexPosition, e.lngLat.lng, e.lngLat.lat);
+    if (state.direction === 'forward') {
+        state.currentVertexPosition++;
+        state.line.updateCoordinate(state.currentVertexPosition, e.lngLat.lng, e.lngLat.lat);
+    } else {
+        state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
+    }
+
+    return null;
+};
+
+/***/ }),
+/* 363 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+const classes = {
+  CONTROL_BASE: 'mapboxgl-ctrl',
+  CONTROL_PREFIX: 'mapboxgl-ctrl-',
+  CONTROL_BUTTON: 'mapbox-gl-draw_ctrl-draw-btn',
+  CONTROL_BUTTON_LINE: 'mapbox-gl-draw_line',
+  CONTROL_BUTTON_POLYGON: 'mapbox-gl-draw_polygon',
+  CONTROL_BUTTON_POINT: 'mapbox-gl-draw_point',
+  CONTROL_BUTTON_TRASH: 'mapbox-gl-draw_trash',
+  CONTROL_BUTTON_COMBINE_FEATURES: 'mapbox-gl-draw_combine',
+  CONTROL_BUTTON_UNCOMBINE_FEATURES: 'mapbox-gl-draw_uncombine',
+  CONTROL_GROUP: 'mapboxgl-ctrl-group',
+  ATTRIBUTION: 'mapboxgl-ctrl-attrib',
+  ACTIVE_BUTTON: 'active',
+  BOX_SELECT: 'mapbox-gl-draw_boxselect'
+};
+/* harmony export (immutable) */ __webpack_exports__["classes"] = classes;
+
+
+const sources = {
+  HOT: 'mapbox-gl-draw-hot',
+  COLD: 'mapbox-gl-draw-cold'
+};
+/* harmony export (immutable) */ __webpack_exports__["sources"] = sources;
+
+
+const cursors = {
+  ADD: 'add',
+  MOVE: 'move',
+  DRAG: 'drag',
+  POINTER: 'pointer',
+  NONE: 'none'
+};
+/* harmony export (immutable) */ __webpack_exports__["cursors"] = cursors;
+
+
+const types = {
+  POLYGON: 'polygon',
+  LINE: 'line_string',
+  POINT: 'point'
+};
+/* harmony export (immutable) */ __webpack_exports__["types"] = types;
+
+
+const geojsonTypes = {
+  FEATURE: 'Feature',
+  POLYGON: 'Polygon',
+  LINE_STRING: 'LineString',
+  POINT: 'Point',
+  FEATURE_COLLECTION: 'FeatureCollection',
+  MULTI_PREFIX: 'Multi',
+  MULTI_POINT: 'MultiPoint',
+  MULTI_LINE_STRING: 'MultiLineString',
+  MULTI_POLYGON: 'MultiPolygon'
+};
+/* harmony export (immutable) */ __webpack_exports__["geojsonTypes"] = geojsonTypes;
+
+
+const modes = {
+  DRAW_LINE_STRING: 'draw_line_string',
+  DRAW_POLYGON: 'draw_polygon',
+  DRAW_POINT: 'draw_point',
+  SIMPLE_SELECT: 'simple_select',
+  DIRECT_SELECT: 'direct_select',
+  STATIC: 'static'
+};
+/* harmony export (immutable) */ __webpack_exports__["modes"] = modes;
+
+
+const events = {
+  CREATE: 'draw.create',
+  DELETE: 'draw.delete',
+  UPDATE: 'draw.update',
+  SELECTION_CHANGE: 'draw.selectionchange',
+  MODE_CHANGE: 'draw.modechange',
+  ACTIONABLE: 'draw.actionable',
+  RENDER: 'draw.render',
+  COMBINE_FEATURES: 'draw.combine',
+  UNCOMBINE_FEATURES: 'draw.uncombine'
+};
+/* harmony export (immutable) */ __webpack_exports__["events"] = events;
+
+
+const updateActions = {
+  MOVE: 'move',
+  CHANGE_COORDINATES: 'change_coordinates'
+};
+/* harmony export (immutable) */ __webpack_exports__["updateActions"] = updateActions;
+
+
+const meta = {
+  FEATURE: 'feature',
+  MIDPOINT: 'midpoint',
+  VERTEX: 'vertex'
+};
+/* harmony export (immutable) */ __webpack_exports__["meta"] = meta;
+
+
+const activeStates = {
+  ACTIVE: 'true',
+  INACTIVE: 'false'
+};
+/* harmony export (immutable) */ __webpack_exports__["activeStates"] = activeStates;
+
+
+const interactions = [
+  'scrollZoom',
+  'boxZoom',
+  'dragRotate',
+  'dragPan',
+  'keyboard',
+  'doubleClickZoom',
+  'touchZoomRotate'
+];
+/* harmony export (immutable) */ __webpack_exports__["interactions"] = interactions;
+
+
+const LAT_MIN = -90;
+/* harmony export (immutable) */ __webpack_exports__["LAT_MIN"] = LAT_MIN;
+
+const LAT_RENDERED_MIN = -85;
+/* harmony export (immutable) */ __webpack_exports__["LAT_RENDERED_MIN"] = LAT_RENDERED_MIN;
+
+const LAT_MAX = 90;
+/* harmony export (immutable) */ __webpack_exports__["LAT_MAX"] = LAT_MAX;
+
+const LAT_RENDERED_MAX = 85;
+/* harmony export (immutable) */ __webpack_exports__["LAT_RENDERED_MAX"] = LAT_RENDERED_MAX;
+
+const LNG_MIN = -270;
+/* harmony export (immutable) */ __webpack_exports__["LNG_MIN"] = LNG_MIN;
+
+const LNG_MAX = 270;
+/* harmony export (immutable) */ __webpack_exports__["LNG_MAX"] = LNG_MAX;
+
+
+
+/***/ }),
+/* 364 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mapboxGlDraw = __webpack_require__(259);
+
+var MapboxDraw = _interopRequireWildcard(_mapboxGlDraw);
+
+var _create_supplementary_points = __webpack_require__(365);
+
+var _create_supplementary_points2 = _interopRequireDefault(_create_supplementary_points);
+
+var _constants = __webpack_require__(363);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var DirectSelectWithoutMiddleVertexMode = MapboxDraw.modes.direct_select;
+
+DirectSelectWithoutMiddleVertexMode.toDisplayFeatures = function (state, geojson, push) {
+    if (state.featureId === geojson.properties.id) {
+        geojson.properties.active = _constants2.default.activeStates.ACTIVE;
+        push(geojson);
+        (0, _create_supplementary_points2.default)(geojson, {
+            map: this.map,
+            midpoints: false,
+            selectedPaths: state.selectedCoordPaths
+        }).forEach(push);
+    } else {
+        geojson.properties.active = _constants2.default.activeStates.INACTIVE;
+        push(geojson);
+    }
+    this.fireActionable(state);
+};
+
+exports.default = DirectSelectWithoutMiddleVertexMode;
+
+/***/ }),
+/* 365 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_vertex__ = __webpack_require__(366);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_midpoint__ = __webpack_require__(367);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__constants__ = __webpack_require__(363);
+
+
+
+
+function createSupplementaryPoints(geojson, options = {}, basePath = null) {
+  const { type, coordinates } = geojson.geometry;
+  const featureId = geojson.properties && geojson.properties.id;
+
+  let supplementaryPoints = [];
+
+  if (type === __WEBPACK_IMPORTED_MODULE_2__constants__["geojsonTypes"].POINT) {
+    // For points, just create a vertex
+    supplementaryPoints.push(Object(__WEBPACK_IMPORTED_MODULE_0__create_vertex__["a" /* default */])(featureId, coordinates, basePath, isSelectedPath(basePath)));
+  } else if (type === __WEBPACK_IMPORTED_MODULE_2__constants__["geojsonTypes"].POLYGON) {
+    // Cycle through a Polygon's rings and
+    // process each line
+    coordinates.forEach((line, lineIndex) => {
+      processLine(line, (basePath !== null) ? `${basePath}.${lineIndex}` : String(lineIndex));
+    });
+  } else if (type === __WEBPACK_IMPORTED_MODULE_2__constants__["geojsonTypes"].LINE_STRING) {
+    processLine(coordinates, basePath);
+  } else if (type.indexOf(__WEBPACK_IMPORTED_MODULE_2__constants__["geojsonTypes"].MULTI_PREFIX) === 0) {
+    processMultiGeometry();
+  }
+
+  function processLine(line, lineBasePath) {
+    let firstPointString = '';
+    let lastVertex = null;
+    line.forEach((point, pointIndex) => {
+      const pointPath = (lineBasePath !== undefined && lineBasePath !== null) ? `${lineBasePath}.${pointIndex}` : String(pointIndex);
+      const vertex = Object(__WEBPACK_IMPORTED_MODULE_0__create_vertex__["a" /* default */])(featureId, point, pointPath, isSelectedPath(pointPath));
+
+      // If we're creating midpoints, check if there was a
+      // vertex before this one. If so, add a midpoint
+      // between that vertex and this one.
+      if (options.midpoints && lastVertex) {
+        const midpoint = Object(__WEBPACK_IMPORTED_MODULE_1__create_midpoint__["a" /* default */])(featureId, lastVertex, vertex);
+        if (midpoint) {
+          supplementaryPoints.push(midpoint);
+        }
+      }
+      lastVertex = vertex;
+
+      // A Polygon line's last point is the same as the first point. If we're on the last
+      // point, we want to draw a midpoint before it but not another vertex on it
+      // (since we already a vertex there, from the first point).
+      const stringifiedPoint = JSON.stringify(point);
+      if (firstPointString !== stringifiedPoint) {
+        supplementaryPoints.push(vertex);
+      }
+      if (pointIndex === 0) {
+        firstPointString = stringifiedPoint;
+      }
+    });
+  }
+
+  function isSelectedPath(path) {
+    if (!options.selectedPaths) return false;
+    return options.selectedPaths.indexOf(path) !== -1;
+  }
+
+  // Split a multi-geometry into constituent
+  // geometries, and accumulate the supplementary points
+  // for each of those constituents
+  function processMultiGeometry() {
+    const subType = type.replace(__WEBPACK_IMPORTED_MODULE_2__constants__["geojsonTypes"].MULTI_PREFIX, '');
+    coordinates.forEach((subCoordinates, index) => {
+      const subFeature = {
+        type: __WEBPACK_IMPORTED_MODULE_2__constants__["geojsonTypes"].FEATURE,
+        properties: geojson.properties,
+        geometry: {
+          type: subType,
+          coordinates: subCoordinates
+        }
+      };
+      supplementaryPoints = supplementaryPoints.concat(createSupplementaryPoints(subFeature, options, index));
+    });
+  }
+
+  return supplementaryPoints;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (createSupplementaryPoints);
+
+
+/***/ }),
+/* 366 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(363);
+
+
+/**
+ * Returns GeoJSON for a Point representing the
+ * vertex of another feature.
+ *
+ * @param {string} parentId
+ * @param {Array<number>} coordinates
+ * @param {string} path - Dot-separated numbers indicating exactly
+ *   where the point exists within its parent feature's coordinates.
+ * @param {boolean} selected
+ * @return {GeoJSON} Point
+ */
+/* harmony default export */ __webpack_exports__["a"] = (function(parentId, coordinates, path, selected) {
+  return {
+    type: __WEBPACK_IMPORTED_MODULE_0__constants__["geojsonTypes"].FEATURE,
+    properties: {
+      meta: __WEBPACK_IMPORTED_MODULE_0__constants__["meta"].VERTEX,
+      parent: parentId,
+      coord_path: path,
+      active: (selected) ? __WEBPACK_IMPORTED_MODULE_0__constants__["activeStates"].ACTIVE : __WEBPACK_IMPORTED_MODULE_0__constants__["activeStates"].INACTIVE
+    },
+    geometry: {
+      type: __WEBPACK_IMPORTED_MODULE_0__constants__["geojsonTypes"].POINT,
+      coordinates
+    }
+  };
+});
+
+
+/***/ }),
+/* 367 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(363);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(parent, startVertex, endVertex) {
+  const startCoord = startVertex.geometry.coordinates;
+  const endCoord = endVertex.geometry.coordinates;
+
+  // If a coordinate exceeds the projection, we can't calculate a midpoint,
+  // so run away
+  if (startCoord[1] > __WEBPACK_IMPORTED_MODULE_0__constants__["LAT_RENDERED_MAX"] ||
+    startCoord[1] < __WEBPACK_IMPORTED_MODULE_0__constants__["LAT_RENDERED_MIN"] ||
+    endCoord[1] > __WEBPACK_IMPORTED_MODULE_0__constants__["LAT_RENDERED_MAX"] ||
+    endCoord[1] < __WEBPACK_IMPORTED_MODULE_0__constants__["LAT_RENDERED_MIN"]) {
+    return null;
+  }
+
+  const mid = {
+    lng: (startCoord[0] + endCoord[0]) / 2,
+    lat: (startCoord[1] + endCoord[1]) / 2
+  };
+
+  return {
+    type: __WEBPACK_IMPORTED_MODULE_0__constants__["geojsonTypes"].FEATURE,
+    properties: {
+      meta: __WEBPACK_IMPORTED_MODULE_0__constants__["meta"].MIDPOINT,
+      parent,
+      lng: mid.lng,
+      lat: mid.lat,
+      coord_path: endVertex.properties.coord_path
+    },
+    geometry: {
+      type: __WEBPACK_IMPORTED_MODULE_0__constants__["geojsonTypes"].POINT,
+      coordinates: [mid.lng, mid.lat]
+    }
+  };
+});
 
 
 /***/ })

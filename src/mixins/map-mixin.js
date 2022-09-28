@@ -4,6 +4,7 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { rasterDrawMixin } from "./raster-draw-mixin"
+import SimpleLineMode from "../utils/draw-simple-line-mode";
 
 function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
@@ -74,6 +75,19 @@ export default function mapMixin(
   const vertexLabelGeoJson = {
     'type': 'FeatureCollection',
     'features': []
+  }
+
+  // TODO remove
+  const testPoint = {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-122.414, 37.776]
+    },
+    "properties": {
+      "title": "Mapbox SF",
+      "icon": "harbor"
+    }
   }
 
   function makePoint(coordinates, text) {
@@ -765,12 +779,13 @@ export default function mapMixin(
 
       // Select which mapbox-gl-draw control buttons to add to the map.
       controls: {
-        draw_line_string: true,
-        trash: true
+        draw_line_string: true
+        // draw_simple_line: true
       },
 
       // FIXME: toggle off by default when done testing
-      defaultMode: 'draw_line_string'
+      defaultMode: "draw_simple_line",
+      modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode }
     });
 
     _map = new _mapboxgl.Map({
@@ -798,9 +813,37 @@ export default function mapMixin(
     )
 
     // FIXME: move this somewhere conditional
-    _map.addControl(draw)
+    _map.addControl(draw, "bottom-left")
+
+    // Test adding saved lines
+    // const testLine = {
+    //   "id": "999567ec77c30b58b831f44ac792c477",
+    //   "type": "Feature",
+    //   "properties": {},
+    //   "geometry": {
+    //     "coordinates": [
+    //       [
+    //         -2.1486758213529242,
+    //         19.656944908779792
+    //       ],
+    //       [
+    //         6.923510979902375,
+    //         4.293328217277576
+    //       ]
+    //     ],
+    //     "type": "LineString"
+    //   }
+    // }
+
+    // draw.add(testLine)
     _map.on("draw.create", (e) => {
       _chart.addLabel(e.features)
+    })
+
+    _map.on("draw.update", (e) => {
+      // _chart.addLabel(e.features)
+      // hmmmm
+      console.log("DRAWEVENT update", e)
     })
 
     _chart.addMapListeners()
