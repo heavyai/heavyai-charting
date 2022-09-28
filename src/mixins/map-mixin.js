@@ -5,6 +5,7 @@ import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { rasterDrawMixin } from "./raster-draw-mixin"
 import SimpleLineMode from "../utils/draw-simple-line-mode";
+import DirectSelectWithoutMiddleVertexMode from "../utils/draw-direct-select-without-middle-vertex"
 
 function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
@@ -785,7 +786,7 @@ export default function mapMixin(
 
       // FIXME: toggle off by default when done testing
       defaultMode: "draw_simple_line",
-      modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode }
+      modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode, direct_select: DirectSelectWithoutMiddleVertexMode }
     });
 
     _map = new _mapboxgl.Map({

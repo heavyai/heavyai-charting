@@ -34530,6 +34530,8 @@ var _rasterDrawMixin = __webpack_require__(189);
 
 var _drawSimpleLineMode = __webpack_require__(362);
 
+var _drawSimpleLineMode2 = _interopRequireDefault(_drawSimpleLineMode);
+
 var _drawDirectSelectWithoutMiddleVertex = __webpack_require__(364);
 
 var _drawDirectSelectWithoutMiddleVertex2 = _interopRequireDefault(_drawDirectSelectWithoutMiddleVertex);
@@ -35248,9 +35250,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       },
 
       // FIXME: toggle off by default when done testing
-      defaultMode: "draw_line_string" //'draw_simple_line',
-      // modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode, direct_select: DirectSelectWithoutMiddleVertexMode}
-      // modes: { ...MapboxDraw.modes, direct_select: DirectSelectWithoutMiddleVertexMode}
+      defaultMode: "draw_simple_line",
+      modes: _extends({}, _mapboxGlDraw2.default.modes, { draw_simple_line: _drawSimpleLineMode2.default, direct_select: _drawDirectSelectWithoutMiddleVertex2.default })
     });
 
     _map = new _mapboxgl.Map({
@@ -92490,25 +92491,29 @@ return mapboxgl;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.SimpleLineMode = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _mapboxGlDraw = __webpack_require__(259);
 
 var _mapboxGlDraw2 = _interopRequireDefault(_mapboxGlDraw);
 
+var _is_event_at_coordinates = __webpack_require__(368);
+
+var _is_event_at_coordinates2 = _interopRequireDefault(_is_event_at_coordinates);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var SimpleLineMode = exports.SimpleLineMode = _mapboxGlDraw2.default.modes.draw_line_string;
+var SimpleLineMode = _extends({}, _mapboxGlDraw2.default.modes.draw_line_string);
 
 SimpleLineMode.clickAnywhere = function (state, e) {
-    // this ends the drawing after the user creates a second point, triggering this.onStop
+    // Stop editing line after second click
     if (state.currentVertexPosition === 1) {
-        console.log(e);
-        state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
+        state.line.addCoordinate(1, e.lngLat.lng, e.lngLat.lat);
         return this.changeMode('simple_select', { featureIds: [state.line.id] });
     }
 
-    if (state.currentVertexPosition > 0 && isEventAtCoordinates(e, state.line.coordinates[state.currentVertexPosition - 1]) || state.direction === 'backwards' && isEventAtCoordinates(e, state.line.coordinates[state.currentVertexPosition + 1])) {
+    if (state.currentVertexPosition > 0 && (0, _is_event_at_coordinates2.default)(e, state.line.coordinates[state.currentVertexPosition - 1]) || state.direction === 'backwards' && (0, _is_event_at_coordinates2.default)(e, state.line.coordinates[state.currentVertexPosition + 1])) {
         return this.changeMode('simple_select', { featureIds: [state.line.id] });
     }
     this.updateUIClasses({ mouse: "add" });
@@ -92522,6 +92527,8 @@ SimpleLineMode.clickAnywhere = function (state, e) {
 
     return null;
 };
+
+exports.default = SimpleLineMode;
 
 /***/ }),
 /* 363 */
@@ -92673,8 +92680,10 @@ const LNG_MAX = 270;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _mapboxGlDraw = __webpack_require__(259);
 
@@ -92686,28 +92695,26 @@ var _create_supplementary_points2 = _interopRequireDefault(_create_supplementary
 
 var _constants = __webpack_require__(363);
 
-var _constants2 = _interopRequireDefault(_constants);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var DirectSelectWithoutMiddleVertexMode = MapboxDraw.modes.direct_select;
+var DirectSelectWithoutMiddleVertexMode = _extends({}, MapboxDraw.modes.direct_select);
 
 DirectSelectWithoutMiddleVertexMode.toDisplayFeatures = function (state, geojson, push) {
-    if (state.featureId === geojson.properties.id) {
-        geojson.properties.active = _constants2.default.activeStates.ACTIVE;
-        push(geojson);
-        (0, _create_supplementary_points2.default)(geojson, {
-            map: this.map,
-            midpoints: false,
-            selectedPaths: state.selectedCoordPaths
-        }).forEach(push);
-    } else {
-        geojson.properties.active = _constants2.default.activeStates.INACTIVE;
-        push(geojson);
-    }
-    this.fireActionable(state);
+  if (state.featureId === geojson.properties.id) {
+    geojson.properties.active = _constants.activeStates.ACTIVE;
+    push(geojson);
+    (0, _create_supplementary_points2.default)(geojson, {
+      map: this.map,
+      midpoints: false,
+      selectedPaths: state.selectedCoordPaths
+    }).forEach(push);
+  } else {
+    geojson.properties.active = _constants.activeStates.INACTIVE;
+    push(geojson);
+  }
+  this.fireActionable(state);
 };
 
 exports.default = DirectSelectWithoutMiddleVertexMode;
@@ -92883,6 +92890,20 @@ function createSupplementaryPoints(geojson, options = {}, basePath = null) {
     }
   };
 });
+
+
+/***/ }),
+/* 368 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+function isEventAtCoordinates(event, coordinates) {
+  if (!event.lngLat) return false;
+  return event.lngLat.lng === coordinates[0] && event.lngLat.lat === coordinates[1];
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (isEventAtCoordinates);
 
 
 /***/ })
