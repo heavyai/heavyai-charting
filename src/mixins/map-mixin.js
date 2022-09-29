@@ -74,8 +74,8 @@ export default function mapMixin(
   let _shouldRedrawAll = false
 
   const vertexLabelGeoJson = {
-    'type': 'FeatureCollection',
-    'features': []
+    type: "FeatureCollection",
+    features: []
   }
 
   const labelFeatures = {}
@@ -520,11 +520,10 @@ export default function mapMixin(
 
 
   _chart.addLabelLayer = function() {
-
     if (!_map.getSource("vertex-labels")) {
       _map.addSource("vertex-labels", {
         type: "geojson",
-        "data": vertexLabelGeoJson
+        data: vertexLabelGeoJson
       });
     }
 
@@ -548,15 +547,15 @@ export default function mapMixin(
   }
 
   _chart.addLabel = function(feature, lineId) {
-
     const [start, end] = feature.geometry.coordinates
-    // TODO: decide if multiple transects are allowed per chart, patch labels accordingly
-
     labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")]
-    let featuresArray = Object.values(labelFeatures).reduce((acc, f) => { return acc.concat([...f]) }, [])
 
-      console.log(start, end)
-    _map.getSource("vertex-labels").setData({ ...vertexLabelGeoJson, features: featuresArray });
+    _map.getSource("vertex-labels").setData({
+      ...vertexLabelGeoJson,
+      features: Object.values(labelFeatures).reduce((acc, f) => {
+        return acc.concat([...f])
+      }, [])
+    })
   }
 
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
@@ -778,10 +777,6 @@ export default function mapMixin(
       .style("width", _chart.width() + "px")
       .style("height", _chart.height() + "px")
 
-    const draw = new MapboxDraw({
-      displayControlsDefault: false,
-      modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode, direct_select: DirectSelectWithoutMiddleVertexMode }
-    });
 
     _map = new _mapboxgl.Map({
       container: _mapId, // container id
@@ -808,20 +803,7 @@ export default function mapMixin(
     )
 
     // FIXME: move this somewhere conditional
-    _map.addControl(draw, "bottom-left")
-
-
-    if (document.querySelector(".mapboxgl-ctrl-bottom-left")) {
-      const button = document.createElement("button")
-      button.className = "draw-simple-line"
-      button
-        .addEventListener("click", () => {
-          draw.changeMode("draw_simple_line")
-        })
-
-      const controlGroup = document.querySelector(".mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-group")
-      controlGroup.append(button)
-    }
+    _chart.addTransectControls()
 
     // Test adding saved lines
     // const testLine = {
@@ -844,22 +826,6 @@ export default function mapMixin(
     // }
 
     // draw.add(testLine)
-    _map.on("draw.create", (e) => {
-      e.features.forEach((feature) => {
-        _chart.addLabel(feature, feature.id)
-      })
-    })
-
-    _map.on("draw.update", (e) => {
-      // _chart.addLabel(e.features)
-      // hmmmm
-      console.log("DRAWEVENT update", e)
-
-      e.features.forEach((feature) => {
-        delete labelFeatures[feature.id]
-        _chart.addLabel(feature, feature.id)
-      })
-    })
 
     _chart.addMapListeners()
     _mapInitted = true
@@ -867,6 +833,8 @@ export default function mapMixin(
     if (_chart.shiftToZoom()) {
       _map.on("mousedown", onMouseDownCheckForShiftToZoom)
     }
+
+    _chart.addTransectListeners()
   }
 
   _chart.addMapListeners = function() {
@@ -887,6 +855,42 @@ export default function mapMixin(
   _chart.removeMapListeners = function() {
     _map.off("move", onMapMove)
     _map.off("moveend", onMapMove)
+  }
+
+  _chart.addTransectControls = function() {
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode, direct_select: DirectSelectWithoutMiddleVertexMode }
+    });
+
+    _map.addControl(draw, "bottom-left")
+
+    const bottomLeftControlGroup = document.querySelector(".mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-group")
+    if (bottomLeftControlGroup) {
+      const simpleLineModeButton = document.createElement("button")
+      simpleLineModeButton.className = "draw-simple-line"
+      simpleLineModeButton
+        .addEventListener("click", () => {
+          draw.changeMode("draw_simple_line")
+        })
+
+      bottomLeftControlGroup.append(simpleLineModeButton)
+    }
+  }
+
+  _chart.addTransectListeners = function() {
+    _map.on("draw.create", (e) => {
+      e.features.forEach((feature) => {
+        _chart.addLabel(feature, feature.id)
+      })
+    })
+
+    _map.on("draw.update", (e) => {
+      e.features.forEach((feature) => {
+        delete labelFeatures[feature.id]
+        _chart.addLabel(feature, feature.id)
+      })
+    })
   }
 
   _chart.on("postRender", () => {

@@ -34750,8 +34750,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var _shouldRedrawAll = false;
 
   var vertexLabelGeoJson = {
-    'type': 'FeatureCollection',
-    'features': []
+    type: "FeatureCollection",
+    features: []
   };
 
   var labelFeatures = {};
@@ -35147,11 +35147,10 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   }
 
   _chart.addLabelLayer = function () {
-
     if (!_map.getSource("vertex-labels")) {
       _map.addSource("vertex-labels", {
         type: "geojson",
-        "data": vertexLabelGeoJson
+        data: vertexLabelGeoJson
       });
     }
 
@@ -35178,15 +35177,14 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     var _feature$geometry$coo = _slicedToArray(feature.geometry.coordinates, 2),
         start = _feature$geometry$coo[0],
         end = _feature$geometry$coo[1];
-    // TODO: decide if multiple transects are allowed per chart, patch labels accordingly
 
     labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")];
-    var featuresArray = Object.values(labelFeatures).reduce(function (acc, f) {
-      return acc.concat([].concat(_toConsumableArray(f)));
-    }, []);
 
-    console.log(start, end);
-    _map.getSource("vertex-labels").setData(_extends({}, vertexLabelGeoJson, { features: featuresArray }));
+    _map.getSource("vertex-labels").setData(_extends({}, vertexLabelGeoJson, {
+      features: Object.values(labelFeatures).reduce(function (acc, f) {
+        return acc.concat([].concat(_toConsumableArray(f)));
+      }, [])
+    }));
   };
 
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
@@ -35388,11 +35386,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
     _chart.root().style("width", _chart.width() + "px").style("height", _chart.height() + "px");
 
-    var draw = new _mapboxGlDraw2.default({
-      displayControlsDefault: false,
-      modes: _extends({}, _mapboxGlDraw2.default.modes, { draw_simple_line: _drawSimpleLineMode2.default, direct_select: _drawDirectSelectWithoutMiddleVertex2.default })
-    });
-
     _map = new _mapboxgl.Map({
       container: _mapId, // container id
       style: _mapStyle,
@@ -35415,18 +35408,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     _map.addControl(new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }), "bottom-right");
 
     // FIXME: move this somewhere conditional
-    _map.addControl(draw, "bottom-left");
-
-    if (document.querySelector(".mapboxgl-ctrl-bottom-left")) {
-      var button = document.createElement("button");
-      button.className = "draw-simple-line";
-      button.addEventListener("click", function () {
-        draw.changeMode("draw_simple_line");
-      });
-
-      var controlGroup = document.querySelector(".mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-group");
-      controlGroup.append(button);
-    }
+    _chart.addTransectControls();
 
     // Test adding saved lines
     // const testLine = {
@@ -35449,22 +35431,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     // }
 
     // draw.add(testLine)
-    _map.on("draw.create", function (e) {
-      e.features.forEach(function (feature) {
-        _chart.addLabel(feature, feature.id);
-      });
-    });
-
-    _map.on("draw.update", function (e) {
-      // _chart.addLabel(e.features)
-      // hmmmm
-      console.log("DRAWEVENT update", e);
-
-      e.features.forEach(function (feature) {
-        delete labelFeatures[feature.id];
-        _chart.addLabel(feature, feature.id);
-      });
-    });
 
     _chart.addMapListeners();
     _mapInitted = true;
@@ -35472,6 +35438,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (_chart.shiftToZoom()) {
       _map.on("mousedown", onMouseDownCheckForShiftToZoom);
     }
+
+    _chart.addTransectListeners();
   }
 
   _chart.addMapListeners = function () {
@@ -35492,6 +35460,41 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   _chart.removeMapListeners = function () {
     _map.off("move", onMapMove);
     _map.off("moveend", onMapMove);
+  };
+
+  _chart.addTransectControls = function () {
+    var draw = new _mapboxGlDraw2.default({
+      displayControlsDefault: false,
+      modes: _extends({}, _mapboxGlDraw2.default.modes, { draw_simple_line: _drawSimpleLineMode2.default, direct_select: _drawDirectSelectWithoutMiddleVertex2.default })
+    });
+
+    _map.addControl(draw, "bottom-left");
+
+    var bottomLeftControlGroup = document.querySelector(".mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-group");
+    if (bottomLeftControlGroup) {
+      var simpleLineModeButton = document.createElement("button");
+      simpleLineModeButton.className = "draw-simple-line";
+      simpleLineModeButton.addEventListener("click", function () {
+        draw.changeMode("draw_simple_line");
+      });
+
+      bottomLeftControlGroup.append(simpleLineModeButton);
+    }
+  };
+
+  _chart.addTransectListeners = function () {
+    _map.on("draw.create", function (e) {
+      e.features.forEach(function (feature) {
+        _chart.addLabel(feature, feature.id);
+      });
+    });
+
+    _map.on("draw.update", function (e) {
+      e.features.forEach(function (feature) {
+        delete labelFeatures[feature.id];
+        _chart.addLabel(feature, feature.id);
+      });
+    });
   };
 
   _chart.on("postRender", function () {
