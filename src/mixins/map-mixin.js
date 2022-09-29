@@ -777,15 +777,6 @@ export default function mapMixin(
 
     const draw = new MapboxDraw({
       displayControlsDefault: false,
-
-      // Select which mapbox-gl-draw control buttons to add to the map.
-      controls: {
-        draw_line_string: true
-        // draw_simple_line: true
-      },
-
-      // FIXME: toggle off by default when done testing
-      defaultMode: "draw_simple_line",
       modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode, direct_select: DirectSelectWithoutMiddleVertexMode }
     });
 
@@ -815,6 +806,19 @@ export default function mapMixin(
 
     // FIXME: move this somewhere conditional
     _map.addControl(draw, "bottom-left")
+
+
+    if (document.querySelector(".mapboxgl-ctrl-bottom-left")) {
+      const button = document.createElement("button")
+      button.className = "draw-simple-line"
+      button
+        .addEventListener("click", () => {
+          draw.changeMode("draw_simple_line")
+        })
+
+      const controlGroup = document.querySelector(".mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-group")
+      controlGroup.append(button)
+    }
 
     // Test adding saved lines
     // const testLine = {

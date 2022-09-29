@@ -1627,6 +1627,9 @@ body {
   right: 35px;
   top: 3px; }
 
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group {
+  right: 0; }
+
 .mapboxgl-ctrl-top-left .mapboxgl-ctrl {
   margin: 8px 0 0 8px !important; }
 
@@ -1712,7 +1715,6 @@ body {
 .mapboxgl-ctrl-group {
   position: absolute;
   display: block;
-  right: 0;
   bottom: 24px;
   z-index: 99999;
   overflow: hidden;
@@ -1751,6 +1753,10 @@ body {
 
 .heavyai-draw-canvas {
   outline: none; }
+
+.mapboxgl-ctrl-group .draw-simple-line {
+  background-image: url("data:image/svg+xml,%3Csvg width='38' height='38' viewBox='0 0 38 38' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg filter='url(%23filter0_d_774_1048)'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M29.0044 11.3727C29.0044 13.0296 27.6612 14.3727 26.0044 14.3727C24.3475 14.3727 23.0044 13.0296 23.0044 11.3727C23.0044 9.71589 24.3475 8.37274 26.0044 8.37274C27.6612 8.37274 29.0044 9.71589 29.0044 11.3727ZM27.6414 11.4098C27.6414 12.2934 26.9251 13.0098 26.0414 13.0098C25.1578 13.0098 24.4414 12.2934 24.4414 11.4098C24.4414 10.5261 25.1578 9.80978 26.0414 9.80978C26.9251 9.80978 27.6414 10.5261 27.6414 11.4098ZM16.0696 24.2268C16.0696 25.8836 14.7264 27.2268 13.0696 27.2268C11.4127 27.2268 10.0696 25.8836 10.0696 24.2268C10.0696 22.5699 11.4127 21.2268 13.0696 21.2268C14.7264 21.2268 16.0696 22.5699 16.0696 24.2268ZM14.6717 24.2268C14.6717 25.1116 13.9544 25.8289 13.0696 25.8289C12.1848 25.8289 11.4675 25.1116 11.4675 24.2268C11.4675 23.342 12.1848 22.6247 13.0696 22.6247C13.9544 22.6247 14.6717 23.342 14.6717 24.2268Z' fill='%232D2D2D'/%3E%3Cpath d='M15.4047 23.317L13.9905 21.9028L23.66 12.2333L25.0742 13.6475L15.4047 23.317Z' fill='%232D2D2D'/%3E%3C/g%3E%3Cdefs%3E%3Cfilter id='filter0_d_774_1048' x='0' y='0' width='38' height='38' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeFlood flood-opacity='0' result='BackgroundImageFix'/%3E%3CfeColorMatrix in='SourceAlpha' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0' result='hardAlpha'/%3E%3CfeOffset dy='1'/%3E%3CfeGaussianBlur stdDeviation='1.5'/%3E%3CfeComposite in2='hardAlpha' operator='out'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3CfeBlend mode='normal' in2='BackgroundImageFix' result='effect1_dropShadow_774_1048'/%3E%3CfeBlend mode='normal' in='SourceGraphic' in2='effect1_dropShadow_774_1048' result='shape'/%3E%3C/filter%3E%3C/defs%3E%3C/svg%3E%0A");
+  background-position: center; }
 
 .axis-lock {
   position: absolute;
