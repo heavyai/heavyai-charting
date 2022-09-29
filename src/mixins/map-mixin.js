@@ -520,8 +520,8 @@ export default function mapMixin(
 
 
   _chart.addLabelLayer = function() {
-    if (!_map.getSource("vertex-labels")) {
-      _map.addSource("vertex-labels", {
+    if (!_map.getSource("transect-vertex-labels")) {
+      _map.addSource("transect-vertex-labels", {
         type: "geojson",
         data: vertexLabelGeoJson
       });
@@ -530,7 +530,7 @@ export default function mapMixin(
     const initLabelLayer = {
       "id": "points",
       "type": "symbol",
-      "source": "vertex-labels",
+      "source": "transect-vertex-labels",
       "layout": {
         "text-field": "{title}",
         "text-offset": [0, 0.6],
@@ -546,11 +546,11 @@ export default function mapMixin(
     }
   }
 
-  _chart.addLabel = function(feature, lineId) {
+  _chart.addTransectVertexLabel = function(feature, lineId) {
     const [start, end] = feature.geometry.coordinates
     labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")]
 
-    _map.getSource("vertex-labels").setData({
+    _map.getSource("transect-vertex-labels").setData({
       ...vertexLabelGeoJson,
       features: Object.values(labelFeatures).reduce((acc, f) => {
         return acc.concat([...f])
@@ -881,14 +881,14 @@ export default function mapMixin(
   _chart.addTransectListeners = function() {
     _map.on("draw.create", (e) => {
       e.features.forEach((feature) => {
-        _chart.addLabel(feature, feature.id)
+        _chart.addTransectVertexLabel(feature, feature.id)
       })
     })
 
     _map.on("draw.update", (e) => {
       e.features.forEach((feature) => {
         delete labelFeatures[feature.id]
-        _chart.addLabel(feature, feature.id)
+        _chart.addTransectVertexLabel(feature, feature.id)
       })
     })
   }

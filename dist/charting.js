@@ -35147,8 +35147,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   }
 
   _chart.addLabelLayer = function () {
-    if (!_map.getSource("vertex-labels")) {
-      _map.addSource("vertex-labels", {
+    if (!_map.getSource("transect-vertex-labels")) {
+      _map.addSource("transect-vertex-labels", {
         type: "geojson",
         data: vertexLabelGeoJson
       });
@@ -35157,7 +35157,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     var initLabelLayer = {
       "id": "points",
       "type": "symbol",
-      "source": "vertex-labels",
+      "source": "transect-vertex-labels",
       "layout": {
         "text-field": "{title}",
         "text-offset": [0, 0.6],
@@ -35173,14 +35173,14 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     }
   };
 
-  _chart.addLabel = function (feature, lineId) {
+  _chart.addTransectVertexLabel = function (feature, lineId) {
     var _feature$geometry$coo = _slicedToArray(feature.geometry.coordinates, 2),
         start = _feature$geometry$coo[0],
         end = _feature$geometry$coo[1];
 
     labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")];
 
-    _map.getSource("vertex-labels").setData(_extends({}, vertexLabelGeoJson, {
+    _map.getSource("transect-vertex-labels").setData(_extends({}, vertexLabelGeoJson, {
       features: Object.values(labelFeatures).reduce(function (acc, f) {
         return acc.concat([].concat(_toConsumableArray(f)));
       }, [])
@@ -35485,14 +35485,14 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   _chart.addTransectListeners = function () {
     _map.on("draw.create", function (e) {
       e.features.forEach(function (feature) {
-        _chart.addLabel(feature, feature.id);
+        _chart.addTransectVertexLabel(feature, feature.id);
       });
     });
 
     _map.on("draw.update", function (e) {
       e.features.forEach(function (feature) {
         delete labelFeatures[feature.id];
-        _chart.addLabel(feature, feature.id);
+        _chart.addTransectVertexLabel(feature, feature.id);
       });
     });
   };
