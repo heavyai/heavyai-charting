@@ -34682,6 +34682,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function valuesOb(obj) {
   return Object.keys(obj).map(function (key) {
     return obj[key];
@@ -34750,9 +34752,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var vertexLabelGeoJson = {
     'type': 'FeatureCollection',
     'features': []
+  };
 
-    // TODO remove
-  };var testPoint = {
+  var labelFeatures = {};
+
+  // TODO remove
+  var testPoint = {
     "type": "Feature",
     "geometry": {
       "type": "Point",
@@ -35169,18 +35174,19 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     }
   };
 
-  _chart.addLabel = function (features) {
-    var _features$0$geometry$ = _slicedToArray(features[0].geometry.coordinates, 2),
-        start = _features$0$geometry$[0],
-        end = _features$0$geometry$[1];
+  _chart.addLabel = function (feature, lineId) {
+    var _feature$geometry$coo = _slicedToArray(feature.geometry.coordinates, 2),
+        start = _feature$geometry$coo[0],
+        end = _feature$geometry$coo[1];
     // TODO: decide if multiple transects are allowed per chart, patch labels accordingly
 
-
-    vertexLabelGeoJson.features.push(makePoint(start, "A"));
-    vertexLabelGeoJson.features.push(makePoint(end, "B"));
+    labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")];
+    var featuresArray = Object.values(labelFeatures).reduce(function (acc, f) {
+      return acc.concat([].concat(_toConsumableArray(f)));
+    }, []);
 
     console.log(start, end);
-    _map.getSource("vertex-labels").setData(vertexLabelGeoJson);
+    _map.getSource("vertex-labels").setData(_extends({}, vertexLabelGeoJson, { features: featuresArray }));
   };
 
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
@@ -35444,13 +35450,20 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
     // draw.add(testLine)
     _map.on("draw.create", function (e) {
-      _chart.addLabel(e.features);
+      e.features.forEach(function (feature) {
+        _chart.addLabel(feature, feature.id);
+      });
     });
 
     _map.on("draw.update", function (e) {
       // _chart.addLabel(e.features)
       // hmmmm
       console.log("DRAWEVENT update", e);
+
+      e.features.forEach(function (feature) {
+        delete labelFeatures[feature.id];
+        _chart.addLabel(feature, feature.id);
+      });
     });
 
     _chart.addMapListeners();

@@ -78,6 +78,8 @@ export default function mapMixin(
     'features': []
   }
 
+  const labelFeatures = {}
+
   // TODO remove
   const testPoint = {
     "type": "Feature",
@@ -545,15 +547,16 @@ export default function mapMixin(
     }
   }
 
-  _chart.addLabel = function(features) {
+  _chart.addLabel = function(feature, lineId) {
 
-    const [start, end] = features[0].geometry.coordinates
+    const [start, end] = feature.geometry.coordinates
     // TODO: decide if multiple transects are allowed per chart, patch labels accordingly
-    vertexLabelGeoJson.features.push(makePoint(start, "A"))
-    vertexLabelGeoJson.features.push(makePoint(end, "B"))
 
-    console.log(start, end)
-    _map.getSource("vertex-labels").setData(vertexLabelGeoJson);
+    labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")]
+    let featuresArray = Object.values(labelFeatures).reduce((acc, f) => { return acc.concat([...f]) }, [])
+
+      console.log(start, end)
+    _map.getSource("vertex-labels").setData({ ...vertexLabelGeoJson, features: featuresArray });
   }
 
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
@@ -842,13 +845,20 @@ export default function mapMixin(
 
     // draw.add(testLine)
     _map.on("draw.create", (e) => {
-      _chart.addLabel(e.features)
+      e.features.forEach((feature) => {
+        _chart.addLabel(feature, feature.id)
+      })
     })
 
     _map.on("draw.update", (e) => {
       // _chart.addLabel(e.features)
       // hmmmm
       console.log("DRAWEVENT update", e)
+
+      e.features.forEach((feature) => {
+        delete labelFeatures[feature.id]
+        _chart.addLabel(feature, feature.id)
+      })
     })
 
     _chart.addMapListeners()
