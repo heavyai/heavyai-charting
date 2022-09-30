@@ -1,5 +1,5 @@
 import {
-  lastFilteredSize,
+  lastFilteredSize
   // setLastFilteredSize
 } from "../core/core-async"
 import {
@@ -8,7 +8,7 @@ import {
   //   createVegaAttrMixin,
   //   getColorScaleName,
   //   getScales,
-  getSizeScaleName,
+  getSizeScaleName
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import assert from "assert"
@@ -136,7 +136,7 @@ class VegaPropertyOutputState {
       sql_parser_transforms: new Map(),
       vega_transforms: new Map(),
       vega_scales: new Map(),
-      mark_properties: new Map(),
+      mark_properties: new Map()
     }
   }
 
@@ -611,7 +611,7 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
       name: this.name,
       type: `${this.type_}`,
       domain,
-      range,
+      range
     }
 
     this._materializeExtraVegaScaleProps(prop_descriptor, vega_scale_obj)
@@ -626,7 +626,7 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
    */
   _materializeDomainFromKeyword(domain_keyword) {
     throw new Error(
-      `Invalid domain for a ${this.type_} scale definition. The domain keyword ${domain_keyword} is invalid.`
+      `'${domain_keyword}' is not a valid domain keyword for scale type ${this.type}`
     )
   }
 
@@ -637,7 +637,7 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
    */
   _materializeRangeFromKeyword(range_keyword) {
     throw new Error(
-      `Invalid range for a ${this.type_} scale definition. The range keyword ${range_keyword} is invalid.`
+      `'${range_keyword}' is not a valid range keyword for scale type ${this.type}`
     )
   }
 
@@ -855,7 +855,7 @@ class ContinuousScale extends ScaleDefinitionObject {
         this.ops.push(op)
         this.as.push(`${field_output}_${op}`)
         return this.as[this.as.length - 1]
-      },
+      }
     }
     const formula_xform_objs = []
     const vega_xform_outputs = []
@@ -872,13 +872,13 @@ class ContinuousScale extends ScaleDefinitionObject {
           formula_xform_objs.push({
             type: "formula",
             expr: `${avg_output} - ${extent_flag.sigma_factor}*${output}`,
-            as: `${field_output}_${extent_flag.extent_name}_below`,
+            as: `${field_output}_${extent_flag.extent_name}_below`
           })
 
           formula_xform_objs.push({
             type: "formula",
             expr: `${avg_output} + ${extent_flag.sigma_factor}*${output}`,
-            as: `${field_output}_${extent_flag.extent_name}_above`,
+            as: `${field_output}_${extent_flag.extent_name}_above`
           })
         } else if (
           extent_flag === ExtentFlags.kMin ||
@@ -894,7 +894,7 @@ class ContinuousScale extends ScaleDefinitionObject {
               expr: `${ExtentFlags.opposite(extent_flag).op_name}(${output}, ${
                 formula_xform_objs[formula_xform_objs.length - 2].as
               })`,
-              as: `${field_output}_extents_${extent_flag.extent_name}`,
+              as: `${field_output}_extents_${extent_flag.extent_name}`
             })
           }
         } else if (formula_xform_objs.length === 0) {
@@ -914,13 +914,13 @@ class ContinuousScale extends ScaleDefinitionObject {
     const vega_xform_obj = {
       name: `${layer_name}_${prop_name}_xform`,
       source: layer_name,
-      transform: [aggregate_xform_obj, ...formula_xform_objs],
+      transform: [aggregate_xform_obj, ...formula_xform_objs]
     }
 
     assert(vega_xform_outputs.length >= 2)
     const scale_domain_ref = {
       data: vega_xform_obj.name,
-      fields: vega_xform_outputs,
+      fields: vega_xform_outputs
     }
 
     return { vega_xform_obj, scale_domain_ref }
@@ -1101,14 +1101,14 @@ class DiscreteScale extends ScaleDefinitionObject {
           type: "aggregate",
           fields: [field_output],
           ops: ["distinct"],
-          as: [`${field_output}_distinct`],
-        },
-      ],
+          as: [`${field_output}_distinct`]
+        }
+      ]
     }
 
     const scale_domain_ref = {
       data: vega_xform_obj.name,
-      field: vega_xform_obj.transform[0].as[0],
+      field: vega_xform_obj.transform[0].as[0]
     }
 
     return { vega_xform_obj, scale_domain_ref }
@@ -1265,7 +1265,7 @@ class DiscretizingScale extends ScaleDefinitionObject {
     assert(DiscretizingScale.isDescretizingScale(scale_type))
     if (measurement_type !== MeasurementType.kQuantitative) {
       throw new Error(
-        `Continuous scales can only be used with continuous '${MeasurementType.kQuantitative}' field type encodings`
+        `Discretizing scales can only be used with '${MeasurementType.kQuantitative}' field type encodings`
       )
     }
   }
@@ -1282,6 +1282,66 @@ class DiscretizingScale extends ScaleDefinitionObject {
     )
     super(scale_definition_object, scale_type, parent_info)
   }
+
+  /**
+   * @param {string} domain_keyword
+   * @param {PropDescriptor} prop_descriptor
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  _materializeDomainFromKeyword(
+    domain_keyword,
+    prop_descriptor,
+    vega_property_output_state
+  ) {
+    if (this.domain_ === "auto") {
+      /**
+       * @type {FieldDefinitionObject}
+       */
+      const parent = this.parent
+      assert(parent instanceof FieldDefinitionObject)
+
+      const { vega_xform_obj, scale_domain_ref } =
+        ContinuousScale.buildExtentsVegaTransform(
+          parent.output,
+          this.root_context.layer_name,
+          prop_descriptor.prop_name,
+          // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
+          ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
+        )
+
+      vega_property_output_state.addVegaTransform(
+        prop_descriptor.prop_name,
+        vega_xform_obj
+      )
+
+      return scale_domain_ref
+    }
+    throw new Error(
+      `'${domain_keyword}' is not a valid domain keyword for discretizing scale type ${this.type}`
+    )
+  }
+
+  /**
+   * @param {string} range_keyword
+   * @param {PropDescriptor} prop_descriptor
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  _materializeRangeFromKeyword(
+    range_keyword,
+    prop_descriptor,
+    vega_property_output_state
+  ) {
+    throw new Error(
+      `'${range_keyword}' is not a valid range keyword for discretizing scale type ${this.type}`
+    )
+  }
+
+  /**
+   *
+   * @param {PropDescriptor} prop_descriptor
+   * @param {Object} vega_scale_object
+   */
+  _materializeExtraVegaScaleProps(prop_descriptor, vega_scale_object) {}
 }
 
 class QuantizeScale extends DiscretizingScale {
@@ -1410,7 +1470,7 @@ class FieldDefinitionObject extends PropertiesDefinitionInterface {
     vega_property_output_state.addSqlParserTransform(prop_name, {
       type: "project",
       expr: this.field,
-      as: prop_name,
+      as: prop_name
     })
 
     const vega_mark_property_object = { field: prop_name }
@@ -1871,7 +1931,7 @@ class ColorChannelDescriptor extends PropDescriptor {
           }'. Color channels only accept ${[
             `${MeasurementType.kQuantitative}`,
             `${MeasurementType.kOrdinal}`,
-            `${MeasurementType.kNominal}`,
+            `${MeasurementType.kNominal}`
           ]} measurement types.`
         )
     }
@@ -1893,7 +1953,7 @@ function getSizing(
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
     return {
       scale: getSizeScaleName(layerName),
-      field: "size",
+      field: "size"
     }
     // } else if (sizeAttr === "auto") {
     //   const size = Math.min(lastFilteredSize, cap);
@@ -1999,7 +2059,7 @@ function materialize_prop(
       sql_parser_transforms.set(prop_name, {
         type: "project",
         expr: prop_definition.field,
-        as: prop_name,
+        as: prop_name
       })
       mark_prop_obj[mark_prop_name] = { field: prop_name }
       mark_properties.set(prop_name, mark_prop_obj)
@@ -2238,8 +2298,8 @@ export default function rasterLayerWindBarbMixin(_layer) {
         opacity,
         fillOpacity,
         strokeOpacity,
-        strokeWidth,
-      },
+        strokeWidth
+      }
       // postFilters
     },
     lastFilteredSize,
@@ -2306,12 +2366,12 @@ export default function rasterLayerWindBarbMixin(_layer) {
     transforms.push({
       type: "project",
       expr: x.field,
-      as: "x",
+      as: "x"
     })
     transforms.push({
       type: "project",
       expr: y.field,
-      as: "y",
+      as: "y"
     })
     // }
     // if (typeof transform.limit === "number") {
@@ -2333,21 +2393,21 @@ export default function rasterLayerWindBarbMixin(_layer) {
       transforms.push({
         type: "project",
         expr: speed.field,
-        as: "speed",
+        as: "speed"
       })
     }
     if (typeof direction === "object" && typeof direction.field === "string") {
       transforms.push({
         type: "project",
         expr: direction.field,
-        as: "direction",
+        as: "direction"
       })
     }
     if (typeof size === "object" && typeof size.field === "string") {
       transforms.push({
         type: "project",
         expr: size.field,
-        as: "size",
+        as: "size"
       })
     }
     // if (typeof size === "object" && size.type === "quantitative") {
@@ -2361,20 +2421,20 @@ export default function rasterLayerWindBarbMixin(_layer) {
       transforms.push({
         type: "project",
         expr: fill.field,
-        as: "fill",
+        as: "fill"
       })
     } else if (typeof color === "object" && typeof color.field === "string") {
       transforms.push({
         type: "project",
         expr: color.field,
-        as: "color",
+        as: "color"
       })
     }
     if (typeof stroke === "object" && typeof stroke.field === "string") {
       transforms.push({
         type: "project",
         expr: stroke.field,
-        as: "stroke",
+        as: "stroke"
       })
     } else if (
       (transforms.length === 0 ||
@@ -2385,7 +2445,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
       transforms.push({
         type: "project",
         expr: color.field,
-        as: "color",
+        as: "color"
       })
     }
     // if (
@@ -2402,7 +2462,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
       transforms.push({
         type: "project",
         expr: opacity.field,
-        as: "opacity",
+        as: "opacity"
       })
     }
     if (
@@ -2412,7 +2472,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
       transforms.push({
         type: "project",
         expr: fillOpacity.field,
-        as: "fillOpacity",
+        as: "fillOpacity"
       })
     }
     if (
@@ -2422,7 +2482,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
       transforms.push({
         type: "project",
         expr: strokeOpacity.field,
-        as: "strokeOpacity",
+        as: "strokeOpacity"
       })
     }
     if (
@@ -2432,7 +2492,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
       transforms.push({
         type: "project",
         expr: strokeWidth.field,
-        as: "strokeWidth",
+        as: "strokeWidth"
       })
     }
     // if (orientation) {
@@ -2446,7 +2506,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     if (typeof filter === "string" && filter.length) {
       transforms.push({
         type: "filter",
-        expr: filter,
+        expr: filter
       })
     }
     // const postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
@@ -2465,7 +2525,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     if (typeof globalFilter === "string" && globalFilter.length) {
       transforms.push({
         type: "filter",
-        expr: globalFilter,
+        expr: globalFilter
       })
     }
     return transforms
@@ -2606,7 +2666,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     lastFilteredSize,
     globalFilter,
     pixelRatio,
-    layerName,
+    layerName
   }) {
     const context = new RasterLayerContext(chart, this, layerName)
 
@@ -2614,13 +2674,13 @@ export default function rasterLayerWindBarbMixin(_layer) {
       sql_parser_transforms,
       vega_transforms,
       vega_scales,
-      mark_properties,
+      mark_properties
     } = materialize_prop_descriptors(context, prop_descriptors, state)
 
     if (typeof filter === "string" && filter.length) {
       sql_parser_transforms.push({
         type: "filter",
-        expr: filter,
+        expr: filter
       })
     }
     // const postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
@@ -2639,7 +2699,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     if (typeof globalFilter === "string" && globalFilter.length) {
       sql_parser_transforms.push({
         type: "filter",
-        expr: globalFilter,
+        expr: globalFilter
       })
     }
 
@@ -2649,21 +2709,21 @@ export default function rasterLayerWindBarbMixin(_layer) {
         sql: parser.writeSQL({
           type: "root",
           source: table,
-          transform: sql_parser_transforms,
+          transform: sql_parser_transforms
         }),
-        enableHitTesting: state.enableHitTesting,
+        enableHitTesting: state.enableHitTesting
       },
-      ...vega_transforms,
+      ...vega_transforms
     ]
 
     const marks = [
       {
         type: "windbarb",
         from: {
-          data: layerName,
+          data: layerName
         },
-        properties: Object.assign({}, ...mark_properties),
-      },
+        properties: Object.assign({}, ...mark_properties)
+      }
     ]
 
     return { data, scales: vega_scales, marks }
@@ -2903,7 +2963,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
       filter: _layer.crossfilter().getFilterString(realLayerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
-      pixelRatio: chart._getPixelRatio(),
+      pixelRatio: chart._getPixelRatio()
     })
     return _vega
   }
