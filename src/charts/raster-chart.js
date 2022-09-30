@@ -86,7 +86,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   let _shiftToZoom = false
 
-  _chart.on = function(event, listener) {
+  _chart.on = function (event, listener) {
     if (_events.indexOf(event) === -1) {
       _on(event, listener)
     } else {
@@ -95,11 +95,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart._invokeVegaSpecListener = function(spec) {
+  _chart._invokeVegaSpecListener = function (spec) {
     _listeners.vegaSpec(_chart, spec)
   }
 
-  _chart.legendOpen = function(_) {
+  _chart.legendOpen = function (_) {
     if (!arguments.length) {
       return _legendOpen
     }
@@ -107,11 +107,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.popupDisplayable = function(displayable) {
+  _chart.popupDisplayable = function (displayable) {
     _popupDisplayable = Boolean(displayable)
   }
 
-  _chart.x = function(x) {
+  _chart.x = function (x) {
     if (!arguments.length) {
       return _x
     }
@@ -119,7 +119,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.y = function(_) {
+  _chart.y = function (_) {
     if (!arguments.length) {
       return _y
     }
@@ -127,32 +127,32 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.xLatLngBnds = function(_) {
+  _chart.xLatLngBnds = function (_) {
     if (!arguments.length) {
       return _xLatLngBnds
     }
     _xLatLngBnds = _
-    return chart
+    return _chart
   }
 
-  _chart.yLatLngBnds = function(_) {
+  _chart.yLatLngBnds = function (_) {
     if (!arguments.length) {
       return _yLatLngBnds
     }
     _yLatLngBnds = _
-    return chart
+    return _chart
   }
 
-  _chart._resetRenderBounds = function() {
+  _chart._resetRenderBounds = function () {
     _renderBoundsMap = {}
   }
 
-  _chart._resetLayers = function() {
+  _chart._resetLayers = function () {
     _layers = []
     _layerNames = {}
   }
 
-  _chart.pushLayer = function(layerName, layer) {
+  _chart.pushLayer = function (layerName, layer) {
     if (_layerNames[layerName]) {
       return
     } else if (!layerName.match(/^\w+$/)) {
@@ -203,15 +203,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.popLayer = function() {
+  _chart.popLayer = function () {
     const layerName = _layers.pop()
     const layer = _layerNames[layerName]
     delete _layerNames[layerName]
     return layer
   }
 
-  _chart.popAllLayers = function() {
-    const poppedLayers = _layers.map(layerName => {
+  _chart.popAllLayers = function () {
+    const poppedLayers = _layers.map((layerName) => {
       const layer = _layerNames[layerName]
       delete _layerNames[layerName]
       return layer
@@ -220,42 +220,42 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return poppedLayers
   }
 
-  _chart.getLayer = function(layerName) {
+  _chart.getLayer = function (layerName) {
     return _layerNames[layerName]
   }
 
-  _chart.getAllLayers = function() {
-    return Object.keys(_layerNames).map(k => _layerNames[k])
+  _chart.getAllLayers = function () {
+    return Object.keys(_layerNames).map((k) => _layerNames[k])
   }
 
-  _chart.getLayerAt = function(idx) {
+  _chart.getLayerAt = function (idx) {
     const layerName = _layers[idx]
     return _layerNames[layerName]
   }
 
-  _chart.getLayers = function() {
-    return _layers.map(layerName => _layerNames[layerName])
+  _chart.getLayers = function () {
+    return _layers.map((layerName) => _layerNames[layerName])
   }
 
-  _chart.getLayerNames = function() {
+  _chart.getLayerNames = function () {
     return _layers
   }
 
-  _chart.xRangeFilter = function(filter) {
+  _chart.xRangeFilter = function (filter) {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       // layer.xDim() & layer.xDim().filter(filter)
     }
   }
 
-  _chart.yRangeFilter = function(filter) {
+  _chart.yRangeFilter = function (filter) {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       // layer.yDim() && layer.yDim().filter(filter)
     }
   }
 
-  _chart.clearLayerFilters = function() {
+  _chart.clearLayerFilters = function () {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       if (typeof layer.filterAll === "function") {
@@ -264,7 +264,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart.destroyChart = function() {
+  _chart.destroyChart = function () {
     _legend.setState({})
 
     _chart.filterAll()
@@ -278,7 +278,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart.con = function(_) {
+  _chart.con = function (_) {
     if (!arguments.length) {
       return _con
     }
@@ -286,7 +286,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.useGeoTypes = function(geoTypesEnabled) {
+  _chart.useGeoTypes = function (geoTypesEnabled) {
     _chart._useGeoTypes = geoTypesEnabled
     return _chart
   }
@@ -294,7 +294,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // TODO(croot): pixel ratio should probably be configured on the backend
   // rather than here to deal with scenarios where data is used directly
   // in pixel-space.
-  _chart.usePixelRatio = function(usePixelRatio) {
+  _chart.usePixelRatio = function (usePixelRatio) {
     if (!arguments.length) {
       return _usePixelRatio
     }
@@ -309,12 +309,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart._getPixelRatio = function() {
+  _chart._getPixelRatio = function () {
     return _pixelRatio
   }
 
-  _chart.setSample = function() {
-    _layers.forEach(layerName => {
+  _chart.setSample = function () {
+    _layers.forEach((layerName) => {
       const layer = _layerNames[layerName]
       if (layer && typeof layer.setSample === "function") {
         layer.setSample()
@@ -322,7 +322,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     })
   }
 
-  _chart.shiftToZoom = function(shiftToZoom) {
+  _chart.shiftToZoom = function (shiftToZoom) {
     if (shiftToZoom !== undefined) {
       _shiftToZoom = shiftToZoom
     }
@@ -347,13 +347,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart
       .con()
       .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
-      .then(result => {
+      .then((result) => {
         if (!paused) {
           _renderBoundsMap[result.nonce] = bounds
         }
         callback(null, result)
       })
-      .catch(error => {
+      .catch((error) => {
         callback(error)
       })
   }
@@ -361,16 +361,16 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.setDataAsync((group, callback) => {
     const layers = _chart.getAllLayers()
     const polyLayers = layers.length
-      ? _.filter(layers, layer => layer.getState().mark.type === "poly")
+      ? _.filter(layers, (layer) => layer.getState().mark.type === "poly")
       : null
     if (polyLayers && polyLayers.length) {
       // add bboxCount to poly layers run sample
 
-      const countsPromise = polyLayers.map(currentLayer =>
+      const countsPromise = polyLayers.map((currentLayer) =>
         getCountFromBoundingBox(_chart, currentLayer)
       )
 
-      Promise.all(countsPromise).then(resArr => {
+      Promise.all(countsPromise).then((resArr) => {
         resArr.forEach((res, index) => {
           const count = res && res[0] && res[0].n
           const currentLayer = polyLayers[index]
@@ -386,7 +386,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   })
 
-  _chart.data(group => {
+  _chart.data((group) => {
     if (_chart.dataCache !== null) {
       return _chart.dataCache
     }
@@ -408,15 +408,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return result
   })
 
-  _chart._getXScaleName = function() {
+  _chart._getXScaleName = function () {
     return _xScaleName
   }
 
-  _chart._getYScaleName = function() {
+  _chart._getYScaleName = function () {
     return _yScaleName
   }
 
-  _chart._updateXAndYScales = function(renderBounds) {
+  _chart._updateXAndYScales = function (renderBounds) {
     // renderBounds should be in this order - top left, top-right, bottom-right, bottom-left
     const useRenderBounds =
       renderBounds &&
@@ -524,7 +524,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart._determineScaleType = function(scale) {
+  _chart._determineScaleType = function (scale) {
     const scaleType = null
     if (scale.rangeBand !== undefined) {
       return "ordinal"
@@ -551,7 +551,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // We need to default to redraw = true here since base-mixin (in _chart.render())
   //  calls this, w/o any interface to set the redraw boolean, and for
   //  backendScatter, we need to take the image from the data and swap it out.
-  _chart._doRender = function(data, redraw, doNotForceData) {
+  _chart._doRender = function (data, redraw, doNotForceData) {
     if (!data && Boolean(!doNotForceData)) {
       data = _chart.data()
     }
@@ -567,7 +567,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       }
     }
 
-    const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
+    // TODO(croot): legends are currently not working with windbarb chart due to
+    // various changes to the state structure. To get it working will likely require
+    // a change to the below getLegendStateFromChart() call in the way of generalization
+    // or windbarb specialization. In the meantime, legends are disabled by setting
+    // the legend state to an empy object.
+    // const state = getLegendStateFromChart(_chart, useMap, selectedLayer);
+    const state = {}
     _legend.setState(state)
 
     if (_chart.isLoaded()) {
@@ -596,11 +602,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart._doRedraw = function(data) {
+  _chart._doRedraw = function (data) {
     _chart._doRender(data || null, true)
   }
 
-  _chart.minPopupShapeBoundsArea = function(minPopupShapeBoundsArea) {
+  _chart.minPopupShapeBoundsArea = function (minPopupShapeBoundsArea) {
     if (!arguments.length) {
       return _minPopupShapeBoundsArea
     }
@@ -608,7 +614,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.popupSearchRadius = function(popupSearchRadius) {
+  _chart.popupSearchRadius = function (popupSearchRadius) {
     if (!arguments.length) {
       return _popupSearchRadius
     }
@@ -637,7 +643,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     let cnt = 0
     const layerObj = {}
-    _layers.forEach(layerName => {
+    _layers.forEach((layerName) => {
       const layer = _layerNames[layerName]
       if (
         layer.getPopupAndRenderColumns &&
@@ -662,15 +668,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         layerObj,
         Math.ceil(_popupSearchRadius * pixelRatio)
       )
-      .then(results => callback(results[0]))
-      .catch(error => {
+      .then((results) => callback(results[0]))
+      .catch((error) => {
         throw new Error(
           `getResultRowForPixel failed with message: ${error.error_msg}`
         )
       })
   }
 
-  _chart.measureValue = function(value, key) {
+  _chart.measureValue = function (value, key) {
     const customFormatter = _chart.valueFormatter()
     // hack to undo the popup concatenation like "AVG(arrdelay)"
     let keyTrimmed = null
@@ -734,10 +740,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   }
 
   const anchored = _chart.anchor(parent, chartGroup)
-  const legend = anchored
-    .root()
-    .append("div")
-    .attr("class", "legend")
+  const legend = anchored.root().append("div").attr("class", "legend")
   _legend = new Legend(legend.node())
 
   _legend.on("open", handleLegendOpen.bind(_chart))
@@ -745,7 +748,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _legend.on("input", handleLegendInput.bind(_chart))
   _legend.on("toggle", handleLegendToggle.bind(_chart))
   _legend.on("doneRender", handleLegendDoneRender.bind(_chart))
-  _legend.on("doneRender", function(state) {
+  _legend.on("doneRender", function (state) {
     // Sometimes the legend gets disconnected from the DOM?
     if (this.node.elm && !this.node.elm.isConnected) {
       const root = _chart.root()
@@ -754,11 +757,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   })
 
-  _chart.legend = function(l) {
+  _chart.legend = function (l) {
     return _legend
   }
 
-  _chart.deleteLayerLegend = function(
+  _chart.deleteLayerLegend = function (
     currentLayerId,
     deleteLayerId,
     prevLayerId
@@ -776,18 +779,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart.destroyChartLegend = function() {
-    _chart
-      .root()
-      .selectAll(".legend")
-      .remove()
+  _chart.destroyChartLegend = function () {
+    _chart.root().selectAll(".legend").remove()
   }
 
   return anchored
 }
 
 function valuesOb(obj) {
-  return Object.keys(obj).map(key => obj[key])
+  return Object.keys(obj).map((key) => obj[key])
 }
 
 function genLayeredVega(chart) {
@@ -834,7 +834,7 @@ function genLayeredVega(chart) {
   }
   const marks = []
 
-  chart.getLayerNames().forEach(layerName => {
+  chart.getLayerNames().forEach((layerName) => {
     const layerVega = chart.getLayer(layerName).genVega(chart, layerName)
 
     data.push(...layerVega.data)

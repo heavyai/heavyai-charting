@@ -1,9 +1,9 @@
-const webpack = require("webpack");
-const path = require("path");
+const webpack = require("webpack")
+const path = require("path")
 
 module.exports = {
   entry: {
-    app: [
+    "heavyai-charting": [
       "babel-polyfill",
       "script-loader!@heavyai/connector/dist/browser-connector.js",
       "script-loader!@heavyai/crossfilter/dist/mapd-crossfilter.js",
@@ -13,9 +13,16 @@ module.exports = {
     example3: path.resolve(__dirname, "./example3.js"),
     example4: path.resolve(__dirname, "./example4.js"),
     multilayermap: path.resolve(__dirname, "./exampleMultiLayerMap.js"),
-    multilayerscatterplot: path.resolve(__dirname, "./exampleMultiLayerScatterplot.js"),
+    multilayerscatterplot: path.resolve(
+      __dirname,
+      "./exampleMultiLayerScatterplot.js"
+    ),
     geoheat: path.resolve(__dirname, "./exampleGeoHeat.js"),
-    exampleD3ComboChartCrossfilter: path.resolve(__dirname, "./exampleD3ComboChartCrossfilter.js")
+    windbarb: path.resolve(__dirname, "./exampleWindBarbs.js"),
+    exampleD3ComboChartCrossfilter: path.resolve(
+      __dirname,
+      "./exampleD3ComboChartCrossfilter.js"
+    )
   },
   devtool: "source-map",
   output: {
@@ -30,7 +37,7 @@ module.exports = {
         include: [
           path.resolve(__dirname, "./example3.js"),
           path.resolve(__dirname, "./exampleMultiLayerMap.js"),
-          path.resolve(__dirname, "./exampleMultiLayerScatterplot.js"),
+          path.resolve(__dirname, "./exampleMultiLayerScatterplot.js")
         ],
         loader: "script-loader"
       },
@@ -40,22 +47,19 @@ module.exports = {
           path.resolve(__dirname, "../src"),
           path.resolve(__dirname, "../index.js"),
           path.resolve(__dirname, "./exampleGeoHeat.js"),
+          path.resolve(__dirname, "./exampleWindBarbs.js"),
           path.resolve(__dirname, "./exampleD3ComboChartCrossfilter.js")
         ],
         loader: "babel-loader"
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader" ]
+        use: ["style-loader", "css-loader"]
       },
       {
         test: /\.scss$/,
-        use: [
-          "style-loader",
-          "css-loader",
-          "sass-loader"
-        ]
+        use: ["style-loader", "css-loader", "sass-loader"]
       }
     ]
   }
-};
+}
