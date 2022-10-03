@@ -698,6 +698,7 @@ class ExtentFlags {
    * @type {Map}
    */
   static val_to_enum_map_ = new Map()
+  static sigma_to_enum_map_ = new Map()
 
   static kOneSigma = new ExtentFlags(1 << 0, "onesigma", "stddev", 1)
   static kTwoSigma = new ExtentFlags(1 << 1, "twosigma", "stddev", 2)
@@ -723,6 +724,107 @@ class ExtentFlags {
       default:
         assert(false, `${extent_flag.value}`)
     }
+    return ExtentFlags.kMin
+  }
+
+  /**
+   * @param {string} field_output
+   * @param {string} layer_name
+   * @param {string} prop_name
+   * @param {ExtentFlags} extent_flags
+   */
+  static buildVegaTransformFromExtentFlags(
+    field_output,
+    layer_name,
+    prop_name,
+    extent_flags,
+    handle_insert_callback = null,
+    handle_iteration_complete_callback = null
+  ) {
+    const vega_xform_build_state = {
+      aggregate_xform_obj: {
+        type: "aggregate",
+        fields: [],
+        ops: [],
+        as: [],
+
+        // eslint-disable-next-line object-shorthand
+        push: function (op) {
+          const index = this.ops.indexOf(op)
+          if (index >= 0) {
+            return this.as[index]
+          }
+
+          this.fields.push(field_output)
+          this.ops.push(op)
+          this.as.push(`${field_output}_${op}`)
+          return this.as[this.as.length - 1]
+        }
+      },
+      formula_xform_objs: [],
+      vega_xform_outputs: []
+    }
+
+    const { aggregate_xform_obj, formula_xform_objs, vega_xform_outputs } =
+      vega_xform_build_state
+
+    for (const extent_flag of ExtentFlags.val_to_enum_map_.values()) {
+      if (extent_flags & extent_flag) {
+        const output = aggregate_xform_obj.push(extent_flag.op_name)
+        let added_formulas = []
+        if (
+          extent_flag >= ExtentFlags.kOneSigma &&
+          extent_flag <= ExtentFlags.kSixSigma
+        ) {
+          const avg_output = aggregate_xform_obj.push(ExtentFlags.kMean.op_name)
+
+          formula_xform_objs.push({
+            type: "formula",
+            expr: `${avg_output} - ${extent_flag.sigma_factor}*${output}`,
+            as: `${field_output}_${extent_flag.extent_name}_below`
+          })
+
+          formula_xform_objs.push({
+            type: "formula",
+            expr: `${avg_output} + ${extent_flag.sigma_factor}*${output}`,
+            as: `${field_output}_${extent_flag.extent_name}_above`
+          })
+
+          added_formulas = formula_xform_objs.slice(-2)
+        }
+
+        if (handle_insert_callback) {
+          handle_insert_callback(
+            extent_flag,
+            output,
+            added_formulas,
+            vega_xform_build_state
+          )
+        }
+      }
+    }
+
+    if (handle_iteration_complete_callback) {
+      handle_iteration_complete_callback(vega_xform_build_state)
+    }
+
+    const vega_xform_obj = {
+      name: `${layer_name}_${prop_name}_xform`,
+      source: layer_name,
+      transform: [aggregate_xform_obj, ...formula_xform_objs]
+    }
+
+    assert(vega_xform_outputs.length > 0)
+    const scale_domain_ref = {
+      data: vega_xform_obj.name
+    }
+    if (vega_xform_outputs.length === 1) {
+      scale_domain_ref.field = vega_xform_outputs[0]
+    } else {
+      scale_domain_ref.fields = vega_xform_outputs
+    }
+
+    return { vega_xform_obj, scale_domain_ref }
   }
 
   constructor(value, extent_name, xform_op_name = null, sigma_factor = null) {
@@ -732,6 +834,9 @@ class ExtentFlags {
     this.sigma_factor_ = sigma_factor
 
     ExtentFlags.val_to_enum_map_.set(this.extent_name, this)
+    if (sigma_factor !== null) {
+      ExtentFlags.sigma_to_enum_map_.set(sigma_factor, this)
+    }
   }
 
   get value() {
@@ -828,8 +933,6 @@ class ContinuousScale extends ScaleDefinitionObject {
    * @param {string} field_output
    * @param {string} layer_name
    * @param {string} prop_name
-   * @param {PropDescriptor} prop_descriptor
-   * @param {VegaPropertyOutputState} vega_property_output_state
    * @param {ExtentFlags} extent_flags
    */
   static buildExtentsVegaTransform(
@@ -838,92 +941,55 @@ class ContinuousScale extends ScaleDefinitionObject {
     prop_name,
     extent_flags
   ) {
-    const aggregate_xform_obj = {
-      type: "aggregate",
-      fields: [],
-      ops: [],
-      as: [],
-
-      // eslint-disable-next-line object-shorthand
-      push: function (op) {
-        const index = this.ops.indexOf(op)
-        if (index >= 0) {
-          return this.as[index]
-        }
-
-        this.fields.push(field_output)
-        this.ops.push(op)
-        this.as.push(`${field_output}_${op}`)
-        return this.as[this.as.length - 1]
-      }
-    }
-    const formula_xform_objs = []
-    const vega_xform_outputs = []
-
-    for (const extent_flag of ExtentFlags.val_to_enum_map_.values()) {
-      if (extent_flags & extent_flag) {
-        const output = aggregate_xform_obj.push(extent_flag.op_name)
+    return ExtentFlags.buildVegaTransformFromExtentFlags(
+      field_output,
+      layer_name,
+      prop_name,
+      extent_flags,
+      (
+        extent_flag,
+        agg_xform_output,
+        formula_xform_outputs,
+        { formula_xform_objs, vega_xform_outputs }
+      ) => {
         if (
-          extent_flag >= ExtentFlags.kOneSigma &&
-          extent_flag <= ExtentFlags.kSixSigma
-        ) {
-          // TODO(croot): make avg a dependency so it's always found here?
-          const avg_output = aggregate_xform_obj.push(ExtentFlags.kMean.op_name)
-          formula_xform_objs.push({
-            type: "formula",
-            expr: `${avg_output} - ${extent_flag.sigma_factor}*${output}`,
-            as: `${field_output}_${extent_flag.extent_name}_below`
-          })
-
-          formula_xform_objs.push({
-            type: "formula",
-            expr: `${avg_output} + ${extent_flag.sigma_factor}*${output}`,
-            as: `${field_output}_${extent_flag.extent_name}_above`
-          })
-        } else if (
           extent_flag === ExtentFlags.kMin ||
           extent_flag === ExtentFlags.kMax
         ) {
           // these need to be processed after the sigmas/stddevs, so they should be last, or at least
           // after them in the map.
           if (formula_xform_objs.length === 0) {
-            vega_xform_outputs.push(output)
+            vega_xform_outputs.push(agg_xform_output)
           } else {
             formula_xform_objs.push({
               type: "formula",
-              expr: `${ExtentFlags.opposite(extent_flag).op_name}(${output}, ${
+              expr: `${
+                ExtentFlags.opposite(extent_flag).op_name
+              }(${agg_xform_output}, ${
                 formula_xform_objs[formula_xform_objs.length - 2].as
               })`,
-              as: `${field_output}_extents_${extent_flag.extent_name}`
+              as: `${parent.output}_extents_${extent_flag.extent_name}`
             })
           }
-        } else if (formula_xform_objs.length === 0) {
-          vega_xform_outputs.push(output)
+        } else if (
+          formula_xform_objs.length === 0 &&
+          (extent_flag < ExtentFlags.kOneSigma ||
+            extent_flag > ExtentFlags.kSixSigma)
+        ) {
+          vega_xform_outputs.push(agg_xform_output)
         }
+      },
+      ({ formula_xform_objs, vega_xform_outputs }) => {
+        if (vega_xform_outputs.length === 0) {
+          assert(formula_xform_objs.length >= 2)
+          vega_xform_outputs.push(
+            formula_xform_objs[formula_xform_objs.length - 2].as,
+            formula_xform_objs[formula_xform_objs.length - 1].as
+          )
+        }
+        assert(vega_xform_outputs.length >= 2)
       }
-    }
-
-    if (vega_xform_outputs.length === 0) {
-      assert(formula_xform_objs.length >= 2)
-      vega_xform_outputs.push(
-        formula_xform_objs[formula_xform_objs.length - 2].as,
-        formula_xform_objs[formula_xform_objs.length - 1].as
-      )
-    }
-
-    const vega_xform_obj = {
-      name: `${layer_name}_${prop_name}_xform`,
-      source: layer_name,
-      transform: [aggregate_xform_obj, ...formula_xform_objs]
-    }
-
-    assert(vega_xform_outputs.length >= 2)
-    const scale_domain_ref = {
-      data: vega_xform_obj.name,
-      fields: vega_xform_outputs
-    }
-
-    return { vega_xform_obj, scale_domain_ref }
+    )
   }
 
   /**
@@ -1165,72 +1231,6 @@ class DiscreteScale extends ScaleDefinitionObject {
       `'${range_keyword}' is not a valid range keyword for discrete scale type ${this.type}`
     )
   }
-
-  /**
-   *
-   * @param {PropDescriptor} prop_descriptor
-   * @param {Object} vega_scale_object
-   */
-  // _materializeExtraVegaScaleProps(prop_descriptor, vega_scale_object) {
-  // }
-
-  /**
-   * @param {PropDescriptor} prop_descriptor
-   * @param {VegaPropertyOutputState} vega_property_output_state
-   */
-  // materializeProperty(prop_descriptor, vega_property_output_state) {
-  //   const prop_name = prop_descriptor.prop_name;
-  //   let vega_xform_obj = null;
-  //   const vega_xform_outputs = [];
-  //   if (this.domain_ === "auto") {
-  //     /**
-  //      * @type {FieldDefinitionObject}
-  //      */
-  //     const parent = this.parent;
-  //     assert(parent instanceof FieldDefinitionObject);
-
-  //     const layer_name = this.root_context.layer_name;
-  //     vega_xform_obj = {
-  //       name: `${layer_name}_${prop_name}_xform`,
-  //       source: layer_name,
-  //       transform: [
-  //         {
-  //           type: "aggregate",
-  //           fields: [parent.field],
-  //           ops: ["distinct"],
-  //           as: [`${parent.field}_distinct`],
-  //         },
-  //       ],
-  //     };
-  //     vega_xform_outputs.push(vega_xform_obj.transform[0].as[0]);
-  //     vega_property_output_state.addVegaTransform(
-  //       prop_descriptor.prop_name,
-  //       vega_xform_obj
-  //     );
-  //   }
-
-  //   if (this.range_ === "auto") {
-  //     throw new Error(
-  //       `'Auto' ranges are currently unsupported for discrete scales`
-  //     );
-  //   }
-
-  //   const vega_scale_obj = {
-  //     name: this.name,
-  //     type: "ordinal",
-  //     domain: vega_xform_obj
-  //       ? {
-  //           data: vega_xform_obj.name,
-  //           field: vega_xform_obj.vega_xform_outputs[0],
-  //         }
-  //       : this.domain_,
-  //     range: this.range_,
-  //   };
-  //   vega_property_output_state.addVegaScale(
-  //     prop_descriptor.prop_name,
-  //     vega_scale_obj
-  //   );
-  // }
 }
 
 class OrdinalScale extends DiscreteScale {
@@ -1363,6 +1363,122 @@ class ThresholdScale extends DiscretizingScale {
    */
   constructor(scale_definition_object, parent_info) {
     super(scale_definition_object, ScaleType.kThreshold, parent_info)
+  }
+
+  /**
+   * @param {string} domain_keyword
+   * @param {PropDescriptor} prop_descriptor
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  _materializeDomainFromKeyword(
+    domain_keyword,
+    prop_descriptor,
+    vega_property_output_state
+  ) {
+    if (this.domain_ === "auto") {
+      assert(Array.isArray(this.range_))
+      assert(this.range_.length > 1)
+      /**
+       * @type {FieldDefinitionObject}
+       */
+      const parent = this.parent
+      assert(parent instanceof FieldDefinitionObject)
+
+      // Automatically fills out threshold domain based on the number of ranges
+      // supplied. The domain is filled out using various sigma intervals (std-deviations
+      // from the mean). For example, if 6 ranges are provided, the domain would
+      // be [-2stddev, -1stddev, mean, +1stddev, +2stddev]
+      //
+      // if 7 ranges are provided, the domain would be:
+      // [-3stddev, -2stddev, -1stddev, +1stddev, +2stddev, +3stddev]
+
+      /**
+       * @type {ExtentFlags}
+       */
+      let extent_flags = 0
+
+      let sigma_step = Math.floor((this.range_.length + 1) / 2) - 1
+      let curr_sigma = ExtentFlags.sigma_to_enum_map_.get(sigma_step)
+      if (!curr_sigma) {
+        throw new Error(
+          `Cannot automatically deduce a threshold domain for ${
+            this.range_.length
+          } range values. Automatic deduction can only succeed with a max of ${
+            (Array.from(ExtentFlags.sigma_to_enum_map_.keys()).pop() + 1) * 2
+          } range values`
+        )
+      }
+      while (
+        curr_sigma &&
+        curr_sigma.sigma_factor >= ExtentFlags.kOneSigma.sigma_factor
+      ) {
+        assert(curr_sigma)
+        extent_flags |= curr_sigma
+        sigma_step -= 1
+        curr_sigma = ExtentFlags.sigma_to_enum_map_.get(sigma_step)
+      }
+
+      if (this.range_.length % 2 === 0) {
+        // even number of range values, add the mean
+        extent_flags |= ExtentFlags.kMean
+      }
+
+      const { vega_xform_obj, scale_domain_ref } =
+        ExtentFlags.buildVegaTransformFromExtentFlags(
+          parent.output,
+          this.root_context.layer_name,
+          prop_descriptor.prop_name,
+          extent_flags,
+          (
+            extent_flag,
+            agg_xform_output,
+            formula_xform_outputs,
+            { vega_xform_outputs }
+          ) => {
+            if (
+              extent_flag >= ExtentFlags.kOneSigma &&
+              extent_flag <= ExtentFlags.kSixSigma
+            ) {
+              assert(formula_xform_outputs.length === 2)
+              vega_xform_outputs.unshift(formula_xform_outputs[0].as)
+              vega_xform_outputs.push(formula_xform_outputs[1].as)
+            } else if (extent_flag === ExtentFlags.kMin) {
+              vega_xform_outputs.unshift(agg_xform_output)
+            } else if (extent_flag === ExtentFlags.kMax) {
+              vega_xform_outputs.push(agg_xform_output)
+            } else if (extent_flag === ExtentFlags.kMean) {
+              vega_xform_outputs.splice(
+                Math.floor(vega_xform_outputs.length / 2),
+                0,
+                agg_xform_output
+              )
+            } else {
+              assert(
+                false,
+                `Unsupported extent flag ${extent_flag.extent_name}`
+              )
+            }
+          }
+        )
+
+      ContinuousScale.buildExtentsVegaTransform(
+        parent.output,
+        this.root_context.layer_name,
+        prop_descriptor.prop_name,
+        // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
+        ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
+      )
+
+      vega_property_output_state.addVegaTransform(
+        prop_descriptor.prop_name,
+        vega_xform_obj
+      )
+
+      return scale_domain_ref
+    }
+    throw new Error(
+      `'${domain_keyword}' is not a valid domain keyword for discretizing scale type ${this.type}`
+    )
   }
 }
 
