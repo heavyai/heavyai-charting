@@ -73,13 +73,6 @@ export default function mapMixin(
   let _interactionsEnabled = true
   let _shouldRedrawAll = false
 
-  const vertexLabelGeoJson = {
-    type: "FeatureCollection",
-    features: []
-  }
-
-  const labelFeatures = {}
-
   // TODO remove
   const testPoint = {
     "type": "Feature",
@@ -91,19 +84,6 @@ export default function mapMixin(
       "title": "Mapbox SF",
       "icon": "harbor"
     }
-  }
-
-  function makePoint(coordinates, text) {
-    return {
-        type: "Feature",
-          geometry: {
-            type: "Point",
-              coordinates: coordinates
-            },
-        properties: {
-          title: text
-        }
-      }
   }
 
   _chart.useLonLat = function(useLonLat) {
@@ -517,47 +497,6 @@ export default function mapMixin(
     })
   }
 
-
-
-  _chart.addLabelLayer = function() {
-    if (!_map.getSource("transect-vertex-labels")) {
-      _map.addSource("transect-vertex-labels", {
-        type: "geojson",
-        data: vertexLabelGeoJson
-      });
-    }
-
-    const initLabelLayer = {
-      "id": "points",
-      "type": "symbol",
-      "source": "transect-vertex-labels",
-      "layout": {
-        "text-field": "{title}",
-        "text-offset": [0, 0.6],
-        "text-anchor": "top",
-      },
-      paint: {
-        "text-color": "orange"
-      }
-    }
-
-    if (!_map.getLayer("points")) {
-      _map.addLayer(initLabelLayer);
-    }
-  }
-
-  _chart.addTransectVertexLabel = function(feature, lineId) {
-    const [start, end] = feature.geometry.coordinates
-    labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")]
-
-    _map.getSource("transect-vertex-labels").setData({
-      ...vertexLabelGeoJson,
-      features: Object.values(labelFeatures).reduce((acc, f) => {
-        return acc.concat([...f])
-      }, [])
-    })
-  }
-
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
   // the render layer is deleted, so we need to save the render layer source and layer from the old style
   // in savedLayers and savedSource and reapply to the newly styled map in _map.on("style.load", ...)
@@ -802,9 +741,6 @@ export default function mapMixin(
       "bottom-right"
     )
 
-    // FIXME: move this somewhere conditional
-    _chart.addTransectControls()
-
     // Test adding saved lines
     // const testLine = {
     //   "id": "999567ec77c30b58b831f44ac792c477",
@@ -833,8 +769,6 @@ export default function mapMixin(
     if (_chart.shiftToZoom()) {
       _map.on("mousedown", onMouseDownCheckForShiftToZoom)
     }
-
-    _chart.addTransectListeners()
   }
 
   _chart.addMapListeners = function() {
@@ -878,20 +812,6 @@ export default function mapMixin(
     }
   }
 
-  _chart.addTransectListeners = function() {
-    _map.on("draw.create", (e) => {
-      e.features.forEach((feature) => {
-        _chart.addTransectVertexLabel(feature, feature.id)
-      })
-    })
-
-    _map.on("draw.update", (e) => {
-      e.features.forEach((feature) => {
-        delete labelFeatures[feature.id]
-        _chart.addTransectVertexLabel(feature, feature.id)
-      })
-    })
-  }
 
   _chart.on("postRender", () => {
     _hasRendered = true

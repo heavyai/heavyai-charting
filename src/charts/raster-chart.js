@@ -570,9 +570,6 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
     _legend.setState(state)
 
-    // TODO maybe relocate this
-    _chart.addLabelLayer()
-
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
         _chart._setOverlay({
