@@ -1089,6 +1089,16 @@ class PowScale extends ContinuousScale {
       this.exponent_ = scale_definition_object.exponent
     }
   }
+
+  /**
+   *
+   * @param {PropDescriptor} prop_descriptor
+   * @param {Object} vega_scale_object
+   */
+  _materializeExtraVegaScaleProps(prop_descriptor, vega_scale_object) {
+    super._materializeExtraVegaScaleProps(prop_descriptor, vega_scale_object)
+    vega_scale_object.exponent = this.exponent_
+  }
 }
 
 class SqrtScale extends ContinuousScale {
