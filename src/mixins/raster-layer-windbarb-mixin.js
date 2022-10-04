@@ -469,6 +469,48 @@ class ScaleType {
   }
 }
 
+class AccumulatorType {
+  /**
+   * @private
+   */
+  static val_to_enum_map_ = {}
+
+  static kMin = new AccumulatorType("min")
+  static kMax = new AccumulatorType("max")
+  static kDensity = new AccumulatorType("density")
+  static kBlend = new AccumulatorType("blend")
+  static kPct = new AccumulatorType("pct")
+
+  /**
+   * @param {string} accumulator_type
+   */
+  static getAccumulatorTypeFromString(accumulator_type) {
+    const rtn_obj =
+      AccumulatorType.val_to_enum_map_[accumulator_type.toLowerCase()]
+    if (typeof rtn_obj === "undefined") {
+      throw new Error(
+        `Invalid accumulator type '${accumulator_type}'. It must be one of ${Object.keys(
+          AccumulatorType.val_to_enum_map_
+        )}`
+      )
+    }
+    return rtn_obj
+  }
+
+  constructor(value) {
+    this.value = value
+    AccumulatorType.val_to_enum_map_[this.value] = this
+  }
+
+  valueOf() {
+    return this.value
+  }
+
+  toString() {
+    return this.value
+  }
+}
+
 class ScaleDefinitionObject extends PropertiesDefinitionInterface {
   /**
    *
@@ -550,12 +592,15 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
     if (Object.hasOwn(scale_definition_object, "domain")) {
       if (
         !Array.isArray(scale_definition_object.domain) &&
-        (typeof scale_definition_object.domain !== "string" ||
-          scale_definition_object.domain.toLowerCase() !== "auto")
+        typeof scale_definition_object.domain !== "string"
       ) {
         this.error_message = `Invalid scale domain '${scale_definition_object.domain}'. Scale domains must be an array or the string 'auto'`
       }
       this.domain_ = scale_definition_object.domain
+
+      if (typeof this.domain_ === "string") {
+        this.domain_ = this.domain_.toLowerCase()
+      }
     }
 
     this.range_ = "auto"
@@ -568,6 +613,9 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
         this.error_message = `Invalid scale range '${scale_definition_object.range}'. Scale ranges must be an array or the string 'auto'`
       }
       this.range_ = scale_definition_object.range
+      if (typeof this.range_ === "string") {
+        this.range_ = this.range_.toLowerCase()
+      }
     }
 
     this.null_value_ = null
@@ -576,6 +624,11 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
     } else if (Object.hasOwn(scale_definition_object, "nullValue")) {
       this.null_value_ = scale_definition_object.nullValue
     }
+
+    /**
+     * @type {(AccumulatorType|null)}
+     */
+    this.accumulator_ = null
   }
 
   get name() {
@@ -587,6 +640,13 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
    */
   get type() {
     return this.type_
+  }
+
+  /**
+   * @type {(AccumulatorType|null)}
+   */
+  get accumulator() {
+    return this.accumulator_
   }
 
   /**
@@ -1036,6 +1096,11 @@ class ContinuousScale extends ScaleDefinitionObject {
       )
 
       return scale_domain_ref
+    } else if (this.domain_ === AccumulatorType.kDensity.toString()) {
+      this.accumulator_ = AccumulatorType.kDensity
+      // NOTE: going to the domain out later in _materializeExtraVegaScaleProps
+      // after the ranges have been materialized/validated
+      return []
     }
     throw new Error(
       `'${domain_keyword}' is not a valid domain keyword for continuous scale type ${this.type}`
@@ -1070,12 +1135,43 @@ class ContinuousScale extends ScaleDefinitionObject {
     ) {
       vega_scale_object.interpolator = `${this.interpolate_type_}`
     }
+
+    if (this.accumulator_ !== null) {
+      assert(this.accumulator_ === AccumulatorType.kDensity)
+      assert(Array.isArray(vega_scale_object.domain))
+      assert(vega_scale_object.domain.length === 0)
+
+      if (!(prop_descriptor instanceof ColorChannelDescriptor)) {
+        throw new Error(
+          `Density accumulation scales can only be applied to color properties`
+        )
+      }
+
+      assert(Array.isArray(vega_scale_object.range))
+      assert(vega_scale_object.range.length > 1)
+
+      const density_diff = 1.0 / (vega_scale_object.range.length - 1)
+      for (
+        let density_val = 0.0;
+        density_val <= 1.0;
+        density_val += density_diff
+      ) {
+        vega_scale_object.domain.push(density_val)
+      }
+
+      vega_scale_object.accumulator = this.accumulator_.toString()
+      vega_scale_object.minDensityCnt = "-2ndStdDev"
+      vega_scale_object.maxDensityCnt = "2ndStdDev"
+
+      // density accumulation will force on clamp
+      // TODO(croot): is this too heavy handed?
+      vega_scale_object.clamp = true
+    }
   }
 }
 
 class LinearScale extends ContinuousScale {
   /**
-   *
    * @param {Object} scale_definition_object
    * @param {ParentInfo} parent_info
    */
