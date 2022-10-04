@@ -1898,14 +1898,22 @@ class EncodingDefinitionObject extends PropertiesDefinitionInterface {
 }
 
 class PropLocation {
-  static kEncodingOnly = new PropLocation(0x1)
-  static kMarkDefOnly = new PropLocation(0x2)
+  static kEncodingOnly = new PropLocation(1 << 0)
+  static kMarkDefOnly = new PropLocation(1 << 1)
   static kEncodingPlusMarkDef = new PropLocation(
-    PropLocation.kEncodingOnly.value | PropLocation.kMarkDefOnly.value
+    PropLocation.kEncodingOnly | PropLocation.kMarkDefOnly
   )
 
   constructor(value) {
     this.value = value
+  }
+
+  valueOf() {
+    return this.value
+  }
+
+  toString() {
+    return `${this.value}`
   }
 }
 
@@ -2195,8 +2203,140 @@ class ColorChannelDescriptor extends PropDescriptor {
   }
 }
 
-class SizeChannelDescriptor extends PropDescriptor {}
-class OpacityChannelDescriptor extends PropDescriptor {}
+class BoolPropDescriptor extends PropDescriptor {
+  /**
+   * @param {boolean} prop_definition
+   */
+  isValidMarkDefinition(prop_definition) {
+    if (typeof prop_definition !== "boolean") {
+      throw new Error(`Invalid value ${prop_definition}. It must be a boolean`)
+    }
+    return true
+  }
+
+  /**
+   * @returns {MeasurementType}
+   */
+  getDefaultMeasurementType() {
+    return MeasurementType.nominal
+  }
+}
+
+class NumericPropDescriptor extends PropDescriptor {
+  /**
+   * @param {string} prop_name
+   * @param {string} [vega_prop_name=null]
+   * @param {PropLocation} [prop_location=PropLocation.kEncodingPlusMarkDef]
+   * @param {PropDescriptor} [fallback_prop=null]
+   * @param {boolean} [can_have_scale_definition=true]
+   * @param {Function} [validate_value_callback=null]
+   */
+  constructor(
+    prop_name,
+    vega_prop_name = null,
+    prop_location = PropLocation.kEncodingPlusMarkDef,
+    fallback_prop = null,
+    can_have_scale_definition = true,
+    validate_value_callback = null
+  ) {
+    super(
+      prop_name,
+      vega_prop_name,
+      prop_location,
+      fallback_prop,
+      can_have_scale_definition
+    )
+    this.validate_value_callback_ = validate_value_callback
+  }
+
+  /**
+   * @param {(string|number|boolean)} prop_definition
+   */
+  isValidMarkDefinition(prop_definition) {
+    if (typeof prop_definition !== "number") {
+      throw new Error(`Invalid value ${prop_definition}. It must be a number`)
+    } else if (
+      this.validate_value_callback_ &&
+      !this.validate_value_callback_(prop_definition)
+    ) {
+      throw new Error(`Invalid value ${prop_definition}`)
+    }
+    return true
+  }
+
+  /**
+   * @returns {MeasurementType}
+   */
+  getDefaultMeasurementType() {
+    return MeasurementType.kQuantitative
+  }
+}
+
+/**
+ * @param {number} value
+ */
+function is_zero_to_one(value) {
+  return value >= 0 && value <= 1
+}
+
+/**
+ * @param {number} value
+ * @returns
+ */
+function is_gte_zero(value) {
+  return value >= 0
+}
+
+class SizeChannelDescriptor extends NumericPropDescriptor {
+  /**
+   * @param {string} prop_name
+   * @param {string} [vega_prop_name=null]
+   * @param {PropLocation} [prop_location=PropLocation.kEncodingPlusMarkDef]
+   * @param {PropDescriptor} [fallback_prop=null]
+   * @param {boolean} [can_have_scale_definition=true]
+   */
+  constructor(
+    prop_name,
+    vega_prop_name = null,
+    prop_location = PropLocation.kEncodingPlusMarkDef,
+    fallback_prop = null,
+    can_have_scale_definition = true
+  ) {
+    super(
+      prop_name,
+      vega_prop_name,
+      prop_location,
+      fallback_prop,
+      can_have_scale_definition,
+      is_gte_zero
+    )
+  }
+}
+class OpacityChannelDescriptor extends NumericPropDescriptor {
+  /**
+   * @param {string} prop_name
+   * @param {string} [vega_prop_name=null]
+   * @param {PropLocation} [prop_location=PropLocation.kEncodingPlusMarkDef]
+   * @param {PropDescriptor} [fallback_prop=null]
+   * @param {boolean} [can_have_scale_definition=true]
+   */
+  constructor(
+    prop_name,
+    vega_prop_name = null,
+    prop_location = PropLocation.kEncodingPlusMarkDef,
+    fallback_prop = null,
+    can_have_scale_definition = true
+  ) {
+    super(
+      prop_name,
+      vega_prop_name,
+      prop_location,
+      fallback_prop,
+      can_have_scale_definition,
+      is_zero_to_one
+    )
+  }
+}
 
 function getSizing(
   sizeAttr,
@@ -2894,6 +3034,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
 
   const color_prop_descriptor = new ColorChannelDescriptor("color", "")
   const prop_descriptors = new Map()
+
   prop_descriptors.set("x", new PositionChannelDescriptor("x"))
   prop_descriptors.set("y", new PositionChannelDescriptor("y"))
   // prop_descriptors.set(
@@ -2914,6 +3055,29 @@ export default function rasterLayerWindBarbMixin(_layer) {
   prop_descriptors.set(
     "stroke",
     new ColorChannelDescriptor("stroke", "strokeColor", color_prop_descriptor)
+  )
+  prop_descriptors.set("opacity", new OpacityChannelDescriptor("opacity"))
+
+  prop_descriptors.set(
+    "quantizeDirection",
+    new BoolPropDescriptor(
+      "quantizeDirection",
+      null,
+      PropLocation.kMarkDefOnly,
+      null,
+      false
+    )
+  )
+  prop_descriptors.set(
+    "anchorScale",
+    new NumericPropDescriptor(
+      "anchorScale",
+      null,
+      PropLocation.kMarkDefOnly,
+      null,
+      false,
+      is_zero_to_one
+    )
   )
 
   _layer.__genVega = function ({
