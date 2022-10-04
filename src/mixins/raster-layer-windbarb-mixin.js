@@ -1173,6 +1173,17 @@ class DiscreteScale extends ScaleDefinitionObject {
       `Invalid ${DiscreteScale.name} scale type ${scale_type}`
     )
     super(scale_definition_object, scale_type, parent_info)
+
+    this.default_value_ = null
+    if (Object.hasKey(scale_definition_object, "default")) {
+      this.default_value_ = scale_definition_object.default
+    } else if (Object.hasKey(scale_definition_object, "unknown")) {
+      // NOTE: the "unknown" property a property defined by d3 ordinal scales:
+      // https://github.com/d3/d3-scale#ordinal_unknown
+      // but it is not documented by vega or vega-lite's ordinal scales.
+      // Exposing it to further align with d3 props
+      this.default_value_ = scale_definition_object.unknown
+    }
   }
 
   /**
@@ -1252,6 +1263,18 @@ class DiscreteScale extends ScaleDefinitionObject {
     throw new Error(
       `'${range_keyword}' is not a valid range keyword for discrete scale type ${this.type}`
     )
+  }
+
+  /**
+   * @param {PropDescriptor} prop_descriptor
+   * @param {Object} vega_scale_obj
+   */
+  _materializeExtraVegaScaleProps(prop_descriptor, vega_scale_obj) {
+    super._materializeExtraVegaScaleProps(prop_descriptor, vega_scale_obj)
+    if (this.default_value_ !== null) {
+      // TODO(croot): should we validate the default value?
+      vega_scale_obj.default = this.default_value_
+    }
   }
 }
 
