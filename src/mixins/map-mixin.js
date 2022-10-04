@@ -50,6 +50,7 @@ export default function mapMixin(
   let _center = [0, 30]
   let _zoom = 1
   let _attribLocation = "bottom-right"
+  let _mapboxDraw = null
 
   const _popupFunction = null
   let _colorBy = null
@@ -95,6 +96,10 @@ export default function mapMixin(
   }
   _chart.map = function() {
     return _map
+  }
+
+  _chart.mapboxDraw = function() {
+    return _mapboxDraw
   }
 
   let _lonMin = LONMIN
@@ -792,12 +797,12 @@ export default function mapMixin(
   }
 
   _chart.addTransectControls = function() {
-    const draw = new MapboxDraw({
+    _mapboxDraw = new MapboxDraw({
       displayControlsDefault: false,
       modes: { ...MapboxDraw.modes, draw_simple_line: SimpleLineMode, direct_select: DirectSelectWithoutMiddleVertexMode }
     });
 
-    _map.addControl(draw, "bottom-left")
+    _map.addControl(_mapboxDraw, "bottom-left")
 
     const bottomLeftControlGroup = document.querySelector(".mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-group")
     if (bottomLeftControlGroup) {
@@ -805,7 +810,7 @@ export default function mapMixin(
       simpleLineModeButton.className = "draw-simple-line"
       simpleLineModeButton
         .addEventListener("click", () => {
-          draw.changeMode("draw_simple_line")
+          _mapboxDraw.changeMode("draw_simple_line")
         })
 
       bottomLeftControlGroup.append(simpleLineModeButton)

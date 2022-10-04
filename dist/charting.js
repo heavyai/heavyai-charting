@@ -34682,8 +34682,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function valuesOb(obj) {
   return Object.keys(obj).map(function (key) {
     return obj[key];
@@ -34749,13 +34747,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var _interactionsEnabled = true;
   var _shouldRedrawAll = false;
 
-  var vertexLabelGeoJson = {
-    type: "FeatureCollection",
-    features: []
-  };
-
-  var labelFeatures = {};
-
   // TODO remove
   var testPoint = {
     "type": "Feature",
@@ -34768,19 +34759,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       "icon": "harbor"
     }
   };
-
-  function makePoint(coordinates, text) {
-    return {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: coordinates
-      },
-      properties: {
-        title: text
-      }
-    };
-  }
 
   _chart.useLonLat = function (useLonLat) {
     if (!arguments.length) {
@@ -35146,47 +35124,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     });
   }
 
-  _chart.addLabelLayer = function () {
-    if (!_map.getSource("transect-vertex-labels")) {
-      _map.addSource("transect-vertex-labels", {
-        type: "geojson",
-        data: vertexLabelGeoJson
-      });
-    }
-
-    var initLabelLayer = {
-      "id": "points",
-      "type": "symbol",
-      "source": "transect-vertex-labels",
-      "layout": {
-        "text-field": "{title}",
-        "text-offset": [0, 0.6],
-        "text-anchor": "top"
-      },
-      paint: {
-        "text-color": "orange"
-      }
-    };
-
-    if (!_map.getLayer("points")) {
-      _map.addLayer(initLabelLayer);
-    }
-  };
-
-  _chart.addTransectVertexLabel = function (feature, lineId) {
-    var _feature$geometry$coo = _slicedToArray(feature.geometry.coordinates, 2),
-        start = _feature$geometry$coo[0],
-        end = _feature$geometry$coo[1];
-
-    labelFeatures[lineId] = [makePoint(start, "A"), makePoint(end, "B")];
-
-    _map.getSource("transect-vertex-labels").setData(_extends({}, vertexLabelGeoJson, {
-      features: Object.values(labelFeatures).reduce(function (acc, f) {
-        return acc.concat([].concat(_toConsumableArray(f)));
-      }, [])
-    }));
-  };
-
   // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
   // the render layer is deleted, so we need to save the render layer source and layer from the old style
   // in savedLayers and savedSource and reapply to the newly styled map in _map.on("style.load", ...)
@@ -35407,9 +35344,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation);
     _map.addControl(new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }), "bottom-right");
 
-    // FIXME: move this somewhere conditional
-    _chart.addTransectControls();
-
     // Test adding saved lines
     // const testLine = {
     //   "id": "999567ec77c30b58b831f44ac792c477",
@@ -35438,8 +35372,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (_chart.shiftToZoom()) {
       _map.on("mousedown", onMouseDownCheckForShiftToZoom);
     }
-
-    _chart.addTransectListeners();
   }
 
   _chart.addMapListeners = function () {
@@ -35480,21 +35412,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
       bottomLeftControlGroup.append(simpleLineModeButton);
     }
-  };
-
-  _chart.addTransectListeners = function () {
-    _map.on("draw.create", function (e) {
-      e.features.forEach(function (feature) {
-        _chart.addTransectVertexLabel(feature, feature.id);
-      });
-    });
-
-    _map.on("draw.update", function (e) {
-      e.features.forEach(function (feature) {
-        delete labelFeatures[feature.id];
-        _chart.addTransectVertexLabel(feature, feature.id);
-      });
-    });
   };
 
   _chart.on("postRender", function () {
@@ -80928,9 +80845,6 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     var state = (0, _stackedLegend.getLegendStateFromChart)(_chart, useMap, selectedLayer);
     _legend.setState(state);
-
-    // TODO maybe relocate this
-    _chart.addLabelLayer();
 
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
