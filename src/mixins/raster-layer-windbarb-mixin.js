@@ -569,6 +569,13 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
       }
       this.range_ = scale_definition_object.range
     }
+
+    this.null_value_ = null
+    if (Object.hasOwn(scale_definition_object, "null")) {
+      this.null_value_ = scale_definition_object.null
+    } else if (Object.hasOwn(scale_definition_object, "nullValue")) {
+      this.null_value_ = scale_definition_object.nullValue
+    }
   }
 
   get name() {
@@ -615,6 +622,11 @@ class ScaleDefinitionObject extends PropertiesDefinitionInterface {
     }
 
     this._materializeExtraVegaScaleProps(prop_descriptor, vega_scale_obj)
+
+    if (this.null_value_ !== null) {
+      // TODO(croot): validate null value, at least object-wise?
+      vega_scale_obj.nullValue = this.null_value_
+    }
 
     vega_property_output_state.addVegaScale(prop_name, vega_scale_obj)
   }
