@@ -63,10 +63,12 @@ import assert from "assert"
 class RasterLayerContext {
   /**
    * @param {Object} chart
+   * @param {string} table_name
    * @param {Object} layer
    * @param {string} layer_name
+   * @param {(number|null)} [last_filtered_size=null]
    */
-  constructor(chart, layer, layer_name) {
+  constructor(chart, table_name, layer, layer_name, last_filtered_size = null) {
     assert(Boolean(chart))
     assert(typeof chart === "object")
 
@@ -74,6 +76,12 @@ class RasterLayerContext {
      * @type {Object}
      */
     this.chart_ = chart
+
+    assert(typeof table_name === "string")
+    /**
+     * @type {string}
+     */
+    this.table_name_ = table_name
 
     assert(Boolean(layer))
     assert(typeof layer === "object")
@@ -87,6 +95,8 @@ class RasterLayerContext {
      * @type {string}
      */
     this.layer_name_ = layer_name
+
+    this.last_filtered_size_ = last_filtered_size
   }
 
   /**
@@ -94,6 +104,13 @@ class RasterLayerContext {
    */
   get chart() {
     return this.chart_
+  }
+
+  /**
+   * @type {string}
+   */
+  get table_name() {
+    return this.table_name_
   }
 
   /**
@@ -108,6 +125,13 @@ class RasterLayerContext {
    */
   get layer_name() {
     return this.layer_name_
+  }
+
+  /**
+   * @type {(number|null)}
+   */
+  get last_filtered_size() {
+    return this.last_filtered_size_
   }
 }
 
@@ -300,11 +324,218 @@ class PropertiesDefinitionInterface {
   }
 
   /**
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  materialize(vega_property_output_state) {
+    assert(false, `Needs to be overwritten by a derived class`)
+  }
+
+  /**
    * @param {PropDescriptor} prop_descriptor
    * @param {VegaPropertyOutputState} vega_property_output_state
    */
   materializeProperty(prop_descriptor, vega_property_output_state) {
     assert(false, `Needs to be overwritten by a derived class`)
+  }
+}
+
+class SampleDefinitionObject extends PropertiesDefinitionInterface {
+  static key = "sample"
+
+  /**
+   * @param {Object} definition_object
+   * @param {ParentInfo} parent_info
+   */
+  constructor(definition_object, parent_info) {
+    super(definition_object, parent_info)
+    assert(Object.hasOwn(definition_object, SampleDefinitionObject.key))
+
+    /**
+     * @type {number}
+     */
+    this.sample_ = 0
+    if (typeof definition_object[SampleDefinitionObject.key] !== "number") {
+      throw new Error(
+        `Invalid sample transform definition. The '${SampleDefinitionObject.key}' property must be a number`
+      )
+    }
+    this.sample_ = definition_object[SampleDefinitionObject.key]
+    // TODO(croot): validate sample ranges?
+
+    if (!Object.hasOwn(definition_object, "tableSize")) {
+      throw new Error(
+        `A 'tableSize' property is required for sample transforms`
+      )
+    }
+
+    if (typeof definition_object.tableSize !== "number") {
+      throw new Error(
+        `Invalid sample transform definition. The 'tableSize' property must be a number`
+      )
+    }
+    this.table_size_ = definition_object.tableSize
+    // TODO(croot): validate tableSize?
+  }
+
+  /**
+   * @type {number}
+   */
+  get sample_size() {
+    return this.sample_
+  }
+
+  /**
+   * @type {number}
+   */
+  get table_size() {
+    return this.table_size_
+  }
+
+  /**
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  materialize(vega_property_output_state) {
+    const layer_name = this.root_context.layer_name
+    const table_size = this.root_context.last_filtered_size || this.table_size_
+    vega_property_output_state.addSqlParserTransform(
+      `${layer_name}_${SampleDefinitionObject.key}`,
+      {
+        type: "sample",
+        method: "multiplicative",
+        size: table_size,
+        limit: this.sample_,
+        sampleTable: this.root_context.table_name
+      }
+    )
+  }
+}
+
+class LimitDefinitionObject extends PropertiesDefinitionInterface {
+  static key = "limit"
+
+  /**
+   * @param {Object} definition_object
+   * @param {ParentInfo} parent_info
+   */
+  constructor(definition_object, parent_info) {
+    super(definition_object, parent_info)
+    assert(Object.hasOwn(definition_object, LimitDefinitionObject.key))
+
+    /**
+     * @type {number}
+     */
+    this.limit_ = 0
+    if (typeof definition_object[LimitDefinitionObject.key] !== "number") {
+      throw new Error(
+        `Invalid limit transform definition. The '${LimitDefinitionObject.key}' property must be a number`
+      )
+    }
+    this.limit_ = definition_object[LimitDefinitionObject.key]
+    // TODO(croot): validate limit ranges?
+
+    /**
+     * @type {number}
+     */
+    this.offset_ = 0
+    if (Object.hasOwn(definition_object, "offset")) {
+      if (typeof definition_object.offset !== "number") {
+        throw new Error(
+          `Invalid limit transform definition. The 'offset' property must be a number`
+        )
+      }
+      this.offset_ = definition_object.offset
+      // TODO(croot): validate tableSize?
+    }
+  }
+
+  /**
+   * @type {number}
+   */
+  get limit() {
+    return this.limit_
+  }
+
+  /**
+   * @type {number}
+   */
+  get offset() {
+    return this.offset_
+  }
+
+  /**
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  materialize(vega_property_output_state) {
+    const layer_name = this.root_context.layer_name
+    const transform_obj = {
+      type: "limit",
+      row: this.limit_
+    }
+    if (this.offset_) {
+      transform_obj.offset = this.offset_
+    }
+    vega_property_output_state.addSqlParserTransform(
+      `${layer_name}_${LimitDefinitionObject.key}`,
+      transform_obj
+    )
+  }
+}
+
+class TransformDefinitionObject extends PropertiesDefinitionInterface {
+  /**
+   * @param {Object} definition_object
+   * @param {RasterLayerContext} root_context
+   */
+  constructor(definition_object, root_context) {
+    super(definition_object, null, root_context)
+
+    if (!Array.isArray(definition_object)) {
+      throw new Error(
+        `Invalid transform definition. It must be an array of objects`
+      )
+    }
+
+    /**
+     * @type {PropertiesDefinitionInterface[]}
+     */
+    this.transforms_ = []
+    definition_object.forEach((xform_definition, index) => {
+      if (typeof xform_definition !== "object") {
+        throw new Error(
+          `Invalid transform definition at index ${index}. It must be an object but is of type ${typeof xform_definition}`
+        )
+      }
+      if (Object.hasOwn(xform_definition, SampleDefinitionObject.key)) {
+        this.transforms_.push(
+          new SampleDefinitionObject(xform_definition, {
+            parent: this,
+            prop_name: `${index}/${SampleDefinitionObject.key}`
+          })
+        )
+      } else if (Object.hasOwn(xform_definition, LimitDefinitionObject.key)) {
+        this.transforms_.push(
+          new LimitDefinitionObject(xform_definition, {
+            parent: this,
+            prop_name: `${index}/${LimitDefinitionObject.key}`
+          })
+        )
+      } else {
+        throw new Error(
+          `Invalid transform object ${JSON.stringify(
+            xform_definition
+          )} at index ${index}`
+        )
+      }
+    })
+  }
+
+  /**
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  materialize(vega_property_output_state) {
+    this.transforms_.forEach((transform) => {
+      transform.materialize(vega_property_output_state)
+    })
   }
 }
 
@@ -1271,9 +1502,9 @@ class DiscreteScale extends ScaleDefinitionObject {
     super(scale_definition_object, scale_type, parent_info)
 
     this.default_value_ = null
-    if (Object.hasKey(scale_definition_object, "default")) {
+    if (Object.hasOwn(scale_definition_object, "default")) {
       this.default_value_ = scale_definition_object.default
-    } else if (Object.hasKey(scale_definition_object, "unknown")) {
+    } else if (Object.hasOwn(scale_definition_object, "unknown")) {
       // NOTE: the "unknown" property a property defined by d3 ordinal scales:
       // https://github.com/d3/d3-scale#ordinal_unknown
       // but it is not documented by vega or vega-lite's ordinal scales.
@@ -2508,10 +2739,14 @@ function handle_prop(
 function materialize_prop_descriptors(raster_layer_context, props, state) {
   const vega_property_output_state = new VegaPropertyOutputState()
 
-  let { mark = {}, encoding = {} } = state
+  let { transform = [], mark = {}, encoding = {} } = state
   if (typeof mark !== "object") {
     mark = {}
   }
+
+  new TransformDefinitionObject(transform, raster_layer_context).materialize(
+    vega_property_output_state
+  )
 
   const mark_definition_object = new MarkDefinitionObject(
     mark,
@@ -3089,14 +3324,24 @@ export default function rasterLayerWindBarbMixin(_layer) {
     pixelRatio,
     layerName
   }) {
-    const context = new RasterLayerContext(chart, this, layerName)
+    const raster_layer_context = new RasterLayerContext(
+      chart,
+      table,
+      this,
+      layerName,
+      lastFilteredSize
+    )
 
     const {
       sql_parser_transforms,
       vega_transforms,
       vega_scales,
       mark_properties
-    } = materialize_prop_descriptors(context, prop_descriptors, state)
+    } = materialize_prop_descriptors(
+      raster_layer_context,
+      prop_descriptors,
+      state
+    )
 
     if (typeof filter === "string" && filter.length) {
       sql_parser_transforms.push({
