@@ -64,11 +64,19 @@ class RasterLayerContext {
   /**
    * @param {Object} chart
    * @param {string} table_name
+   * @param {string} layer_type
    * @param {Object} layer
    * @param {string} layer_name
    * @param {(number|null)} [last_filtered_size=null]
    */
-  constructor(chart, table_name, layer, layer_name, last_filtered_size = null) {
+  constructor(
+    chart,
+    table_name,
+    layer_type,
+    layer,
+    layer_name,
+    last_filtered_size = null
+  ) {
     assert(Boolean(chart))
     assert(typeof chart === "object")
 
@@ -82,6 +90,12 @@ class RasterLayerContext {
      * @type {string}
      */
     this.table_name_ = table_name
+
+    assert(typeof layer_type === "string")
+    /**
+     * @type {string}
+     */
+    this.layer_type_ = layer_type
 
     assert(Boolean(layer))
     assert(typeof layer === "object")
@@ -111,6 +125,13 @@ class RasterLayerContext {
    */
   get table_name() {
     return this.table_name_
+  }
+
+  /**
+   * @type {string}
+   */
+  get layer_type() {
+    return this.layer_type_
   }
 
   /**
@@ -336,6 +357,262 @@ class PropertiesDefinitionInterface {
    */
   materializeProperty(prop_descriptor, vega_property_output_state) {
     assert(false, `Needs to be overwritten by a derived class`)
+  }
+}
+
+class ConfigDefinitionInterface extends PropertiesDefinitionInterface {
+  /**
+   * @param {PropDescriptor} prop_descriptor
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  materializeProperty(prop_descriptor, vega_property_output_state) {
+    const prop_name = prop_descriptor.prop_name
+    if (typeof this[prop_name] !== "undefined") {
+      const prop_value = this[prop_name]
+      if (prop_value !== undefined) {
+        if (!prop_descriptor.isValidMarkDefinition(prop_value)) {
+          throw new TypeError(
+            `Invalid value for config property '${prop_name}'`
+          )
+        }
+        const vega_mark_property_object = {}
+        const context = this
+        prop_descriptor.vega_mark_prop_names.forEach((vega_mark_prop_name) => {
+          vega_mark_property_object[vega_mark_prop_name] = context[prop_name]
+        })
+        vega_property_output_state.addMarkProperty(
+          prop_name,
+          vega_mark_property_object
+        )
+      }
+      return true
+    }
+    return false
+  }
+}
+
+class MarkConfigDefinitionObject extends ConfigDefinitionInterface {
+  static key = "mark"
+
+  static defaults = {
+    color: "#4682b4",
+    opacity: 1,
+    fillOpacity: 1,
+    strokeOpacity: 1,
+    strokeJoin: "miter"
+  }
+
+  /**
+   * @param {Object} definition_object
+   * @param {ParentInfo} parent_info
+   */
+  constructor(definition_object, parent_info) {
+    super(definition_object, parent_info)
+    this.width_ = MarkConfigDefinitionObject.defaults.width
+    if (Object.hasOwn(definition_object, "width")) {
+      this.width_ = definition_object.width
+    }
+    this.height_ = MarkConfigDefinitionObject.defaults.height
+    if (Object.hasOwn(definition_object, "height")) {
+      this.height_ = definition_object.height
+    }
+    this.color_ = MarkConfigDefinitionObject.defaults.color
+    if (Object.hasOwn(definition_object, "color")) {
+      this.color_ = definition_object.color
+    }
+    this.fill_ = MarkConfigDefinitionObject.defaults.fill
+    if (Object.hasOwn(definition_object, "fill")) {
+      this.fill_ = definition_object.fill
+    }
+    this.stroke_ = MarkConfigDefinitionObject.defaults.stroke
+    if (Object.hasOwn(definition_object, "stroke")) {
+      this.stroke_ = definition_object.stroke
+    }
+    this.opacity_ = MarkConfigDefinitionObject.defaults.opacity
+    if (Object.hasOwn(definition_object, "opacity")) {
+      this.opacity_ = definition_object.opacity
+    }
+    this.fillOpacity_ = MarkConfigDefinitionObject.defaults.fillOpacity
+    if (Object.hasOwn(definition_object, "fillOpacity")) {
+      this.fillOpacity_ = definition_object.fillOpacity
+    }
+    this.strokeOpacity_ = MarkConfigDefinitionObject.defaults.strokeOpacity
+    if (Object.hasOwn(definition_object, "strokeOpacity")) {
+      this.strokeOpacity_ = definition_object.strokeOpacity
+    }
+    // TODO(croot): make stroke join an enum
+    this.strokeJoin_ = MarkConfigDefinitionObject.defaults.strokeJoin
+    if (Object.hasOwn(definition_object, "strokeJoin")) {
+      this.strokeJoin_ = definition_object.strokeJoin
+    }
+    this.strokeMiterLimit_ = MarkConfigDefinitionObject.defaults.strokMiterLimit
+    if (Object.hasOwn(definition_object, "strokMiterLimit")) {
+      this.strokeMiterLimit_ = definition_object.strokMiterLimit
+    }
+    this.strokeWidth_ = MarkConfigDefinitionObject.defaults.strokeWidth
+    if (Object.hasOwn(definition_object, "strokeWidth")) {
+      this.strokeWidth_ = definition_object.strokeWidth
+    }
+  }
+
+  get width() {
+    return this.width_
+  }
+
+  get height() {
+    return this.height_
+  }
+
+  get color() {
+    return this.color_
+  }
+
+  get fill() {
+    return this.fill_
+  }
+
+  get stroke() {
+    return this.stroke_
+  }
+
+  get opacity() {
+    return this.opacity_
+  }
+
+  get fillOpacity() {
+    return this.fillOpacity_
+  }
+
+  get strokeOpacity() {
+    return this.strokeOpacity_
+  }
+
+  get strokeJoin() {
+    return this.strokeJoin_
+  }
+
+  get strokeMiterLimit() {
+    return this.strokeMiterLimit_
+  }
+
+  get strokeWidth() {
+    return this.strokeWidth_
+  }
+}
+
+class WindBarkConfigDefinitionObject extends MarkConfigDefinitionObject {
+  static key = "windbarb"
+
+  static defaults = Object.assign(
+    {
+      size: 25
+    },
+    MarkConfigDefinitionObject.defaults
+  )
+
+  /**
+   * @param {Object} definition_object
+   * @param {ParentInfo} parent_info
+   */
+  constructor(definition_object, parent_info) {
+    super(definition_object, parent_info)
+
+    this.size_ = 25
+    if (Object.hasOwn(definition_object, "size")) {
+      this.size_ = definition_object.size
+    }
+
+    this.quantizeDirection_ =
+      WindBarkConfigDefinitionObject.defaults.quantizeDirection
+    if (Object.hasOwn(definition_object, "quantizeDirection")) {
+      this.quantizeDirection_ = definition_object.quantizeDirection
+    }
+
+    this.anchorScale_ = WindBarkConfigDefinitionObject.defaults.anchorScale
+    if (Object.hasOwn(definition_object, "anchorScale")) {
+      this.anchorScale_ = definition_object.anchorScale
+    }
+  }
+
+  get size() {
+    return this.size_
+  }
+
+  get quantizeDirection() {
+    return this.quantizeDirection_
+  }
+
+  get anchorScale() {
+    return this.anchorScale_
+  }
+}
+
+class ConfigDefinitionObject extends PropertiesDefinitionInterface {
+  /**
+   * @param {Object} definition_object
+   * @param {RasterLayerContext} root_context
+   */
+  constructor(definition_object, root_context) {
+    super(definition_object, null, root_context)
+
+    this.configs_ = new Map()
+
+    const sub_config_classes = [
+      MarkConfigDefinitionObject,
+      WindBarkConfigDefinitionObject
+    ]
+
+    sub_config_classes.forEach((sub_config_class) => {
+      const key = sub_config_class.key
+      if (Object.hasOwn(definition_object, key)) {
+        this.configs_.set(
+          key,
+          new sub_config_class(definition_object[key], {
+            parent: this,
+            prop_name: key
+          })
+        )
+      } else {
+        this.configs_.set(
+          key,
+          new sub_config_class(sub_config_class.defaults),
+          { parent: this, prop_name: key }
+        )
+      }
+    })
+
+    this.general_mark_config_ = this.configs_.get(
+      MarkConfigDefinitionObject.key
+    )
+    assert(this.general_mark_config_)
+    assert(this.general_mark_config_ instanceof MarkConfigDefinitionObject)
+  }
+
+  /**
+   * @param {PropDescriptor} prop_descriptor
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  materializeProperty(prop_descriptor, vega_property_output_state) {
+    const layer_type = this.root_context.layer_type
+    const mark_type_config = this.configs_.get(layer_type)
+    if (
+      mark_type_config &&
+      typeof mark_type_config[prop_descriptor.prop_name] !== "undefined"
+    ) {
+      return mark_type_config.materializeProperty(
+        prop_descriptor,
+        vega_property_output_state
+      )
+    } else if (
+      typeof this.general_mark_config_[prop_descriptor.prop_name] !==
+      "undefined"
+    ) {
+      return this.general_mark_config_.materializeProperty(
+        prop_descriptor,
+        vega_property_output_state
+      )
+    }
+    return false
   }
 }
 
@@ -2739,10 +3016,15 @@ function handle_prop(
 function materialize_prop_descriptors(raster_layer_context, props, state) {
   const vega_property_output_state = new VegaPropertyOutputState()
 
-  let { transform = [], mark = {}, encoding = {} } = state
+  let { transform = [], mark = {}, encoding = {}, config = {} } = state
   if (typeof mark !== "object") {
     mark = {}
   }
+
+  const config_definition_object = new ConfigDefinitionObject(
+    config,
+    raster_layer_context
+  )
 
   new TransformDefinitionObject(transform, raster_layer_context).materialize(
     vega_property_output_state
@@ -2782,7 +3064,14 @@ function materialize_prop_descriptors(raster_layer_context, props, state) {
       )
     }
 
-    assert(handled, `${prop_descriptor.prop_name}`)
+    if (!handled) {
+      handled = config_definition_object.materializeProperty(
+        prop_descriptor,
+        vega_property_output_state
+      )
+    }
+
+    // assert(handled, `${prop_descriptor.prop_name}`)
   }
 
   // const handle_position_props = (
@@ -3327,6 +3616,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     const raster_layer_context = new RasterLayerContext(
       chart,
       table,
+      WindBarkConfigDefinitionObject.key,
       this,
       layerName,
       lastFilteredSize
@@ -3384,7 +3674,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
 
     const marks = [
       {
-        type: "windbarb",
+        type: WindBarkConfigDefinitionObject.key,
         from: {
           data: layerName
         },
