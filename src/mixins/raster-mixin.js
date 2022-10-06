@@ -24,11 +24,11 @@ export default function rasterMixin(_chart) {
 
   let _popupDisplayable = true
 
-  _chart.popupDisplayable = function(displayable) {
+  _chart.popupDisplayable = function (displayable) {
     _popupDisplayable = Boolean(displayable)
   }
 
-  _chart.on = function(event, listener) {
+  _chart.on = function (event, listener) {
     if (_data_events.indexOf(event) === -1) {
       _on(event, listener)
     } else {
@@ -37,13 +37,13 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart._invokePreDataListener = function(f) {
+  _chart._invokePreDataListener = function (f) {
     if (f !== "undefined") {
       _listeners.preData(_chart, f)
     }
   }
 
-  _chart.getMinMax = function(value) {
+  _chart.getMinMax = function (value) {
     if (_minMaxCache[value]) {
       return Promise.resolve(_minMaxCache[value])
     }
@@ -56,13 +56,13 @@ export default function rasterMixin(_chart) {
         { expression: value, agg_mode: "max", name: "maximum" }
       ])
       .valuesAsync(true)
-      .then(bounds => {
+      .then((bounds) => {
         _minMaxCache[value] = [bounds.minimum, bounds.maximum]
         return _minMaxCache[value]
       })
   }
 
-  _chart.getTopValues = function(value) {
+  _chart.getTopValues = function (value) {
     const NUM_TOP_VALUES = 10
     const OFFSET = 0
 
@@ -77,10 +77,10 @@ export default function rasterMixin(_chart) {
       .group()
       .reduceCount(value)
       .topAsync(NUM_TOP_VALUES, OFFSET, null, true)
-      .then(results => results.map(result => result.key0))
+      .then((results) => results.map((result) => result.key0))
   }
 
-  _chart.crossfilter = function(_) {
+  _chart.crossfilter = function (_) {
     if (!arguments.length) {
       return _crossfilter
     }
@@ -88,7 +88,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.xRangeFilter = function(range) {
+  _chart.xRangeFilter = function (range) {
     if (!_chart.xDim()) {
       throw new Error("Must set xDim before invoking xRange")
     }
@@ -103,7 +103,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.yRangeFilter = function(range) {
+  _chart.yRangeFilter = function (range) {
     if (!_chart.yDim()) {
       throw new Error("Must set yDim before invoking yRange")
     }
@@ -118,7 +118,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.popupSearchRadius = function(popupSearchRadius) {
+  _chart.popupSearchRadius = function (popupSearchRadius) {
     if (!arguments.length) {
       return _popupSearchRadius
     }
@@ -126,24 +126,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart._resetVegaSpec = function() {
-    const pixelRatio = this._getPixelRatio()
-    _chart._vegaSpec.width = Math.round(_chart.width() * pixelRatio)
-    _chart._vegaSpec.height = Math.round(_chart.height() * pixelRatio)
-    _chart._vegaSpec.data = [
-      {
-        name: "table",
-        sql: "select x, y from tweets;"
-      }
-    ]
-    if (_tableName) {
-      _chart._vegaSpec.data[0].dbTableName = _tableName
-    }
-    _chart._vegaSpec.scales = []
-    _chart._vegaSpec.marks = []
-  }
-
-  _chart.con = function(_) {
+  _chart.con = function (_) {
     if (!arguments.length) {
       return _con
     }
@@ -151,7 +134,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.popupColumns = function(popupColumns) {
+  _chart.popupColumns = function (popupColumns) {
     if (!arguments.length) {
       return _popupColumns
     }
@@ -159,7 +142,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.popupColumnsMapped = function(popupColumnsMapped) {
+  _chart.popupColumnsMapped = function (popupColumnsMapped) {
     if (!arguments.length) {
       return _popupColumnsMapped
     }
@@ -167,7 +150,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.tableName = function(tableName) {
+  _chart.tableName = function (tableName) {
     if (!arguments.length) {
       return _tableName
     }
@@ -175,7 +158,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.popupFunction = function(popupFunction) {
+  _chart.popupFunction = function (popupFunction) {
     if (!arguments.length) {
       return _popupFunction
     }
@@ -185,7 +168,7 @@ export default function rasterMixin(_chart) {
 
   // _determineScaleType because there is no way to determine the scale type
   // in d3 except for looking to see what member methods exist for it
-  _chart.sampling = function(isSetting) {
+  _chart.sampling = function (isSetting) {
     // isSetting should be true or false
     if (!arguments.length) {
       return _sampling
@@ -203,7 +186,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.setSample = function() {
+  _chart.setSample = function () {
     if (_sampling) {
       const id = _chart.dimension().getCrossfilterId()
       const filterSize = lastFilteredSize(id)
@@ -217,7 +200,7 @@ export default function rasterMixin(_chart) {
     }
   }
 
-  _chart._determineScaleType = function(scale) {
+  _chart._determineScaleType = function (scale) {
     const scaleType = null
     if (scale.rangeBand !== undefined) {
       return "ordinal"
@@ -237,7 +220,7 @@ export default function rasterMixin(_chart) {
     return "quantize"
   }
 
-  _chart.vegaSpec = function(_) {
+  _chart.vegaSpec = function (_) {
     if (!arguments.length) {
       return _chart._vegaSpec
     }
@@ -245,7 +228,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.colorBy = function(_) {
+  _chart.colorBy = function (_) {
     if (!arguments.length) {
       return _colorBy
     }
@@ -253,7 +236,7 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart.sizeBy = function(_) {
+  _chart.sizeBy = function (_) {
     if (!arguments.length) {
       return _sizeBy
     }
@@ -297,7 +280,7 @@ export default function rasterMixin(_chart) {
         { table: columns },
         _popupSearchRadius * pixelRatio
       )
-      .then(results => callback(results[0]))
+      .then((results) => callback(results[0]))
   }
 
   _chart.displayPopup = function displayPopup(result) {
@@ -348,10 +331,7 @@ export default function rasterMixin(_chart) {
       xscale.range(origXRange)
       yscale.range(origYRange)
 
-      const mapPopup = _chart
-        .root()
-        .append("div")
-        .attr("class", "map-popup")
+      const mapPopup = _chart.root().append("div").attr("class", "map-popup")
       mapPopup.on("wheel", () => {
         _chart.select(".map-popup").remove()
       })
@@ -375,11 +355,8 @@ export default function rasterMixin(_chart) {
             ? _popupFunction(mappedData)
             : renderPopupHTML(mappedData)
         )
-        .style("left", function() {
-          const boxWidth = d3
-            .select(this)
-            .node()
-            .getBoundingClientRect().width
+        .style("left", function () {
+          const boxWidth = d3.select(this).node().getBoundingClientRect().width
           const overflow =
             _chart.width() - (xPixel + boxWidth / 2) < 0
               ? _chart.width() - (xPixel + boxWidth / 2) - 6
@@ -389,7 +366,7 @@ export default function rasterMixin(_chart) {
           offsetBridge = boxWidth / 2 - overflow
           return overflow + "px"
         })
-        .classed("pop-down", function() {
+        .classed("pop-down", function () {
           const boxHeight = d3
             .select(this)
             .node()
