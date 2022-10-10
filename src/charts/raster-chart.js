@@ -15,6 +15,8 @@ import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
+import { shallowCopyVega } from "../utils/utils-vega"
+import assert from "assert"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -55,12 +57,20 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // unset predefined mandatory attributes
   _chart._mandatoryAttributes([])
 
+  // eslint-disable-next-line no-prototype-builtins
   let _con = window.hasOwnProperty("con") ? con : null
   const _imageOverlay = null
   let _renderBoundsMap = {}
   let _layerNames = {}
   let _layers = []
   let _hasBeenRendered = false
+
+  // the vega passed to the render_vega call
+  let _vegaSpec = {}
+
+  // the materialized vega spec is a vega where scale metadata returned by a render_vega
+  // call (via the vega_metadata property in the result) will supplant the scales in _vegaSpec
+  let _materializedVegaSpec = {}
 
   const _events = ["vegaSpec"]
   const _listeners = d3.dispatch.apply(d3, _events)
@@ -109,6 +119,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.popupDisplayable = function (displayable) {
     _popupDisplayable = Boolean(displayable)
+  }
+
+  _chart.getVegaSpec = function () {
+    return _vegaSpec
+  }
+
+  _chart.getMaterializedVegaSpec = function () {
+    return _materializedVegaSpec
   }
 
   _chart.x = function (x) {
@@ -343,10 +361,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _chart._vegaSpec = genLayeredVega(_chart)
+    _vegaSpec = genLayeredVega(_chart)
     _chart
       .con()
-      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_vegaSpec), {})
       .then((result) => {
         if (!paused) {
           _renderBoundsMap[result.nonce] = bounds
@@ -394,15 +412,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _chart._vegaSpec = genLayeredVega(
+    _vegaSpec = genLayeredVega(
       _chart,
       group,
       lastFilteredSize(group.getCrossfilterId())
     )
-
     const result = _chart
       .con()
-      .renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec))
+      .renderVega(_chart.__dcFlag__, JSON.stringify(_vegaSpec))
 
     _renderBoundsMap[result.nonce] = bounds
     return result
@@ -557,6 +574,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     let selectedLayer = null
+    _materializedVegaSpec = shallowCopyVega(_vegaSpec)
     if (data.vega_metadata) {
       const vega_metadata = JSON.parse(data.vega_metadata)
       for (const layerName in _layerNames) {
@@ -565,6 +583,17 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName)
         }
       }
+
+      if (Array.isArray(vega_metadata.scales)) {
+        vega_metadata.scales.forEach((scale_definition) => {
+          const name = scale_definition.name
+          const scale_idx = _materializedVegaSpec.scales.findIndex(
+            (scale) => scale.name === name
+          )
+          assert(scale_idx >= 0)
+          _materializedVegaSpec.scales[scale_idx] = scale_definition
+        })
+      }
     }
 
     // TODO(croot): legends are currently not working with windbarb chart due to
@@ -572,8 +601,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     // a change to the below getLegendStateFromChart() call in the way of generalization
     // or windbarb specialization. In the meantime, legends are disabled by setting
     // the legend state to an empy object.
-    // const state = getLegendStateFromChart(_chart, useMap, selectedLayer);
-    const state = {}
+    const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
     _legend.setState(state)
 
     if (_chart.isLoaded()) {

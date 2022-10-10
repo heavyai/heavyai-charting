@@ -162,6 +162,7 @@ class RasterLayerContext {
  * @property {Map} vega_transforms
  * @property {Map} vega_scales
  * @property {Map} mark_properties
+ * @property {Map} legend_properties
  */
 
 /**
@@ -181,7 +182,8 @@ class VegaPropertyOutputState {
       sql_parser_transforms: new Map(),
       vega_transforms: new Map(),
       vega_scales: new Map(),
-      mark_properties: new Map()
+      mark_properties: new Map(),
+      legend_properties: new Map()
     }
   }
 
@@ -234,11 +236,56 @@ class VegaPropertyOutputState {
   }
 
   /**
+   *
+   * @param {PropDescriptor} prop_descriptor
+   */
+  getScaleForProp(prop_descriptor) {
+    let scale_obj = this.vega_state_maps_.vega_scales.get(
+      prop_descriptor.prop_name
+    )
+    if (!scale_obj) {
+      const fallback_prop_descriptor = prop_descriptor.fallback_prop
+      if (fallback_prop_descriptor) {
+        scale_obj = this.getScaleForProp(fallback_prop_descriptor)
+      } else {
+        scale_obj = null
+      }
+    }
+    return scale_obj
+  }
+
+  /**
    * @param {string} prop_name
    * @param {Object} property_obj
    */
   addMarkProperty(prop_name, property_obj) {
     this.vega_state_maps_.mark_properties.set(prop_name, property_obj)
+  }
+
+  /**
+   * @param {string} prop_name
+   * @param {Object} legend_obj
+   */
+  addLegendForProperty(prop_name, legend_obj) {
+    this.vega_state_maps_.legend_properties.set(prop_name, legend_obj)
+  }
+
+  /**
+   * @param {PropDescriptor} prop_descriptor
+   */
+  getLegendForProperty(prop_descriptor) {
+    let legend_obj = this.vega_state_maps_.legend_properties.get(
+      prop_descriptor.prop_name
+    )
+    if (!legend_obj) {
+      const fallback_prop_descriptor = prop_descriptor.fallback_prop
+      if (fallback_prop_descriptor) {
+        legend_obj = this.getLegendForProperty(fallback_prop_descriptor)
+      } else {
+        legend_obj = null
+      }
+    }
+    return legend_obj
   }
 }
 
@@ -926,6 +973,75 @@ class ValueDefinitionObject extends PropertiesDefinitionInterface {
       prop_descriptor.prop_name,
       vega_mark_property_object
     )
+  }
+}
+
+class LegendDefinitionObject extends PropertiesDefinitionInterface {
+  /**
+   * @param {Object} legend_definition_object
+   * @param {ParentInfo} parent_info
+   */
+  constructor(legend_definition_object, parent_info) {
+    super(legend_definition_object, parent_info, null)
+
+    // NOTE: currently the legend definition only contains the title/open/locked properties, which are custom
+    // properties to drive the legend in the 'legendables' package
+    // Only the 'title' property aligns with vega-lite
+
+    const {
+      title = "Legend",
+      open = true,
+      locked = false
+    } = legend_definition_object
+
+    if (typeof title !== "string") {
+      throw new TypeError(`Invalid 'title' property for legend definition`)
+    }
+
+    this.title_ = title
+
+    if (typeof open !== "boolean") {
+      throw new TypeError(`Invalid 'open' poperty for legend definition`)
+    }
+    this.open_ = open
+
+    if (typeof locked !== "boolean") {
+      throw new TypeError(`Inavlid 'locked' property for legend definition`)
+    }
+    this.locked_ = locked
+  }
+
+  /**
+   * @type {string}
+   */
+  get title() {
+    return this.title_
+  }
+
+  /**
+   * @type {boolean}
+   */
+  get open() {
+    return this.open_
+  }
+
+  /**
+   * @type {boolean}
+   */
+  get locked() {
+    return this.locked_
+  }
+
+  /**
+   * @param {PropDescriptor} prop_descriptor
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  materializeProperty(prop_descriptor, vega_property_output_state) {
+    vega_property_output_state.addLegendForProperty(prop_descriptor.prop_name, {
+      title: this.title_,
+      open: this.open_,
+      locked: this.locked_
+    })
   }
 }
 
@@ -2357,12 +2473,31 @@ class FieldDefinitionObject extends PropertiesDefinitionInterface {
     if (this.measurement_type_ === null) {
       this.measurement_type_ = prop_descriptor.getDefaultMeasurementType()
     }
+
     if (scale_definition_object) {
       scale_definition_object.materializeProperty(
         prop_descriptor,
         vega_property_output_state
       )
       vega_mark_property_object.scale = scale_definition_object.name
+    }
+
+    const {
+      legend = scale_definition_object &&
+      prop_descriptor instanceof ColorChannelDescriptor
+        ? {}
+        : null
+    } = this.definition_object_
+    if (legend !== null) {
+      if (!(prop_descriptor instanceof ColorChannelDescriptor)) {
+        throw new TypeError(
+          `A legend definition is currently supplied for property ${prop_name}, but legends are currently only supported for colors`
+        )
+      }
+      new LegendDefinitionObject(legend, {
+        parent: this,
+        prop_name: "legend"
+      }).materializeProperty(prop_descriptor, vega_property_output_state)
     }
 
     const final_property_object = {}
@@ -3012,6 +3147,7 @@ function handle_prop(
  * @param {RasterLayerContext} raster_layer_context
  * @param {Map<string,PropDescriptor>} props
  * @param {Object} state
+ * @returns {VegaPropertyOutputState}
  */
 function materialize_prop_descriptors(raster_layer_context, props, state) {
   const vega_property_output_state = new VegaPropertyOutputState()
@@ -3109,7 +3245,7 @@ function materialize_prop_descriptors(raster_layer_context, props, state) {
   //   );
   // }
 
-  return vega_property_output_state.flatten()
+  return vega_property_output_state
 }
 
 // function getColor(color, layerName) {
@@ -3185,8 +3321,15 @@ function materialize_prop_descriptors(raster_layer_context, props, state) {
 
 export default function rasterLayerWindBarbMixin(_layer) {
   let state = null
+
+  /**
+   * @type {VegaPropertyOutputState}
+   */
+  let _vega_property_output_state = null
+
   // _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   // _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
+
   _layer.setState = function (setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -3622,16 +3765,17 @@ export default function rasterLayerWindBarbMixin(_layer) {
       lastFilteredSize
     )
 
+    _vega_property_output_state = materialize_prop_descriptors(
+      raster_layer_context,
+      prop_descriptors,
+      state
+    )
     const {
       sql_parser_transforms,
       vega_transforms,
       vega_scales,
       mark_properties
-    } = materialize_prop_descriptors(
-      raster_layer_context,
-      prop_descriptors,
-      state
-    )
+    } = _vega_property_output_state.flatten()
 
     if (typeof filter === "string" && filter.length) {
       sql_parser_transforms.push({
@@ -3923,6 +4067,23 @@ export default function rasterLayerWindBarbMixin(_layer) {
     })
     return _vega
   }
+
+  _layer.getPrimaryColorScaleAndLegend = function () {
+    let prop_descriptor = prop_descriptors.get("stroke")
+    let scale_obj = _vega_property_output_state.getScaleForProp(prop_descriptor)
+    if (!scale_obj) {
+      prop_descriptor = prop_descriptors.get("fill")
+      scale_obj = _vega_property_output_state.getScaleForProp(prop_descriptor)
+      if (!scale_obj) {
+        prop_descriptor = null
+      }
+    }
+    const legend_obj = prop_descriptor
+      ? _vega_property_output_state.getLegendForProperty(prop_descriptor)
+      : null
+    return [scale_obj, legend_obj]
+  }
+
   // const renderAttributes = [
   //   "xc",
   //   "yc",
