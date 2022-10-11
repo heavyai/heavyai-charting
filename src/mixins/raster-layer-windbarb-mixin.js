@@ -4214,16 +4214,16 @@ export default function rasterLayerWindBarbMixin(_layer) {
   //     delete _scaledPopups[chart];
   //   }
   // };
-  // _layer._destroyLayer = function(chart) {
-  //   const xDim = _layer.xDim();
-  //   if (xDim) {
-  //     xDim.dispose();
-  //   }
-  //   const yDim = _layer.yDim();
-  //   if (yDim) {
-  //     yDim.dispose();
-  //   }
-  // };
+  _layer._destroyLayer = function() {
+    const xDim = _layer.xDim();
+    if (xDim) {
+      xDim.dispose();
+    }
+    const yDim = _layer.yDim();
+    if (yDim) {
+      yDim.dispose();
+    }
+  };
   // _layer.setZIndexedLayers = function(chart, prioritizedColors) {
   //   const layers = chart.getLayers();
   //   const layerNames = chart.getLayerNames();
