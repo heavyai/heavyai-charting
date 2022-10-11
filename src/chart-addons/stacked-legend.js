@@ -298,8 +298,10 @@ const formatNumber = (d) =>
 const color_literal_alpha_regex =
   /^\s*[a-z,A-Z]{3}[aA]\s*\([\d.]+,[\d.]+,[\d.]+,([\d.]+)\)$/i
 
+// eslint-disable-next-line complexity
 function legendState(state, useMap = true) {
-  const state_type = state.type.toLowerCase()
+  const state_type =
+    typeof state.type === "string" ? state.type.toLowerCase() : ""
   const { legend = {} } = state
   assert(typeof legend === "object")
   const { title = "Legend", open = true, locked = false } = legend
