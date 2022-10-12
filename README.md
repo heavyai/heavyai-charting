@@ -18,7 +18,7 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 # Examples
 
-Visit our [examples page](https://omnisci.github.io/mapd-charting/example/) for ideas of what can be created with HEAVY.AI Charting
+Visit our [examples page](https://heavyai.github.io/heavyai-charting/example/) for ideas of what can be created with HEAVY.AI Charting
 
 # Quick Start
 
