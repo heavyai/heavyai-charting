@@ -1664,7 +1664,7 @@ class ContinuousScale extends ScaleDefinitionObject {
               }(${agg_xform_output}, ${
                 formula_xform_objs[formula_xform_objs.length - 2].as
               })`,
-              as: `${parent.output}_extents_${extent_flag.extent_name}`
+              as: `${field_output}_extents_${extent_flag.extent_name}`
             })
           }
         } else if (
@@ -4214,16 +4214,16 @@ export default function rasterLayerWindBarbMixin(_layer) {
   //     delete _scaledPopups[chart];
   //   }
   // };
-  _layer._destroyLayer = function() {
-    const xDim = _layer.xDim();
+  _layer._destroyLayer = function () {
+    const xDim = _layer.xDim()
     if (xDim) {
-      xDim.dispose();
+      xDim.dispose()
     }
-    const yDim = _layer.yDim();
+    const yDim = _layer.yDim()
     if (yDim) {
-      yDim.dispose();
+      yDim.dispose()
     }
-  };
+  }
   // _layer.setZIndexedLayers = function(chart, prioritizedColors) {
   //   const layers = chart.getLayers();
   //   const layerNames = chart.getLayerNames();
