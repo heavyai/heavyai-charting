@@ -43,7 +43,7 @@ Our [Tweetmap Demo](https://www.heavy.ai/demos/tweetmap/) was made only using HE
 
 # Documentation
 
-Visit our [API Docs](http://omnisci.github.io/mapd-charting/docs/) for additional information on HEAVY.AI Charting
+Visit our [API Docs](https://heavyai.github.io/heavyai-charting/docs/) for additional information on HEAVY.AI Charting
 
 # Testing
 
