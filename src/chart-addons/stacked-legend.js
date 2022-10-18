@@ -119,11 +119,16 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
         const vega = chart.getMaterializedVegaSpec()
         const [color_scale, color_legend] =
           layer.getPrimaryColorScaleAndLegend()
-        const color_scale_name = color_scale ? color_scale.name : ""
+        if (color_scale === null) {
+          return {}
+        }
+        const color_scale_name = color_scale.name || ""
         const materialized_color_scale = vega.scales.find(
           (scale) => scale.name === color_scale_name
         )
-        assert(materialized_color_scale, `${layer_name}, ${color_scale_name}`)
+        if (!materialized_color_scale) {
+          return {}
+        }
 
         return {
           ...materialized_color_scale,
