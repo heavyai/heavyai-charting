@@ -2590,7 +2590,9 @@ class PropDescriptor {
     if (this.fallback_prop_) {
       const context = this
       this.vega_mark_prop_names.forEach((vega_prop_name) => {
-        context.fallback_prop_.addVegaMarkPropName(vega_prop_name)
+        if (!context.fallback_prop_.vega_prop_names_.includes(vega_prop_name)) {
+          context.fallback_prop_.vega_prop_names_.push(vega_prop_name)
+        }
       })
     }
     this.prop_location_ = prop_location
@@ -2623,15 +2625,6 @@ class PropDescriptor {
    */
   get vega_mark_prop_names() {
     return this.vega_prop_names_
-  }
-
-  /**
-   * @param {string} name
-   */
-  addVegaMarkPropName(name) {
-    if (!this.vega_prop_names_.includes(name)) {
-      this.vega_prop_names_.push(name)
-    }
   }
 
   /**
