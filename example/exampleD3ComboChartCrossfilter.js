@@ -1,5 +1,5 @@
 /* global dc, d3ComboChart, d3, crossfilter, DbCon  */
-require("@heavyai/d3-combo-chart/dist/d3-combo-chart.css")
+require("@heavyai/d3-combo-chart/dist/mapd3.css")
 
 /*
  * This is example code that shows how to make 3 cross-filtered charts with the
