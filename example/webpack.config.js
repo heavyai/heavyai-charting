@@ -7,7 +7,7 @@ module.exports = {
       "babel-polyfill",
       "script-loader!@heavyai/connector/dist/browser-connector.js",
       "script-loader!@heavyai/crossfilter/dist/mapd-crossfilter.js",
-      "script-loader!@heavyai/d3-combo-chart/dist/mapd3.js",
+      "script-loader!@heavyai/d3-combo-chart/dist/d3ComboChart.js",
       path.resolve(__dirname, "../index.js")
     ],
     example3: path.resolve(__dirname, "./example3.js"),
