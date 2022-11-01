@@ -74,18 +74,18 @@
       "#d0f400"
     ]
 
+
     // map bounding box filtering dimension
-    const viewBoxDim = crossFilter.dimension(config.geoMeasure)
+    // const viewBoxDim = crossFilter.dimension(config.xDim, config.yDim)
 
-    const bounds = {
-      lonMin: -134.05007498694482,
-      lonMax: -104.56313893710016,
-      latMin: 32.52883199254458,
-      latMax: 48.000786965713246
-    }
-
-    // crossfilter method to count number of lines within the map bounding box
-    viewBoxDim.filterST_Min_ST_Max(bounds)
+    // const bounds = {
+    //   lonMin: -134.05007498694482,
+    //   lonMax: -104.56313893710016,
+    //   latMin: 32.52883199254458,
+    //   latMax: 48.000786965713246
+    // }
+    // // crossfilter method to count number of lines within the map bounding box
+    // viewBoxDim.filterST_Min_ST_Max(bounds)
 
     const ContourChart = dc.rasterChart(parent, true, null, mapboxgl)
       .con(con)
@@ -98,72 +98,87 @@
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
 
 
-    const contourLayer = dc.rasterLayer("lines")
+    const contourLayer = dc.rasterLayer("contour")
       .crossfilter(crossFilter)
       .setState({
         data: [{
           table: config.table,
-          attr: "rowid"
+          source: config.table,
+          // attr: "rowid"
         }],
         transform: {
-          sample: true,
           limit: 300000,
-          tableSize: 4289471
+          tableSize: 4289471,
+          projection: "mercator_map_projection"
         },
         mark: {
           type: "lines",
-          lineJoin: "bevel"
+          lineJoin: "bevel",
+          strokeColor: "red",
+          strokeWidth: 1
         },
         encoding: {
           size: "auto",
-          color: {
-            type: "quantitative",
-            field: config.colorMeasure,
-            aggregate: {
-              field: config.colorMeasure,
-              type: "average"},
-            colorMeasureAggType: "Avg",
-            domain: "auto",
-            range: colorRange,
-            legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
-          },
-          geocol: config.geoMeasure,
-          geoTable: config.table
-        }
+          // color: {
+          //   type: "quantitative",
+          //   field: config.colorMeasure,
+          //   aggregate: {
+          //     field: config.colorMeasure,
+          //     type: "average"},
+          //   colorMeasureAggType: "Avg",
+          //   domain: "auto",
+          //   range: colorRange,
+          //   legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
+          // },
+
+          xDim: config.xDim,
+          yDim: config.yDim,
+          value: config.value,
+          table: config.table,
+
+          agg_type: 'AVG',
+          bin_dim_meters: 180,
+          neighborhood_fill_radius: 0,
+          fill_only_nulls: false,
+          flip_latitude: false,
+          contour_interval: 1000,
+          contour_offset: 0,
+        },
+        enableHitTesting: false
       })
-      .viewBoxDim(viewBoxDim)
+      // .viewBoxDim(viewBoxDim)
       // .popupColumns(["FULLNAME", "ZIPL"])
       // .popupColumnsMapped({})
 
+      console.log(contourLayer)
+      ContourChart.pushLayer("contourLayer", contourLayer).init().then((chart) => {
+        // This will zoom to data extent
+        chart.zoomToLocation({
+          bounds: {
+            sw: [-128.998369, 30.266939],
+            ne: [-98.891716, 39.736412]
+          }
+        })
+        chart
+          .viewBoxDim(crossFilter.filterST_Intersects)
 
-      ContourChart.pushLayer("contourmap", contourLayer).init().then((chart) => {
-      // This will zoom to data extent
-      chart.zoomToLocation({
-        bounds: {
-          sw: [-128.998369, 30.266939],
-          ne: [-98.891716, 39.736412]
-        }
+        // Don't worry about this yet
+        // // hover effect with popup
+        // const debouncedPopup = _.debounce(displayPopupWithData, 250)
+        // LinemapChart.map().on('mousewheel', LinemapChart.hidePopup);
+        // LinemapChart.map().on('mousemove', LinemapChart.hidePopup)
+        // LinemapChart.map().on('mousemove', debouncedPopup)
+        // function displayPopupWithData (event) {
+        //   LinemapChart.getClosestResult(event.point, LinemapChart.displayPopup)
+        // }
+
+        // // Draw filter
+        // LinemapChart
+        //   .addDrawControl()
+        //   .coordFilter(crossFilter.filter())
+
+        dc.renderAllAsync()
       })
-      chart
-        .viewBoxDim(crossFilter.filterST_Intersects)
-
-      // Don't worry about this yet
-      // // hover effect with popup
-      // const debouncedPopup = _.debounce(displayPopupWithData, 250)
-      // LinemapChart.map().on('mousewheel', LinemapChart.hidePopup);
-      // LinemapChart.map().on('mousemove', LinemapChart.hidePopup)
-      // LinemapChart.map().on('mousemove', debouncedPopup)
-      // function displayPopupWithData (event) {
-      //   LinemapChart.getClosestResult(event.point, LinemapChart.displayPopup)
-      // }
-
-      // // Draw filter
-      // LinemapChart
-      //   .addDrawControl()
-      //   .coordFilter(crossFilter.filter())
-
-      dc.renderAllAsync()
-    })
 
     /*--------------------------RESIZE EVENT------------------------------*/
     /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
