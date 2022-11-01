@@ -40,7 +40,6 @@ export default function rasterLayerContourMixin(_layer) {
   }
 
   _layer.getState = function() {
-    console.log("GetState", JSON.parse(JSON.stringify(state)))
     return JSON.parse(JSON.stringify(state))
   }
 
@@ -71,7 +70,6 @@ export default function rasterLayerContourMixin(_layer) {
       })
     }
 
-    console.log("TABLE", table)
     return parser.writeSQL({
       type: "root",
       source: table,
@@ -83,21 +81,19 @@ export default function rasterLayerContourMixin(_layer) {
           height,
           x: {
             field: state.encoding.yDim,
-            // domain: [min[0], max[0]]
+            domain: [min[0], max[0]]
           },
           y: {
             field: state.encoding.yDim,
-            // domain: [min[1], max[1]]
+            domain: [min[1], max[1]]
           }
-          // value: {
-          //   field: state.encoding.value
-          // }
         }
       ]
     })
   }
 
   _layer._genVega = function(chart, layerName) {
+
     const {
       table,
       width,
@@ -108,8 +104,17 @@ export default function rasterLayerContourMixin(_layer) {
       globalFilter,
       neLat,
       zoom,
-    } = chart
-    console.log("This aint happening?", min, max)
+    } = {
+      table: _layer.crossfilter().getTable()[0],
+      width: Math.round(chart.width() * chart._getPixelRatio()),
+      height: Math.round(chart.height() * chart._getPixelRatio()),
+      min: chart.conv4326To900913(chart._minCoord),
+      max: chart.conv4326To900913(chart._maxCoord),
+      filter: _layer.crossfilter().getFilterString(layerName),
+      globalFilter: _layer.crossfilter().getGlobalFilterString(),
+      neLat: chart._maxCoord[1],
+      zoom: chart.zoom()
+    }
     const datalayerName = `contourmap_query${layerName}`
 
     const vega = {
