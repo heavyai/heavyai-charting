@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <style>
+        .title {
+            font-weight: bold;
+            text-align:center;
+        }
+        .heavyai{
+            position: relative;
+            top: 2px;
+        }
+        .data-count{
+            padding-right:20px;
+        }
+        .filter-count{
+            font-weight: bold;
+            color:  #45B1E8;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header" style="margin-top:10px">
+            <span class="heavyai">HEAVY.AI Demo</span>
+        </div>
+        <div class="navbar-text navbar-right">
+            <div class="data-count"></div>
+        </div>
+    </div>
+</nav>
+<div class="main-container">
+    <div>
+        <div class="title">Contour Map</div>
+        <div id="contourChart"></div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="assets/app.bundle.js"></script>
+
+<script>
+
+  function createCharts(crossFilter, dc, config, con) {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
+
+    // Linemap Chart
+    const parent = document.getElementById("contourChart");
+    const mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
+
+    const countGroup = crossFilter.groupAll();
+
+    dc.countWidget(".data-count")
+      .dimension(crossFilter)
+      .group(countGroup);
+
+
+    const colorRange = [
+      "#115f9a",
+      "#1984c5",
+      "#22a7f0",
+      "#48b5c4",
+      "#76c68f",
+      "#a6d75b",
+      "#c9e52f",
+      "#d0ee11",
+      "#d0f400"
+    ]
+
+    // map bounding box filtering dimension
+    const viewBoxDim = crossFilter.dimension(config.geoMeasure)
+
+    const bounds = {
+      lonMin: -134.05007498694482,
+      lonMax: -104.56313893710016,
+      latMin: 32.52883199254458,
+      latMax: 48.000786965713246
+    }
+
+    // crossfilter method to count number of lines within the map bounding box
+    viewBoxDim.filterST_Min_ST_Max(bounds)
+
+    const ContourChart = dc.rasterChart(parent, true, null, mapboxgl)
+      .con(con)
+      .height(h)
+      .width(w)
+      .mapUpdateInterval(750)
+      .mapStyle('mapbox://styles/mapbox/light-v8')
+      .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+      .popupSearchRadius(2)
+      .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
+
+
+    const contourLayer = dc.rasterLayer("lines")
+      .crossfilter(crossFilter)
+      .setState({
+        data: [{
+          table: config.table,
+          attr: "rowid"
+        }],
+        transform: {
+          sample: true,
+          limit: 300000,
+          tableSize: 4289471
+        },
+        mark: {
+          type: "lines",
+          lineJoin: "bevel"
+        },
+        encoding: {
+          size: "auto",
+          color: {
+            type: "quantitative",
+            field: config.colorMeasure,
+            aggregate: {
+              field: config.colorMeasure,
+              type: "average"},
+            colorMeasureAggType: "Avg",
+            domain: "auto",
+            range: colorRange,
+            legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
+          },
+          geocol: config.geoMeasure,
+          geoTable: config.table
+        }
+      })
+      .viewBoxDim(viewBoxDim)
+      // .popupColumns(["FULLNAME", "ZIPL"])
+      // .popupColumnsMapped({})
+
+
+      ContourChart.pushLayer("contourmap", contourLayer).init().then((chart) => {
+      // This will zoom to data extent
+      chart.zoomToLocation({
+        bounds: {
+          sw: [-128.998369, 30.266939],
+          ne: [-98.891716, 39.736412]
+        }
+      })
+      chart
+        .viewBoxDim(crossFilter.filterST_Intersects)
+
+      // Don't worry about this yet
+      // // hover effect with popup
+      // const debouncedPopup = _.debounce(displayPopupWithData, 250)
+      // LinemapChart.map().on('mousewheel', LinemapChart.hidePopup);
+      // LinemapChart.map().on('mousemove', LinemapChart.hidePopup)
+      // LinemapChart.map().on('mousemove', debouncedPopup)
+      // function displayPopupWithData (event) {
+      //   LinemapChart.getClosestResult(event.point, LinemapChart.displayPopup)
+      // }
+
+      // // Draw filter
+      // LinemapChart
+      //   .addDrawControl()
+      //   .coordFilter(crossFilter.filter())
+
+      dc.renderAllAsync()
+    })
+
+    /*--------------------------RESIZE EVENT------------------------------*/
+    /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+    window.addEventListener("resize", _.debounce(reSizeAll, 100));
+
+    function reSizeAll(){
+      var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
+
+      ContourChart.map().resize();
+      ContourChart.isNodeAnimate = false;
+      ContourChart
+        .width(w)
+        .height(h)
+        .render()
+
+      dc.redrawAllAsync();
+    }
+
+  }
+
+  function init() {
+    const config = {
+      table: "nws_precip_last7days_20221005_conus",
+      lat: "raster_lat",
+      lng: "raster_lng",
+      value: "band_1_1",
+    }
+
+    const con = new DbCon()
+      .protocol("https")
+      .host("kali.mapd.com")
+      .port("10043")
+      .dbName("mapd")
+      .user("joe.ohallaron")
+      .password("5cKqKXN49FtP")
+      .connect(function(error, con) {
+        crossfilter.crossfilter(con, config.table)
+          .then(function(cf) {
+            console.log(cf)
+            createCharts(cf, dc, config, con)
+          })
+        ;
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', init, false);
+
+</script>
+</body>
+</html>
