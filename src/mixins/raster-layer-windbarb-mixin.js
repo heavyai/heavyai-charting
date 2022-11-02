@@ -12,6 +12,7 @@ import {
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import assert from "assert"
+import { AGGREGATES, isValidPostFilter } from "./raster-layer-point-mixin"
 // import * as d3 from "d3"
 // import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
 
@@ -20,15 +21,6 @@ import assert from "assert"
 // const AUTOSIZE_RANGE_MININUM = [1, 1]
 // const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
 // const ANGLE_SHAPE_SIZE_MULTIPLIER = 2.5
-
-// const AGGREGATES = {
-//   average: "AVG",
-//   count: "COUNT",
-//   min: "MIN",
-//   max: "MAX",
-//   sum: "SUM",
-//   sample: "SAMPLE"
-// }
 
 // function validSymbol(type) {
 //   switch (type) {
@@ -3337,256 +3329,166 @@ export default function rasterLayerWindBarbMixin(_layer) {
   _layer.getState = function () {
     return state
   }
+
+  // eslint-disable-next-line complexity
   _layer.getTransforms = function (
     table,
     filter,
     globalFilter,
-    {
-      // transform,
-      encoding: {
-        x,
-        y,
-        speed,
-        direction,
-        size,
-        fill,
-        stroke,
-        color,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        strokeWidth
-      }
-      // postFilters
-    },
+    { transform, encoding: { x, y, size, color }, postFilters },
     lastFilteredSize,
     isDataExport
   ) {
+    // NOTE: as of 11/02/22 this function might only be called from immerse via the
+    // buildRasterExportSql() method in raster-sql.ts
+    // Currently it appears windbarbs are not supported in buildRasterExportSql(), so
+    // this method should never be called, but if windbards are included in buildRasterExportSql(),
+    // then this method would need to be filled out. In the meantime, the logic in here is mostly a direct
+    // copy of the equivalent getTransforms method in raster-layer-point-mixin (minus the 'orientation' prop).
+    // Using a direct copy because the state object that's build for the buildRasterExportSql() call is
+    // very point specific, and is completely different than the state that is used to render the wind
+    // barb, so we can just plop in the point code for now. It's also worth noting that rebuilding the state
+    // json object in buildRasterExportSql() is very redundant. Why rebuild the state?  I don't see why
+    // we cant just supply a getter to retrieve the current sql for a layer (tho with the isDataExport,
+    // which can impact how the sql is generated in the end). Wouldn't that do what's intended and yet
+    // be far less error prone?
+
     const transforms = []
-    // if (
-    //   typeof transform === "object" &&
-    //   typeof transform.groupby === "object" &&
-    //   transform.groupby.length
-    // ) {
-    //   const fields = isDataExport ? [] : [x.field, y.field];
-    //   const alias = isDataExport ? [] : ["x", "y"];
-    //   const ops = isDataExport ? [] : [x.aggregate, y.aggregate];
-    //   if (typeof size === "object" && size.type === "quantitative") {
-    //     fields.push(size.field);
-    //     alias.push("size");
-    //     ops.push(size.aggregate);
-    //   }
-    //   if (
-    //     typeof color === "object" &&
-    //     (color.type === "quantitative" || color.type === "ordinal")
-    //   ) {
-    //     fields.push(color.field);
-    //     alias.push("color");
-    //     ops.push(color.aggregate);
-    //   }
-    //   if (orientation) {
-    //     fields.push(orientation.field);
-    //     alias.push("orientation");
-    //     ops.push(orientation.aggregate);
-    //   }
-    //   // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
-    //   // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
-    //   transforms.push({
-    //     type: "aggregate",
-    //     fields,
-    //     ops,
-    //     as: alias,
-    //     // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
-    //     //  in heavyai-data-layer2. So, just gonna filter them out.
-    //     //  https://heavyai.atlassian.net/browse/FE-14213
-    //     groupby: [...new Set(transform.groupby)].map((g, i) => ({
-    //       type: "project",
-    //       expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
-    //       as: isDataExport ? g : `key${i}`
-    //     }))
-    //   });
-    //   if (isDataExport) {
-    //     transforms.push({
-    //       type: "project",
-    //       expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
-    //         AGGREGATES[y.aggregate]
-    //       }(${y.field})), 4326) AS location`
-    //     });
-    //   }
-    // } else {
-    // if (isDataExport) {
-    //   transforms.push({
-    //     type: "project",
-    //     expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`
-    //   });
-    // } else {
-    transforms.push({
-      type: "project",
-      expr: x.field,
-      as: "x"
-    })
-    transforms.push({
-      type: "project",
-      expr: y.field,
-      as: "y"
-    })
-    // }
-    // if (typeof transform.limit === "number") {
-    //   transforms.push({
-    //     type: "limit",
-    //     row: transform.limit
-    //   });
-    //   if (transform.sample) {
-    //     transforms.push({
-    //       type: "sample",
-    //       method: "multiplicative",
-    //       size: lastFilteredSize || transform.tableSize,
-    //       limit: transform.limit,
-    //       sampleTable: table
-    //     });
-    //   }
-    // }
-    if (typeof speed === "object" && typeof speed.field === "string") {
-      transforms.push({
-        type: "project",
-        expr: speed.field,
-        as: "speed"
-      })
-    }
-    if (typeof direction === "object" && typeof direction.field === "string") {
-      transforms.push({
-        type: "project",
-        expr: direction.field,
-        as: "direction"
-      })
-    }
-    if (typeof size === "object" && typeof size.field === "string") {
-      transforms.push({
-        type: "project",
-        expr: size.field,
-        as: "size"
-      })
-    }
-    // if (typeof size === "object" && size.type === "quantitative") {
-    //   transforms.push({
-    //     type: "project",
-    //     expr: size.field,
-    //     as: "size"
-    //   });
-    // }
-    if (typeof fill === "object" && typeof fill.field === "string") {
-      transforms.push({
-        type: "project",
-        expr: fill.field,
-        as: "fill"
-      })
-    } else if (typeof color === "object" && typeof color.field === "string") {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      })
-    }
-    if (typeof stroke === "object" && typeof stroke.field === "string") {
-      transforms.push({
-        type: "project",
-        expr: stroke.field,
-        as: "stroke"
-      })
-    } else if (
-      (transforms.length === 0 ||
-        transforms[transforms.length - 1].as !== "color") &&
-      typeof color === "object" &&
-      typeof color.field === "string"
-    ) {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      })
-    }
-    // if (
-    //   typeof color === "object" &&
-    //   (color.type === "quantitative" || color.type === "ordinal")
-    // ) {
-    //   transforms.push({
-    //     type: "project",
-    //     expr: color.field,
-    //     as: "color"
-    //   });
-    // }
-    if (typeof opacity === "object" && typeof opacity.field === "string") {
-      transforms.push({
-        type: "project",
-        expr: opacity.field,
-        as: "opacity"
-      })
-    }
+
     if (
-      typeof fillOpacity === "object" &&
-      typeof fillOpacity.field === "string"
+      typeof transform === "object" &&
+      typeof transform.groupby === "object" &&
+      transform.groupby.length
     ) {
+      const fields = isDataExport ? [] : [x.field, y.field]
+      const alias = isDataExport ? [] : ["x", "y"]
+      const ops = isDataExport ? [] : [x.aggregate, y.aggregate]
+
+      if (typeof size === "object" && size.type === "quantitative") {
+        fields.push(size.field)
+        alias.push("size")
+        ops.push(size.aggregate)
+      }
+
+      if (
+        typeof color === "object" &&
+        (color.type === "quantitative" || color.type === "ordinal")
+      ) {
+        fields.push(color.field)
+        alias.push("color")
+        ops.push(color.aggregate)
+      }
+
+      // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
+      // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
-        type: "project",
-        expr: fillOpacity.field,
-        as: "fillOpacity"
+        type: "aggregate",
+        fields,
+        ops,
+        as: alias,
+        // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
+        //  in heavyai-data-layer2. So, just gonna filter them out.
+        //  https://heavyai.atlassian.net/browse/FE-14213
+        groupby: [...new Set(transform.groupby)].map((g, i) => ({
+          type: "project",
+          expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
+          as: isDataExport ? g : `key${i}`
+        }))
       })
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
+            AGGREGATES[y.aggregate]
+          }(${y.field})), 4326) AS location`
+        })
+      }
+    } else {
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`
+        })
+      } else {
+        transforms.push({
+          type: "project",
+          expr: x.field,
+          as: "x"
+        })
+        transforms.push({
+          type: "project",
+          expr: y.field,
+          as: "y"
+        })
+      }
+
+      if (typeof transform.limit === "number") {
+        transforms.push({
+          type: "limit",
+          row: transform.limit
+        })
+        if (transform.sample) {
+          transforms.push({
+            type: "sample",
+            method: "multiplicative",
+            size: lastFilteredSize || transform.tableSize,
+            limit: transform.limit,
+            sampleTable: table
+          })
+        }
+      }
+
+      if (typeof size === "object" && size.type === "quantitative") {
+        transforms.push({
+          type: "project",
+          expr: size.field,
+          as: "size"
+        })
+      }
+
+      if (
+        typeof color === "object" &&
+        (color.type === "quantitative" || color.type === "ordinal")
+      ) {
+        transforms.push({
+          type: "project",
+          expr: color.field,
+          as: "color"
+        })
+      }
     }
-    if (
-      typeof strokeOpacity === "object" &&
-      typeof strokeOpacity.field === "string"
-    ) {
-      transforms.push({
-        type: "project",
-        expr: strokeOpacity.field,
-        as: "strokeOpacity"
-      })
-    }
-    if (
-      typeof strokeWidth === "object" &&
-      typeof strokeWidth.field === "string"
-    ) {
-      transforms.push({
-        type: "project",
-        expr: strokeWidth.field,
-        as: "strokeWidth"
-      })
-    }
-    // if (orientation) {
-    //   transforms.push({
-    //     type: "project",
-    //     expr: orientation.field,
-    //     as: "orientation"
-    //   });
-    // }
-    // }
+
     if (typeof filter === "string" && filter.length) {
       transforms.push({
         type: "filter",
         expr: filter
       })
     }
-    // const postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
-    // if (postFilter && isValidPostFilter(postFilter)) {
-    //   transforms.push({
-    //     type: "postFilter",
-    //     table: postFilter.table || null,
-    //     aggType: postFilter.aggType,
-    //     custom: postFilter.custom,
-    //     fields: [postFilter.value],
-    //     ops: postFilter.operator,
-    //     min: postFilter.min,
-    //     max: postFilter.max
-    //   });
-    // }
+
+    const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
+    if (postFilter && isValidPostFilter(postFilter)) {
+      transforms.push({
+        type: "postFilter",
+        table: postFilter.table || null,
+        aggType: postFilter.aggType,
+        custom: postFilter.custom,
+        fields: [postFilter.value],
+        ops: postFilter.operator,
+        min: postFilter.min,
+        max: postFilter.max
+      })
+    }
+
     if (typeof globalFilter === "string" && globalFilter.length) {
       transforms.push({
         type: "filter",
         expr: globalFilter
       })
     }
+
     return transforms
   }
+
   // _layer.getProjections = function() {
   //   return _layer
   //     .getTransforms(
