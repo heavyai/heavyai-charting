@@ -144,21 +144,6 @@
         chart
           .viewBoxDim(crossFilter.filterST_Intersects)
 
-        // Don't worry about this yet
-        // // hover effect with popup
-        // const debouncedPopup = _.debounce(displayPopupWithData, 250)
-        // LinemapChart.map().on('mousewheel', LinemapChart.hidePopup);
-        // LinemapChart.map().on('mousemove', LinemapChart.hidePopup)
-        // LinemapChart.map().on('mousemove', debouncedPopup)
-        // function displayPopupWithData (event) {
-        //   LinemapChart.getClosestResult(event.point, LinemapChart.displayPopup)
-        // }
-
-        // // Draw filter
-        // LinemapChart
-        //   .addDrawControl()
-        //   .coordFilter(crossFilter.filter())
-
         dc.renderAllAsync()
       })
 
@@ -187,7 +172,7 @@
     const config = {
       table: "colorado_dem",
       lat_field: "raster_lat",
-      lon_field: "raster_lng",
+      lon_field: "raster_lon",
       value: "z",
     }
 
