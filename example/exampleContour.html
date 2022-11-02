@@ -187,7 +187,6 @@
       .connect(function(error, con) {
         crossfilter.crossfilter(con, config.table)
           .then(function(cf) {
-            console.log(cf)
             createCharts(cf, dc, config, con)
           })
         ;
