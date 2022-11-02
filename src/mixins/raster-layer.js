@@ -11,7 +11,7 @@ import {
 import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
 import moment from "moment"
 
-const validLayerTypes = ["points", "polys", "heat", "lines"]
+const validLayerTypes = ["points", "polys", "heat", "lines", "windbarbs"]
 
 export default function rasterLayer(layerType) {
   const _layerType = layerType
