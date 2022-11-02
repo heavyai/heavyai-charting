@@ -102,9 +102,9 @@
       .crossfilter(crossFilter)
       .setState({
         data: [{
+          type: "contour",
           table: config.table,
           source: config.table,
-          attr: "rowid",
           agg_type: 'AVG',
           bin_dim_meters: 180,
           neighborhood_fill_radius: 0,
@@ -112,11 +112,11 @@
           flip_latitude: false,
           contour_interval: 1000,
           contour_offset: 0,
-          contour_value_field: 'band_1_1'
+          contour_value_field: config.value,
+          lat_field: config.lat_field,
+          lon_field: config.lon_field
         }],
         transform: {
-          // limit: 300000,
-          // tableSize: 4289471,
           projection: "mercator_map_projection",
         },
         mark: {
@@ -128,15 +128,6 @@
         encoding: {
           size: "auto",
           color: {
-            // type: "quantitative",
-            // field: config.colorMeasure,
-            // aggregate: {
-            //   field: config.colorMeasure,
-            //   type: "average"},
-            // colorMeasureAggType: "Avg",
-            // domain: "auto",
-            // range: colorRange,
-            // legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
           },
         },
         enableHitTesting: false
@@ -195,8 +186,8 @@
   function init() {
     const config = {
       table: "nws_precip_last7days_20221005_conus",
-      lat: "raster_lat",
-      lng: "raster_lng",
+      lat_field: "raster_lat",
+      lon_field: "raster_lng",
       value: "band_1_1",
     }
 
