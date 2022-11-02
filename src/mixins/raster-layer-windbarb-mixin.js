@@ -3330,6 +3330,24 @@ export default function rasterLayerWindBarbMixin(_layer) {
     return state
   }
 
+  function create_post_filter_transform(post_filters) {
+    const post_filter =
+      post_filters && Array.isArray(post_filters) ? post_filters[0] : null // may change to map when we have more than one postFilter
+    if (post_filter && isValidPostFilter(post_filter)) {
+      return {
+        type: "postFilter",
+        table: post_filter.table || null,
+        aggType: post_filter.aggType,
+        custom: post_filter.custom,
+        fields: [post_filter.value],
+        ops: post_filter.operator,
+        min: post_filter.min,
+        max: post_filter.max
+      }
+    }
+    return null
+  }
+
   // eslint-disable-next-line complexity
   _layer.getTransforms = function (
     table,
@@ -3465,18 +3483,9 @@ export default function rasterLayerWindBarbMixin(_layer) {
       })
     }
 
-    const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
-    if (postFilter && isValidPostFilter(postFilter)) {
-      transforms.push({
-        type: "postFilter",
-        table: postFilter.table || null,
-        aggType: postFilter.aggType,
-        custom: postFilter.custom,
-        fields: [postFilter.value],
-        ops: postFilter.operator,
-        min: postFilter.min,
-        max: postFilter.max
-      })
+    const post_filter_transform = create_post_filter_transform(postFilters)
+    if (post_filter_transform) {
+      transforms.push(post_filter_transform)
     }
 
     if (typeof globalFilter === "string" && globalFilter.length) {
@@ -3678,19 +3687,15 @@ export default function rasterLayerWindBarbMixin(_layer) {
         expr: filter
       })
     }
-    // const postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
-    // if (postFilter && isValidPostFilter(postFilter)) {
-    //   transforms.push({
-    //     type: "postFilter",
-    //     table: postFilter.table || null,
-    //     aggType: postFilter.aggType,
-    //     custom: postFilter.custom,
-    //     fields: [postFilter.value],
-    //     ops: postFilter.operator,
-    //     min: postFilter.min,
-    //     max: postFilter.max
-    //   });
-    // }
+
+    const post_filter_transform = create_post_filter_transform(
+      state.postFilters
+    )
+
+    if (post_filter_transform) {
+      sql_parser_transforms.push(post_filter_transform)
+    }
+
     if (typeof globalFilter === "string" && globalFilter.length) {
       sql_parser_transforms.push({
         type: "filter",
