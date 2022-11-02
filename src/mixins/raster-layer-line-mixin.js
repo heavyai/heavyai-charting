@@ -352,23 +352,59 @@ export default function rasterLayerLineMixin(_layer) {
       layerName
     )
 
+
+    let sql;
+    if (state.data[0].contour_interval) {
+      const {
+        table,
+        contour_interval,
+        agg_type = 'AVG',
+        bin_dim_meters = 180,
+        contour_offset = 0.0,
+        contour_value_field = 'z',
+        lat_field = 'raster_lat',
+        lon_field = 'raster_lon'
+      } = state.data[0]
+      sql = `
+      select contour_lines, contour_values from 
+      table(
+        tf_raster_contour_lines(
+          raster => cursor(
+            select 
+              ${lon_field}, 
+              ${lat_field}, 
+              ${contour_value_field} from ${table}
+          ), 
+          agg_type => '${agg_type}', 
+          bin_dim_meters => ${bin_dim_meters}, 
+          neighborhood_fill_radius => 0, 
+          fill_only_nulls => FALSE, 
+          flip_latitude => FALSE, 
+          contour_interval => ${contour_interval}, 
+          contour_offset => ${contour_offset}
+        )
+      )
+    `
+    } else {
+      sql = parser.writeSQL({
+        type: "root",
+        source: [...new Set(state.data.map(source => source.table))].join(
+          ", "
+        ),
+        transform: _layer.getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          lastFilteredSize
+        )
+      })
+    }
     const data = [
       {
         name: layerName,
         format: "lines",
-        sql: parser.writeSQL({
-          type: "root",
-          source: [...new Set(state.data.map(source => source.table))].join(
-            ", "
-          ),
-          transform: _layer.getTransforms(
-            table,
-            filter,
-            globalFilter,
-            state,
-            lastFilteredSize
-          )
-        }),
+        sql,
         enableHitTesting: state.enableHitTesting
       }
     ]

@@ -55,7 +55,16 @@ export default function rasterLayerContourMixin(_layer) {
     zoom
   }) {
     const transforms = []
-
+    transforms.push({
+      type: "project",
+      expr: state.encoding.xDim,
+      as: "x"
+    })
+    transforms.push({
+      type: "project",
+      expr: state.encoding.yDim,
+      as: "y"
+    })
     if (typeof filter === "string" && filter.length) {
       transforms.push({
         type: "filter",

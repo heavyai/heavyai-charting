@@ -98,18 +98,26 @@
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
 
 
-    const contourLayer = dc.rasterLayer("contour")
+    const contourLayer = dc.rasterLayer("lines")
       .crossfilter(crossFilter)
       .setState({
         data: [{
           table: config.table,
           source: config.table,
-          // attr: "rowid"
+          attr: "rowid",
+          agg_type: 'AVG',
+          bin_dim_meters: 180,
+          neighborhood_fill_radius: 0,
+          fill_only_nulls: false,
+          flip_latitude: false,
+          contour_interval: 1000,
+          contour_offset: 0,
+          contour_value_field: 'band_1_1'
         }],
         transform: {
-          limit: 300000,
-          tableSize: 4289471,
-          projection: "mercator_map_projection"
+          // limit: 300000,
+          // tableSize: 4289471,
+          projection: "mercator_map_projection",
         },
         mark: {
           type: "lines",
@@ -119,38 +127,21 @@
         },
         encoding: {
           size: "auto",
-          // color: {
-          //   type: "quantitative",
-          //   field: config.colorMeasure,
-          //   aggregate: {
-          //     field: config.colorMeasure,
-          //     type: "average"},
-          //   colorMeasureAggType: "Avg",
-          //   domain: "auto",
-          //   range: colorRange,
-          //   legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
-          // },
-
-          xDim: config.xDim,
-          yDim: config.yDim,
-          value: config.value,
-          table: config.table,
-
-          agg_type: 'AVG',
-          bin_dim_meters: 180,
-          neighborhood_fill_radius: 0,
-          fill_only_nulls: false,
-          flip_latitude: false,
-          contour_interval: 1000,
-          contour_offset: 0,
+          color: {
+            // type: "quantitative",
+            // field: config.colorMeasure,
+            // aggregate: {
+            //   field: config.colorMeasure,
+            //   type: "average"},
+            // colorMeasureAggType: "Avg",
+            // domain: "auto",
+            // range: colorRange,
+            // legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
+          },
         },
         enableHitTesting: false
       })
-      // .viewBoxDim(viewBoxDim)
-      // .popupColumns(["FULLNAME", "ZIPL"])
-      // .popupColumnsMapped({})
 
-      console.log(contourLayer)
       ContourChart.pushLayer("contourLayer", contourLayer).init().then((chart) => {
         // This will zoom to data extent
         chart.zoomToLocation({
