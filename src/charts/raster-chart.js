@@ -579,6 +579,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       const vega_metadata = JSON.parse(data.vega_metadata)
       for (const layerName in _layerNames) {
         if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          // TODO(croot): I don't understand this logic. Why would the selectedLayer
+          // be set only on the existence of the _updateFromMetadata() method?
+          // My guess is that it's an attempt to get the last layer, but there are
+          // so many better ways to get at that.
+          // I wonder because at least for windbarbs there's no need for an
+          // _updateFromMetadata method, which means they would get excluded
+          // from the 'selectedLayer'
           selectedLayer = _layerNames[layerName].getState()
           _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName)
         }
