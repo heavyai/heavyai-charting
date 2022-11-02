@@ -18,6 +18,7 @@ export const buildContourSQL = ({
   table,
   contour_interval,
   agg_type = 'AVG',
+  fill_agg_type = 'AVG',
   bin_dim_meters = 180,
   contour_offset = 0.0,
   neighborhood_fill_radius = 0.0,
@@ -30,6 +31,7 @@ export const buildContourSQL = ({
   const contourParams = {
     contour_interval,
     agg_type,
+    fill_agg_type,
     bin_dim_meters,
     contour_offset,
     neighborhood_fill_radius,
