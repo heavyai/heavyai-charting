@@ -3,7 +3,6 @@ import rasterLayerPointMixin from "./raster-layer-point-mixin"
 import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
 import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
 import rasterLayerLineMixin from "./raster-layer-line-mixin"
-import rasterLayerContourMixin from './raster-layer-contour-mixin'
 import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
@@ -14,6 +13,7 @@ import moment from "moment"
 const validLayerTypes = ["points", "polys", "heat", "lines", "contour"]
 
 export default function rasterLayer(layerType) {
+
   const _layerType = layerType
 
   let _dimension = null
@@ -56,8 +56,6 @@ export default function rasterLayer(layerType) {
     _layer = rasterLayerPolyMixin(_layer)
   } else if (/heat/.test(layerType)) {
     _layer = rasterLayerHeatmapMixin(_layer)
-  } else if (/contour/.test(layerType)) {
-    _layer = rasterLayerContourMixin(_layer)
   } else if (layerType === "lines") {
     _layer = rasterLayerLineMixin(_layer)
   } else {

@@ -110,7 +110,7 @@
           neighborhood_fill_radius: 0,
           fill_only_nulls: false,
           flip_latitude: false,
-          contour_interval: 1000,
+          contour_interval: 250,
           contour_offset: 0,
           contour_value_field: config.value,
           lat_field: config.lat_field,
@@ -185,10 +185,10 @@
 
   function init() {
     const config = {
-      table: "nws_precip_last7days_20221005_conus",
+      table: "colorado_dem",
       lat_field: "raster_lat",
       lon_field: "raster_lng",
-      value: "band_1_1",
+      value: "z",
     }
 
     const con = new DbCon()
