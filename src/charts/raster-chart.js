@@ -603,11 +603,6 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       }
     }
 
-    // TODO(croot): legends are currently not working with windbarb chart due to
-    // various changes to the state structure. To get it working will likely require
-    // a change to the below getLegendStateFromChart() call in the way of generalization
-    // or windbarb specialization. In the meantime, legends are disabled by setting
-    // the legend state to an empy object.
     const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
     _legend.setState(state)
 
