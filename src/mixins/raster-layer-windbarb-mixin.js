@@ -1,56 +1,9 @@
-import {
-  lastFilteredSize
-  // setLastFilteredSize
-} from "../core/core-async"
-import {
-  //   adjustOpacity,
-  createRasterLayerGetterSetter,
-  //   createVegaAttrMixin,
-  //   getColorScaleName,
-  //   getScales,
-  getSizeScaleName
-} from "../utils/utils-vega"
+import { lastFilteredSize } from "../core/core-async"
+import { createRasterLayerGetterSetter } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import assert from "assert"
 import { AGGREGATES, isValidPostFilter } from "./raster-layer-point-mixin"
-// import * as d3 from "d3"
 import { AABox2d } from "@heavyai/draw/dist/mapd-draw"
-
-// const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
-// const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
-// const AUTOSIZE_RANGE_MININUM = [1, 1]
-// const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
-// const ANGLE_SHAPE_SIZE_MULTIPLIER = 2.5
-
-// function validSymbol(type) {
-//   switch (type) {
-//     case "circle":
-//     case "cross":
-//     case "diamond":
-//     case "hexagon":
-//     case "square":
-//     case "triangle-down":
-//     case "triangle-left":
-//     case "triangle-right":
-//     case "triangle-up":
-//     case "hexagon-vert":
-//     case "hexagon-horiz":
-//     case "wedge":
-//     case "arrow":
-//     case "airplane":
-//       return true
-//     default:
-//       return false
-//   }
-// }
-
-// function getMarkType(config = { point: {} }) {
-//   if (validSymbol(config.point.shape)) {
-//     return config.point.shape
-//   } else {
-//     return "circle"
-//   }
-// }
 
 class RasterLayerContext {
   /**
@@ -2967,134 +2920,6 @@ class OpacityChannelDescriptor extends NumericPropDescriptor {
   }
 }
 
-// function getSizing(
-//   sizeAttr,
-//   cap,
-//   lastFilteredSize = cap,
-//   pixelRatio,
-//   layerName
-// ) {
-//   if (typeof sizeAttr === "number") {
-//     return sizeAttr
-//   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
-//     return {
-//       scale: getSizeScaleName(layerName),
-//       field: "size"
-//     }
-//     // } else if (sizeAttr === "auto") {
-//     //   const size = Math.min(lastFilteredSize, cap);
-//     //   const dynamicRScale = d3.scale
-//     //     .sqrt()
-//     //     .domain(AUTOSIZE_DOMAIN_DEFAULTS)
-//     //     .range(
-//     //       size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM
-//     //         ? AUTOSIZE_RANGE_MININUM
-//     //         : AUTOSIZE_RANGE_DEFAULTS
-//     //     )
-//     //     .clamp(true);
-//     //   const sizeRounded = Math.round(dynamicRScale(size) * pixelRatio);
-//     //   return markType === "wedge" || markType === "arrow"
-//     //     ? sizeRounded * ANGLE_SHAPE_SIZE_MULTIPLIER
-//     //     : sizeRounded;
-//   } else {
-//     return null
-//   }
-// }
-
-// function materialize_attr_descriptor(attr_name, attr_descriptor) {
-//   const property_def = {}
-//   if (
-//     typeof attr_descriptor === "number" ||
-//     typeof attr_descriptor === "string" ||
-//     typeof attr_descriptor === "boolean"
-//   ) {
-//     return attr_descriptor
-//   } else if (typeof attr_descriptor === "object") {
-//     if (Object.hasOwn(attr_descriptor, "value")) {
-//       if (Object.keys(attr_descriptor).length !== 1) {
-//         throw new Error(
-//           `Invalid value definition for attribute '${attr_name}'. Value definitions must have only 1 property called 'value'.`
-//         )
-//       }
-
-//       if (typeof attr_descriptor.value === "number") {
-//         throw new Error(
-//           `Invalid 'value' of ${attr_descriptor.value} for attribute '${attr_name}'. 'value' properties must be numeric.`
-//         )
-//       }
-//       return attr_descriptor.value
-//     } else if (Object.hasOwn(attr_descriptor, "field")) {
-//       if (typeof attr_descriptor.field !== "string") {
-//         throw new Error(
-//           `Invalid field definition for attribute '${attr_name}'. The 'field' property must be a string`
-//         )
-//       }
-//       // TODO(croot): get the field name from the "transforms" array
-//       property_def.field = attr_name
-//     }
-//   } else {
-//     throw new Error(`Invalid channel definition for attribute '${attr_name}'`)
-//   }
-//   return property_def
-// }
-
-// /**
-//  * @param {PropDescriptor} prop_descriptor
-//  * @param {PropertyDefinition} prop_definition
-//  * @param {VegaPropertyOutputState} vega_property_output_state
-//  */
-// function materialize_prop(
-//   prop_descriptor,
-//   prop_definition,
-//   vega_property_output_state
-// ) {
-//   const mark_prop_name = prop_descriptor.output
-//   const mark_prop_obj = {}
-//   if (
-//     typeof prop_definition === "number" ||
-//     typeof prop_definition === "string" ||
-//     typeof prop_definition === "boolean"
-//   ) {
-//     mark_prop_obj[mark_prop_name] = prop_definition
-//     mark_properties.set(prop_name, mark_prop_obj)
-//   } else if (typeof prop_definition === "object") {
-//     if (Object.hasOwn(prop_definition, "value")) {
-//       if (Object.keys(prop_definition).length !== 1) {
-//         throw new Error(
-//           `Invalid value definition for attribute '${prop_name}'. Value definitions must have only 1 property called 'value'.`
-//         )
-//       }
-
-//       if (
-//         typeof prop_definition.value !== "number" &&
-//         typeof prop_definition.value !== "string" &&
-//         typeof prop_definition.value !== "boolean"
-//       ) {
-//         throw new Error(
-//           `Invalid 'value' of ${prop_definition.value} for attribute '${prop_name}'. 'value' properties must be a number, string, or boolean value.`
-//         )
-//       }
-//       mark_prop_obj[mark_prop_name] = prop_definition
-//       mark_properties.set(prop_name, mark_prop_obj)
-//     } else if (Object.hasOwn(prop_definition, "field")) {
-//       if (typeof prop_definition.field !== "string") {
-//         throw new Error(
-//           `Invalid field definition for attribute '${prop_name}'. The 'field' property must be a string`
-//         )
-//       }
-//       sql_parser_transforms.set(prop_name, {
-//         type: "project",
-//         expr: prop_definition.field,
-//         as: prop_name
-//       })
-//       mark_prop_obj[mark_prop_name] = { field: prop_name }
-//       mark_properties.set(prop_name, mark_prop_obj)
-//     }
-//   } else {
-//     throw new Error(`Invalid channel definition for attribute '${prop_name}'`)
-//   }
-// }
-
 /**
  *
  * @param {PropDescriptor} prop_descriptor
@@ -3192,82 +3017,10 @@ function materialize_prop_descriptors(raster_layer_context, props, state) {
         vega_property_output_state
       )
     }
-
-    // assert(handled, `${prop_descriptor.prop_name}`)
   }
-
-  // const handle_position_props = (
-  //   position_prop_channels,
-  //   description_adjective
-  // ) => {
-  //   let prop_added_cnt = 0;
-  //   position_prop_channels.forEach(prop => {
-  //     if (Object.hasOwn(mark, prop)) {
-  //       throw new Error(
-  //         `The '${prop}' property an 'encoding' property only, yet is found as a general 'mark' property`
-  //       );
-  //     }
-  //     if (handle_prop(prop, encoding, vega_property_state)) {
-  //       prop_added_cnt += 1;
-  //     }
-  //   });
-  //   if (
-  //     prop_added_cnt !== 0 &&
-  //     prop_added_cnt !== position_prop_channels.length
-  //   ) {
-  //     throw new Error(
-  //       `Not all ${description_adjective} channels are encoded. If ${description_adjective} channels are desired, then all of ${geographic_channels} should be encoded.`
-  //     );
-  //   }
-  //   return prop_added_cnt > 0;
-  // };
-
-  // if (
-  //   handle_position_props(geographic_channels, "geographic") &&
-  //   handle_position_props(position_channels, "position")
-  // ) {
-  //   throw new Error(
-  //     `Cannot intermix encoding position (${position_channels}) and geographic (${geographic_channels}) channels`
-  //   );
-  // }
 
   return vega_property_output_state
 }
-
-// function getColor(color, layerName) {
-//   if (typeof color === "object" && color.type === "density") {
-//     return {
-//       scale: getColorScaleName(layerName),
-//       value: 0
-//     }
-//   } else if (
-//     typeof color === "object" &&
-//     (color.type === "ordinal" || color.type === "quantitative")
-//   ) {
-//     return {
-//       scale: getColorScaleName(layerName),
-//       field: "color"
-//     }
-//   } else if (typeof color === "object") {
-//     return adjustOpacity(color.value, color.opacity)
-//   } else {
-//     return color
-//   }
-// }
-
-// function getOrientation(orientation, layerName) {
-//   if (typeof orientation === "object" && orientation.type === "quantitative") {
-//     return {
-//       scale: `${layerName}_symbolAngle`,
-//       field: "orientation"
-//     }
-//   } else {
-//     return {
-//       scale: "x",
-//       field: "orientation"
-//     }
-//   }
-// }
 
 export default function rasterLayerWindBarbMixin(_layer) {
   let state = null
@@ -3276,9 +3029,6 @@ export default function rasterLayerWindBarbMixin(_layer) {
    * @type {VegaPropertyOutputState}
    */
   let _vega_property_output_state = null
-
-  // _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
-  // _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
 
   _layer.setState = function (setter) {
     if (typeof setter === "function") {
@@ -3463,116 +3213,13 @@ export default function rasterLayerWindBarbMixin(_layer) {
     return transforms
   }
 
-  // _layer.getProjections = function() {
-  //   return _layer
-  //     .getTransforms(
-  //       "",
-  //       "",
-  //       "",
-  //       state,
-  //       lastFilteredSize(_layer.crossfilter().getId())
-  //     )
-  //     .filter(
-  //       transform =>
-  //         transform.type === "project" && transform.hasOwnProperty("as")
-  //     )
-  //     .map(projection => parser.parseTransform({ select: [] }, projection))
-  //     .map(sql => sql.select[0]);
-  // };
-  // function usesAutoColors() {
-  //   return state.encoding.color.domain === "auto";
-  // }
-  // function usesAutoSize() {
-  //   return state.encoding.size.domain === "auto";
-  // }
-  // function getAutoColorVegaTransforms(aggregateNode) {
-  //   const rtnobj = { transforms: [], fields: [] };
-  //   if (state.encoding.color.type === "quantitative") {
-  //     const minoutput = "mincolor",
-  //       maxoutput = "maxcolor";
-  //     aggregateNode.fields = aggregateNode.fields.concat([
-  //       "color",
-  //       "color",
-  //       "color",
-  //       "color"
-  //     ]);
-  //     aggregateNode.ops = aggregateNode.ops.concat([
-  //       "min",
-  //       "max",
-  //       "avg",
-  //       "stddev"
-  //     ]);
-  //     aggregateNode.as = aggregateNode.as.concat([
-  //       "mincol",
-  //       "maxcol",
-  //       "avgcol",
-  //       "stdcol"
-  //     ]);
-  //     rtnobj.transforms.push(
-  //       {
-  //         type: "formula",
-  //         expr: "max(mincol, avgcol-2*stdcol)",
-  //         as: minoutput
-  //       },
-  //       {
-  //         type: "formula",
-  //         expr: "min(maxcol, avgcol+2*stdcol)",
-  //         as: maxoutput
-  //       }
-  //     );
-  //     rtnobj.fields = [minoutput, maxoutput];
-  //   } else if (state.encoding.color.type === "ordinal") {
-  //     const output = "distinctcolor";
-  //     aggregateNode.fields.push("color");
-  //     aggregateNode.ops.push("distinct");
-  //     aggregateNode.as.push(output);
-  //     rtnobj.fields.push(output);
-  //   }
-  //   return rtnobj;
-  // }
-  // function getAutoSizeVegaTransforms(aggregateNode) {
-  //   const minoutput = "minsize",
-  //     maxoutput = "maxsize";
-  //   aggregateNode.fields.push("size", "size", "size", "size");
-  //   aggregateNode.ops.push("min", "max", "avg", "stddev");
-  //   aggregateNode.as.push("minsz", "maxsz", "avgsz", "stdsz");
-  //   return {
-  //     transforms: [
-  //       {
-  //         type: "formula",
-  //         expr: "max(minsz, avgsz-2*stdsz)",
-  //         as: minoutput
-  //       },
-  //       {
-  //         type: "formula",
-  //         expr: "min(maxsz, avgsz+2*stdsz)",
-  //         as: maxoutput
-  //       }
-  //     ],
-  //     fields: [minoutput, maxoutput]
-  //   };
-  // }
-  // _layer._updateFromMetadata = (metadata, layerName = "") => {
-  //   const autoColors = usesAutoColors();
-  //   const autoSize = usesAutoSize();
-  //   if ((autoColors || autoSize) && Array.isArray(metadata.scales)) {
-  //     const colorScaleName = getColorScaleName(layerName);
-  //     const sizeScaleName = getSizeScaleName(layerName);
-  //     for (const scale of metadata.scales) {
-  //       if (autoColors && scale.name === colorScaleName) {
-  //         _layer.colorDomain(scale.domain);
-  //       } else if (autoSize && scale.name === sizeScaleName) {
-  //         _layer.sizeDomain(scale.domain);
-  //       }
-  //     }
-  //   }
-  // };
-
   const color_prop_descriptor = new ColorChannelDescriptor("color", "")
   const prop_descriptors = new Map()
 
   prop_descriptors.set("x", new PositionChannelDescriptor("x"))
   prop_descriptors.set("y", new PositionChannelDescriptor("y"))
+
+  // TODO(croot): support geo columns
   // prop_descriptors.set(
   //   "longitude",
   //   new GeographicChannelDescriptor("longitude", "x")
@@ -3581,6 +3228,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
   //   "latitude",
   //   new GeographicChannelDescriptor("latitude", "y")
   // );
+
   prop_descriptors.set("size", new SizeChannelDescriptor("size"))
   prop_descriptors.set("speed", new PropDescriptor("speed"))
   prop_descriptors.set("direction", new PropDescriptor("direction"))
@@ -3692,235 +3340,17 @@ export default function rasterLayerWindBarbMixin(_layer) {
     ]
 
     return { data, scales: vega_scales, marks }
-
-    //   // const autocolors = usesAutoColors();
-    //   // const autosize = usesAutoSize();
-    //   // const getStatsLayerName = () => layerName + "_stats";
-    //   // const markType = getMarkType(state.config);
-    //   const size = getSizing(
-    //     state.encoding.size,
-    //     state.transform && state.transform.limit,
-    //     lastFilteredSize,
-    //     pixelRatio,
-    //     layerName
-    //   );
-    //   let data = [];
-    //   let scales = [];
-    //   // if (
-    //   //   state.encoding.color.prioritizedColor &&
-    //   //   state.encoding.color.prioritizedColor.length > 0 &&
-    //   //   layerName !== "backendScatter"
-    //   // ) {
-    //   //   for (let i = 0; i < state.encoding.color.prioritizedColor.length; i++) {
-    //   //     if (layerName.includes(`_z${i * 2}`)) {
-    //   //       data = [
-    //   //         {
-    //   //           name: layerName,
-    //   //           sql: parser.writeSQL({
-    //   //             type: "root",
-    //   //             source: table,
-    //   //             transform: _layer.getTransforms(
-    //   //               table,
-    //   //               filter +
-    //   //                 ` AND ${state.encoding.color.field} != '${state.encoding.color.prioritizedColor[i].value}'`,
-    //   //               globalFilter,
-    //   //               state,
-    //   //               lastFilteredSize
-    //   //             )
-    //   //           }),
-    //   //           enableHitTesting: state.enableHitTesting
-    //   //         }
-    //   //       ];
-    //   //     } else if (layerName.includes(`_z${i * 2 + 1}`)) {
-    //   //       data = [
-    //   //         {
-    //   //           name: layerName,
-    //   //           sql: parser.writeSQL({
-    //   //             type: "root",
-    //   //             source: table,
-    //   //             transform: _layer.getTransforms(
-    //   //               table,
-    //   //               filter +
-    //   //                 ` AND ${state.encoding.color.field} = '${state.encoding.color.prioritizedColor[i].value}'`,
-    //   //               globalFilter,
-    //   //               state,
-    //   //               lastFilteredSize
-    //   //             )
-    //   //           }),
-    //   //           enableHitTesting: state.enableHitTesting
-    //   //         }
-    //   //       ];
-    //   //     }
-    //   //   }
-    //   // } else {
-    //   data = [
-    //     {
-    //       name: layerName,
-    //       sql: parser.writeSQL({
-    //         type: "root",
-    //         source: table,
-    //         transform: _layer.getTransforms(
-    //           table,
-    //           filter,
-    //           globalFilter,
-    //           state,
-    //           lastFilteredSize
-    //         )
-    //       }),
-    //       enableHitTesting: state.enableHitTesting
-    //     }
-    //   ];
-    //   // }
-    //   // const scaledomainfields = {};
-    //   // if (autocolors || autosize) {
-    //   //   const aggregateNode = {
-    //   //     type: "aggregate",
-    //   //     fields: [],
-    //   //     ops: [],
-    //   //     as: []
-    //   //   };
-    //   //   let transforms = [aggregateNode];
-    //   //   if (autocolors) {
-    //   //     const xformdata = getAutoColorVegaTransforms(aggregateNode);
-    //   //     scaledomainfields.color = xformdata.fields;
-    //   //     transforms = transforms.concat(xformdata.transforms);
-    //   //   }
-    //   //   if (autosize) {
-    //   //     const xformdata = getAutoSizeVegaTransforms(aggregateNode);
-    //   //     scaledomainfields.size = xformdata.fields;
-    //   //     transforms = transforms.concat(xformdata.transforms);
-    //   //   }
-    //   //   data.push({
-    //   //     name: getStatsLayerName(),
-    //   //     source: layerName,
-    //   //     transform: transforms
-    //   //   });
-    //   // }
-    //   // const scales = getScales(
-    //   //   state.encoding,
-    //   //   layerName,
-    //   //   scaledomainfields,
-    //   //   getStatsLayerName()
-    //   // );
-    //   const marks = [
-    //     {
-    //       type: "windbarb",
-    //       from: {
-    //         data: layerName
-    //       },
-    //       properties: Object.assign(
-    //         {},
-    //         {
-    //           x: {
-    //             scale: "x",
-    //             field: "x"
-    //           },
-    //           y: {
-    //             scale: "y",
-    //             field: "y"
-    //           },
-    //           size,
-    //           speed: materialize_attr_descriptor("speed", state.encoding.speed),
-    //           direction: materialize_attr_descriptor(
-    //             "direction",
-    //             state.encoding.direction
-    //           ),
-    //           fillColor: materialize_attr_descriptor(
-    //             "color",
-    //             state.encoding.color
-    //           ),
-    //           strokeColor: materialize_attr_descriptor(
-    //             "color",
-    //             state.encoding.color
-    //           )
-    //           // fillColor: getColor(state.encoding.color, layerName)
-    //         }
-    //         // {
-    //         //   shape: markType,
-    //         //   ...(state.encoding.orientation && {
-    //         //     angle: getOrientation(state.encoding.orientation, layerName)
-    //         //   }),
-    //         //   width: size,
-    //         //   height: size
-    //         // }
-    //       )
-    //     }
-    //   ];
-    //   return {
-    //     data,
-    //     scales,
-    //     marks
-    //   };
   }
+
   _layer.xDim = createRasterLayerGetterSetter(_layer, null)
   _layer.yDim = createRasterLayerGetterSetter(_layer, null)
-  // // NOTE: builds _layer.defaultSize(), _layer.nullSize(),
-  // //              _layer.sizeScale(), & _layer.sizeAttr()
-  // createVegaAttrMixin(_layer, "size", 3, 1, true);
-  // _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null);
-  // _layer.xAttr = createRasterLayerGetterSetter(_layer, null);
-  // _layer.yAttr = createRasterLayerGetterSetter(_layer, null);
-  // const _point_wrap_class = "map-point-wrap";
-  // const _point_class = "map-point-new";
-  // const _point_gfx_class = "map-point-gfx";
+
   let _vega = null
-  // const _scaledPopups = {};
-  // const _minMaxCache = {};
   const _cf = null
   _layer.crossfilter = createRasterLayerGetterSetter(_layer, _cf)
-  // _layer.crossfilter = function(cf) {
-  //   if (!arguments.length) {
-  //     return _cf;
-  //   }
-  //   _cf = cf;
-  //   return _layer;
-  // };
-  // _layer._requiresCap = function() {
-  //   return false;
-  // };
-  // _layer.xRangeFilter = function(range) {
-  //   if (!_layer.xDim()) {
-  //     throw new Error("Must set layer's xDim before invoking xRange");
-  //   }
-  //   const xValue = _layer.xDim().value()[0];
-  //   if (!arguments.length) {
-  //     return _minMaxCache[xValue];
-  //   }
-  //   _minMaxCache[xValue] = range;
-  //   return _layer;
-  // };
-  // _layer.yRangeFilter = function(range) {
-  //   if (!_layer.yDim()) {
-  //     throw new Error("Must set layer's yDim before invoking yRange");
-  //   }
-  //   const yValue = _layer.yDim().value()[0];
-  //   if (!arguments.length) {
-  //     return _minMaxCache[yValue];
-  //   }
-  //   _minMaxCache[yValue] = range;
-  //   return _layer;
-  // };
+
   _layer._genVega = function (chart, layerName, group, query) {
-    // Pointmap prioritized color hack. Need to use the real layer name for crossfilter
     const realLayerName = layerName
-    // if (
-    //   layerName &&
-    //   layerName !== "backendScatter" &&
-    //   layerName.includes("_z")
-    // ) {
-    //   const idx = layerName.indexOf("_z");
-    //   realLayerName = layerName.substring(0, idx);
-    // }
-    // // needed to set LastFilteredSize when point map first initialized
-    // if (_layer.yDim()) {
-    //   _layer
-    //     .yDim()
-    //     .groupAll()
-    //     .valueAsync(false, false, false, realLayerName)
-    //     .then(value => {
-    //       setLastFilteredSize(_layer.crossfilter().getId(), value);
-    //     });
-    // }
     _vega = _layer.__genVega({
       chart,
       layerName,
@@ -3949,14 +3379,6 @@ export default function rasterLayerWindBarbMixin(_layer) {
     return [scale_obj, legend_obj]
   }
 
-  // const renderAttributes = [
-  //   "xc",
-  //   "yc",
-  //   "width",
-  //   "height",
-  //   "fillColor",
-  //   "angle"
-  // ];
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     // currently no-op
     // TODO(croot): needs to be filled in to support windbarb hit-testing
@@ -3988,32 +3410,6 @@ export default function rasterLayerWindBarbMixin(_layer) {
       yDim.dispose()
     }
   }
-  // _layer.setZIndexedLayers = function(chart, prioritizedColors) {
-  //   const layers = chart.getLayers();
-  //   const layerNames = chart.getLayerNames();
-  //   if (
-  //     layers.length === 1 &&
-  //     layerNames[0] === "pointmap" &&
-  //     prioritizedColors.length
-  //   ) {
-  //     chart.popLayer();
-  //     chart.pushLayer("pointmap", _layer);
-  //   }
-  // };
-  // _layer.removeZIndexedLayers = function(chart) {
-  //   const layers = chart.getLayers();
-  //   const layerNames = chart.getLayerNames();
-  //   if (
-  //     layers.length === 2 &&
-  //     layerNames[0].includes("_z") &&
-  //     layerNames[1].includes("_z")
-  //   ) {
-  //     chart.popAllLayers();
-  //     chart.pushLayer("pointmap", _layer);
-  //   }
-  // };
-  // _layer.getLayerNames = function(chart) {
-  //   return chart.getLayerNames();
-  // };
+
   return _layer
 }
