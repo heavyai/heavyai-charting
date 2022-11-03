@@ -14,7 +14,7 @@ import { parser } from "../utils/utils"
 import assert from "assert"
 import { AGGREGATES, isValidPostFilter } from "./raster-layer-point-mixin"
 // import * as d3 from "d3"
-// import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
+import { AABox2d } from "@heavyai/draw/dist/mapd-draw"
 
 // const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 // const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -2940,6 +2940,7 @@ class SizeChannelDescriptor extends NumericPropDescriptor {
     )
   }
 }
+
 class OpacityChannelDescriptor extends NumericPropDescriptor {
   /**
    * @param {string} prop_name
@@ -2966,133 +2967,133 @@ class OpacityChannelDescriptor extends NumericPropDescriptor {
   }
 }
 
-function getSizing(
-  sizeAttr,
-  cap,
-  lastFilteredSize = cap,
-  pixelRatio,
-  layerName
-) {
-  if (typeof sizeAttr === "number") {
-    return sizeAttr
-  } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
-    return {
-      scale: getSizeScaleName(layerName),
-      field: "size"
-    }
-    // } else if (sizeAttr === "auto") {
-    //   const size = Math.min(lastFilteredSize, cap);
-    //   const dynamicRScale = d3.scale
-    //     .sqrt()
-    //     .domain(AUTOSIZE_DOMAIN_DEFAULTS)
-    //     .range(
-    //       size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM
-    //         ? AUTOSIZE_RANGE_MININUM
-    //         : AUTOSIZE_RANGE_DEFAULTS
-    //     )
-    //     .clamp(true);
-    //   const sizeRounded = Math.round(dynamicRScale(size) * pixelRatio);
-    //   return markType === "wedge" || markType === "arrow"
-    //     ? sizeRounded * ANGLE_SHAPE_SIZE_MULTIPLIER
-    //     : sizeRounded;
-  } else {
-    return null
-  }
-}
+// function getSizing(
+//   sizeAttr,
+//   cap,
+//   lastFilteredSize = cap,
+//   pixelRatio,
+//   layerName
+// ) {
+//   if (typeof sizeAttr === "number") {
+//     return sizeAttr
+//   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
+//     return {
+//       scale: getSizeScaleName(layerName),
+//       field: "size"
+//     }
+//     // } else if (sizeAttr === "auto") {
+//     //   const size = Math.min(lastFilteredSize, cap);
+//     //   const dynamicRScale = d3.scale
+//     //     .sqrt()
+//     //     .domain(AUTOSIZE_DOMAIN_DEFAULTS)
+//     //     .range(
+//     //       size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM
+//     //         ? AUTOSIZE_RANGE_MININUM
+//     //         : AUTOSIZE_RANGE_DEFAULTS
+//     //     )
+//     //     .clamp(true);
+//     //   const sizeRounded = Math.round(dynamicRScale(size) * pixelRatio);
+//     //   return markType === "wedge" || markType === "arrow"
+//     //     ? sizeRounded * ANGLE_SHAPE_SIZE_MULTIPLIER
+//     //     : sizeRounded;
+//   } else {
+//     return null
+//   }
+// }
 
-function materialize_attr_descriptor(attr_name, attr_descriptor) {
-  const property_def = {}
-  if (
-    typeof attr_descriptor === "number" ||
-    typeof attr_descriptor === "string" ||
-    typeof attr_descriptor === "boolean"
-  ) {
-    return attr_descriptor
-  } else if (typeof attr_descriptor === "object") {
-    if (Object.hasOwn(attr_descriptor, "value")) {
-      if (Object.keys(attr_descriptor).length !== 1) {
-        throw new Error(
-          `Invalid value definition for attribute '${attr_name}'. Value definitions must have only 1 property called 'value'.`
-        )
-      }
+// function materialize_attr_descriptor(attr_name, attr_descriptor) {
+//   const property_def = {}
+//   if (
+//     typeof attr_descriptor === "number" ||
+//     typeof attr_descriptor === "string" ||
+//     typeof attr_descriptor === "boolean"
+//   ) {
+//     return attr_descriptor
+//   } else if (typeof attr_descriptor === "object") {
+//     if (Object.hasOwn(attr_descriptor, "value")) {
+//       if (Object.keys(attr_descriptor).length !== 1) {
+//         throw new Error(
+//           `Invalid value definition for attribute '${attr_name}'. Value definitions must have only 1 property called 'value'.`
+//         )
+//       }
 
-      if (typeof attr_descriptor.value === "number") {
-        throw new Error(
-          `Invalid 'value' of ${attr_descriptor.value} for attribute '${attr_name}'. 'value' properties must be numeric.`
-        )
-      }
-      return attr_descriptor.value
-    } else if (Object.hasOwn(attr_descriptor, "field")) {
-      if (typeof attr_descriptor.field !== "string") {
-        throw new Error(
-          `Invalid field definition for attribute '${attr_name}'. The 'field' property must be a string`
-        )
-      }
-      // TODO(croot): get the field name from the "transforms" array
-      property_def.field = attr_name
-    }
-  } else {
-    throw new Error(`Invalid channel definition for attribute '${attr_name}'`)
-  }
-  return property_def
-}
+//       if (typeof attr_descriptor.value === "number") {
+//         throw new Error(
+//           `Invalid 'value' of ${attr_descriptor.value} for attribute '${attr_name}'. 'value' properties must be numeric.`
+//         )
+//       }
+//       return attr_descriptor.value
+//     } else if (Object.hasOwn(attr_descriptor, "field")) {
+//       if (typeof attr_descriptor.field !== "string") {
+//         throw new Error(
+//           `Invalid field definition for attribute '${attr_name}'. The 'field' property must be a string`
+//         )
+//       }
+//       // TODO(croot): get the field name from the "transforms" array
+//       property_def.field = attr_name
+//     }
+//   } else {
+//     throw new Error(`Invalid channel definition for attribute '${attr_name}'`)
+//   }
+//   return property_def
+// }
 
-/**
- * @param {PropDescriptor} prop_descriptor
- * @param {PropertyDefinition} prop_definition
- * @param {VegaPropertyOutputState} vega_property_output_state
- */
-function materialize_prop(
-  prop_descriptor,
-  prop_definition,
-  vega_property_output_state
-) {
-  const mark_prop_name = prop_descriptor.output
-  const mark_prop_obj = {}
-  if (
-    typeof prop_definition === "number" ||
-    typeof prop_definition === "string" ||
-    typeof prop_definition === "boolean"
-  ) {
-    mark_prop_obj[mark_prop_name] = prop_definition
-    mark_properties.set(prop_name, mark_prop_obj)
-  } else if (typeof prop_definition === "object") {
-    if (Object.hasOwn(prop_definition, "value")) {
-      if (Object.keys(prop_definition).length !== 1) {
-        throw new Error(
-          `Invalid value definition for attribute '${prop_name}'. Value definitions must have only 1 property called 'value'.`
-        )
-      }
+// /**
+//  * @param {PropDescriptor} prop_descriptor
+//  * @param {PropertyDefinition} prop_definition
+//  * @param {VegaPropertyOutputState} vega_property_output_state
+//  */
+// function materialize_prop(
+//   prop_descriptor,
+//   prop_definition,
+//   vega_property_output_state
+// ) {
+//   const mark_prop_name = prop_descriptor.output
+//   const mark_prop_obj = {}
+//   if (
+//     typeof prop_definition === "number" ||
+//     typeof prop_definition === "string" ||
+//     typeof prop_definition === "boolean"
+//   ) {
+//     mark_prop_obj[mark_prop_name] = prop_definition
+//     mark_properties.set(prop_name, mark_prop_obj)
+//   } else if (typeof prop_definition === "object") {
+//     if (Object.hasOwn(prop_definition, "value")) {
+//       if (Object.keys(prop_definition).length !== 1) {
+//         throw new Error(
+//           `Invalid value definition for attribute '${prop_name}'. Value definitions must have only 1 property called 'value'.`
+//         )
+//       }
 
-      if (
-        typeof prop_definition.value !== "number" &&
-        typeof prop_definition.value !== "string" &&
-        typeof prop_definition.value !== "boolean"
-      ) {
-        throw new Error(
-          `Invalid 'value' of ${prop_definition.value} for attribute '${prop_name}'. 'value' properties must be a number, string, or boolean value.`
-        )
-      }
-      mark_prop_obj[mark_prop_name] = prop_definition
-      mark_properties.set(prop_name, mark_prop_obj)
-    } else if (Object.hasOwn(prop_definition, "field")) {
-      if (typeof prop_definition.field !== "string") {
-        throw new Error(
-          `Invalid field definition for attribute '${prop_name}'. The 'field' property must be a string`
-        )
-      }
-      sql_parser_transforms.set(prop_name, {
-        type: "project",
-        expr: prop_definition.field,
-        as: prop_name
-      })
-      mark_prop_obj[mark_prop_name] = { field: prop_name }
-      mark_properties.set(prop_name, mark_prop_obj)
-    }
-  } else {
-    throw new Error(`Invalid channel definition for attribute '${prop_name}'`)
-  }
-}
+//       if (
+//         typeof prop_definition.value !== "number" &&
+//         typeof prop_definition.value !== "string" &&
+//         typeof prop_definition.value !== "boolean"
+//       ) {
+//         throw new Error(
+//           `Invalid 'value' of ${prop_definition.value} for attribute '${prop_name}'. 'value' properties must be a number, string, or boolean value.`
+//         )
+//       }
+//       mark_prop_obj[mark_prop_name] = prop_definition
+//       mark_properties.set(prop_name, mark_prop_obj)
+//     } else if (Object.hasOwn(prop_definition, "field")) {
+//       if (typeof prop_definition.field !== "string") {
+//         throw new Error(
+//           `Invalid field definition for attribute '${prop_name}'. The 'field' property must be a string`
+//         )
+//       }
+//       sql_parser_transforms.set(prop_name, {
+//         type: "project",
+//         expr: prop_definition.field,
+//         as: prop_name
+//       })
+//       mark_prop_obj[mark_prop_name] = { field: prop_name }
+//       mark_properties.set(prop_name, mark_prop_obj)
+//     }
+//   } else {
+//     throw new Error(`Invalid channel definition for attribute '${prop_name}'`)
+//   }
+// }
 
 /**
  *
@@ -3265,42 +3266,6 @@ function materialize_prop_descriptors(raster_layer_context, props, state) {
 //       scale: "x",
 //       field: "orientation"
 //     }
-//   }
-// }
-
-// function isValidPostFilter(postFilter) {
-//   const { operator, min, max, aggType, value, custom } = postFilter
-
-//   if (value && (aggType || custom)) {
-//     if (
-//       (operator === "not between" || operator === "between") &&
-//       typeof min === "number" &&
-//       !isNaN(min) &&
-//       typeof max === "number" &&
-//       !isNaN(max)
-//     ) {
-//       return true
-//     } else if (
-//       (operator === "equals" ||
-//         operator === "not equals" ||
-//         operator === "greater than or equals") &&
-//       typeof min === "number" &&
-//       !isNaN(min)
-//     ) {
-//       return true
-//     } else if (
-//       operator === "less than or equals" &&
-//       typeof max === "number" &&
-//       !isNaN(max)
-//     ) {
-//       return true
-//     } else if (operator === "null" || operator === "not null") {
-//       return true
-//     } else {
-//       return false
-//     }
-//   } else {
-//     return false
 //   }
 // }
 
@@ -3992,128 +3957,27 @@ export default function rasterLayerWindBarbMixin(_layer) {
   //   "fillColor",
   //   "angle"
   // ];
-  // _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
-  //   if (
-  //     _vega &&
-  //     Array.isArray(_vega.marks) &&
-  //     _vega.marks.length > 0 &&
-  //     _vega.marks[0].properties
-  //   ) {
-  //     renderAttributes.forEach(prop => {
-  //       _layer._addQueryDrivenRenderPropToSet(
-  //         popupColumnsSet,
-  //         _vega.marks[0].properties,
-  //         prop
-  //       );
-  //     });
-  //   }
-  // };
-  // _layer._areResultsValidForPopup = function(results) {
-  //   if (typeof results.x === "undefined" || typeof results.y === "undefined") {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // };
-  // _layer._displayPopup = function(svgProps) {
-  //   const {
-  //     chart,
-  //     parentElem,
-  //     data,
-  //     height,
-  //     margins,
-  //     xscale,
-  //     yscale,
-  //     minPopupArea,
-  //     animate
-  //   } = svgProps;
-  //   const rndrProps = {};
-  //   if (
-  //     _vega &&
-  //     Array.isArray(_vega.marks) &&
-  //     _vega.marks.length > 0 &&
-  //     _vega.marks[0].properties
-  //   ) {
-  //     const propObj = _vega.marks[0].properties;
-  //     renderAttributes.forEach(prop => {
-  //       if (
-  //         typeof propObj[prop] === "object" &&
-  //         propObj[prop].field &&
-  //         typeof propObj[prop].field === "string"
-  //       ) {
-  //         rndrProps[prop] = propObj[prop].field;
-  //       }
-  //     });
-  //   }
-  //   const pixel = Point2d.create(
-  //     xscale(data[rndrProps.xc || rndrProps.x]) + margins.left,
-  //     height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top
-  //   );
-  //   let sizeFromData =
-  //     data[rndrProps.size || rndrProps.width || rndrProps.height];
-  //   sizeFromData = Math.max(sizeFromData, 1); // size must be > 0 (#164)
-  //   let dotSize = _layer.getSizeVal(sizeFromData);
-  //   let scale = 1;
-  //   const scaleRatio = minPopupArea / (dotSize * dotSize);
-  //   const isScaled = scaleRatio > 1;
-  //   if (isScaled) {
-  //     scale = Math.sqrt(scaleRatio);
-  //     dotSize = dotSize * scale;
-  //   }
-  //   const popupStyle = _layer.popupStyle();
-  //   let bgColor = _layer.getFillColorVal(data[rndrProps.fillColor]);
-  //   let strokeColor, strokeWidth;
-  //   if (typeof popupStyle === "object" && !isScaled) {
-  //     bgColor = popupStyle.fillColor || bgColor;
-  //     strokeColor = popupStyle.strokeColor;
-  //     strokeWidth = popupStyle.strokeWidth;
-  //   }
-  //   const wrapDiv = parentElem.append("div").attr("class", _point_wrap_class);
-  //   const pointDiv = wrapDiv
-  //     .append("div")
-  //     .attr("class", _point_class)
-  //     .style({ left: pixel[0] + "px", top: pixel[1] + "px" });
-  //   if (animate) {
-  //     if (isScaled) {
-  //       pointDiv.classed("popupPoint", true);
-  //     } else {
-  //       pointDiv.classed("fadeInPoint", true);
-  //     }
-  //   }
-  //   _scaledPopups[chart] = isScaled;
-  //   const gfxDiv = pointDiv
-  //     .append("div")
-  //     .attr("class", _point_gfx_class)
-  //     .style("background", bgColor)
-  //     .style("width", dotSize + "px")
-  //     .style("height", dotSize + "px");
-  //   if (strokeColor) {
-  //     gfxDiv.style("border-color", strokeColor);
-  //   }
-  //   if (typeof strokeWidth === "number") {
-  //     gfxDiv.style("border-width", strokeWidth);
-  //   }
-  //   return AABox2d.initCenterExtents(AABox2d.create(), pixel, [
-  //     dotSize / 2,
-  //     dotSize / 2
-  //   ]);
-  // };
-  // _layer._hidePopup = function(chart, hideCallback) {
-  //   const mapPoint = chart.select("." + _point_class);
-  //   if (mapPoint) {
-  //     if (_scaledPopups[chart]) {
-  //       mapPoint.classed("removePoint", true);
-  //     } else {
-  //       mapPoint.classed("fadeOutPoint", true);
-  //     }
-  //     if (hideCallback) {
-  //       mapPoint.on("animationend", () => {
-  //         hideCallback(chart);
-  //       });
-  //     }
-  //     delete _scaledPopups[chart];
-  //   }
-  // };
+  _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
+    // currently no-op
+    // TODO(croot): needs to be filled in to support windbarb hit-testing
+  }
+
+  _layer._areResultsValidForPopup = function (results) {
+    // TODO(croot): needs to be filled in to support windbarb hit-testing
+    return true
+  }
+
+  _layer._displayPopup = function (svgProps) {
+    // currently a no-op
+    // TODO(croot): needs to be filled in to support windbarb hit-testing
+    return AABox2d.create()
+  }
+
+  _layer._hidePopup = function (chart, hideCallback) {
+    // currently a no-op
+    // TODO(croot): needs to be filled in to support windbarb hit-testing
+  }
+
   _layer._destroyLayer = function () {
     const xDim = _layer.xDim()
     if (xDim) {
