@@ -395,7 +395,6 @@ export default function rasterLayerLineMixin(_layer) {
     let scales;
     if (state.data[0].type === "contour") {
       const {stroke} = state.encoding;
-      console.log(adjustOpacity(stroke.minor.color, stroke.minor.opacity))
       scales = [{
         "name": "contour_width",
         "type": "ordinal",

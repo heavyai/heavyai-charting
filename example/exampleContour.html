@@ -96,12 +96,12 @@
           lon_field: config.lon_field,
           agg_type: 'AVG',
           fill_agg_type: 'AVG',
-          bin_dim_meters: 90,
+          bin_dim_meters: config.bin_dim_meters,
           neighborhood_fill_radius: 0,
           fill_only_nulls: false,
           flip_latitude: false,
-          minor_contour_interval: 100,
-          major_contour_interval: 500,
+          minor_contour_interval: config.minor_contour_interval,
+          major_contour_interval: config.major_contour_interval,
           contour_offset: 0,
         }],
         transform: {
@@ -166,12 +166,37 @@
   }
 
   function init() {
-    const config = {
+    const coloradoDEMConfig = {
       table: "colorado_dem",
       lat_field: "raster_lat",
       lon_field: "raster_lon",
       value: "z",
+      bin_dim_meters: 90,
+      minor_contour_interval: 100,
+      major_contour_interval: 500
     }
+
+    const nwsConfig = {
+      table: "nws_precip_last7days_20221005_conus",
+      lat_field: "raster_lat",
+      lon_field: "raster_lon",
+      value: "band_1_1",
+      bin_dim_meters: 10000,
+      minor_contour_interval: 1,
+      major_contour_interval: 3
+    }
+
+    const nwsConfigPrecentageOfNormal = {
+      table: "nws_precip_last7days_20221005_conus",
+      lat_field: "raster_lat",
+      lon_field: "raster_lon",
+      value: "band_1_4",
+      bin_dim_meters: 10000,
+      minor_contour_interval: 100,
+      major_contour_interval: 500
+    }
+
+    const config = nwsConfigPrecentageOfNormal;
 
     const con = new DbCon()
       .protocol("https")
