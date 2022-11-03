@@ -400,29 +400,52 @@ export default function rasterLayerLineMixin(_layer) {
       getStatsLayerName()
     )
 
-    const marks = [
-      {
-        type: "lines",
-        from: {
-          data: layerName
-        },
-        properties: Object.assign(
-          {},
-          {
+    let marks
+    if (state.data[0].type === "contour") {
+      marks = [
+        {
+          type: "lines",
+          from: {
+            data: layerName
+          },
+          properties: {
             x: {
               field: "x"
             },
             y: {
               field: "y"
             },
-            strokeColor: getColor(state.encoding.color, layerName),
-            strokeWidth: size,
-            lineJoin:
-              typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
+            strokeColor: "red",
+            strokeWidth: 3,
+            lineJoin: "bevel"
           }
-        )
-      }
-    ]
+        }
+      ]
+    } else {
+      marks = [
+        {
+          type: "lines",
+          from: {
+            data: layerName
+          },
+          properties: Object.assign(
+            {},
+            {
+              x: {
+                field: "x"
+              },
+              y: {
+                field: "y"
+              },
+              strokeColor: getColor(state.encoding.color, layerName),
+              strokeWidth: size,
+              lineJoin:
+                typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
+            }
+          )
+        }
+      ]
+    }
 
     if (useProjection) {
       marks[0].transform = {
