@@ -1,3 +1,8 @@
+import {
+adjustOpacity
+} from "./utils-vega"
+
+export const CONTOUR_TYPE = "contour"
 
 const buildParamsSQL = (params = {}) => Object.entries(params).reduce((prev, [key, val]) => {
   const floatParams = ['contour_interval', 'contour_offset', 'bin_dim_meters']
@@ -53,3 +58,48 @@ export const buildContourSQL = ({
             )
           )`
 }
+
+
+export const getContourMarks = (layerName, state) => [
+    {
+      type: "lines",
+      from: {
+        data: layerName
+      },
+      properties: {
+        x: {
+          field: "x"
+        },
+        y: {
+          field: "y"
+        },
+        strokeColor: {
+          scale: "contour_color",
+          field: "is_major"
+        },
+        strokeWidth: {
+          scale: "contour_width",
+          field: "is_major"
+        },
+        lineJoin: state.mark.lineJoin
+      }
+    }
+  ]
+
+export const getContourScales = ({stroke}) => [{
+    "name": "contour_width",
+    "type": "ordinal",
+    "domain": [0, 1],
+    "range": [stroke.minor.width, stroke.major.width] // [minor, major]
+  },
+  {
+    "name": "contour_color",
+    "type": "ordinal",
+    "domain": [0, 1],
+    "range": [
+      adjustOpacity(stroke.minor.color, stroke.minor.opacity), 
+      adjustOpacity(stroke.major.color, stroke.major.opacity)
+    ] // 1 is major, 0 is minor
+  }]
+
+export const isContourType = (state = {}) => state.data && state.data[0] && state.data[0].type === CONTOUR_TYPE

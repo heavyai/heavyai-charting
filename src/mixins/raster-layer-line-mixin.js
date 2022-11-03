@@ -11,7 +11,7 @@ import {
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
-import { buildContourSQL } from "../utils/utils-contour"
+import { buildContourSQL, getContourMarks, getContourScales, isContourType } from "../utils/utils-contour"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
@@ -393,23 +393,8 @@ export default function rasterLayerLineMixin(_layer) {
       }
     }
     let scales;
-    if (state.data[0].type === "contour") {
-      const {stroke} = state.encoding;
-      scales = [{
-        "name": "contour_width",
-        "type": "ordinal",
-        "domain": [0, 1],
-        "range": [stroke.minor.width, stroke.major.width] // [minor, major]
-      },
-      {
-        "name": "contour_color",
-        "type": "ordinal",
-        "domain": [0, 1],
-        "range": [
-          adjustOpacity(stroke.minor.color, stroke.minor.opacity), 
-          adjustOpacity(stroke.major.color, stroke.major.opacity)
-        ] // 1 is major, 0 is minor
-      }]
+    if (isContourType(state)) {
+      scales = getContourScales(state.encoding)
     } else {
       scales = getScales(
         state.encoding,
@@ -419,51 +404,34 @@ export default function rasterLayerLineMixin(_layer) {
       )
     }
 
-    let markProperties;
-    if (state.data[0].type === "contour") {
-      markProperties = {
-        x: {
-          field: "x"
-        },
-        y: {
-          field: "y"
-        },
-        strokeColor: {
-          scale: "contour_color",
-          field: "is_major"
-        },
-        strokeWidth: {
-          scale: "contour_width",
-          field: "is_major"
-        },
-        lineJoin: state.mark.lineJoin
-      }
+    let marks;
+    if (isContourType(state)) {
+      marks = getContourMarks(layerName, state)
     } else {
-      markProperties = Object.assign(
-        {},
+      marks = [
         {
-          x: {
-            field: "x"
+          type: "lines",
+          from: {
+            data: layerName
           },
-          y: {
-            field: "y"
-          },
-          strokeColor: getColor(state.encoding.color, layerName),
-          strokeWidth: size,
-          lineJoin:
-            typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
+          properties: Object.assign(
+            {},
+            {
+              x: {
+                field: "x"
+              },
+              y: {
+                field: "y"
+              },
+              strokeColor: getColor(state.encoding.color, layerName),
+              strokeWidth: size,
+              lineJoin:
+                typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
+            }
+          )
         }
-      )
+      ]
     }
-    const marks = [
-      {
-        type: "lines",
-        from: {
-          data: layerName
-        },
-        properties: markProperties
-      }
-    ]
 
     if (useProjection) {
       marks[0].transform = {
