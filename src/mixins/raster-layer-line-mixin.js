@@ -78,10 +78,6 @@ export default function rasterLayerLineMixin(_layer) {
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
 
-  // Can take xDim and yDim (contour map)
-  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
-  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
-
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -323,7 +319,7 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   function usesAutoColors() {
-    return state.encoding.color.domain === "auto"
+    return state.encoding.color && state.encoding.color.domain === "auto"
   }
 
   _layer._updateFromMetadata = (metadata, layerName = "") => {
@@ -396,60 +392,79 @@ export default function rasterLayerLineMixin(_layer) {
         scaledomainfields.color = ["distinctcolor"]
       }
     }
-
-    const scales = getScales(
-      state.encoding,
-      layerName,
-      scaledomainfields,
-      getStatsLayerName()
-    )
-
-    let marks
+    let scales;
     if (state.data[0].type === "contour") {
-      marks = [
-        {
-          type: "lines",
-          from: {
-            data: layerName
-          },
-          properties: {
-            x: {
-              field: "x"
-            },
-            y: {
-              field: "y"
-            },
-            strokeColor: state.mark.strokeColor,
-            strokeWidth: state.mark.strokeWidth,
-            lineJoin: state.mark.lineJoin
-          }
-        }
-      ]
+      const {stroke} = state.encoding;
+      console.log(adjustOpacity(stroke.minor.color, stroke.minor.opacity))
+      scales = [{
+        "name": "contour_width",
+        "type": "ordinal",
+        "domain": [0, 1],
+        "range": [stroke.minor.width, stroke.major.width] // [minor, major]
+      },
+      {
+        "name": "contour_color",
+        "type": "ordinal",
+        "domain": [0, 1],
+        "range": [
+          adjustOpacity(stroke.minor.color, stroke.minor.opacity), 
+          adjustOpacity(stroke.major.color, stroke.major.opacity)
+        ] // 1 is major, 0 is minor
+      }]
     } else {
-      marks = [
-        {
-          type: "lines",
-          from: {
-            data: layerName
-          },
-          properties: Object.assign(
-            {},
-            {
-              x: {
-                field: "x"
-              },
-              y: {
-                field: "y"
-              },
-              strokeColor: getColor(state.encoding.color, layerName),
-              strokeWidth: size,
-              lineJoin:
-                typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
-            }
-          )
-        }
-      ]
+      scales = getScales(
+        state.encoding,
+        layerName,
+        scaledomainfields,
+        getStatsLayerName()
+      )
     }
+
+    let markProperties;
+    if (state.data[0].type === "contour") {
+      markProperties = {
+        x: {
+          field: "x"
+        },
+        y: {
+          field: "y"
+        },
+        strokeColor: {
+          scale: "contour_color",
+          field: "is_major"
+        },
+        strokeWidth: {
+          scale: "contour_width",
+          field: "is_major"
+        },
+        lineJoin: state.mark.lineJoin
+      }
+    } else {
+      markProperties = Object.assign(
+        {},
+        {
+          x: {
+            field: "x"
+          },
+          y: {
+            field: "y"
+          },
+          strokeColor: getColor(state.encoding.color, layerName),
+          strokeWidth: size,
+          lineJoin:
+            typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
+        }
+      )
+    }
+    const marks = [
+      {
+        type: "lines",
+        from: {
+          data: layerName
+        },
+        properties: markProperties
+      }
+    ]
 
     if (useProjection) {
       marks[0].transform = {

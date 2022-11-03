@@ -16,7 +16,8 @@ const buildParamsSQL = (params = {}) => Object.entries(params).reduce((prev, [ke
 
 export const buildContourSQL = ({
   table,
-  contour_interval,
+  minor_contour_interval,
+  major_contour_interval,
   agg_type = 'AVG',
   fill_agg_type = 'AVG',
   bin_dim_meters = 180,
@@ -29,7 +30,7 @@ export const buildContourSQL = ({
   lon_field = 'raster_lon'
 }) => {
   const contourParams = {
-    contour_interval,
+    contour_interval: minor_contour_interval,
     agg_type,
     fill_agg_type,
     bin_dim_meters,
@@ -39,7 +40,16 @@ export const buildContourSQL = ({
     flip_latitude
   }
   const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table}`
-  const contourParamsSQL = buildParamsSQL(contourParams)
   // Transform params object into 'param_name' => 'param_value', ... for sql query
-  return `select contour_lines, contour_values from table(tf_raster_contour_lines(raster => cursor(${rasterSelect}), ${contourParamsSQL}))`
+  const contourParamsSQL = buildParamsSQL(contourParams)
+  return `select 
+            contour_lines, 
+            contour_values, 
+            CASE mod(cast(contour_values as int), ${major_contour_interval}) WHEN 0 THEN 1 ELSE 0 END as is_major 
+          from table(
+            tf_raster_contour_lines(
+              raster => cursor(${rasterSelect}), 
+              ${contourParamsSQL}
+            )
+          )`
 }

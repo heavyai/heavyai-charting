@@ -61,20 +61,6 @@
       .dimension(crossFilter)
       .group(countGroup);
 
-
-    const colorRange = [
-      "#115f9a",
-      "#1984c5",
-      "#22a7f0",
-      "#48b5c4",
-      "#76c68f",
-      "#a6d75b",
-      "#c9e52f",
-      "#d0ee11",
-      "#d0f400"
-    ]
-
-
     // map bounding box filtering dimension
     // const viewBoxDim = crossFilter.dimension(config.xDim, config.yDim)
 
@@ -114,7 +100,8 @@
           neighborhood_fill_radius: 0,
           fill_only_nulls: false,
           flip_latitude: false,
-          contour_interval: 500,
+          minor_contour_interval: 100,
+          major_contour_interval: 500,
           contour_offset: 0,
         }],
         transform: {
@@ -123,13 +110,26 @@
         mark: {
           type: "lines",
           lineJoin: "bevel",
-          strokeColor: "red",
-          strokeWidth: 1
         },
         encoding: {
+          // Here so that lines layer doesn't break
           size: "auto",
           color: {
           },
+          // Contour stuff
+          stroke: {
+            minor: {
+              width: 1,
+              color: "#999999",
+              opacity: 0.75
+            },
+            major: {
+              width: 2,
+              color: "#888888",
+              opacity: 0.8
+            }
+          }
+
         },
         enableHitTesting: false
       })
@@ -142,8 +142,6 @@
             ne: [-101.56912902650292, 41.34207288081009]
           }
         })
-        chart
-          .viewBoxDim(crossFilter.filterST_Intersects)
 
         dc.renderAllAsync()
       })
@@ -152,7 +150,7 @@
     window.addEventListener("resize", _.debounce(resizeAll, 100));
 
     function resizeAll(){
-      var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+      var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
       var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
 
       ContourChart.map().resize();
