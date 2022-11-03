@@ -1,7 +1,7 @@
 
 const buildParamsSQL = (params = {}) => Object.entries(params).reduce((prev, [key, val]) => {
   const floatParams = ['contour_interval', 'contour_offset', 'bin_dim_meters']
-  const stringParams = ['agg_type']
+  const stringParams = ['agg_type', 'fill_agg_type']
   let parsedVal = val;
   if (floatParams.includes(key)) {
     parsedVal = val.toFixed(1)
