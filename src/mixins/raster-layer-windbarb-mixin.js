@@ -4241,8 +4241,8 @@ export default function rasterLayerWindBarbMixin(_layer) {
   //     chart.pushLayer("pointmap", _layer);
   //   }
   // };
-  _layer.getLayerNames = function(chart) {
-    return chart.getLayerNames();
-  };
+  // _layer.getLayerNames = function(chart) {
+  //   return chart.getLayerNames();
+  // };
   return _layer
 }
