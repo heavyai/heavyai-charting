@@ -110,11 +110,11 @@
           lon_field: config.lon_field,
           agg_type: 'AVG',
           fill_agg_type: 'AVG',
-          bin_dim_meters: 180,
+          bin_dim_meters: 90,
           neighborhood_fill_radius: 0,
           fill_only_nulls: false,
           flip_latitude: false,
-          contour_interval: 250,
+          contour_interval: 500,
           contour_offset: 0,
         }],
         transform: {
@@ -138,8 +138,8 @@
         // This will zoom to data extent
         chart.zoomToLocation({
           bounds: {
-            sw: [-128.998369, 30.266939],
-            ne: [-98.891716, 39.736412]
+            sw: [-109.5400307407924, 36.77053773368342],
+            ne: [-101.56912902650292, 41.34207288081009]
           }
         })
         chart
@@ -148,12 +148,10 @@
         dc.renderAllAsync()
       })
 
-    /*--------------------------RESIZE EVENT------------------------------*/
-    /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
-    window.addEventListener("resize", _.debounce(reSizeAll, 100));
+    window.addEventListener("resize", _.debounce(resizeAll, 100));
 
-    function reSizeAll(){
+    function resizeAll(){
       var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
       var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
 
@@ -182,7 +180,7 @@
       .host("metis.mapd.com")
       .port("443")
       .dbName("mapd")
-      .user("admin")
+      .user("mapd")
       .password("HyperInteractive")
       .connect(function(error, con) {
         crossfilter.crossfilter(con, config.table)

@@ -78,6 +78,10 @@ export default function rasterLayerLineMixin(_layer) {
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
 
+  // Can take xDim and yDim (contour map)
+  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
+
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -415,9 +419,9 @@ export default function rasterLayerLineMixin(_layer) {
             y: {
               field: "y"
             },
-            strokeColor: "red",
-            strokeWidth: 3,
-            lineJoin: "bevel"
+            strokeColor: state.mark.strokeColor,
+            strokeWidth: state.mark.strokeWidth,
+            lineJoin: state.mark.lineJoin
           }
         }
       ]
