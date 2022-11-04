@@ -61,18 +61,6 @@
       .dimension(crossFilter)
       .group(countGroup);
 
-    // map bounding box filtering dimension
-    // const viewBoxDim = crossFilter.dimension().set(() => [config.lat_field, config.lon_field])
-
-    // const bounds = {
-    //   lonMin: -134.05007498694482,
-    //   lonMax: -104.56313893710016,
-    //   latMin: 32.52883199254458,
-    //   latMax: 48.000786965713246
-    // }
-
-    // viewBoxDim.filterST_Min_ST_Max(bounds)
-
     const ContourChart = dc.rasterChart(parent, true, null, mapboxgl)
       .con(con)
       .height(h)
@@ -134,7 +122,6 @@
         },
         enableHitTesting: false
       })
-      // .viewBoxDim(viewBoxDim)
 
       ContourChart.pushLayer("contourLayer", contourLayer).init().then((chart) => {
         // This will zoom to data extent
@@ -144,9 +131,6 @@
             ne: [-101.56912902650292, 41.34207288081009]
           }
         })
-        // Do this with the other one? 
-        // chart
-        //   .viewBoxDim(crossFilter.filterST_Min_ST_Max)
 
         dc.renderAllAsync()
       })
@@ -165,8 +149,6 @@
         .height(h)
         .render()
 
-      // chart
-      //   .viewBoxDim(crossFilter.filterST_Intersects)
       dc.redrawAllAsync();
     }
 
