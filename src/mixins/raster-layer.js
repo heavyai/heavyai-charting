@@ -13,7 +13,6 @@ import moment from "moment"
 const validLayerTypes = ["points", "polys", "heat", "lines"]
 
 export default function rasterLayer(layerType) {
-
   const _layerType = layerType
 
   let _dimension = null
