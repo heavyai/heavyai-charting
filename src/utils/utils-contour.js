@@ -33,7 +33,7 @@ export const buildContourSQL = ({
   contour_value_field = 'z',
   lat_field = 'raster_lat',
   lon_field = 'raster_lon'
-}) => {
+}, mapBounds) => {
   const contourParams = {
     contour_interval: minor_contour_interval,
     agg_type,
@@ -44,11 +44,12 @@ export const buildContourSQL = ({
     fill_only_nulls,
     flip_latitude
   }
-  const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table}`
+
+  const rasterSelectFilter = mapBounds ? `where ${lat_field} >= ${mapBounds._sw.lat} AND ${lat_field} <= ${mapBounds._ne.lat} AND ${lon_field} >= ${mapBounds._sw.lng} AND ${lon_field} <= ${mapBounds._ne.lng}` : ""
+  const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
+  
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
-
-  // const bboxFilter = `ST_XMax(${lon_field}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
 
   return `select 
             contour_lines, 
