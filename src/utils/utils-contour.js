@@ -47,6 +47,9 @@ export const buildContourSQL = ({
   const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table}`
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
+
+  // const bboxFilter = `ST_XMax(${lon_field}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
+
   return `select 
             contour_lines, 
             contour_values, 

@@ -354,7 +354,7 @@ export default function rasterLayerLineMixin(_layer) {
     )
 
     let sql;
-    if (state.data[0].type === "contour") {
+    if (isContourType(state)) {
       sql = buildContourSQL(state.data[0])
     } else {
       sql = parser.writeSQL({
@@ -392,6 +392,8 @@ export default function rasterLayerLineMixin(_layer) {
         scaledomainfields.color = ["distinctcolor"]
       }
     }
+
+
     let scales;
     if (isContourType(state)) {
       scales = getContourScales(state.encoding)
@@ -480,6 +482,9 @@ export default function rasterLayerLineMixin(_layer) {
           setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
     }
+
+    // Use this to generate bbox filter 
+    // const bboxFilter = chart.map().getBounds()
 
     _vega = _layer.__genVega({
       layerName,

@@ -77,10 +77,12 @@ document.addEventListener("DOMContentLoaded", () => {
           data: [
             {
               table: config.table,
+              source: config.table,
               attr: config.joinColumn
             },
             {
               table: config.polyTable,
+              source: config.polyTable,
               attr: config.polyJoinColumn
             }
           ],
