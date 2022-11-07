@@ -53,21 +53,13 @@ export { default as bubbleMixin } from "./mixins/bubble-mixin"
 export { default as capMixin } from "./mixins/cap-mixin"
 export { default as colorMixin } from "./mixins/color-mixin"
 export { default as coordinateGridMixin } from "./mixins/coordinate-grid-mixin"
-export {
-  default as coordinateGridRasterMixin
-} from "./mixins/coordinate-grid-raster-mixin"
+export { default as coordinateGridRasterMixin } from "./mixins/coordinate-grid-raster-mixin"
 export { default as stackMixin } from "./mixins/stack-mixin"
 export { default as marginMixin } from "./mixins/margin-mixin"
 export { default as mapMixin } from "./mixins/map-mixin"
-export {
-  default as rasterLayerHeatmapMixin
-} from "./mixins/raster-layer-heatmap-mixin"
-export {
-  default as rasterLayerPointMixin
-} from "./mixins/raster-layer-point-mixin"
-export {
-  default as rasterLayerPolyMixin
-} from "./mixins/raster-layer-poly-mixin"
+export { default as rasterLayerHeatmapMixin } from "./mixins/raster-layer-heatmap-mixin"
+export { default as rasterLayerPointMixin } from "./mixins/raster-layer-point-mixin"
+export { default as rasterLayerPolyMixin } from "./mixins/raster-layer-poly-mixin"
 export { default as rasterLayer } from "./mixins/raster-layer"
 export { default as rasterMixin } from "./mixins/raster-mixin"
 export { default as scatterMixin } from "./mixins/scatter-mixin"

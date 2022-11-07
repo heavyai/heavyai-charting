@@ -188,7 +188,10 @@ export default function bubbleOverlay(parent, chartGroup) {
 
   _chart.setBounds = function(bounds) {
     // need to convert to 900913 from 4326
-    _chart.bounds = [[0.0, 0.0], [0.0, 0.0]]
+    _chart.bounds = [
+      [0.0, 0.0],
+      [0.0, 0.0]
+    ]
     _chart.bounds[0] = conv4326To900913(bounds[0])
     _chart.bounds[1] = conv4326To900913(bounds[1])
   }

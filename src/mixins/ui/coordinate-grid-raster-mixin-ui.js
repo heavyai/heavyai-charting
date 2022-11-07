@@ -250,7 +250,10 @@ class BoxZoomHandler extends BaseHandler {
       let ymax = Math.max(startPos.y, endPos.y)
 
       const bounds = this._chart._fitToMaxBounds(
-        [[xmin, ymin], [xmax, ymax]],
+        [
+          [xmin, ymin],
+          [xmax, ymax]
+        ],
         true
       )
       xmin = bounds[0][0]
@@ -314,7 +317,12 @@ class BoxZoomHandler extends BaseHandler {
 
     this._filterDimensionCB([xmin, xmax], [ymin, ymax])
 
-    const bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]]
+    const bounds = [
+      [xmin, ymax],
+      [xmax, ymax],
+      [xmax, ymin],
+      [xmin, ymin]
+    ]
 
     redrawAllAsync(this._chart.chartGroup())
 
@@ -544,7 +552,7 @@ class ScrollZoomHandler extends BaseHandler {
 
     if (
       (!doFullRender && delta === 0) ||
-      (!this._chart.elasticX() || !this._chart.elasticY())
+      !this._chart.elasticX() || !this._chart.elasticY()
     ) {
       return
     }
@@ -595,7 +603,10 @@ class ScrollZoomHandler extends BaseHandler {
       let ymax = ymin + yDiff
 
       const bounds = this._chart._fitToMaxBounds(
-        [[xmin, ymin], [xmax, ymax]],
+        [
+          [xmin, ymin],
+          [xmax, ymax]
+        ],
         true
       )
       xmin = bounds[0][0]
@@ -759,7 +770,10 @@ class DragPanHandler extends BaseHandler {
     let ymax = yRange[1] - deltaY
 
     const bounds = this._chart._fitToMaxBounds(
-      [[xmin, ymin], [xmax, ymax]],
+      [
+        [xmin, ymin],
+        [xmax, ymax]
+      ],
       true
     )
     deltaX = deltaX + (xmin - bounds[0][0])

@@ -11,7 +11,12 @@ import {
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
-import { buildContourSQL, getContourMarks, getContourScales, isContourType } from "../utils/utils-contour"
+import {
+  buildContourSQL,
+  getContourMarks,
+  getContourScales,
+  isContourType
+} from "../utils/utils-contour"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
@@ -354,15 +359,13 @@ export default function rasterLayerLineMixin(_layer) {
       layerName
     )
 
-    let sql;
+    let sql
     if (isContourType(state)) {
       sql = buildContourSQL(state.data[0], mapBounds)
     } else {
       sql = parser.writeSQL({
         type: "root",
-        source: [...new Set(state.data.map(source => source.table))].join(
-          ", "
-        ),
+        source: [...new Set(state.data.map(source => source.table))].join(", "),
         transform: _layer.getTransforms(
           table,
           filter,
@@ -394,8 +397,7 @@ export default function rasterLayerLineMixin(_layer) {
       }
     }
 
-
-    let scales;
+    let scales
     if (isContourType(state)) {
       scales = getContourScales(state.encoding)
     } else {
@@ -407,7 +409,7 @@ export default function rasterLayerLineMixin(_layer) {
       )
     }
 
-    let marks;
+    let marks
     if (isContourType(state)) {
       marks = getContourMarks(layerName, state)
     } else {
