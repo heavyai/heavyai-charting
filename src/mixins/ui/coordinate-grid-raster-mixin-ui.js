@@ -552,7 +552,8 @@ class ScrollZoomHandler extends BaseHandler {
 
     if (
       (!doFullRender && delta === 0) ||
-      !this._chart.elasticX() || !this._chart.elasticY()
+      !this._chart.elasticX() ||
+      !this._chart.elasticY()
     ) {
       return
     }
