@@ -442,11 +442,7 @@ export default function mapMixin(
           resetRedrawStack()
           console.log("on move event redrawall error:", error)
         })
-      } else if (
-        _viewBoxDim !== null &&
-        typeof layer !== "undefined" &&
-        layer.getState().data.length < 2
-      ) {
+      } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
         // spatial filter on only single data source
         _viewBoxDim.filterST_Min_ST_Max({
           lonMin: _chart._minCoord[0],

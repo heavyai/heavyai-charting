@@ -101,10 +101,35 @@
           lineJoin: "bevel",
         },
         encoding: {
-          // Here so that lines layer doesn't break
-          size: "auto",
-          color: {
-          },
+          // Keep this here for now to keep line mixin happy
+          color: {},
+
+          // TODO(joe): Implement encoding in this format
+          // color: {
+          //   field: "is_major_contour",
+          //   type: "nominal",
+          //   scale: { 
+          //     domain: [false, true], 
+          //     range: ["#999999", "#999999"] 
+          //   }
+          // },
+          // strokeWidth: { 
+          //   field: "is_major_contour", 
+          //   type: "nominal", 
+          //   scale: { 
+          //     domain: [false, true], 
+          //     range: [1, 2] 
+          //   } 
+          // },
+          // opacity: {
+          //   field: "is_major_contour",
+          //   type: "nominal",
+          //   scale: { 
+          //     domain: [false, true], 
+          //     range: [0.75, 0.8] 
+          //   } 
+          // },
+
           // Contour stuff
           stroke: {
             minor: {
@@ -114,7 +139,7 @@
             },
             major: {
               width: 2,
-              color: "#888888",
+              color: "#999999",
               opacity: 0.8
             }
           }
