@@ -104,7 +104,7 @@
     "lodash": "^4.17.21",
     "mocha": "^2.5.3",
     "mocha-jenkins-reporter": "^0.1.9",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "nyc": "^10.3.0",
     "prettier": "^1.19.1",
     "proxyquire": "1.7.4",
