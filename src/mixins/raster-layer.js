@@ -263,9 +263,9 @@ export default function rasterLayer(layerType) {
     const dim = _layer.group() || _layer.dimension()
     if (
       dim ||
-      (_layer.layerType() === "points" ||
-        _layer.layerType() === "lines" ||
-        _layer.layerType() === "polys")
+      _layer.layerType() === "points" ||
+      _layer.layerType() === "lines" ||
+      _layer.layerType() === "polys"
     ) {
       const projExprs =
         _layer.layerType() === "points" ||

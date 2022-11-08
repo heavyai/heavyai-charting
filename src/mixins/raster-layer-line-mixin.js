@@ -11,6 +11,12 @@ import {
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
+import {
+  buildContourSQL,
+  getContourMarks,
+  getContourScales,
+  isContourType
+} from "../utils/utils-contour"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
@@ -318,7 +324,7 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   function usesAutoColors() {
-    return state.encoding.color.domain === "auto"
+    return state.encoding.color && state.encoding.color.domain === "auto"
   }
 
   _layer._updateFromMetadata = (metadata, layerName = "") => {
@@ -334,6 +340,7 @@ export default function rasterLayerLineMixin(_layer) {
 
   _layer.__genVega = function({
     table,
+    mapBounds,
     filter,
     lastFilteredSize,
     globalFilter,
@@ -352,23 +359,27 @@ export default function rasterLayerLineMixin(_layer) {
       layerName
     )
 
+    let sql
+    if (isContourType(state)) {
+      sql = buildContourSQL(state.data[0], mapBounds)
+    } else {
+      sql = parser.writeSQL({
+        type: "root",
+        source: [...new Set(state.data.map(source => source.table))].join(", "),
+        transform: _layer.getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          lastFilteredSize
+        )
+      })
+    }
     const data = [
       {
         name: layerName,
         format: "lines",
-        sql: parser.writeSQL({
-          type: "root",
-          source: [...new Set(state.data.map(source => source.table))].join(
-            ", "
-          ),
-          transform: _layer.getTransforms(
-            table,
-            filter,
-            globalFilter,
-            state,
-            lastFilteredSize
-          )
-        }),
+        sql,
         enableHitTesting: state.enableHitTesting
       }
     ]
@@ -386,36 +397,46 @@ export default function rasterLayerLineMixin(_layer) {
       }
     }
 
-    const scales = getScales(
-      state.encoding,
-      layerName,
-      scaledomainfields,
-      getStatsLayerName()
-    )
+    let scales
+    if (isContourType(state)) {
+      scales = getContourScales(state.encoding)
+    } else {
+      scales = getScales(
+        state.encoding,
+        layerName,
+        scaledomainfields,
+        getStatsLayerName()
+      )
+    }
 
-    const marks = [
-      {
-        type: "lines",
-        from: {
-          data: layerName
-        },
-        properties: Object.assign(
-          {},
-          {
-            x: {
-              field: "x"
-            },
-            y: {
-              field: "y"
-            },
-            strokeColor: getColor(state.encoding.color, layerName),
-            strokeWidth: size,
-            lineJoin:
-              typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
-          }
-        )
-      }
-    ]
+    let marks
+    if (isContourType(state)) {
+      marks = getContourMarks(layerName, state)
+    } else {
+      marks = [
+        {
+          type: "lines",
+          from: {
+            data: layerName
+          },
+          properties: Object.assign(
+            {},
+            {
+              x: {
+                field: "x"
+              },
+              y: {
+                field: "y"
+              },
+              strokeColor: getColor(state.encoding.color, layerName),
+              strokeWidth: size,
+              lineJoin:
+                typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
+            }
+          )
+        }
+      ]
+    }
 
     if (useProjection) {
       marks[0].transform = {
@@ -465,8 +486,10 @@ export default function rasterLayerLineMixin(_layer) {
         })
     }
 
+    const mapBounds = chart.map().getBounds()
     _vega = _layer.__genVega({
       layerName,
+      mapBounds,
       table: _layer.crossfilter().getTable()[0],
       filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
