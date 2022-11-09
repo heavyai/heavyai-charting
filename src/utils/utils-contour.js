@@ -25,7 +25,11 @@ const buildParamsSQL = (params = {}) =>
     .join(", ")
 
 export const buildContourSQL = (
-  {
+  state,
+  mapBounds,
+  isPolygons = false
+) => {
+  const {
     table,
     minor_contour_interval,
     major_contour_interval,
@@ -39,9 +43,8 @@ export const buildContourSQL = (
     contour_value_field = "z",
     lat_field = "raster_lat",
     lon_field = "raster_lon"
-  },
-  mapBounds
-) => {
+  } = state
+
   const contourParams = {
     contour_interval: minor_contour_interval,
     agg_type,
@@ -61,12 +64,14 @@ export const buildContourSQL = (
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
 
+  const geometryColumn = isPolygons ? 'contour_polygons' : 'contour_lines';
+  const contourTableFunction = isPolygons ? 'tf_raster_contour_polygons' : 'tf_raster_contour_lines'
   return `select 
-            contour_lines, 
+            ${geometryColumn}, 
             contour_values, 
             CASE mod(cast(contour_values as int), ${major_contour_interval}) WHEN 0 THEN 1 ELSE 0 END as is_major 
           from table(
-            tf_raster_contour_lines(
+            ${contourTableFunction}(
               raster => cursor(${rasterSelect}), 
               ${contourParamsSQL}
             )

@@ -352,8 +352,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const geoTable = _layer.getState().encoding.geoTable
     const geoCol = _layer.getState().encoding.geocol
 
-    const preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
-
+    let preflightQuery;
+    if (geoTable && geoCol) {
+      preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
+    } else {
+      preflightQuery = `SELECT COUNT(*) AS n FROM ${_layer.getState().data[0].table}`
+    }
     return chart.con().queryAsync(preflightQuery, {})
   }
 

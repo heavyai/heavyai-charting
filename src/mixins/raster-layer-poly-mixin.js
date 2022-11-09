@@ -10,6 +10,7 @@ import { events } from "../core/events"
 import { parser } from "../utils/utils"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
+import { buildContourSQL, isContourType } from "../utils/utils-contour"
 
 const polyDefaultScaleColor = "#d6d7d6"
 const polyNullScaleColor = "#d6d7d6"
@@ -398,7 +399,105 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   function usesAutoColors() {
-    return state.encoding.color.domain === "auto"
+    return state.encoding.color && state.encoding.color.domain === "auto"
+  }
+
+  function getPolygonScale({state, layerFilter, layerName, autocolors}) {
+
+    const useColorScale = !(state.encoding.color.type === "solid")
+    let scale;
+    let fillColor;
+    if (layerFilter.length && !useColorScale) {
+      const colorScaleName = getColorScaleName(layerName)
+      scale = {
+        name: colorScaleName,
+        type: "ordinal",
+        domain: [1],
+        range: [
+          adjustOpacity(
+            state.encoding.color.value,
+            state.encoding.color.opacity
+          )
+        ],
+        nullValue: adjustOpacity(
+          polyNullScaleColor,
+          state.encoding.color.opacity || 0.65
+        ),
+        default: adjustOpacity(
+          polyDefaultScaleColor,
+          state.encoding.color.hasOwnProperty("showOther") &&
+            state.encoding.color.showOther === false
+            ? 0
+            : state.encoding.color.opacity
+            ? state.encoding.color.opacity
+            : 0.65
+        )
+      }
+      fillColor = {
+        scale: colorScaleName,
+        field: "color"
+      }
+    } else if (useColorScale) {
+      const colorRange = state.encoding.color.range.map(c =>
+        adjustOpacity(c, state.encoding.color.opacity)
+      )
+      const colorScaleName = getColorScaleName(layerName)
+      if (state.encoding.color.type === "quantitative") {
+        scale = {
+          name: colorScaleName,
+          type: "quantize",
+          domain: autocolors
+            ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
+            : state.encoding.color.domain,
+          range: colorRange,
+          nullValue: adjustOpacity(
+            polyNullScaleColor,
+            state.encoding.color.opacity || 0.65
+          ),
+          default: adjustOpacity(
+            polyDefaultScaleColor,
+            state.encoding.color.opacity || 0.65
+          )
+        }
+      } else {
+        scale = {
+          name: colorScaleName,
+          type: "ordinal",
+          domain: state.encoding.color.domain,
+          range: colorRange,
+          nullValue: adjustOpacity(
+            polyNullScaleColor,
+            state.encoding.color.opacity || 0.65
+          ),
+          default: adjustOpacity(
+            state.encoding.color.defaultOtherRange ||
+              state.encoding.color.default,
+            state.encoding.color.hasOwnProperty("showOther") &&
+              state.encoding.color.showOther === false
+              ? 0 // When Other is toggled OFF, we make the Other category transparent
+              : state.encoding.color.opacity
+              ? state.encoding.color.opacity
+              : 0.65
+          )
+        }
+      }
+      fillColor = {
+        scale: colorScaleName,
+        field: "color"
+      }
+    } else {
+      fillColor = {
+        value: adjustOpacity(
+          state.encoding.color.value,
+          state.encoding.color.opacity
+        )
+      }
+    }
+
+    return {
+      scale,
+      fillColor
+    }
   }
 
   _layer._updateFromMetadata = (metadata, layerName = "") => {
@@ -413,6 +512,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.__genVega = function({
+    chart,
     bboxFilter,
     filter,
     globalFilter,
@@ -424,29 +524,45 @@ export default function rasterLayerPolyMixin(_layer) {
   }) {
     const autocolors = usesAutoColors()
     const getStatsLayerName = () => layerName + "_stats"
+    const state = _layer.getState()
 
-    const data = [
-      {
-        name: layerName,
-        format: "polys",
-        sql: parser.writeSQL({
-          type: "root",
-          source: doJoin()
-            ? `${state.data[1].table}, ${withAlias}`
-            : `${state.data[0].table}`,
-          transform: _layer.getTransforms({
-            bboxFilter,
-            filter,
-            globalFilter,
-            layerFilter,
-            filtersInverse,
-            state,
-            lastFilteredSize
-          })
-        }),
-        enableHitTesting: true // poly enableHitTesting will be always true to support 1. Hittesting 2. poly selection filter
-      }
-    ]
+    let data;
+    if (isContourType(state)) {
+      const mapBounds = chart.map().getBounds()
+      const sql = buildContourSQL(state.data[0], mapBounds, true)
+      data = [
+        {
+          name: layerName,
+          format: "polys",
+          sql,
+          enableHitTesting: false
+        }
+      ]
+    } else {
+      data = [
+        {
+          name: layerName,
+          format: "polys",
+          sql: parser.writeSQL({
+            type: "root",
+            source: doJoin()
+              ? `${state.data[1].table}, ${withAlias}`
+              : `${state.data[0].table}`,
+            transform: _layer.getTransforms({
+              bboxFilter,
+              filter,
+              globalFilter,
+              layerFilter,
+              filtersInverse,
+              state,
+              lastFilteredSize
+            })
+          }),
+          enableHitTesting: true // poly enableHitTesting will be always true to support 1. Hittesting 2. poly selection filter
+        }
+      ]
+    }
+    
 
     if (autocolors) {
       data.push({
@@ -474,108 +590,58 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     const scales = []
-    let fillColor = {}
-
-    const useColorScale = !(state.encoding.color.type === "solid")
-    if (layerFilter.length && !useColorScale) {
-      const colorScaleName = getColorScaleName(layerName)
+    let fillColor = "#AAAAAA"
+    if (isContourType(state)) {
       scales.push({
-        name: colorScaleName,
-        type: "ordinal",
-        domain: [1],
-        range: [
-          adjustOpacity(
-            state.encoding.color.value,
-            state.encoding.color.opacity
-          )
-        ],
-        nullValue: adjustOpacity(
-          polyNullScaleColor,
-          state.encoding.color.opacity || 0.65
-        ),
-        default: adjustOpacity(
-          polyDefaultScaleColor,
-          state.encoding.color.hasOwnProperty("showOther") &&
-            state.encoding.color.showOther === false
-            ? 0
-            : state.encoding.color.opacity
-            ? state.encoding.color.opacity
-            : 0.65
-        )
+        name: "contour_fill",
+        type: state.encoding.color.type,
+        domain: state.encoding.color.domain,
+        range: state.encoding.color.range
       })
-      fillColor = {
-        scale: colorScaleName,
-        field: "color"
-      }
-    } else if (useColorScale) {
-      const colorRange = state.encoding.color.range.map(c =>
-        adjustOpacity(c, state.encoding.color.opacity)
-      )
-      const colorScaleName = getColorScaleName(layerName)
-      if (state.encoding.color.type === "quantitative") {
-        scales.push({
-          name: colorScaleName,
-          type: "quantize",
-          domain: autocolors
-            ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
-            : state.encoding.color.domain,
-          range: colorRange,
-          nullValue: adjustOpacity(
-            polyNullScaleColor,
-            state.encoding.color.opacity || 0.65
-          ),
-          default: adjustOpacity(
-            polyDefaultScaleColor,
-            state.encoding.color.opacity || 0.65
-          )
-        })
-      } else {
-        scales.push({
-          name: colorScaleName,
-          type: "ordinal",
-          domain: state.encoding.color.domain,
-          range: colorRange,
-          nullValue: adjustOpacity(
-            polyNullScaleColor,
-            state.encoding.color.opacity || 0.65
-          ),
-          default: adjustOpacity(
-            state.encoding.color.defaultOtherRange ||
-              state.encoding.color.default,
-            state.encoding.color.hasOwnProperty("showOther") &&
-              state.encoding.color.showOther === false
-              ? 0 // When Other is toggled OFF, we make the Other category transparent
-              : state.encoding.color.opacity
-              ? state.encoding.color.opacity
-              : 0.65
-          )
-        })
-      }
-
-      fillColor = {
-        scale: colorScaleName,
-        field: "color"
-      }
+      fillColor = "red"
     } else {
-      fillColor = {
-        value: adjustOpacity(
-          state.encoding.color.value,
-          state.encoding.color.opacity
-        )
+      const { scale, fillColor: polyFillColor } = getPolygonScale({state, layerFilter, layerName, autocolors})
+      scales.push(scale)
+      fillColor = polyFillColor
+    }
+
+    const marks = [];
+    if (isContourType(state)) {
+      marks.push({
+        type: "polys",
+        from: {
+          data: layerName,
+        },
+        properties: {
+          x: {
+            field: "x",
+          },
+          y: {
+            field: "y",
+          },
+          fillColor: {
+            field: "contour_values",
+            scale: "contour_fill",
+          },
+          strokeColor: "white",
+          strokeWidth: 0,
+          lineJoin: "bevel",
+        },
+        transform: {
+          projection: "mercator_map_projection",
+        },
+      })
+    } else {
+      const defaultMarkOptions = {
+        strokeColor: "white",
+        lineJoin: "miter",
+        miterLimit: 10,
+        strokeWidth: 0
       }
-    }
-
-    const defaultMarkOptions = {
-      strokeColor: "white",
-      lineJoin: "miter",
-      miterLimit: 10,
-      strokeWidth: 0
-    }
-    const mark =
-      typeof state.mark === "object" ? state.mark : defaultMarkOptions
-
-    const marks = [
-      {
+      const mark =
+        typeof state.mark === "object" ? state.mark : defaultMarkOptions
+  
+      marks.push({
         type: "polys",
         from: {
           data: layerName
@@ -598,8 +664,9 @@ export default function rasterLayerPolyMixin(_layer) {
           lineJoin: mark.lineJoin,
           miterLimit: mark.miterLimit
         }
-      }
-    ]
+      })
+    }
+    
 
     if (useProjection) {
       marks[0].transform = {
@@ -624,33 +691,38 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
 
-  _layer._genVega = function(chart, layerName, group) {
-    const mapBounds = chart.map().getBounds()
-
-    const columnExpr = `${_layer.getState().encoding.geoTable}.${
-      _layer.getState().encoding.geocol
-    }`
-
-    const bboxFilter = `ST_XMax(${columnExpr}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
-
-    const allFilters = _layer.crossfilter().getFilter(layerName)
-    const otherChartFilters = allFilters.filter(
-      (f, i) =>
-        i !== _layer.dimension().getDimensionIndex() && f !== "" && f != null
-    )
-
+  _layer._genVega = function(chart, layerName) {
     let polyFilterString = ""
-    let firstElem = true
+    let bboxFilter = ""
+    if (!isContourType(_layer.getState())) {
+      const mapBounds = chart.map().getBounds()
 
-    otherChartFilters.forEach(value => {
-      if (!firstElem) {
-        polyFilterString += " AND "
-      }
-      firstElem = false
-      polyFilterString += value
-    })
+      const state = _layer.getState()
+      const columnExpr = `${state.encoding.geoTable}.${
+        state.encoding.geocol
+      }`
+  
+      bboxFilter = `ST_XMax(${columnExpr}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
+  
+      const allFilters = _layer.crossfilter().getFilter(layerName)
+      const otherChartFilters = allFilters.filter(
+        (f, i) =>
+          i !== _layer.dimension().getDimensionIndex() && f !== "" && f !== null
+      )
+  
+      let firstElem = true
+  
+      otherChartFilters.forEach(value => {
+        if (!firstElem) {
+          polyFilterString += " AND "
+        }
+        firstElem = false
+        polyFilterString += value
+      })
+    }
 
     _vega = _layer.__genVega({
+      chart,
       layerName,
       bboxFilter,
       filter: polyFilterString,
