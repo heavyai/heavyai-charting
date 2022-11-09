@@ -3036,9 +3036,6 @@ export default function rasterLayerWindBarbMixin(_layer) {
     } else {
       state = setter
     }
-    if (!Object.hasOwn(state, "transform")) {
-      state.transform = {}
-    }
     return _layer
   }
   _layer.getState = function () {
