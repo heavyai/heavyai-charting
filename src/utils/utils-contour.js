@@ -65,17 +65,18 @@ export const buildContourSQL = (
   const contourParamsSQL = buildParamsSQL(contourParams)
 
   const geometryColumn = isPolygons ? 'contour_polygons' : 'contour_lines';
+  const contourLineCase = `CASE mod(cast(contour_values as int), ${major_contour_interval}) WHEN 0 THEN 1 ELSE 0 END as is_major `
   const contourTableFunction = isPolygons ? 'tf_raster_contour_polygons' : 'tf_raster_contour_lines'
-  return `select 
-            ${geometryColumn}, 
-            contour_values, 
-            CASE mod(cast(contour_values as int), ${major_contour_interval}) WHEN 0 THEN 1 ELSE 0 END as is_major 
-          from table(
-            ${contourTableFunction}(
-              raster => cursor(${rasterSelect}), 
-              ${contourParamsSQL}
-            )
-          )`
+  const sql = `select 
+    ${geometryColumn}, 
+    contour_values${isPolygons ? "" : ","}
+    ${isPolygons ? "" : contourLineCase}
+  from table(
+    ${contourTableFunction}(
+      raster => cursor(${rasterSelect}), ${contourParamsSQL}
+    )
+  )`
+  return sql
 }
 
 export const getContourMarks = (layerName, state) => [
