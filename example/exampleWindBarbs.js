@@ -77,76 +77,66 @@ function create_charts(crossfilter, connection) {
   const raster_windbarb_layer = HeavyCharting.rasterLayer("windbarbs")
     .crossfilter(crossfilter)
     .setState({
-      //   transform: {
-      //     sample: true,
-      //     limit: 500000
-      //   },
-      mark: {
-        type: "windbarbs",
-        quantizeDirection: false,
-        anchorScale: 0,
-        size: 55
-        // color: "red",
-      },
+      transform: [{ sample: 5000, tableSize: 1038240 }, { limit: 10000000 }],
+      mark: { type: "windbarbs", quantizeDirection: false },
       encoding: {
         x: {
           type: "quantitative",
-          field: "conv_4326_900913_x(longitude)"
+          field: "conv_4326_900913_x(longitude)",
+          label: "longitude"
         },
         y: {
           type: "quantitative",
-          field: "conv_4326_900913_y(latitude)"
+          field: "conv_4326_900913_y(latitude)",
+          label: "latitude"
         },
-        speed: {
-          field: "_80m_Wind_Speed",
-          type: "quantitative",
-          scale: null
-        },
-        direction: {
-          field: "_80m_Wind_Direction",
-          type: "quantitative",
-          scale: null
-        },
-        // size: { value: 55 },
-        //     size: {
-        //       type: "quantitative",
-        //       field: "followers",
-        //       domain: [0, 5000],
-        //       range: [1, 5]
-        //     },
+        size: { value: 55 },
         color: {
           field: "_80m_Wind_Speed",
           type: "quantitative",
-          scale: { range: ["blue", "red"] }
-        }, // or fill/stroke, to split up the colors
-        opacity: 1.0,
-        fillOpacity: 1.0,
-        strokeOpacity: 1.0,
-        strokeWidth: 1.0
-
-        //     color: {
-        //       type: "ordinal",
-        //       field: "lang",
-        //       domain: lang_domain,
-        //       range: lang_colors
-        //     }
-        //   },
-        //   config: {
-        //     point: {
-        //       shape: "circle"
-        //     }
-      }
+          scale: {
+            range: ["red", "blue"]
+          }
+        },
+        colorRamps: [],
+        speed: { field: "_80m_Wind_Speed", type: "quantitative", scale: null },
+        direction: {
+          type: "quantitative",
+          field: "_80m_Wind_Direction",
+          label: "_80m_Wind_Direction",
+          scale: { domain: [0, 360], range: [0, 360] }
+        }
+      },
+      config: { point: { shape: "circle" } },
+      enableHitTesting: false,
+      currentLayer: 0,
+      postFilters: [
+        {
+          name: "postFilter",
+          required: true,
+          operator: null,
+          min: "",
+          max: "",
+          type: {
+            int2: true,
+            int4: true,
+            int8: true,
+            SMALLINT: true,
+            TINYINT: true,
+            INT: true,
+            BIGINT: true,
+            FLOAT: true,
+            DOUBLE: true,
+            DECIMAL: true,
+            CUSTOM: true
+          },
+          inactive: false,
+          isRequired: true
+        }
+      ]
     })
     .xDim(x_dimension)
     .yDim(y_dimension)
-  // .popupColumns([
-  //   "tweet_text",
-  //   "sender_name",
-  //   "tweet_time",
-  //   "lang",
-  //   "origin",
-  //   "followers"
-  // ]);
 
   pointmap_chart
     .pushLayer("windbarbs", raster_windbarb_layer)
@@ -154,13 +144,6 @@ function create_charts(crossfilter, connection) {
     .then(() => {
       HeavyCharting.renderAllAsync()
     })
-  // .then(chart => {
-  //   /*--------------------------LASSO TOOL DRAW CONTROL------------------------------*/
-  //   /* Here enable the lasso tool draw control and pass in a coordinate filter */
-  //   pointMapChart.addDrawControl().coordFilter(crossFilter.filter());
-
-  //   dc.renderAllAsync();
-  // });
 
   /**
    * Setup resize event
@@ -191,13 +174,17 @@ function create_charts(crossfilter, connection) {
 }
 
 function init() {
+  const hostname = "hostname"
+  const dbName = "heavyai"
+  const user = "admin"
+  const password = "HyperInteractive"
   const con = new HeavyConnect.DbCon()
     .protocol("http")
-    .host("10.2.1.12")
+    .host(hostname)
     .port("6278")
-    .dbName("heavyai")
-    .user("admin")
-    .password("HyperInteractive")
+    .dbName(dbName)
+    .user(user)
+    .password(password)
     .connect((error, con) => {
       if (error) {
         throw error
