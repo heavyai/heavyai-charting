@@ -15,6 +15,8 @@ import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
+import { shallowCopyVega } from "../utils/utils-vega"
+import assert from "assert"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -55,12 +57,20 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // unset predefined mandatory attributes
   _chart._mandatoryAttributes([])
 
+  // eslint-disable-next-line no-prototype-builtins
   let _con = window.hasOwnProperty("con") ? con : null
   const _imageOverlay = null
   let _renderBoundsMap = {}
   let _layerNames = {}
   let _layers = []
   let _hasBeenRendered = false
+
+  // the vega passed to the render_vega call
+  let _vegaSpec = {}
+
+  // the materialized vega spec is a vega where scale metadata returned by a render_vega
+  // call (via the vega_metadata property in the result) will supplant the scales in _vegaSpec
+  let _materializedVegaSpec = {}
 
   const _events = ["vegaSpec"]
   const _listeners = d3.dispatch.apply(d3, _events)
@@ -111,6 +121,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _popupDisplayable = Boolean(displayable)
   }
 
+  _chart.getVegaSpec = function() {
+    return _vegaSpec
+  }
+
+  _chart.getMaterializedVegaSpec = function() {
+    return _materializedVegaSpec
+  }
+
   _chart.x = function(x) {
     if (!arguments.length) {
       return _x
@@ -132,7 +150,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return _xLatLngBnds
     }
     _xLatLngBnds = _
-    return chart
+    return _chart
   }
 
   _chart.yLatLngBnds = function(_) {
@@ -140,7 +158,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return _yLatLngBnds
     }
     _yLatLngBnds = _
-    return chart
+    return _chart
   }
 
   _chart._resetRenderBounds = function() {
@@ -343,10 +361,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _chart._vegaSpec = genLayeredVega(_chart)
+    _vegaSpec = genLayeredVega(_chart)
     _chart
       .con()
-      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_vegaSpec), {})
       .then(result => {
         if (!paused) {
           _renderBoundsMap[result.nonce] = bounds
@@ -394,15 +412,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _chart._vegaSpec = genLayeredVega(
+    _vegaSpec = genLayeredVega(
       _chart,
       group,
       lastFilteredSize(group.getCrossfilterId())
     )
-
     const result = _chart
       .con()
-      .renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec))
+      .renderVega(_chart.__dcFlag__, JSON.stringify(_vegaSpec))
 
     _renderBoundsMap[result.nonce] = bounds
     return result
@@ -557,13 +574,32 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     let selectedLayer = null
+    _materializedVegaSpec = shallowCopyVega(_vegaSpec)
     if (data.vega_metadata) {
       const vega_metadata = JSON.parse(data.vega_metadata)
       for (const layerName in _layerNames) {
         if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          // TODO(croot): I don't understand this logic. Why would the selectedLayer
+          // be set only on the existence of the _updateFromMetadata() method?
+          // My guess is that it's an attempt to get the last layer, but there are
+          // so many better ways to get at that.
+          // I wonder because at least for windbarbs there's no need for an
+          // _updateFromMetadata method, which means they would get excluded
+          // from the 'selectedLayer'
           selectedLayer = _layerNames[layerName].getState()
           _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName)
         }
+      }
+
+      if (Array.isArray(vega_metadata.scales)) {
+        vega_metadata.scales.forEach(scale_definition => {
+          const name = scale_definition.name
+          const scale_idx = _materializedVegaSpec.scales.findIndex(
+            scale => scale.name === name
+          )
+          assert(scale_idx >= 0)
+          _materializedVegaSpec.scales[scale_idx] = scale_definition
+        })
       }
     }
 

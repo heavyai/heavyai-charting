@@ -126,23 +126,6 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
-  _chart._resetVegaSpec = function() {
-    const pixelRatio = this._getPixelRatio()
-    _chart._vegaSpec.width = Math.round(_chart.width() * pixelRatio)
-    _chart._vegaSpec.height = Math.round(_chart.height() * pixelRatio)
-    _chart._vegaSpec.data = [
-      {
-        name: "table",
-        sql: "select x, y from tweets;"
-      }
-    ]
-    if (_tableName) {
-      _chart._vegaSpec.data[0].dbTableName = _tableName
-    }
-    _chart._vegaSpec.scales = []
-    _chart._vegaSpec.marks = []
-  }
-
   _chart.con = function(_) {
     if (!arguments.length) {
       return _con

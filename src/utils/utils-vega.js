@@ -5,6 +5,24 @@ export function notNull(value) {
   return value != null /* double-equals also catches undefined */
 }
 
+/**
+ * Shallow copies a vega json object.
+ * In this context, a shallow copy copies the top-level arrays in the vega json,
+ * namely the 'data', 'scales', 'projections', and 'marks' arrays. All other
+ * components are not copied.
+ * @param {Object} vega
+ * @returns {Object}
+ */
+export function shallowCopyVega(vega) {
+  return {
+    ...vega,
+    data: [...vega.data],
+    scales: [...vega.scales],
+    projections: [...vega.projections],
+    marks: [...vega.marks]
+  }
+}
+
 export function adjustOpacity(color, opacity = 1) {
   if (!/#/.test(color)) {
     return color

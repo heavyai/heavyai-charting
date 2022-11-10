@@ -1,5 +1,7 @@
 import * as _ from "lodash"
 import { getRealLayers } from "../utils/utils-vega"
+import assert from "assert"
+import { format } from "d3-format"
 
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
@@ -111,33 +113,62 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   }
 
   return toLegendState(
-    getRealLayers(chart.getLayerNames()).map(layerName => {
-      const layer = chart.getLayer(layerName)
-      const layerState = layer.getState()
-      const color = layer.getState().encoding.color
+    getRealLayers(chart.getLayerNames()).map(layer_name => {
+      const layer = chart.getLayer(layer_name)
+      if (typeof layer.getPrimaryColorScaleAndLegend === "function") {
+        const vega = chart.getMaterializedVegaSpec()
+        const [
+          color_scale,
+          color_legend
+        ] = layer.getPrimaryColorScaleAndLegend()
+        if (color_scale === null) {
+          return {}
+        }
+        const color_scale_name = color_scale.name || ""
+        const materialized_color_scale = vega.scales.find(
+          scale => scale.name === color_scale_name
+        )
+        if (!materialized_color_scale) {
+          return {}
+        }
 
-      if (layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
-        if (typeof color.scale === "object" && color.scale.domain === "auto") {
-          return {
-            ...color,
-            scale: {
-              ...color.scale,
+        return {
+          ...materialized_color_scale,
+          legend: color_legend
+        }
+      } else {
+        // TODO(croot): this can be removed once all raster layer types are
+        // transitioned to the getPrimaryColorScaleName/getLegendDefinitionForProperty
+        // form above
+        const layerState = layer.getState()
+        const color = layer.getState().encoding.color
+
+        if (layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
+          if (
+            typeof color.scale === "object" &&
+            color.scale.domain === "auto"
+          ) {
+            return {
+              ...color,
+              scale: {
+                ...color.scale,
+                domain: layer.colorDomain()
+              }
+            }
+          } else if (
+            typeof color.scale === "undefined" &&
+            color.domain === "auto"
+          ) {
+            return {
+              ...color,
               domain: layer.colorDomain()
             }
-          }
-        } else if (
-          typeof color.scale === "undefined" &&
-          color.domain === "auto"
-        ) {
-          return {
-            ...color,
-            domain: layer.colorDomain()
+          } else {
+            return color
           }
         } else {
           return color
         }
-      } else {
-        return color
       }
     }),
     chart,
@@ -258,61 +289,143 @@ export function handleLegendInput({ domain, index = 0 }) {
   this.renderAsync()
 }
 
+function isQuantitativeType(type_string) {
+  return (
+    type_string === "quantitative" ||
+    type_string === "linear" ||
+    type_string === "pow" ||
+    type_string === "sqrt" ||
+    type_string === "log" ||
+    type_string === "quantize"
+  )
+}
+
+// Taken from: https://github.com/mrblueblue/legendables/blob/master/src/legend.ts#L47
+const commafy = d => format(",")(parseFloat(d.toFixed(2)))
+const formatNumber = d => (String(d).length > 4 ? format(".2s")(d) : commafy(d))
+const color_literal_alpha_regex = /^\s*[a-z,A-Z]{3}[aA]\s*\([\d.]+,[\d.]+,[\d.]+,([\d.]+)\)$/i
+
+// eslint-disable-next-line complexity
 function legendState(state, useMap = true) {
-  if (state.type === "ordinal") {
-    return {
-      type: "nominal",
-      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
-      open: hasLegendOpenProp(state) ? state.legend.open : true,
+  const state_type =
+    typeof state.type === "string" ? state.type.toLowerCase() : ""
+  const { legend = {} } = state
+  assert(typeof legend === "object")
+  const { title = "Legend", open = true, locked = false } = legend
+  const position = useMap ? "bottom-left" : "top-right"
+
+  if (state_type === "ordinal") {
+    const extra_domain = []
+    const extra_range = []
+    if (
+      !state.hideOther &&
+      state.hasOwnProperty("showOther") &&
+      state.showOther
+    ) {
       // When there is Other category (categories besides topN), we show it in the Color Palette in chart editor.
       // We also need to include the Other category in legend. Thus, when there is Other category exist in result
       // where hideOther is false we include Other in domain.
       // For it's color swatch, we have two options:
       // 1. When the Other toggle is enabled, we show color swatch (color defined from color palette in chart editor) for the Other category range,
       // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
-      range:
-        !state.hideOther &&
-        state.hasOwnProperty("showOther") &&
-        state.showOther === true
-          ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
-          : state.range,
-      domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
-      position: useMap ? "bottom-left" : "top-right"
+      extra_domain.push("Other")
+      extra_range.push(state.defaultOtherRange)
+    } else if (state.hasOwnProperty("default")) {
+      let alpha_val = 1
+      const match = state.default.match(color_literal_alpha_regex)
+      if (match) {
+        alpha_val = Number(match[1])
+      }
+      if (alpha_val > 0) {
+        extra_domain.push("Other")
+        extra_range.push(state.default)
+      }
     }
-  } else if (
-    state.type === "quantitative" &&
-    state.domain &&
-    isNullLegend(state.domain)
-  ) {
+    return {
+      type: "nominal",
+      title,
+      open,
+      position,
+      domain: [...state.domain, ...extra_domain],
+      range: [...state.range, ...extra_range]
+    }
+  } else if (state_type === "threshold") {
+    const domain_labels = state.domain
+      ? state.domain.map((item, index, range_array) => {
+          if (index === 0) {
+            return `< ${formatNumber(item)}`
+          } else {
+            return `[${formatNumber(range_array[index - 1])}, ${formatNumber(
+              item
+            )})`
+          }
+        })
+      : []
+    if (state.domain && state.domain.length) {
+      domain_labels.push(
+        `>= ${formatNumber(state.domain[state.domain.length - 1])}`
+      )
+    }
+    return {
+      type: "nominal",
+      title,
+      open,
+      position,
+      domain: domain_labels,
+      range: state.range
+    }
+  }
+
+  const is_quantitative_type = isQuantitativeType(state_type)
+  if (is_quantitative_type && state.domain && isNullLegend(state.domain)) {
     // handles quantitative legend for all null color measure column, ["NULL", "NULL"] domain
     return {
       type: "nominal", // show nominal legend with one "NULL" value when all null quantitavie color measure is selected
-      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
-      open: hasLegendOpenProp(state) ? state.legend.open : true,
-      range: state.range,
+      title,
+      open,
+      position,
       domain: state.domain.slice(1),
-      position: useMap ? "bottom-left" : "top-right"
+      range: state.range
     }
-  } else if (state.type === "quantitative") {
+  } else if (state_type === "quantize") {
+    assert(Array.isArray(state.range))
+    assert(Array.isArray(state.domain))
+    assert(state.domain.length === 2)
+    assert(typeof state.domain[0] === "number")
+    const range_diff = (state.domain[1] - state.domain[0]) / state.range.length
+    let curr_val = state.domain[0]
+    const domain_labels = state.range.map((item, index, range_array) => {
+      const prev_val = curr_val
+      curr_val += range_diff
+      if (index === 0) {
+        return `< ${formatNumber(curr_val)}`
+      } else if (index === range_array.length - 1) {
+        return `>= ${formatNumber(prev_val)}`
+      } else {
+        return `[${formatNumber(prev_val)}, ${formatNumber(curr_val)})`
+      }
+    })
+    return {
+      type: "nominal",
+      title,
+      open,
+      position,
+      domain: domain_labels,
+      range: state.range
+    }
+  } else if (is_quantitative_type) {
+    const { scale = {} } = state
+    const domain = scale.domain || state.domain
+    const range = scale.range || state.range
+    const min_size = Math.min(domain.length, range.length)
     return {
       type: "gradient",
-      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
-      locked: hasLegendLockedProp(state) ? state.legend.locked : false,
-      open: hasLegendOpenProp(state) ? state.legend.open : true,
-      range: state.range,
-      domain: state.domain,
-      position: "bottom-left"
-    }
-  } else if (state.type === "quantize") {
-    const { scale } = state
-    return {
-      type: "gradient",
-      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
-      locked: hasLegendLockedProp(state) ? state.legend.locked : false,
-      open: hasLegendOpenProp(state) ? state.legend.open : true,
-      range: scale.range,
-      domain: scale.domain,
-      position: "bottom-left"
+      title,
+      locked,
+      open,
+      position: "bottom-left",
+      range: range.slice(0, min_size),
+      domain: domain.slice(0, min_size)
     }
   } else {
     return {}
