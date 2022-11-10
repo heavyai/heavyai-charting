@@ -369,7 +369,7 @@ class ConfigDefinitionInterface extends PropertiesDefinitionInterface {
         }
         const vega_mark_property_object = {}
         const context = this
-        prop_descriptor.vega_mark_prop_names.forEach((vega_mark_prop_name) => {
+        prop_descriptor.vega_mark_prop_names.forEach(vega_mark_prop_name => {
           vega_mark_property_object[vega_mark_prop_name] = context[prop_name]
         })
         vega_property_output_state.addMarkProperty(
@@ -554,7 +554,7 @@ class ConfigDefinitionObject extends PropertiesDefinitionInterface {
       WindBarkConfigDefinitionObject
     ]
 
-    sub_config_classes.forEach((sub_config_class) => {
+    sub_config_classes.forEach(sub_config_class => {
       const key = sub_config_class.key
       if (Object.hasOwn(definition_object, key)) {
         this.configs_.set(
@@ -802,7 +802,7 @@ class TransformDefinitionObject extends PropertiesDefinitionInterface {
    * @param {VegaPropertyOutputState} vega_property_output_state
    */
   materialize(vega_property_output_state) {
-    this.transforms_.forEach((transform) => {
+    this.transforms_.forEach(transform => {
       transform.materialize(vega_property_output_state)
     })
   }
@@ -818,11 +818,13 @@ class MarkDefinitionObject extends PropertiesDefinitionInterface {
     const prop_definition = this.definition_object_[prop_descriptor.prop_name]
     if (prop_descriptor.isValidMarkDefinition(prop_definition)) {
       const vega_mark_property_object = {}
-      const materialized_vega_object =
-        prop_descriptor.materializeMarkDefinitionForVega(prop_definition)
-      prop_descriptor.vega_mark_prop_names.forEach((vega_mark_prop_name) => {
-        vega_mark_property_object[vega_mark_prop_name] =
-          materialized_vega_object
+      const materialized_vega_object = prop_descriptor.materializeMarkDefinitionForVega(
+        prop_definition
+      )
+      prop_descriptor.vega_mark_prop_names.forEach(vega_mark_prop_name => {
+        vega_mark_property_object[
+          vega_mark_prop_name
+        ] = materialized_vega_object
       })
       vega_property_output_state.addMarkProperty(
         prop_descriptor.prop_name,
@@ -911,7 +913,7 @@ class ValueDefinitionObject extends PropertiesDefinitionInterface {
     }
     const vega_mark_property_object = {}
     const context = this
-    prop_descriptor.vega_mark_prop_names.forEach((vega_mark_prop_name) => {
+    prop_descriptor.vega_mark_prop_names.forEach(vega_mark_prop_name => {
       vega_mark_property_object[vega_mark_prop_name] = context.value
     })
     vega_property_output_state.addMarkProperty(
@@ -1390,7 +1392,7 @@ class ExtentFlags {
         as: [],
 
         // eslint-disable-next-line object-shorthand
-        push: function (op) {
+        push: function(op) {
           const index = this.ops.indexOf(op)
           if (index >= 0) {
             return this.as[index]
@@ -1406,8 +1408,11 @@ class ExtentFlags {
       vega_xform_outputs: []
     }
 
-    const { aggregate_xform_obj, formula_xform_objs, vega_xform_outputs } =
-      vega_xform_build_state
+    const {
+      aggregate_xform_obj,
+      formula_xform_objs,
+      vega_xform_outputs
+    } = vega_xform_build_state
 
     for (const extent_flag of ExtentFlags.val_to_enum_map_.values()) {
       if (extent_flags & extent_flag) {
@@ -1650,14 +1655,16 @@ class ContinuousScale extends ScaleDefinitionObject {
       const parent = this.parent
       assert(parent instanceof FieldDefinitionObject)
 
-      const { vega_xform_obj, scale_domain_ref } =
-        ContinuousScale.buildExtentsVegaTransform(
-          parent.output,
-          this.root_context.layer_name,
-          prop_descriptor.prop_name,
-          // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
-          ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
-        )
+      const {
+        vega_xform_obj,
+        scale_domain_ref
+      } = ContinuousScale.buildExtentsVegaTransform(
+        parent.output,
+        this.root_context.layer_name,
+        prop_descriptor.prop_name,
+        // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
+        ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
+      )
 
       vega_property_output_state.addVegaTransform(
         prop_descriptor.prop_name,
@@ -1895,12 +1902,14 @@ class DiscreteScale extends ScaleDefinitionObject {
       const parent = this.parent
       assert(parent instanceof FieldDefinitionObject)
 
-      const { vega_xform_obj, scale_domain_ref } =
-        DiscreteScale.buildDistinctVegaTransform(
-          parent.output,
-          this.root_context.layer_name,
-          prop_descriptor.prop_name
-        )
+      const {
+        vega_xform_obj,
+        scale_domain_ref
+      } = DiscreteScale.buildDistinctVegaTransform(
+        parent.output,
+        this.root_context.layer_name,
+        prop_descriptor.prop_name
+      )
 
       vega_property_output_state.addVegaTransform(
         prop_descriptor.prop_name,
@@ -2010,14 +2019,16 @@ class DiscretizingScale extends ScaleDefinitionObject {
       const parent = this.parent
       assert(parent instanceof FieldDefinitionObject)
 
-      const { vega_xform_obj, scale_domain_ref } =
-        ContinuousScale.buildExtentsVegaTransform(
-          parent.output,
-          this.root_context.layer_name,
-          prop_descriptor.prop_name,
-          // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
-          ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
-        )
+      const {
+        vega_xform_obj,
+        scale_domain_ref
+      } = ContinuousScale.buildExtentsVegaTransform(
+        parent.output,
+        this.root_context.layer_name,
+        prop_descriptor.prop_name,
+        // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
+        ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
+      )
 
       vega_property_output_state.addVegaTransform(
         prop_descriptor.prop_name,
@@ -2113,9 +2124,11 @@ class ThresholdScale extends DiscretizingScale {
         throw new Error(
           `Cannot automatically deduce a threshold domain for ${
             this.range_.length
-          } range values. Automatic deduction can only succeed with a max of ${
-            (Array.from(ExtentFlags.sigma_to_enum_map_.keys()).pop() + 1) * 2
-          } range values`
+          } range values. Automatic deduction can only succeed with a max of ${(Array.from(
+            ExtentFlags.sigma_to_enum_map_.keys()
+          ).pop() +
+            1) *
+            2} range values`
         )
       }
       while (
@@ -2133,43 +2146,42 @@ class ThresholdScale extends DiscretizingScale {
         extent_flags |= ExtentFlags.kMean
       }
 
-      const { vega_xform_obj, scale_domain_ref } =
-        ExtentFlags.buildVegaTransformFromExtentFlags(
-          parent.output,
-          this.root_context.layer_name,
-          prop_descriptor.prop_name,
-          extent_flags,
-          (
-            extent_flag,
-            agg_xform_output,
-            formula_xform_outputs,
-            { vega_xform_outputs }
-          ) => {
-            if (
-              extent_flag >= ExtentFlags.kOneSigma &&
-              extent_flag <= ExtentFlags.kSixSigma
-            ) {
-              assert(formula_xform_outputs.length === 2)
-              vega_xform_outputs.unshift(formula_xform_outputs[0].as)
-              vega_xform_outputs.push(formula_xform_outputs[1].as)
-            } else if (extent_flag === ExtentFlags.kMin) {
-              vega_xform_outputs.unshift(agg_xform_output)
-            } else if (extent_flag === ExtentFlags.kMax) {
-              vega_xform_outputs.push(agg_xform_output)
-            } else if (extent_flag === ExtentFlags.kMean) {
-              vega_xform_outputs.splice(
-                Math.floor(vega_xform_outputs.length / 2),
-                0,
-                agg_xform_output
-              )
-            } else {
-              assert(
-                false,
-                `Unsupported extent flag ${extent_flag.extent_name}`
-              )
-            }
+      const {
+        vega_xform_obj,
+        scale_domain_ref
+      } = ExtentFlags.buildVegaTransformFromExtentFlags(
+        parent.output,
+        this.root_context.layer_name,
+        prop_descriptor.prop_name,
+        extent_flags,
+        (
+          extent_flag,
+          agg_xform_output,
+          formula_xform_outputs,
+          { vega_xform_outputs }
+        ) => {
+          if (
+            extent_flag >= ExtentFlags.kOneSigma &&
+            extent_flag <= ExtentFlags.kSixSigma
+          ) {
+            assert(formula_xform_outputs.length === 2)
+            vega_xform_outputs.unshift(formula_xform_outputs[0].as)
+            vega_xform_outputs.push(formula_xform_outputs[1].as)
+          } else if (extent_flag === ExtentFlags.kMin) {
+            vega_xform_outputs.unshift(agg_xform_output)
+          } else if (extent_flag === ExtentFlags.kMax) {
+            vega_xform_outputs.push(agg_xform_output)
+          } else if (extent_flag === ExtentFlags.kMean) {
+            vega_xform_outputs.splice(
+              Math.floor(vega_xform_outputs.length / 2),
+              0,
+              agg_xform_output
+            )
+          } else {
+            assert(false, `Unsupported extent flag ${extent_flag.extent_name}`)
           }
-        )
+        }
+      )
 
       ContinuousScale.buildExtentsVegaTransform(
         parent.output,
@@ -2349,7 +2361,7 @@ class FieldDefinitionObject extends PropertiesDefinitionInterface {
       }
     }
 
-    const validate_scale_type = (scale_type) => {
+    const validate_scale_type = scale_type => {
       if (ContinuousScale.isContinuousScale(scale_type)) {
         if (context.measurement_type_ === null) {
           context.measurement_type_ = MeasurementType.kQuantitative
@@ -2396,24 +2408,22 @@ class FieldDefinitionObject extends PropertiesDefinitionInterface {
             `Invalid field definition for property '${prop_name}'. The property does not work with scales.`
           )
         }
-        scale_definition_object =
-          ScaleDefinitionObject.constructScaleFromDefinition(
-            this.definition_object_.scale,
-            scale_parent_info,
-            default_scale_name_callback,
-            default_scale_type_callback,
-            validate_scale_type
-          )
-      }
-    } else if (prop_descriptor.can_have_scale_definition) {
-      scale_definition_object =
-        ScaleDefinitionObject.constructScaleFromDefinition(
-          prop_descriptor.buildDefaultScaleDefinition(scale_parent_info),
+        scale_definition_object = ScaleDefinitionObject.constructScaleFromDefinition(
+          this.definition_object_.scale,
           scale_parent_info,
           default_scale_name_callback,
           default_scale_type_callback,
           validate_scale_type
         )
+      }
+    } else if (prop_descriptor.can_have_scale_definition) {
+      scale_definition_object = ScaleDefinitionObject.constructScaleFromDefinition(
+        prop_descriptor.buildDefaultScaleDefinition(scale_parent_info),
+        scale_parent_info,
+        default_scale_name_callback,
+        default_scale_type_callback,
+        validate_scale_type
+      )
     }
     if (this.measurement_type_ === null) {
       this.measurement_type_ = prop_descriptor.getDefaultMeasurementType()
@@ -2446,7 +2456,7 @@ class FieldDefinitionObject extends PropertiesDefinitionInterface {
     }
 
     const final_property_object = {}
-    prop_descriptor.vega_mark_prop_names.forEach((vega_mark_prop_name) => {
+    prop_descriptor.vega_mark_prop_names.forEach(vega_mark_prop_name => {
       final_property_object[vega_mark_prop_name] = vega_mark_property_object
     })
     vega_property_output_state.addMarkProperty(prop_name, final_property_object)
@@ -2534,7 +2544,7 @@ class PropDescriptor {
     this.fallback_prop_ = fallback_prop
     if (this.fallback_prop_) {
       const context = this
-      this.vega_mark_prop_names.forEach((vega_prop_name) => {
+      this.vega_mark_prop_names.forEach(vega_prop_name => {
         if (!context.fallback_prop_.vega_prop_names_.includes(vega_prop_name)) {
           context.fallback_prop_.vega_prop_names_.push(vega_prop_name)
         }
@@ -3030,7 +3040,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
    */
   let _vega_property_output_state = null
 
-  _layer.setState = function (setter) {
+  _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
     } else {
@@ -3038,7 +3048,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     }
     return _layer
   }
-  _layer.getState = function () {
+  _layer.getState = function() {
     return state
   }
 
@@ -3061,7 +3071,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
   }
 
   // eslint-disable-next-line complexity
-  _layer.getTransforms = function (
+  _layer.getTransforms = function(
     table,
     filter,
     globalFilter,
@@ -3261,7 +3271,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     )
   )
 
-  _layer.__genVega = function ({
+  _layer.__genVega = function({
     chart,
     table,
     filter,
@@ -3346,7 +3356,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
   const _cf = null
   _layer.crossfilter = createRasterLayerGetterSetter(_layer, _cf)
 
-  _layer._genVega = function (chart, layerName, group, query) {
+  _layer._genVega = function(chart, layerName, group, query) {
     const realLayerName = layerName
     _vega = _layer.__genVega({
       chart,
@@ -3360,7 +3370,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     return _vega
   }
 
-  _layer.getPrimaryColorScaleAndLegend = function () {
+  _layer.getPrimaryColorScaleAndLegend = function() {
     let prop_descriptor = prop_descriptors.get("stroke")
     let scale_obj = _vega_property_output_state.getScaleForProp(prop_descriptor)
     if (!scale_obj) {
@@ -3376,28 +3386,28 @@ export default function rasterLayerWindBarbMixin(_layer) {
     return [scale_obj, legend_obj]
   }
 
-  _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
+  _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     // currently no-op
     // TODO(croot): needs to be filled in to support windbarb hit-testing
   }
 
-  _layer._areResultsValidForPopup = function (results) {
+  _layer._areResultsValidForPopup = function(results) {
     // TODO(croot): needs to be filled in to support windbarb hit-testing
     return true
   }
 
-  _layer._displayPopup = function (svgProps) {
+  _layer._displayPopup = function(svgProps) {
     // currently a no-op
     // TODO(croot): needs to be filled in to support windbarb hit-testing
     return AABox2d.create()
   }
 
-  _layer._hidePopup = function (chart, hideCallback) {
+  _layer._hidePopup = function(chart, hideCallback) {
     // currently a no-op
     // TODO(croot): needs to be filled in to support windbarb hit-testing
   }
 
-  _layer._destroyLayer = function () {
+  _layer._destroyLayer = function() {
     const xDim = _layer.xDim()
     if (xDim) {
       xDim.dispose()

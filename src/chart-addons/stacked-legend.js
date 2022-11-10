@@ -3,15 +3,15 @@ import { getRealLayers } from "../utils/utils-vega"
 import assert from "assert"
 import { format } from "d3-format"
 
-const hasLegendOpenProp = (color) =>
+const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
-const hasLegendLockedProp = (color) =>
+const hasLegendLockedProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("locked")
-const hasLegendTitleProp = (color) =>
+const hasLegendTitleProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("title")
-const handleColorLegendOpenUndefined = (color) =>
+const handleColorLegendOpenUndefined = color =>
   typeof color.legend.open === "undefined" ? true : color.legend.open
-const handleNonStackedOpenState = (state) =>
+const handleNonStackedOpenState = state =>
   state.type === "gradient" ? Object.assign({}, state, { open: true }) : state
 const handleNonStackedNullLegend = (
   state // used for ["NULL", "NULL"} quantitative legend domain
@@ -113,18 +113,20 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   }
 
   return toLegendState(
-    getRealLayers(chart.getLayerNames()).map((layer_name) => {
+    getRealLayers(chart.getLayerNames()).map(layer_name => {
       const layer = chart.getLayer(layer_name)
       if (typeof layer.getPrimaryColorScaleAndLegend === "function") {
         const vega = chart.getMaterializedVegaSpec()
-        const [color_scale, color_legend] =
-          layer.getPrimaryColorScaleAndLegend()
+        const [
+          color_scale,
+          color_legend
+        ] = layer.getPrimaryColorScaleAndLegend()
         if (color_scale === null) {
           return {}
         }
         const color_scale_name = color_scale.name || ""
         const materialized_color_scale = vega.scales.find(
-          (scale) => scale.name === color_scale_name
+          scale => scale.name === color_scale_name
         )
         if (!materialized_color_scale) {
           return {}
@@ -176,9 +178,9 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
 
 export function handleLegendToggle() {
   // when chart legend is collapsed, also collapse layer legends
-  this.getLayers().forEach((l) =>
+  this.getLayers().forEach(l =>
     l.setState(
-      setLegendState((color) => ({
+      setLegendState(color => ({
         open: !this.legend().state.open
       }))
     )
@@ -191,7 +193,9 @@ export function handleLegendToggle() {
 
 export function handleLegendDoneRender() {
   this.root().classed("horizontal-lasso-tools", () => {
-    const legendNode = this.root().select(".legendables").node()
+    const legendNode = this.root()
+      .select(".legendables")
+      .node()
     const isHorizontal =
       legendNode &&
       legendNode.clientHeight > this.height() - LASSO_TOOL_VERTICAL_SPACE
@@ -206,7 +210,7 @@ export function handleLegendDoneRender() {
 
 export function handleLegendOpen(index = 0) {
   this.getLayers()[index].setState(
-    setLegendState((color) => ({
+    setLegendState(color => ({
       open: hasLegendOpenProp(color)
         ? !handleColorLegendOpenUndefined(color)
         : false
@@ -219,7 +223,7 @@ export function handleLegendLock({ locked, index = 0 }) {
   const layer = this.getLayers()[index]
 
   layer.setState(
-    setLegendState((color) => ({
+    setLegendState(color => ({
       locked: typeof locked === "undefined" ? true : !locked
     }))
   )
@@ -265,7 +269,7 @@ export function handleLegendInput({ domain, index = 0 }) {
   if (_.difference(domain, legendDomain).length > 0) {
     // automatically lock color legend when min/max input changes
     layer.setState(
-      setLegendState((color) => ({
+      setLegendState(color => ({
         locked: true
       }))
     )
@@ -297,11 +301,9 @@ function isQuantitativeType(type_string) {
 }
 
 // Taken from: https://github.com/mrblueblue/legendables/blob/master/src/legend.ts#L47
-const commafy = (d) => format(",")(parseFloat(d.toFixed(2)))
-const formatNumber = (d) =>
-  String(d).length > 4 ? format(".2s")(d) : commafy(d)
-const color_literal_alpha_regex =
-  /^\s*[a-z,A-Z]{3}[aA]\s*\([\d.]+,[\d.]+,[\d.]+,([\d.]+)\)$/i
+const commafy = d => format(",")(parseFloat(d.toFixed(2)))
+const formatNumber = d => (String(d).length > 4 ? format(".2s")(d) : commafy(d))
+const color_literal_alpha_regex = /^\s*[a-z,A-Z]{3}[aA]\s*\([\d.]+,[\d.]+,[\d.]+,([\d.]+)\)$/i
 
 // eslint-disable-next-line complexity
 function legendState(state, useMap = true) {

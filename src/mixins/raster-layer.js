@@ -101,7 +101,7 @@ export default function rasterLayer(layerType) {
   const _popup_item_val_class = "popup-item-val"
   const _layerPopups = {}
 
-  _layer.layerType = function () {
+  _layer.layerType = function() {
     return _layerType
   }
 
@@ -125,7 +125,7 @@ export default function rasterLayer(layerType) {
    * @return {crossfilter.dimension}
    * @return {dc.baseMixin}
    */
-  _layer.dimension = function (dimension) {
+  _layer.dimension = function(dimension) {
     if (!arguments.length) {
       return _dimension
     }
@@ -157,7 +157,7 @@ export default function rasterLayer(layerType) {
    * @return {crossfilter.group}
    * @return {dc.baseMixin}
    */
-  _layer.group = function (group, name) {
+  _layer.group = function(group, name) {
     if (!arguments.length) {
       return _group
     }
@@ -166,7 +166,7 @@ export default function rasterLayer(layerType) {
     return _layer
   }
 
-  _layer.opacity = function (opacity) {
+  _layer.opacity = function(opacity) {
     if (!arguments.length) {
       return _opacity
     }
@@ -188,7 +188,7 @@ export default function rasterLayer(layerType) {
     }
   }
 
-  _layer.genVega = function (chart, layerName) {
+  _layer.genVega = function(chart, layerName) {
     const cap = _layer.cap()
     const group = _layer.group() || {}
     let query = ""
@@ -214,14 +214,14 @@ export default function rasterLayer(layerType) {
     }
   }
 
-  _layer.hasPopupColumns = function () {
+  _layer.hasPopupColumns = function() {
     const popCols = _layer.popupColumns()
     return Boolean(popCols && popCols instanceof Array && popCols.length > 0)
   }
 
   // A Utility function to map size or color measure label for custom measure popup
   // Label is the same as field most of the case but for custom measures, it could be different
-  _layer.getMeasureLabel = function (measureRegex) {
+  _layer.getMeasureLabel = function(measureRegex) {
     let measureBlock = null
     if (measureRegex[2] === "color" || measureRegex[2] === "strokeColor") {
       measureBlock = _layer.getState().encoding.color
@@ -311,18 +311,18 @@ export default function rasterLayer(layerType) {
     return popupColSet.add(colAttr.replace(/\n/g, " "))
   }
 
-  _layer.getPopupAndRenderColumns = function (chart) {
+  _layer.getPopupAndRenderColumns = function(chart) {
     const popupColsSet = new Set()
     const popupCols = _layer.popupColumns()
     if (popupCols) {
-      popupCols.forEach((colAttr) => {
+      popupCols.forEach(colAttr => {
         addPopupColumnToSet(colAttr, popupColsSet)
       })
     }
     _layer._addRenderAttrsToPopupColumnSet(chart, popupColsSet)
 
     const rtnArray = []
-    popupColsSet.forEach((colName) => {
+    popupColsSet.forEach(colName => {
       rtnArray.push(colName)
     })
     return rtnArray
@@ -371,7 +371,7 @@ export default function rasterLayer(layerType) {
     return newData
   }
 
-  _layer.areResultsValidForPopup = function (results) {
+  _layer.areResultsValidForPopup = function(results) {
     if (!results) {
       return false
     }
@@ -381,7 +381,7 @@ export default function rasterLayer(layerType) {
   function replaceURL(colVal) {
     if (typeof colVal === "string") {
       const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
-      return colVal.replace(urlRegExpr, (url) => {
+      return colVal.replace(urlRegExpr, url => {
         let hyperlink = url
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink
@@ -411,7 +411,7 @@ export default function rasterLayer(layerType) {
 
     html += '<div class="' + _popup_box_item_wrap_class + '">'
 
-    columnOrder.forEach((key) => {
+    columnOrder.forEach(key => {
       if (typeof data[key] === "undefined") {
         return
       }
@@ -437,7 +437,7 @@ export default function rasterLayer(layerType) {
     return html
   }
 
-  _layer.displayPopup = function (
+  _layer.displayPopup = function(
     chart,
     parentElem,
     result,
@@ -529,8 +529,11 @@ export default function rasterLayer(layerType) {
               chart.measureValue
             )
       )
-      .style("left", function () {
-        const rect = d3.select(this).node().getBoundingClientRect()
+      .style("left", function() {
+        const rect = d3
+          .select(this)
+          .node()
+          .getBoundingClientRect()
         const boxWidth = rect.width
         const halfBoxWidth = boxWidth / 2
         const boxHeight = rect.height
@@ -719,11 +722,11 @@ export default function rasterLayer(layerType) {
     }
   }
 
-  _layer.isPopupDisplayed = function (chart) {
+  _layer.isPopupDisplayed = function(chart) {
     return _layerPopups[chart] !== undefined
   }
 
-  _layer.hidePopup = function (chart, hideCallback) {
+  _layer.hidePopup = function(chart, hideCallback) {
     if (_layerPopups[chart]) {
       const popup = chart.select("." + _popup_wrap_class)
       if (popup) {
@@ -737,13 +740,13 @@ export default function rasterLayer(layerType) {
     }
   }
 
-  _layer.destroyLayer = function (chart) {
+  _layer.destroyLayer = function(chart) {
     // need to define a "_destroyLayer" method for each
     // layer mixin
     _layer._destroyLayer(chart)
   }
 
-  _layer._addQueryDrivenRenderPropToSet = function (setObj, markPropObj, prop) {
+  _layer._addQueryDrivenRenderPropToSet = function(setObj, markPropObj, prop) {
     if (typeof markPropObj[prop] !== "object") {
       return
     }

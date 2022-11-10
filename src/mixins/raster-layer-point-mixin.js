@@ -169,7 +169,7 @@ export default function rasterLayerPointMixin(_layer) {
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
 
-  _layer.setState = function (setter) {
+  _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
     } else {
@@ -183,11 +183,11 @@ export default function rasterLayerPointMixin(_layer) {
     return _layer
   }
 
-  _layer.getState = function () {
+  _layer.getState = function() {
     return state
   }
 
-  _layer.getTransforms = function (
+  _layer.getTransforms = function(
     table,
     filter,
     globalFilter,
@@ -345,7 +345,7 @@ export default function rasterLayerPointMixin(_layer) {
     return transforms
   }
 
-  _layer.getProjections = function () {
+  _layer.getProjections = function() {
     return _layer
       .getTransforms(
         "",
@@ -355,11 +355,11 @@ export default function rasterLayerPointMixin(_layer) {
         lastFilteredSize(_layer.crossfilter().getId())
       )
       .filter(
-        (transform) =>
+        transform =>
           transform.type === "project" && transform.hasOwnProperty("as")
       )
-      .map((projection) => parser.parseTransform({ select: [] }, projection))
-      .map((sql) => sql.select[0])
+      .map(projection => parser.parseTransform({ select: [] }, projection))
+      .map(sql => sql.select[0])
   }
 
   function usesAutoColors() {
@@ -455,7 +455,7 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer.__genVega = function ({
+  _layer.__genVega = function({
     table,
     filter,
     lastFilteredSize,
@@ -638,7 +638,7 @@ export default function rasterLayerPointMixin(_layer) {
   const _minMaxCache = {}
   let _cf = null
 
-  _layer.crossfilter = function (cf) {
+  _layer.crossfilter = function(cf) {
     if (!arguments.length) {
       return _cf
     }
@@ -646,11 +646,11 @@ export default function rasterLayerPointMixin(_layer) {
     return _layer
   }
 
-  _layer._requiresCap = function () {
+  _layer._requiresCap = function() {
     return false
   }
 
-  _layer.xRangeFilter = function (range) {
+  _layer.xRangeFilter = function(range) {
     if (!_layer.xDim()) {
       throw new Error("Must set layer's xDim before invoking xRange")
     }
@@ -665,7 +665,7 @@ export default function rasterLayerPointMixin(_layer) {
     return _layer
   }
 
-  _layer.yRangeFilter = function (range) {
+  _layer.yRangeFilter = function(range) {
     if (!_layer.yDim()) {
       throw new Error("Must set layer's yDim before invoking yRange")
     }
@@ -680,7 +680,7 @@ export default function rasterLayerPointMixin(_layer) {
     return _layer
   }
 
-  _layer._genVega = function (chart, layerName, group, query) {
+  _layer._genVega = function(chart, layerName, group, query) {
     // Pointmap prioritized color hack. Need to use the real layer name for crossfilter
     let realLayerName = layerName
     if (
@@ -698,7 +698,7 @@ export default function rasterLayerPointMixin(_layer) {
         .yDim()
         .groupAll()
         .valueAsync(false, false, false, realLayerName)
-        .then((value) => {
+        .then(value => {
           setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
     }
@@ -717,14 +717,14 @@ export default function rasterLayerPointMixin(_layer) {
 
   const renderAttributes = ["xc", "yc", "width", "height", "fillColor", "angle"]
 
-  _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
+  _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     if (
       _vega &&
       Array.isArray(_vega.marks) &&
       _vega.marks.length > 0 &&
       _vega.marks[0].properties
     ) {
-      renderAttributes.forEach((prop) => {
+      renderAttributes.forEach(prop => {
         _layer._addQueryDrivenRenderPropToSet(
           popupColumnsSet,
           _vega.marks[0].properties,
@@ -734,7 +734,7 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer._areResultsValidForPopup = function (results) {
+  _layer._areResultsValidForPopup = function(results) {
     if (typeof results.x === "undefined" || typeof results.y === "undefined") {
       return false
     } else {
@@ -742,7 +742,7 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer._displayPopup = function (svgProps) {
+  _layer._displayPopup = function(svgProps) {
     const {
       chart,
       parentElem,
@@ -763,7 +763,7 @@ export default function rasterLayerPointMixin(_layer) {
       _vega.marks[0].properties
     ) {
       const propObj = _vega.marks[0].properties
-      renderAttributes.forEach((prop) => {
+      renderAttributes.forEach(prop => {
         if (
           typeof propObj[prop] === "object" &&
           propObj[prop].field &&
@@ -839,7 +839,7 @@ export default function rasterLayerPointMixin(_layer) {
     ])
   }
 
-  _layer._hidePopup = function (chart, hideCallback) {
+  _layer._hidePopup = function(chart, hideCallback) {
     const mapPoint = chart.select("." + _point_class)
     if (mapPoint) {
       if (_scaledPopups[chart]) {
@@ -858,7 +858,7 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer._destroyLayer = function (chart) {
+  _layer._destroyLayer = function(chart) {
     const xDim = _layer.xDim()
     if (xDim) {
       xDim.dispose()
@@ -870,7 +870,7 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer.setZIndexedLayers = function (chart, prioritizedColors) {
+  _layer.setZIndexedLayers = function(chart, prioritizedColors) {
     const layers = chart.getLayers()
     const layerNames = chart.getLayerNames()
     if (
@@ -883,7 +883,7 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer.removeZIndexedLayers = function (chart) {
+  _layer.removeZIndexedLayers = function(chart) {
     const layers = chart.getLayers()
     const layerNames = chart.getLayerNames()
     if (
@@ -896,7 +896,7 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer.getLayerNames = function (chart) {
+  _layer.getLayerNames = function(chart) {
     return chart.getLayerNames()
   }
   return _layer

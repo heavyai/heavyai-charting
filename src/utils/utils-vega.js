@@ -35,7 +35,10 @@ export function adjustOpacity(color, opacity = 1) {
 }
 
 export function adjustRGBAOpacity(rgba, opacity) {
-  let [r, g, b, a] = rgba.split("(")[1].split(")")[0].split(",")
+  let [r, g, b, a] = rgba
+    .split("(")[1]
+    .split(")")[0]
+    .split(",")
   if (a) {
     const relativeOpacity = parseFloat(a) - (1 - opacity)
     a = `${relativeOpacity > 0 ? relativeOpacity : 0.01}`
@@ -48,9 +51,9 @@ export function adjustRGBAOpacity(rgba, opacity) {
 export function parseColorRamps(cr) {
   if (cr && cr.length > 0 && Array.isArray(cr)) {
     const cr_arr = cr
-      .map((a) => a.filter((b) => b !== "min" && b !== "max" && b !== ""))
+      .map(a => a.filter(b => b !== "min" && b !== "max" && b !== ""))
       .flat(1)
-      .map((a) => parseFloat(a))
+      .map(a => parseFloat(a))
 
     return cr_arr.filter((a, i) => cr_arr.indexOf(a) === i)
   } else {
@@ -109,7 +112,7 @@ export function createVegaAttrMixin(
       prePostFuncs ? prePostFuncs.postField : null
     )
 
-    layerObj["_build" + capAttrName + "Scale"] = function (chart, layerName) {
+    layerObj["_build" + capAttrName + "Scale"] = function(chart, layerName) {
       const scale = layerObj[scaleFunc]()
       if (
         scale &&
@@ -164,7 +167,7 @@ export function createVegaAttrMixin(
   }
 
   const getValFunc = "get" + capAttrName + "Val"
-  layerObj[getValFunc] = function (input) {
+  layerObj[getValFunc] = function(input) {
     let rtnVal = layerObj[defaultFunc]()
     if (input === null) {
       rtnVal = layerObj[nullFunc]()
@@ -218,7 +221,7 @@ export function createRasterLayerGetterSetter(
   preSetFunc,
   postSetFunc
 ) {
-  return function (newVal) {
+  return function(newVal) {
     if (!arguments.length) {
       return attrVal
     }
@@ -351,7 +354,7 @@ class LegacyPolySvgFormatter extends SvgFormatter {
 
   getSvgPath(t, s) {
     let rtnPointStr = ""
-    this._polys.forEach((pts) => {
+    this._polys.forEach(pts => {
       if (!pts) {
         return
       }
@@ -416,7 +419,7 @@ function buildGeoProjection(
     _scale = s
   }
 
-  project.setClamp = (clamp) => {
+  project.setClamp = clamp => {
     _clamp = Boolean(clamp)
   }
 
@@ -562,7 +565,7 @@ export function __displayPopup(svgProps) {
   ) {
     const propObj = _vega.marks[0].properties
 
-    renderAttributes.forEach((prop) => {
+    renderAttributes.forEach(prop => {
       if (
         typeof propObj[prop] === "object" &&
         propObj[prop].field &&
@@ -750,7 +753,7 @@ export function getScales(
               (c, i) => (i * 100) / (color.range.length - 1) / 100
             ),
       range: color.range
-        .map((c) => adjustOpacity(c, color.opacity))
+        .map(c => adjustOpacity(c, color.opacity))
         .map((c, i, colorArray) => {
           const normVal = i / (colorArray.length - 1)
           let interp = Math.min(normVal / 0.65, 1.0)
@@ -772,7 +775,7 @@ export function getScales(
         color.domain === "auto"
           ? { data: xformDataSource, fields: scaleDomainFields.color }
           : color.domain,
-      range: color.range.map((c) => adjustOpacity(c, color.opacity)),
+      range: color.range.map(c => adjustOpacity(c, color.opacity)),
       default: adjustOpacity(
         color.defaultOtherRange, // color passed from immerse color palette for 'Other' category
         color.hasOwnProperty("showOther") && !color.showOther
@@ -791,7 +794,7 @@ export function getScales(
         color.domain === "auto"
           ? { data: xformDataSource, fields: scaleDomainFields.color }
           : color.domain,
-      range: color.range.map((c) => adjustOpacity(c, color.opacity))
+      range: color.range.map(c => adjustOpacity(c, color.opacity))
     })
   }
 
@@ -818,7 +821,7 @@ export function getRealLayers(layers) {
   const filteredLayers = []
   const visited = {}
 
-  layers.forEach((layerName) => {
+  layers.forEach(layerName => {
     if (layerName.includes("_z")) {
       const idx = layerName.indexOf("_z")
       const realLayerName = layerName.substring(0, idx) // real layer name is substring up to _z...
