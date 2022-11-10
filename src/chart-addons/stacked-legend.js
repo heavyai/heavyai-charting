@@ -319,7 +319,7 @@ function legendState(state, useMap = true) {
     const extra_range = []
     if (
       !state.hideOther &&
-      Object.hasOwn(state, "showOther") &&
+      state.hasOwnProperty("showOther") &&
       state.showOther
     ) {
       // When there is Other category (categories besides topN), we show it in the Color Palette in chart editor.
@@ -330,7 +330,7 @@ function legendState(state, useMap = true) {
       // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
       extra_domain.push("Other")
       extra_range.push(state.defaultOtherRange)
-    } else if (Object.hasOwn(state, "default")) {
+    } else if (state.hasOwnProperty("default")) {
       let alpha_val = 1
       const match = state.default.match(color_literal_alpha_regex)
       if (match) {
@@ -345,6 +345,7 @@ function legendState(state, useMap = true) {
       type: "nominal",
       title,
       open,
+      position,
       domain: [...state.domain, ...extra_domain],
       range: [...state.range, ...extra_range]
     }
@@ -369,9 +370,9 @@ function legendState(state, useMap = true) {
       type: "nominal",
       title,
       open,
+      position,
       domain: domain_labels,
-      range: state.range,
-      position
+      range: state.range
     }
   }
 
@@ -382,9 +383,9 @@ function legendState(state, useMap = true) {
       type: "nominal", // show nominal legend with one "NULL" value when all null quantitavie color measure is selected
       title,
       open,
+      position,
       domain: state.domain.slice(1),
-      range: state.range,
-      position
+      range: state.range
     }
   } else if (state_type === "quantize") {
     assert(Array.isArray(state.range))
@@ -408,9 +409,9 @@ function legendState(state, useMap = true) {
       type: "nominal",
       title,
       open,
+      position,
       domain: domain_labels,
-      range: state.range,
-      position
+      range: state.range
     }
   } else if (is_quantitative_type) {
     const { scale = {} } = state
@@ -422,9 +423,9 @@ function legendState(state, useMap = true) {
       title,
       locked,
       open,
+      position: "bottom-left",
       range: range.slice(0, min_size),
-      domain: domain.slice(0, min_size),
-      position: "bottom-left"
+      domain: domain.slice(0, min_size)
     }
   } else {
     return {}
