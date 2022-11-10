@@ -350,6 +350,7 @@ export default function rasterLayerLineMixin(_layer) {
   }) {
     const autocolors = usesAutoColors()
     const getStatsLayerName = () => layerName + "_stats"
+    const state = _layer.getState()
 
     const size = getSizing(
       state.encoding.size,
@@ -361,7 +362,7 @@ export default function rasterLayerLineMixin(_layer) {
 
     let sql
     if (isContourType(state)) {
-      sql = buildContourSQL(state.data[0], mapBounds)
+      sql = buildContourSQL(state, mapBounds)
     } else {
       sql = parser.writeSQL({
         type: "root",

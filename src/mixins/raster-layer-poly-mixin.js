@@ -529,7 +529,7 @@ export default function rasterLayerPolyMixin(_layer) {
     let data
     if (isContourType(state)) {
       const mapBounds = chart.map().getBounds()
-      const sql = buildContourSQL(state.data[0], mapBounds, true)
+      const sql = buildContourSQL(state, mapBounds, true)
       data = [
         {
           name: layerName,

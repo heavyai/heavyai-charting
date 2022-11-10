@@ -145,49 +145,30 @@
           lineJoin: "bevel",
         },
         encoding: {
-          // Keep this here for now to keep line mixin happy
-          color: {},
-
-          // TODO(joe): Implement encoding in this format
-          // color: {
-          //   field: "is_major_contour",
-          //   type: "nominal",
-          //   scale: { 
-          //     domain: [false, true], 
-          //     range: ["#999999", "#999999"] 
-          //   }
-          // },
-          // strokeWidth: { 
-          //   field: "is_major_contour", 
-          //   type: "nominal", 
-          //   scale: { 
-          //     domain: [false, true], 
-          //     range: [1, 2] 
-          //   } 
-          // },
-          // opacity: {
-          //   field: "is_major_contour",
-          //   type: "nominal",
-          //   scale: { 
-          //     domain: [false, true], 
-          //     range: [0.75, 0.8] 
-          //   } 
-          // },
-
-          // Contour stuff
-          stroke: {
-            minor: {
-              width: 1,
-              color: "#666666",
-              opacity: 0.75
-            },
-            major: {
-              width: 2,
-              color: "#666666",
-              opacity: 0.8
+          color: {
+            field: "is_major",
+            type: "nominal",
+            scale: { 
+              domain: [0, 1], 
+              range: ["#999999", "#999999"] 
             }
+          },
+          strokeWidth: {
+            field: "is_major", 
+            type: "nominal", 
+            scale: { 
+              domain: [0, 1], 
+              range: [1, 2] 
+            } 
+          },
+          opacity: {
+            field: "is_major",
+            type: "nominal",
+            scale: { 
+              domain: [0, 1], 
+              range: [0.75, 0.8] 
+            } 
           }
-
         },
         enableHitTesting: false
       })
