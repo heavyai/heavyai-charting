@@ -72,18 +72,6 @@
       .useLonLat(true)
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
 
-      const colorRange = [
-        "#115f9a",
-        "#1984c5",
-        "#22a7f0",
-        "#48b5c4",
-        "#76c68f",
-        "#a6d75b",
-        "#c9e52f",
-        "#d0ee11",
-        "#d0f400"
-      ]
-
       const contourPolygonLayer = dc.rasterLayer("polys")
       .crossfilter(crossFilter)
       .setState({
@@ -122,7 +110,8 @@
             color: {
               type: "linear",
               domain: [0, 6000],
-              range: ["red", "blue"]
+              range: ["#FF0000", "#0000FF"],
+              opacity: 0.50
             }
           }
         })
@@ -189,12 +178,12 @@
           stroke: {
             minor: {
               width: 1,
-              color: "#999999",
+              color: "#666666",
               opacity: 0.75
             },
             major: {
               width: 2,
-              color: "#999999",
+              color: "#666666",
               opacity: 0.8
             }
           }

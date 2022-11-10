@@ -596,9 +596,8 @@ export default function rasterLayerPolyMixin(_layer) {
         name: "contour_fill",
         type: state.encoding.color.type,
         domain: state.encoding.color.domain,
-        range: state.encoding.color.range
+        range: state.encoding.color.range.map(c => adjustOpacity(c, state.encoding.color.opacity))
       })
-      fillColor = "red"
     } else {
       const { scale, fillColor: polyFillColor } = getPolygonScale({state, layerFilter, layerName, autocolors})
       scales.push(scale)
