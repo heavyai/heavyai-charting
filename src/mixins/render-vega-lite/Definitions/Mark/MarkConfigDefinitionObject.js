@@ -57,9 +57,10 @@ export default class MarkConfigDefinitionObject extends ConfigDefinitionInterfac
     if (Object.hasOwn(definition_object, "strokeJoin")) {
       this.strokeJoin_ = definition_object.strokeJoin
     }
-    this.strokeMiterLimit_ = MarkConfigDefinitionObject.defaults.strokMiterLimit
-    if (Object.hasOwn(definition_object, "strokMiterLimit")) {
-      this.strokeMiterLimit_ = definition_object.strokMiterLimit
+    this.strokeMiterLimit_ =
+      MarkConfigDefinitionObject.defaults.strokeMiterLimit
+    if (Object.hasOwn(definition_object, "strokeMiterLimit")) {
+      this.strokeMiterLimit_ = definition_object.strokeMiterLimit
     }
     this.strokeWidth_ = MarkConfigDefinitionObject.defaults.strokeWidth
     if (Object.hasOwn(definition_object, "strokeWidth")) {
