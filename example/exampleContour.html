@@ -40,8 +40,6 @@
         <div id="contourChart"></div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script src="assets/app.bundle.js"></script>
 
@@ -69,7 +67,6 @@
       .mapStyle('mapbox://styles/mapbox/light-v8')
       .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
       .popupSearchRadius(2)
-      .useLonLat(true)
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
 
       const contourPolygonLayer = dc.rasterLayer("polys")
@@ -97,7 +94,6 @@
           transform: {
             projection: "mercator_map_projection",
           },
-          enableHitTesting: false,
           mark: {
             type: "poly",
             strokeColor: "white",
@@ -107,14 +103,18 @@
             miterLimit: 10
           },
           encoding: {
+            geocol: "contour_polygons",
             color: {
               type: "linear",
               domain: [0, 6000],
               range: ["#FF0000", "#0000FF"],
               opacity: 0.50
             }
-          }
+          },
+          enableHitTesting: false
         })
+      // .popupColumns(["contour_values"])
+      // .popupColumnsMapped({"contour_values": "Contour Value"})
 
 
     const contourLayer = dc.rasterLayer("lines")
@@ -145,6 +145,7 @@
           lineJoin: "bevel",
         },
         encoding: {
+          geocol: "contour_lines",
           color: {
             field: "is_major",
             type: "nominal",
@@ -170,7 +171,14 @@
             } 
           }
         },
-        enableHitTesting: false
+        enableHitTesting: true
+      })
+      .popupColumns(["contour_values"])
+      .popupColumnsMapped({"contour_values": "Contour Value"})
+      .popupStyle({
+        fillColor: "#cccccc",
+        strokeColor: "#cccccc",
+        strokeWidth: 1
       })
 
       ContourChart
@@ -187,6 +195,15 @@
           })
 
           dc.renderAllAsync()
+
+          // hover effect with popup
+          function displayPopupWithData (event) {
+            chart.getClosestResult(event.point, chart.displayPopup)
+          }
+          var debouncedPopup = _.debounce(displayPopupWithData, 250)
+          chart.map().on('mousewheel', () => chart.hidePopup());
+          chart.map().on('mousemove', () => chart.hidePopup())
+          chart.map().on('mousemove', debouncedPopup)
         })
 
 

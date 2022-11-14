@@ -510,7 +510,7 @@ export default function rasterLayerLineMixin(_layer) {
         state.transform.groupby.length
       ) {
         popupColsSet.add("sampled_geo")
-      } else {
+      } else if (state.encoding.geocol) {
         popupColsSet.add(state.encoding.geocol)
       }
     }
