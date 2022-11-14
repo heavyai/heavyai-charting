@@ -26,11 +26,7 @@ const buildParamsSQL = (params = {}) =>
     }, [])
     .join(", ")
 
-export const buildContourSQL = (
-  state,
-  mapBounds,
-  isPolygons = false
-) => {
+export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
   const data = state.data[0]
   const encoding = state.encoding
   const {
@@ -68,9 +64,11 @@ export const buildContourSQL = (
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
 
-  const geometryColumn = isPolygons ? 'contour_polygons' : 'contour_lines';
+  const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
   const contourLineCase = `CASE mod(cast(contour_values as int), ${major_contour_interval}) WHEN 0 THEN 1 ELSE 0 END as ${encoding.color.field} `
-  const contourTableFunction = isPolygons ? 'tf_raster_contour_polygons' : 'tf_raster_contour_lines'
+  const contourTableFunction = isPolygons
+    ? "tf_raster_contour_polygons"
+    : "tf_raster_contour_lines"
   const sql = `select 
     ${geometryColumn}, 
     contour_values${isPolygons ? "" : ","}
@@ -97,7 +95,7 @@ export const getContourMarks = (layerName, state) => [
         field: "y"
       },
       strokeColor: {
-        scale:CONTOUR_COLOR_SCALE,
+        scale: CONTOUR_COLOR_SCALE,
         field: state.encoding.color.field
       },
       strokeWidth: {
