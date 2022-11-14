@@ -4,6 +4,7 @@ import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
 import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
 import rasterLayerLineMixin from "./raster-layer-line-mixin"
 import rasterLayerWindBarbMixin from "./raster-layer-windbarb-mixin"
+import rasterLayerMesh2dMixin from "./raster-layer-mesh2d-mixin"
 import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
@@ -11,7 +12,14 @@ import {
 import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
 import moment from "moment"
 
-const validLayerTypes = ["points", "polys", "heat", "lines", "windbarbs"]
+const validLayerTypes = [
+  "points",
+  "polys",
+  "heat",
+  "lines",
+  "windbarbs",
+  "mesh2d"
+]
 
 export default function rasterLayer(layerType) {
   const _layerType = layerType
@@ -60,6 +68,8 @@ export default function rasterLayer(layerType) {
     _layer = rasterLayerLineMixin(_layer)
   } else if (layerType === "windbarbs") {
     _layer = rasterLayerWindBarbMixin(_layer)
+  } else if (layerType === "mesh2d") {
+    _layer = rasterLayerMesh2dMixin(_layer)
   } else {
     throw new Error(
       '"' +
