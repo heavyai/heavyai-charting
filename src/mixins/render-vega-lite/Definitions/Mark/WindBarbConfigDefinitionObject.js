@@ -1,4 +1,4 @@
-import MarkConfigDefinitionObject from "./MarkConfigDefinitionInterface"
+import MarkConfigDefinitionObject from "./MarkConfigDefinitionObject"
 
 export default class WindBarbConfigDefinitionObject extends MarkConfigDefinitionObject {
   // eslint-disable-next-line no-undef
