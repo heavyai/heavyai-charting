@@ -1,6 +1,6 @@
 import PropertiesDefinitionInterface from "../PropertiesDefinitionInterface"
 import MarkConfigDefinitionObject from "../Mark/MarkConfigDefinitionObject"
-import WindBarkConfigDefinitionObject from "../Mark/WindBarbConfigDefinitionObject"
+import WindBarbConfigDefinitionObject from "../Mark/WindBarbConfigDefinitionObject"
 
 import assert from "assert"
 
@@ -16,7 +16,7 @@ export default class ConfigDefinitionObject extends PropertiesDefinitionInterfac
 
     const sub_config_classes = [
       MarkConfigDefinitionObject,
-      WindBarkConfigDefinitionObject
+      WindBarbConfigDefinitionObject
     ]
 
     sub_config_classes.forEach(sub_config_class => {
