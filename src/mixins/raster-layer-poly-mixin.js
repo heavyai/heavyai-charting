@@ -402,11 +402,10 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.encoding.color && state.encoding.color.domain === "auto"
   }
 
-  function getPolygonScale({state, layerFilter, layerName, autocolors}) {
-
+  function getPolygonScale({ state, layerFilter, layerName, autocolors }) {
     const useColorScale = !(state.encoding.color.type === "solid")
-    let scale;
-    let fillColor;
+    let scale
+    let fillColor
     if (layerFilter.length && !useColorScale) {
       const colorScaleName = getColorScaleName(layerName)
       scale = {
@@ -526,7 +525,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const getStatsLayerName = () => layerName + "_stats"
     const state = _layer.getState()
 
-    let data;
+    let data
     if (isContourType(state)) {
       const mapBounds = chart.map().getBounds()
       const sql = buildContourSQL(state.data[0], mapBounds, true)
@@ -562,7 +561,6 @@ export default function rasterLayerPolyMixin(_layer) {
         }
       ]
     }
-    
 
     if (autocolors) {
       data.push({
@@ -596,39 +594,46 @@ export default function rasterLayerPolyMixin(_layer) {
         name: "contour_fill",
         type: state.encoding.color.type,
         domain: state.encoding.color.domain,
-        range: state.encoding.color.range.map(c => adjustOpacity(c, state.encoding.color.opacity))
+        range: state.encoding.color.range.map(c =>
+          adjustOpacity(c, state.encoding.color.opacity)
+        )
       })
     } else {
-      const { scale, fillColor: polyFillColor } = getPolygonScale({state, layerFilter, layerName, autocolors})
+      const { scale, fillColor: polyFillColor } = getPolygonScale({
+        state,
+        layerFilter,
+        layerName,
+        autocolors
+      })
       scales.push(scale)
       fillColor = polyFillColor
     }
 
-    const marks = [];
+    const marks = []
     if (isContourType(state)) {
       marks.push({
         type: "polys",
         from: {
-          data: layerName,
+          data: layerName
         },
         properties: {
           x: {
-            field: "x",
+            field: "x"
           },
           y: {
-            field: "y",
+            field: "y"
           },
           fillColor: {
             field: "contour_values",
-            scale: "contour_fill",
+            scale: "contour_fill"
           },
           strokeColor: "white",
           strokeWidth: 0,
-          lineJoin: "bevel",
+          lineJoin: "bevel"
         },
         transform: {
-          projection: "mercator_map_projection",
-        },
+          projection: "mercator_map_projection"
+        }
       })
     } else {
       const defaultMarkOptions = {
@@ -639,7 +644,7 @@ export default function rasterLayerPolyMixin(_layer) {
       }
       const mark =
         typeof state.mark === "object" ? state.mark : defaultMarkOptions
-  
+
       marks.push({
         type: "polys",
         from: {
@@ -665,7 +670,6 @@ export default function rasterLayerPolyMixin(_layer) {
         }
       })
     }
-    
 
     if (useProjection) {
       marks[0].transform = {
@@ -697,20 +701,18 @@ export default function rasterLayerPolyMixin(_layer) {
       const mapBounds = chart.map().getBounds()
 
       const state = _layer.getState()
-      const columnExpr = `${state.encoding.geoTable}.${
-        state.encoding.geocol
-      }`
-  
+      const columnExpr = `${state.encoding.geoTable}.${state.encoding.geocol}`
+
       bboxFilter = `ST_XMax(${columnExpr}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
-  
+
       const allFilters = _layer.crossfilter().getFilter(layerName)
       const otherChartFilters = allFilters.filter(
         (f, i) =>
           i !== _layer.dimension().getDimensionIndex() && f !== "" && f !== null
       )
-  
+
       let firstElem = true
-  
+
       otherChartFilters.forEach(value => {
         if (!firstElem) {
           polyFilterString += " AND "
