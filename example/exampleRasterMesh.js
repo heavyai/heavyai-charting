@@ -38,11 +38,15 @@ function create_charts(crossfilter, connection) {
 
   crossfilter
     .dimension(null)
-    .projectOn(["longitude", "latitude", "Air_Temperature as color"])
+    .projectOn(["longitude", "latitude", "Air_Temperature"])
 
-  const x_dimension = crossfilter.dimension("longitude")
-  const y_dimension = crossfilter.dimension("latitude")
-  const parent_div = document.getElementById("mesh2d-example")
+  crossfilter.dimension("model_ts").filter("2022-09-25 18:00:00")
+  crossfilter.dimension("forecast_hour").filter(0)
+  crossfilter.dimension("isobaric_level").filter(1000)
+
+  // const x_dimension = crossfilter.dimension("longitude")
+  // const y_dimension = crossfilter.dimension("latitude")
+  const parent_div = document.getElementById("rastermesh-example")
 
   const mapbox_token =
     "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g"
@@ -61,37 +65,41 @@ function create_charts(crossfilter, connection) {
     .mapboxToken(mapbox_token) // need a mapbox accessToken for loading the tiles
     .popupSearchRadius(2)
     .group(all_group)
+    .useGeoTypes(true)
 
   const raster_mesh2d_layer = HeavyCharting.rasterLayer("mesh2d")
     .crossfilter(crossfilter)
     .setState({
       // transform: [{ sample: 5000, tableSize: 1038240 }, { limit: 10000000 }],
+      transform: [
+        {
+          rasterMesh2d: {}
+        }
+      ],
       mark: { type: "mesh2d" },
       encoding: {
-        x: {
-          type: "quantitative",
+        longitude: {
           field: "longitude",
           label: "longitude"
         },
-        y: {
-          type: "quantitative",
+        latitude: {
           field: "latitude",
           label: "latitude"
         },
         color: {
-          field: "color",
+          field: "Air_Temperature",
           type: "quantitative",
           scale: {
-            range: ["red", "blue"]
+            range: ["blue", "red"]
           }
         }
       }
     })
-    .xDim(x_dimension)
-    .yDim(y_dimension)
+  // .xDim(x_dimension)
+  // .yDim(y_dimension)
 
   pointmap_chart
-    .pushLayer("windbarbs", raster_mesh2d_layer)
+    .pushLayer("raster_mesh", raster_mesh2d_layer)
     .init()
     .then(() => {
       HeavyCharting.renderAllAsync()
@@ -129,7 +137,7 @@ function create_charts(crossfilter, connection) {
 }
 
 function init() {
-  const hostname = "hostname"
+  const hostname = "10.2.1.12"
   const dbName = "heavyai"
   const user = "admin"
   const password = "HyperInteractive"
