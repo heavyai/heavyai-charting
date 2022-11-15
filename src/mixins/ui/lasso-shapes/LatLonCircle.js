@@ -1,7 +1,7 @@
 "use strict"
 
-import * as LatLonUtils from "../../../utils/utils-latlon"
 import * as Draw from "@heavyai/draw/dist/mapd-draw"
+import * as LatLonUtils from "utils/utils-latlon"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
 
 const { AABox2d, Mat2d, Point2d, Vec2d } = Draw
@@ -118,6 +118,7 @@ function getAngleOfPointAboutCircle(
     Math.sin(point_radians[1]) -
     Math.sin(center_radians[1]) * Math.cos(dist_radians)
   const denominator = Math.cos(center_radians[1]) * Math.sin(dist_radians)
+  // eslint-disable-next-line no-console
   console.assert(
     denominator !== 0,
     `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
@@ -126,6 +127,7 @@ function getAngleOfPointAboutCircle(
   if (divide > 1) {
     // should never get a ratio > 1, but if we do, check that it is approximately 1
     // and clamp
+    // eslint-disable-next-line no-console
     console.assert(
       MathExt.floatingPtEquals(divide, 1),
       `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
@@ -134,6 +136,7 @@ function getAngleOfPointAboutCircle(
   } else if (divide < -1) {
     // should never get a ratio < -1, but if we do, check that it is approximately -1
     // and clamp
+    // eslint-disable-next-line no-console
     console.assert(
       MathExt.floatingPtEquals(divide, -1),
       `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
@@ -383,6 +386,7 @@ function subdivideArc(
     return
   }
 
+  // eslint-disable-next-line no-console
   console.assert(
     view_intersect_data.lonlat_pts.length === 2,
     `start_point: [${start_point_data.lonlat_point[0]}, ${start_point_data.lonlat_point[1]}], end_point: [${end_point_data.lonlat_point[0]}, ${end_point_data.lonlat_point[1]}], view_aabox: [${shape_view_intersect_aabox[0]}, ${shape_view_intersect_aabox[1]}, ${shape_view_intersect_aabox[2]}, ${shape_view_intersect_aabox[3]}], worldToScreenMatrix: [${world_to_screen_matrix[0]}, ${world_to_screen_matrix[1]}, ${world_to_screen_matrix[2]}, ${world_to_screen_matrix[3]}, ${world_to_screen_matrix[4]}, ${world_to_screen_matrix[5]}]`
@@ -451,7 +455,7 @@ function subdivideArc(
           line_center_radians,
           shape_view_intersect_aabox,
           world_to_screen_matrix,
-          (angle_degrees, new_point_data) => {
+          () => {
             const start_angle = start_point_data.angle_degrees
             const end_angle =
               start_angle + circle_descriptor.degrees_between_points
@@ -584,10 +588,11 @@ export default class LatLonCircle extends Draw.Circle {
     this._geomDirty = true
     this._viewDirty = true
 
-    const that = this
-    this._draw_engine.camera.on("changed", event => {
-      that._viewDirty = true
-    })
+    const setViewDirty = val => {
+      this._viewDirty = val
+    }
+
+    this._draw_engine.camera.on("changed", () => setViewDirty(true))
 
     // maximum length of subdivided line segment in pixels
     this._max_segment_pixel_distance = 40
@@ -838,7 +843,7 @@ export default class LatLonCircle extends Draw.Circle {
               bounds_center_radians,
               world_bounds,
               world_to_screen_matrix,
-              (angle_degrees, new_point_data) => {
+              angle_degrees => {
                 // we now know the angle to the center of the view bounds.
                 // We can then easily determine which two original static
                 // points would represent the circle arc that covers that

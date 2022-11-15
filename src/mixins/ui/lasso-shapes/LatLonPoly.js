@@ -21,13 +21,14 @@ export default class LatLonPoly extends Draw.Poly {
     this._geomDirty = true
     this._viewDirty = true
 
+    const setViewDirty = val => {
+      this._viewDirty = val
+    }
+
     // set the viewDirty flag to force a rebuild of the drawn vertices when
     // the camera changes. This is required because we are doing a screen-space-based
     // line subdivision that is obviously dependent on the view.
-    const that = this
-    this._draw_engine.camera.on("changed", event => {
-      that._viewDirty = true
-    })
+    this._draw_engine.camera.on("changed", () => setViewDirty(true))
 
     // maximum length of subdivided line segment in pixels
     this._max_segment_pixel_distance = 40
@@ -63,6 +64,7 @@ export default class LatLonPoly extends Draw.Poly {
       return
     }
 
+    // eslint-disable-next-line no-console
     console.assert(view_intersect_data.lonlat_pts.length === 2)
 
     const [start_lonlat_pt, end_lonlat_pt] = view_intersect_data.lonlat_pts

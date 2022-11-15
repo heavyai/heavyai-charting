@@ -3,7 +3,7 @@ import d3 from "d3"
 import colorMixin from "../mixins/color-mixin"
 import marginMixin from "../mixins/margin-mixin"
 import { events } from "../core/events"
-import { override, transition } from "../core/core"
+import { transition } from "../core/core"
 import { utils } from "../utils/utils"
 import { filters } from "../core/filters"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
@@ -150,55 +150,6 @@ export function xAxisDataIsNonNumerical(datum) {
 }
 
 export default function heatMap(parent, chartGroup) {
-  const INTERVAL_LABELS = {
-    // ISO DOW starts at 1, set null at 0 index
-    DAY_OF_WEEK: [null, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-
-    // Months start at 1, set null at 0 index
-    MONTH: [
-      null,
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ],
-
-    HOUR_OF_DAY: [
-      "12AM",
-      "1AM",
-      "2AM",
-      "3AM",
-      "4AM",
-      "5AM",
-      "6AM",
-      "7AM",
-      "8AM",
-      "9AM",
-      "10AM",
-      "11AM",
-      "12PM",
-      "1PM",
-      "2PM",
-      "3PM",
-      "4PM",
-      "5PM",
-      "6PM",
-      "7PM",
-      "8PM",
-      "9PM",
-      "10PM",
-      "11PM"
-    ]
-  }
-
   const DEFAULT_BORDER_RADIUS = 6.75
 
   let _chartBody
@@ -211,8 +162,8 @@ export default function heatMap(parent, chartGroup) {
   const _colScale = d3.scale.ordinal()
   const _rowScale = d3.scale.ordinal()
 
-  var _xBorderRadius = DEFAULT_BORDER_RADIUS
-  var _yBorderRadius = DEFAULT_BORDER_RADIUS
+  let _xBorderRadius = DEFAULT_BORDER_RADIUS
+  let _yBorderRadius = DEFAULT_BORDER_RADIUS
 
   /* OVERRIDE EXTEND ----------------------------------------------------------*/
   let _yLabel
@@ -225,9 +176,6 @@ export default function heatMap(parent, chartGroup) {
   let xAxisInputs
   let yAxisInputs
   /* --------------------------------------------------------------------------*/
-
-  var _xBorderRadius = DEFAULT_BORDER_RADIUS
-  var _yBorderRadius = DEFAULT_BORDER_RADIUS
 
   const _chart = colorMixin(marginMixin(coordinateGridMixin({})))
   _chart.isHeatMap = true
@@ -369,10 +317,6 @@ export default function heatMap(parent, chartGroup) {
     return _chart._filter(filters.TwoDimensionalFilter(filter), isInverseFilter)
   }
 
-  function uniq(d, i, a) {
-    return !i || a[i - 1] !== d
-  }
-
   /**
    * Gets or sets the values used to create the rows of the heatmap, as an array. By default, all
    * the values will be fetched from the data using the value accessor, and they will be sorted in
@@ -460,9 +404,9 @@ export default function heatMap(parent, chartGroup) {
     if (!_hasBeenRendered) {
       return _chart._doRender()
     }
-    let data = _chart.data(),
-      rows = _chart.rows() || data.map(_chart.valueAccessorNoFormat()),
-      cols = _chart.cols() || data.map(_chart.keyAccessorNoFormat())
+    const data = _chart.data()
+    let rows = _chart.rows() || data.map(_chart.valueAccessorNoFormat())
+    let cols = _chart.cols() || data.map(_chart.keyAccessorNoFormat())
 
     if (_rowOrdering) {
       _rowOrdering = _chart.shouldSortYAxisDescending(data)
@@ -492,20 +436,20 @@ export default function heatMap(parent, chartGroup) {
     rows = _rowScale.domain(rows)
     cols = _colScale.domain(cols)
     _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()))
-    let rowCount = rows.domain().length,
-      colCount = cols.domain().length,
-      availWidth = _chart.width() - _dockedAxesSize.left,
-      availHeight = _chart.height() - _dockedAxesSize.bottom,
-      boxWidth = Math.max(
-        (availWidth - _chart.margins().right) / colCount,
-        _minBoxSize
-      ),
-      boxHeight = Math.max(
-        (availHeight - _chart.margins().top) / rowCount,
-        _minBoxSize
-      ),
-      svgWidth = boxWidth * colCount + _chart.margins().right,
-      svgHeight = boxHeight * rowCount + _chart.margins().top
+    const rowCount = rows.domain().length
+    const colCount = cols.domain().length
+    const availWidth = _chart.width() - _dockedAxesSize.left
+    const availHeight = _chart.height() - _dockedAxesSize.bottom
+    const boxWidth = Math.max(
+      (availWidth - _chart.margins().right) / colCount,
+      _minBoxSize
+    )
+    const boxHeight = Math.max(
+      (availHeight - _chart.margins().top) / rowCount,
+      _minBoxSize
+    )
+    const svgWidth = boxWidth * colCount + _chart.margins().right
+    const svgHeight = boxHeight * rowCount + _chart.margins().top
     cols.rangeBands([0, boxWidth * colCount])
     rows.rangeBands([boxHeight * rowCount, 0])
     _chart

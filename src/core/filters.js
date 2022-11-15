@@ -35,7 +35,7 @@ export const filters = {}
  * @constructor
  */
 filters.RangedFilter = function(low, high) {
-  const range = new Array(low, high)
+  const range = [low, high]
   range.isFiltered = function(value) {
     return value >= this[0] && value <= this[1]
   }

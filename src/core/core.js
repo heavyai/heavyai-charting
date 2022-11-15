@@ -21,6 +21,7 @@ export const constants = {
   EVENT_DELAY: 0
 }
 
+// eslint-disable-next-line consistent-return
 export function logging(_) {
   if (!arguments.length) {
     return _logging
@@ -28,6 +29,7 @@ export function logging(_) {
   _logging = _
 }
 
+// eslint-disable-next-line consistent-return
 export function sampledCount(_) {
   if (!arguments.length) {
     return _sampledCount
@@ -43,6 +45,7 @@ export function decrementSampledCount() {
   return _sampledCount--
 }
 
+// eslint-disable-next-line consistent-return
 export function refreshDisabled(_) {
   if (!arguments.length) {
     return _refreshDisabled
@@ -58,6 +61,7 @@ export function enableRefresh() {
   _refreshDisabled = false
 }
 
+// eslint-disable-next-line consistent-return
 export function globalTransitionDuration(_) {
   if (!arguments.length) {
     return _globalTransitionDuration
@@ -65,6 +69,7 @@ export function globalTransitionDuration(_) {
   _globalTransitionDuration = _
 }
 
+// eslint-disable-next-line consistent-return
 export function disableTransitions(_) {
   if (!arguments.length) {
     return _disableTransitions
@@ -220,7 +225,7 @@ export function transition(selections, duration, callback, name) {
   const s = selections.transition(name).duration(duration)
 
   if (typeof callback === "function") {
-    callback(s)
+    return callback(s)
   }
 
   return s
@@ -330,7 +335,7 @@ units.fp = {}
  * @return {Function} start-end unit function
  */
 units.fp.precision = function(precision) {
-  var _f = function(s, e) {
+  const _f = function(s, e) {
     const d = Math.abs((e - s) / _f.resolution)
     if (utils.isNegligible(d - Math.floor(d))) {
       return Math.floor(d)
@@ -359,6 +364,7 @@ export function override(obj, functionName, newFunction) {
   obj[functionName] = newFunction
 }
 
+// eslint-disable-next-line consistent-return
 export function renderlet(_) {
   if (!arguments.length) {
     return _renderlet

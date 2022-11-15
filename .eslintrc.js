@@ -126,7 +126,7 @@ module.exports = {
     "no-useless-escape": 1, // makes code easier to read.
     "no-var": 1, // const is best, and let is useful for counters, but they eclipse var's uses. #ES6only
     "no-void": 2, // unusual and unnecessary.
-    "no-warning-comments": 1, // warning comments should be addressed before merge (or moved out of code).
+    "no-warning-comments": 0, // warning comments should be addressed before merge (or moved out of code).
     "no-with": 2, // can add unexpected variables to scope.
     "object-shorthand": 2, // increases consistency. #ES6only
     "prefer-arrow-callback": 2, // increases readability and consistency.

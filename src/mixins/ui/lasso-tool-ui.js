@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 "use strict"
 
 import * as LatLonUtils from "../../utils/utils-latlon"
@@ -10,7 +11,6 @@ import LatLonPoly from "./lasso-shapes/LatLonPoly"
 const { AABox2d, Mat2, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
 
-/* istanbul ignore next */
 class ShapeHandler {
   constructor(
     parent,
@@ -75,13 +75,14 @@ class ShapeHandler {
     this.canvas.focus()
   }
 
-  mousedownCB(event) {}
-  mouseupCB(event) {}
-  mousemoveCB(event) {}
-  mouseoverCB(event) {}
-  clickCB(event) {}
-  dblclickCB(event) {}
-  keydownCB(event) {}
+  // TODO: Don't do inheritance like this
+  mousedownCB() {}
+  mouseupCB() {}
+  mousemoveCB() {}
+  mouseoverCB() {}
+  clickCB() {}
+  dblclickCB() {}
+  keydownCB() {}
 
   isMouseEventInCanvas(mouseEvent) {
     const width = this.canvas.offsetWidth
@@ -95,8 +96,6 @@ class ShapeHandler {
   }
 
   getRelativeMousePosFromEvent(mouseEvent) {
-    const width = this.canvas.offsetWidth
-    const height = this.canvas.offsetHeight
     const rect = this.canvas.getBoundingClientRect()
 
     const diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft
@@ -273,7 +272,7 @@ class CircleShapeHandler extends ShapeHandler {
     event.preventDefault()
   }
 
-  mouseupCB(event) {
+  mouseupCB() {
     this.deactivateShape()
   }
 
@@ -304,7 +303,7 @@ class CircleShapeHandler extends ShapeHandler {
     }
   }
 
-  clickCB(event) {
+  clickCB() {
     this.deactivateShape()
   }
 
@@ -816,13 +815,13 @@ export default class LassoButtonGroupController {
       e.preventDefault()
     })
 
-    button.addEventListener("mouseover", e => {
+    button.addEventListener("mouseover", () => {
       this._chart.hidePopup(true)
       this._chart.popupDisplayable(false)
       this._drawEngine.disableInteractions(false)
     })
 
-    button.addEventListener("mouseout", e => {
+    button.addEventListener("mouseout", () => {
       if (!this._activeShape && !this._activeButton) {
         this._chart.popupDisplayable(true)
         this._drawEngine.enableInteractions()
@@ -948,7 +947,7 @@ export default class LassoButtonGroupController {
     }
   }
 
-  _dragbeginCB(event) {
+  _dragbeginCB() {
     if (!this._activeShape && !this._activeButton) {
       const canvas = this._drawEngine.getCanvas()
       canvas.focus()

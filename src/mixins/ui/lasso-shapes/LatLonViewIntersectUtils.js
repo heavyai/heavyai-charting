@@ -3,7 +3,7 @@
 import * as LatLonUtils from "../../../utils/utils-latlon"
 import * as Draw from "@heavyai/draw/dist/mapd-draw"
 
-const { AABox2d, Mat2d, Point2d, Vec2d } = Draw
+const { AABox2d, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
 
 /**
@@ -285,6 +285,7 @@ export default {
           // TODO(croot): this needs filling out in the general case
           // NOTE: this should never be hit in the LonLatPoly case because of
           // the delta_x/delta_y === 0 check.
+          // eslint-disable-next-line no-console
           console.assert(false, `Collinear intersection needs completing`)
           return true
         }

@@ -18,9 +18,7 @@ import {
   renderAllAsync,
   renderStackEmpty,
   resetRedrawStack,
-  resetRenderStack,
-  startRedrawTime,
-  startRenderTime
+  resetRenderStack
 } from "../core/core-async"
 
 import asyncMixin from "../mixins/async-mixin"
@@ -63,7 +61,6 @@ export default function baseMixin(_chart) {
   let _isChild
   let _popup
   let _popupIsEnabled = true
-  const _redrawBrushFlag = false
   let _isTargeting = false
   let _colorByExpr = null
   let _legendLock = null
@@ -95,7 +92,6 @@ export default function baseMixin(_chart) {
   let _label = pluck("key")
 
   let _valueAccessor = pluck("val")
-  let _orderSort
 
   let _renderLabel = false
 
@@ -136,31 +132,8 @@ export default function baseMixin(_chart) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   let _legendContinuous
-
-  let _topQueryCallback = null
-
-  const _registerQuery = function(callback) {
-    const stackEmpty = _topQueryCallback == null
-    // need to check if max query?
-    _topQueryCallback = callback
-    if (stackEmpty) {
-      _topQueryCallback.func()
-    }
-  }
-
-  const _popQueryStack = function(id) {
-    if (_topQueryCallback != null && id == _topQueryCallback.id) {
-      _topQueryCallback = null
-    } else {
-      _topQueryCallback.func()
-    }
-  }
-
-  const _startNextQuery = function() {
-    _topQueryCallback.func()
-    // var callback = _firstQueryCallback;
-    // callback();
-  }
+  let _ordering
+  let _orderSort
 
   // override for count chart
   _chart.isCountChart = function() {
@@ -170,6 +143,7 @@ export default function baseMixin(_chart) {
 
   let _filters = []
 
+  // eslint-disable-next-line consistent-return
   let _filterHandler = function(dimension, filters) {
     if (filters.length === 0) {
       return filters
@@ -243,7 +217,10 @@ export default function baseMixin(_chart) {
   }
 
   /* OVERRIDE ---------------------------------------------------------------- */
+  // TODO: Don't do this
+  // eslint-disable-next-line no-empty-function
   _chart.accent = function() {} // no-op
+  // eslint-disable-next-line no-empty-function
   _chart.unAccent = function() {} // no-op
   /* ------------------------------------------------------------------------- */
 
@@ -787,7 +764,7 @@ export default function baseMixin(_chart) {
   _chart.transitionDuration = function(duration) {
     if (!arguments.length) {
       /* OVERRIDE ---------------------------------------------------------------- */
-      return globalTransitionDuration() != null
+      return globalTransitionDuration() !== null
         ? globalTransitionDuration()
         : _transitionDuration
       /* ------------------------------------------------------------------------- */

@@ -12,10 +12,12 @@ let _lastFilteredSize = {}
 
 // NOTE: a "group" of null is valid!
 export class LockTracker {
-  all = null
-  groups = {}
-  pendingAll = null
-  pendingGroups = {}
+  constructor() {
+    this.all = null
+    this.groups = {}
+    this.pendingAll = null
+    this.pendingGroups = {}
+  }
 
   // Utility function to check if a render/redraw should start for the given
   // group or "all".
@@ -122,6 +124,7 @@ export class LockTracker {
     // ever upgrade to the es7 polyfill, this can be rewritten as:
     // runner().finally(clean)
     let promise = null
+    // eslint-disable-next-line no-restricted-syntax
     try {
       promise = runner()
     } catch (err) {
@@ -134,6 +137,7 @@ export class LockTracker {
       },
       err => {
         cleanup()
+        // eslint-disable-next-line no-console
         console.error(err)
         throw err
       }
@@ -240,12 +244,14 @@ export function redrawAllAsync(group, allCharts, excludeChart) {
       return getLastFilteredSizeAsync()
         .then(() => Promise.all(createRedrawPromises()))
         .catch(err => {
+          // eslint-disable-next-line no-console
           console.log(err)
           resetRedrawStack()
           throw err
         })
     } else {
       return Promise.all(createRedrawPromises()).catch(err => {
+        // eslint-disable-next-line no-console
         console.log(err)
         resetRedrawStack()
         throw err
