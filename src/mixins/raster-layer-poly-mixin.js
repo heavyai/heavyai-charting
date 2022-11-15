@@ -8,7 +8,7 @@ import {
 import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
-import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
+import { lastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 import { buildContourSQL, isContourType } from "../utils/utils-contour"
 
@@ -25,7 +25,7 @@ const polyTableGeomColumns = {
   polydrawinfo_LEGACY: "heavyai_geo_polydrawinfo"
 }
 
-function validateLineJoin(newLineJoin, currLineJoin) {
+function validateLineJoin(newLineJoin) {
   if (typeof newLineJoin !== "string") {
     throw new Error(
       "Line join must be a string and must be one of " +
@@ -42,7 +42,8 @@ function validateLineJoin(newLineJoin, currLineJoin) {
   return lowCase
 }
 
-function validateMiterLimit(newMiterLimit, currMiterLimit) {
+const getStatsLayerName = layerName => layerName + "_stats"
+function validateMiterLimit(newMiterLimit) {
   if (typeof newMiterLimit !== "number") {
     throw new Error("Miter limit must be a number.")
   } else if (newMiterLimit < 0) {
@@ -75,7 +76,6 @@ export default function rasterLayerPolyMixin(_layer) {
 
   let state = null
   let _vega = null
-  const _cf = null
 
   const _scaledPopups = {}
 
@@ -408,6 +408,9 @@ export default function rasterLayerPolyMixin(_layer) {
     let fillColor
     if (layerFilter.length && !useColorScale) {
       const colorScaleName = getColorScaleName(layerName)
+      const hasShowOther =
+        state.encoding.color.hasOwnProperty("showOther") &&
+        state.encoding.color.showOther === false
       scale = {
         name: colorScaleName,
         type: "ordinal",
@@ -424,12 +427,7 @@ export default function rasterLayerPolyMixin(_layer) {
         ),
         default: adjustOpacity(
           polyDefaultScaleColor,
-          state.encoding.color.hasOwnProperty("showOther") &&
-            state.encoding.color.showOther === false
-            ? 0
-            : state.encoding.color.opacity
-            ? state.encoding.color.opacity
-            : 0.65
+          hasShowOther ? 0 : state.encoding.color.opacity || 0.65
         )
       }
       fillColor = {
@@ -446,7 +444,10 @@ export default function rasterLayerPolyMixin(_layer) {
           name: colorScaleName,
           type: "quantize",
           domain: autocolors
-            ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
+            ? {
+                data: getStatsLayerName(layerName),
+                fields: ["mincolor", "maxcolor"]
+              }
             : state.encoding.color.domain,
           range: colorRange,
           nullValue: adjustOpacity(
@@ -459,6 +460,9 @@ export default function rasterLayerPolyMixin(_layer) {
           )
         }
       } else {
+        const hasShowOther =
+          state.encoding.color.hasOwnProperty("showOther") &&
+          state.encoding.color.showOther === false
         scale = {
           name: colorScaleName,
           type: "ordinal",
@@ -471,12 +475,10 @@ export default function rasterLayerPolyMixin(_layer) {
           default: adjustOpacity(
             state.encoding.color.defaultOtherRange ||
               state.encoding.color.default,
-            state.encoding.color.hasOwnProperty("showOther") &&
-              state.encoding.color.showOther === false
+
+            hasShowOther
               ? 0 // When Other is toggled OFF, we make the Other category transparent
-              : state.encoding.color.opacity
-              ? state.encoding.color.opacity
-              : 0.65
+              : state.encoding.color.opacity || 0.65
           )
         }
       }
@@ -522,7 +524,6 @@ export default function rasterLayerPolyMixin(_layer) {
     useProjection
   }) {
     const autocolors = usesAutoColors()
-    const getStatsLayerName = () => layerName + "_stats"
     const state = _layer.getState()
 
     let data
@@ -564,7 +565,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
     if (autocolors) {
       data.push({
-        name: getStatsLayerName(),
+        name: getStatsLayerName(layerName),
         source: layerName,
         transform: [
           {
@@ -778,7 +779,6 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   let _filtersArray = []
-  const _isInverseFilter = false
   const polyLayerEvents = ["filtered"]
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
@@ -805,11 +805,11 @@ export default function rasterLayerPolyMixin(_layer) {
       _layer.viewBoxDim(null)
     }
 
-    _filtersArray.length && filterCol
-      ? _layer
-          .dimension()
-          .filterMulti(_filtersArray, undefined, isInverseFilter)
-      : _layer.filterAll(chart)
+    if (_filtersArray.length && filterCol) {
+      _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter)
+    } else {
+      _layer.filterAll(chart)
+    }
   }
 
   _layer.filters = function() {
@@ -894,7 +894,6 @@ export default function rasterLayerPolyMixin(_layer) {
         mapPoly.classed("removePoly", true)
       } else {
         mapPoly.classed("fadeOutPoly", true)
-        // mapPoly.attr('transform', 'scale(0, 0)');
       }
 
       if (hideCallback) {
@@ -907,7 +906,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
   }
 
-  _layer._destroyLayer = function(chart) {
+  _layer._destroyLayer = function() {
     _layer.on("filtered", null)
     const viewBoxDim = _layer.viewBoxDim()
     const dim = _layer.dimension()
@@ -917,7 +916,6 @@ export default function rasterLayerPolyMixin(_layer) {
     if (dim) {
       dim.dispose()
     }
-    // deleteCanvas(chart)
   }
 
   return _layer
