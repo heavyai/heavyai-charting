@@ -19,54 +19,12 @@ function create_charts(crossfilter, connection) {
 
   crossfilter
     .dimension(null)
-    .projectOn(["longitude", "latitude", "isobaric_level", "Air_Temperature"])
+    .projectOn(["longitude", "latitude", "isobaric_level", "Wind_Speed"])
 
   crossfilter.dimension("model_ts").filter("2022-09-25 18:00:00")
   crossfilter.dimension("forecast_hour").filter(0)
 
-  // const x_dimension = crossfilter.dimension("longitude")
-  // const y_dimension = crossfilter.dimension("latitude")
   const parent_div = document.getElementById("crosssection-example")
-
-  const cross_section_layer = HeavyCharting.rasterLayer("mesh2d")
-    .crossfilter(crossfilter)
-    .setState({
-      // transform: [{ sample: 5000, tableSize: 1038240 }, { limit: 10000000 }],
-      transform: [
-        {
-          crossSection2d: {
-            x: "longitude",
-            y: "latitude",
-            z: "isobaric_level",
-            crossSectionLine: [
-              [-123.875, 33],
-              [-113.125, 33]
-            ],
-            crossSectionDimensionName: "distance"
-          }
-        }
-      ],
-      mark: { type: "mesh2d" },
-      encoding: {
-        x: {
-          field: "distance",
-          label: "distance"
-        },
-        y: {
-          field: "isobaric_level",
-          label: "isobaric_level"
-        },
-        color: {
-          field: "Air_Temperature",
-          type: "quantitative",
-          scale: {
-            range: ["blue", "red"]
-          }
-        }
-      }
-    })
-  // .xDim(x_dimension)
-  // .yDim(y_dimension)
 
   /*
    * We need the min/max of the z dimension of the raster volume to
@@ -77,23 +35,68 @@ function create_charts(crossfilter, connection) {
     {
       expression: "isobaric_level",
       agg_mode: "min",
-      name: "xmin"
+      name: "ymin"
     },
     {
       expression: "isobaric_level",
       agg_mode: "max",
-      name: "xmax"
+      name: "ymax"
     }
   ]
-
-  const z_dimension = crossfilter.dimension("isobaric_level")
 
   crossfilter
     .groupAll()
     .reduce(extentMeasures)
     .valuesAsync(true)
     .then(extents => {
-      z_dimension.filter([extents.xmin, extents.xmax])
+      const cross_section_layer = HeavyCharting.rasterLayer("mesh2d")
+        .crossfilter(crossfilter)
+        .setState({
+          // transform: [{ sample: 5000, tableSize: 1038240 }, { limit: 10000000 }],
+          transform: [
+            {
+              crossSection2d: {
+                x: "longitude",
+                y: "latitude",
+                z: "isobaric_level",
+                crossSectionLine: [
+                  [-122.875, 33],
+                  [-113.125, 33]
+                ],
+                crossSectionDimensionName: "distance"
+              }
+            }
+          ],
+          mark: { type: "mesh2d" },
+          encoding: {
+            x: {
+              field: "distance",
+              label: "distance"
+            },
+            y: {
+              field: "isobaric_level",
+              label: "isobaric_level"
+            },
+            color: {
+              field: "Wind_Speed",
+              type: "quantitative",
+              scale: {
+                range: ["blue", "red"]
+              }
+            }
+          }
+        })
+        // by default, the dimension along the length of the line is a
+        // normalized distance where 0 is the start of the line and 1
+        // is the end of the line
+        .xDim([0, 1])
+
+        // the isobaric_level column has a range of 0-1000
+        // where 0 is the upper-most level of the atmosphere
+        // and 1000 is at the surface. As such, reverse the
+        // min/max here so the chart reads from surface to
+        // high-atmosphere when going up in Y
+        .yDim([extents.ymax, extents.ymin])
 
       const cross_section_chart = HeavyCharting.rasterChart(parent_div, false)
         .con(connection)
