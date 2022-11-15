@@ -1,13 +1,15 @@
 import assert from "assert"
 import PropertiesDefinitionInterface from "../../PropertiesDefinitionInterface"
 
-// imported for jsdoc only
-// eslint-disable-next-line no-unused-vars
-import VegaPropertyOutputState from "../../../VegaPropertyOutputState"
 import {
   PositionChannelDescriptor,
   GeographicChannelDescriptor
 } from "../../../PropDescriptor/CommonChannelDescriptors"
+
+// jsdoc imports only
+/* eslint-disable no-unused-vars */
+import VegaPropertyOutputState from "../../../VegaPropertyOutputState"
+/* eslint-enable no-unused-vars */
 
 export default class RasterMesh2dDefinitionObject extends PropertiesDefinitionInterface {
   // eslint-disable-next-line no-undef

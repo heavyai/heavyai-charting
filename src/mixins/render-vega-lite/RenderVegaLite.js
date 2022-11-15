@@ -80,8 +80,6 @@ const materialize_prop_descriptors = (raster_layer_context, props, state) => {
   )
 
   for (const prop_descriptor of props.values()) {
-    prop_descriptor.validateContext(raster_layer_context)
-
     let handled = false
     if (
       prop_descriptor.prop_location.value & PropLocation.kEncodingOnly.value
@@ -109,6 +107,10 @@ const materialize_prop_descriptors = (raster_layer_context, props, state) => {
         prop_descriptor,
         vega_property_output_state
       )
+    }
+
+    if (handled) {
+      prop_descriptor.validateContext(raster_layer_context)
     }
   }
 

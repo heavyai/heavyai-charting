@@ -28,21 +28,6 @@ function create_charts(crossfilter, connection) {
   // const y_dimension = crossfilter.dimension("latitude")
   const parent_div = document.getElementById("crosssection-example")
 
-  const pointmap_chart = HeavyCharting.rasterChart(parent_div, false)
-    .con(connection)
-    .width(width)
-    .height(height)
-
-    // render the grid lines
-    .renderHorizontalGridLines(true)
-    .renderVerticalGridLines(true)
-
-    // set the axis labels
-    .xAxisLabel("X Axis")
-    .yAxisLabel("Y Axis")
-
-    .enableInteractions(true)
-
   const cross_section_layer = HeavyCharting.rasterLayer("mesh2d")
     .crossfilter(crossfilter)
     .setState({
@@ -83,35 +68,80 @@ function create_charts(crossfilter, connection) {
   // .xDim(x_dimension)
   // .yDim(y_dimension)
 
-  pointmap_chart
-    .pushLayer("cross_section", cross_section_layer)
-    .init()
-    .then(() => {
-      HeavyCharting.renderAllAsync()
-    })
-
-  /**
-   * Setup resize event
+  /*
+   * We need the min/max of the z dimension of the raster volume to
+   * initialize a proper view. We calculate the extents first and then
+   * build the cross section view.
    */
+  const extentMeasures = [
+    {
+      expression: "isobaric_level",
+      agg_mode: "min",
+      name: "xmin"
+    },
+    {
+      expression: "isobaric_level",
+      agg_mode: "max",
+      name: "xmax"
+    }
+  ]
 
-  /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
-  window.addEventListener("resize", _.debounce(resize_all, 500))
+  const z_dimension = crossfilter.dimension("isobaric_level")
 
-  function resize_all() {
-    const width = document.documentElement.clientWidth - 30
-    const height =
-      Math.max(document.documentElement.clientHeight, window.innerHeight || 0) -
-      200
+  crossfilter
+    .groupAll()
+    .reduce(extentMeasures)
+    .valuesAsync(true)
+    .then(extents => {
+      z_dimension.filter([extents.xmin, extents.xmax])
 
-    pointmap_chart.map().resize()
-    pointmap_chart.isNodeAnimate = false
-    pointmap_chart
-      .width(width)
-      .height(height)
-      .render()
+      const cross_section_chart = HeavyCharting.rasterChart(parent_div, false)
+        .con(connection)
+        .width(width)
+        .height(height)
 
-    HeavyCharting.redrawAllAsync()
-  }
+        // render the grid lines
+        .renderHorizontalGridLines(true)
+        .renderVerticalGridLines(true)
+
+        // set the axis labels
+        .xAxisLabel("X Axis")
+        .yAxisLabel("Y Axis")
+
+        .enableInteractions(true)
+
+      cross_section_chart
+        .pushLayer("cross_section", cross_section_layer)
+        .init()
+        .then(() => {
+          HeavyCharting.renderAllAsync()
+        })
+
+      /**
+       * Setup resize event
+       */
+
+      /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+      window.addEventListener("resize", _.debounce(resize_all, 500))
+
+      function resize_all() {
+        const width = document.documentElement.clientWidth - 30
+        const height =
+          Math.max(
+            document.documentElement.clientHeight,
+            window.innerHeight || 0
+          ) - 200
+
+        cross_section_chart.map().resize()
+        cross_section_chart.isNodeAnimate = false
+        cross_section_chart
+          .width(width)
+          .height(height)
+          .render()
+
+        HeavyCharting.redrawAllAsync()
+      }
+    })
 }
 
 function init() {
