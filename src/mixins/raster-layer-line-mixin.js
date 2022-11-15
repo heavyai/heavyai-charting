@@ -501,14 +501,14 @@ export default function rasterLayerLineMixin(_layer) {
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio(),
-      useProjection: chart._useGeoTypes
+      useProjection: chart.useGeoTypes()
     })
 
     return _vega
   }
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
-    if (chart._useGeoTypes) {
+    if (chart.useGeoTypes()) {
       if (
         state.encoding.geocol &&
         state.transform.groupby &&
