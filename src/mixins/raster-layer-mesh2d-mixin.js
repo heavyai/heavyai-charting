@@ -1,3 +1,4 @@
+import assert from "assert"
 import { parser } from "../utils/utils"
 import { AABox2d } from "@heavyai/draw/dist/mapd-draw"
 import { lastFilteredSize } from "../core/core-async"
@@ -6,6 +7,7 @@ import { isValidPostFilter } from "./raster-layer-point-mixin"
 import RasterLayerContext from "./render-vega-lite/RasterLayerContext"
 import {
   ColorChannelDescriptor,
+  GeographicChannelDescriptor,
   OpacityChannelDescriptor,
   PositionChannelDescriptor
 } from "./render-vega-lite/PropDescriptor/CommonChannelDescriptors"
@@ -69,16 +71,15 @@ export default function rasterLayerMesh2dMixin(_layer) {
   prop_descriptors.set("x", new PositionChannelDescriptor("x"))
   prop_descriptors.set("y", new PositionChannelDescriptor("y"))
 
-  // eslint-disable-next-line no-warning-comments
-  // TODO(croot): support geo columns
-  // prop_descriptors.set(
-  //   "longitude",
-  //   new GeographicChannelDescriptor("longitude", "x")
-  // );
-  // prop_descriptors.set(
-  //   "latitude",
-  //   new GeographicChannelDescriptor("latitude", "y")
-  // );
+  prop_descriptors.set(
+    "longitude",
+    new GeographicChannelDescriptor("longitude", "x")
+  )
+
+  prop_descriptors.set(
+    "latitude",
+    new GeographicChannelDescriptor("latitude", "y")
+  )
 
   prop_descriptors.set(
     "fill",
@@ -116,10 +117,13 @@ export default function rasterLayerMesh2dMixin(_layer) {
     )
     const {
       sql_parser_transforms,
+      vega_data_formats,
       vega_transforms,
       vega_scales,
       mark_properties
     } = _vega_property_output_state.flatten()
+
+    assert(vega_data_formats.length <= 1)
 
     if (typeof filter === "string" && filter.length) {
       sql_parser_transforms.push({
@@ -146,6 +150,7 @@ export default function rasterLayerMesh2dMixin(_layer) {
     const data = [
       {
         name: layerName,
+        ...(vega_data_formats.length ? vega_data_formats[0] : {}),
         sql: parser.writeSQL({
           type: "root",
           source: table,
@@ -192,19 +197,27 @@ export default function rasterLayerMesh2dMixin(_layer) {
   }
 
   _layer.getPrimaryColorScaleAndLegend = function() {
-    let prop_descriptor = prop_descriptors.get("stroke")
-    let scale_obj = _vega_property_output_state.getScaleForProp(prop_descriptor)
-    if (!scale_obj) {
-      prop_descriptor = prop_descriptors.get("fill")
-      scale_obj = _vega_property_output_state.getScaleForProp(prop_descriptor)
-      if (!scale_obj) {
-        prop_descriptor = null
-      }
-    }
+    const prop_descriptor = prop_descriptors.get("fill")
+    const scale_obj = _vega_property_output_state.getScaleForProp(
+      prop_descriptor
+    )
     const legend_obj = prop_descriptor
       ? _vega_property_output_state.getLegendForProperty(prop_descriptor)
       : null
     return [scale_obj, legend_obj]
+  }
+
+  _layer.useProjection = function() {
+    const geographic_props = [
+      prop_descriptors.get("longitude"),
+      prop_descriptors.get("latitude")
+    ]
+    geographic_props.forEach(geographic_prop => assert(geographic_prop))
+    return (
+      _vega_property_output_state &&
+      (_vega_property_output_state.has(geographic_props[0].prop_name) ||
+        _vega_property_output_state.has(geographic_props[1].prop_name))
+    )
   }
 
   // eslint-disable-next-line no-unused-vars
