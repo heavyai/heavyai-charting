@@ -15,6 +15,10 @@ import {
   OpacityChannelDescriptor
 } from "../../PropDescriptor/CommonChannelDescriptors"
 
+// jsdoc imports only
+// eslint-disable-next-line no-unused-vars
+import VegaPropertyOutputState from "../../VegaPropertyOutputState"
+
 export default class FieldDefinitionObject extends PropertiesDefinitionInterface {
   /**
    * @param {Object} field_definition_object

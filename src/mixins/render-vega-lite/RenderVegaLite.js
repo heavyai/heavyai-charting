@@ -5,6 +5,12 @@ import MarkDefinitionObject from "./Definitions/Mark/MarkDefinitionObject"
 import EncodingDefinitionObject from "./Definitions/Encoding/EncodingDefinitionObject"
 import PropLocation from "./PropDescriptor/Enums/PropLocation"
 
+// jsdoc imports only
+/* eslint-disable no-unused-vars */
+import PropDescriptor from "./PropDescriptor/PropDescriptor"
+import RasterLayerContext from "./RasterLayerContext"
+/* eslint-enable no-unused-vars */
+
 /**
  * @param {PropDescriptor} prop_descriptor
  * @param {PropertiesDefinitionInterface} props_definition
@@ -74,6 +80,8 @@ const materialize_prop_descriptors = (raster_layer_context, props, state) => {
   )
 
   for (const prop_descriptor of props.values()) {
+    prop_descriptor.validateContext(raster_layer_context)
+
     let handled = false
     if (
       prop_descriptor.prop_location.value & PropLocation.kEncodingOnly.value
@@ -103,6 +111,34 @@ const materialize_prop_descriptors = (raster_layer_context, props, state) => {
       )
     }
   }
+
+  // validate that there's no conflict of position/geographic descriptors
+  const position_collision_set = new Set()
+  vega_property_output_state.vega_state_maps_.mark_properties.forEach(
+    prop_vega_obj => {
+      Object.keys(prop_vega_obj).forEach(prop_name => {
+        if (position_collision_set.has(prop_name)) {
+          throw new Error(
+            `Invalid mark definition for raster layer '${raster_layer_context.layer_name}'. It has multiple definitions for property '${prop_name}'`
+          )
+        }
+        position_collision_set.add(prop_name)
+      })
+    }
+  )
+
+  // now do a realignment step
+  // After all the property definitions have been materialized, there is an opportunity for prop definitions
+  // to adjust the materialized state for whatever purpose. For example linking in fields that may not be present
+  // at original materialization (See RasterMesh2DDefinitionObject)
+  // Any property definition that requires realignment must register itself with the vega_property_output_state instance.
+  // Realignment is performed in a FIFO queue from that registration
+  vega_property_output_state.realignment_definitions.forEach(
+    prop_definition => {
+      prop_definition.realign(props, vega_property_output_state)
+    }
+  )
+  vega_property_output_state.clearRealignments()
 
   return vega_property_output_state
 }
