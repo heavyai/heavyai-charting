@@ -174,8 +174,46 @@ export default function rasterLayerMesh2dMixin(_layer) {
     return { data, scales: vega_scales, marks }
   }
 
-  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
-  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
+  function isCrossFilterObject(obj) {
+    if (
+      Object.hasOwn(obj, "type") &&
+      Object.hasOwn(obj, "getCrossfilter") &&
+      Object.hasOwn(obj, "filter")
+    ) {
+      // is this safe to assume that if these properties exist, then the object
+      // is a crossfilter-related object?
+      return true
+    }
+    return false
+  }
+
+  function createCrossfilterDimensionProxy(range) {
+    assert(Array.isArray(range))
+    assert(range.length === 2)
+    let range_ = [...range]
+    return {
+      type: "crossfilter_dimension_proxy",
+      getFilter: () => [range_],
+      filter: new_range => {
+        assert(Array.isArray(new_range))
+        assert(new_range.length === 2)
+        range_ = new_range
+      }
+    }
+  }
+
+  _layer.xDim = createRasterLayerGetterSetter(_layer, null, new_val => {
+    if (isCrossFilterObject(new_val)) {
+      return new_val
+    }
+    return createCrossfilterDimensionProxy(new_val)
+  })
+  _layer.yDim = createRasterLayerGetterSetter(_layer, null, new_val => {
+    if (isCrossFilterObject(new_val)) {
+      return new_val
+    }
+    return createCrossfilterDimensionProxy(new_val)
+  })
 
   let _vega = null
   const _cf = null
