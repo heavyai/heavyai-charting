@@ -462,25 +462,13 @@ function legendState_v2(state, useMap) {
     assert(Array.isArray(state.domain))
     assert(state.domain.length === 2)
     assert(typeof state.domain[0] === "number")
-    const range_diff = (state.domain[1] - state.domain[0]) / state.range.length
-    let curr_val = state.domain[0]
-    const domain_labels = state.range.map((item, index, range_array) => {
-      const prev_val = curr_val
-      curr_val += range_diff
-      if (index === 0) {
-        return `< ${formatNumber(curr_val)}`
-      } else if (index === range_array.length - 1) {
-        return `>= ${formatNumber(prev_val)}`
-      } else {
-        return `[${formatNumber(prev_val)}, ${formatNumber(curr_val)})`
-      }
-    })
     return {
-      type: "nominal",
+      type: "gradient",
       title,
+      locked,
       open,
       position,
-      domain: domain_labels,
+      domain: state.domain,
       range: state.range
     }
   } else if (is_quantitative_type) {
@@ -488,12 +476,26 @@ function legendState_v2(state, useMap) {
     const domain = scale.domain || state.domain
     const range = scale.range || state.range
     const min_size = Math.min(domain.length, range.length)
+    // TODO(croot): may want to consider filling out the auto-gradient here
+    // using a max-number of stops. The best way to do this will most likely
+    // be to create a d3 scale of similar type, and generate new ranges from
+    // it at auto-gradient stops. Unforunately the legendables library will only
+    // auto fill the domain as long as the domain is only of size 2 and the range
+    // has more than 2 values. Instead, we need to handle the case where there's
+    // an implied gradient between multiple values in domain/range where there is
+    // an equal number of domains as ranges. So if we have a domain of [0,100] and
+    // a range of ["blue", "red"], a domain value of 50 would produce purple.
+    // This is currently not accounted for in ledgendables gradient, and therefore
+    // can result in a loss of legend color mapping. So, we would need to auto fill
+    // in some more domain/range stops so the legendables library has data to
+    // display. Because of the varied nature of the quantitative code (linear, pow, log, etc),
+    // it would be best to generate a d3 scale to generate values at linear stops.
     return {
       type: "gradient",
       title,
       locked,
       open,
-      position: "bottom-left",
+      position,
       range: range.slice(0, min_size),
       domain: domain.slice(0, min_size)
     }
