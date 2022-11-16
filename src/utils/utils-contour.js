@@ -49,7 +49,7 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
     interval
   } = data
 
-  const { intervalTypeFieldName = "is_major", minor } = interval
+  const { isMajorFieldName = "is_major", minor } = interval
 
   const contourParams = {
     contour_interval: minor,
@@ -71,7 +71,7 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
   const contourParamsSQL = buildParamsSQL(contourParams)
 
   const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
-  const contourLineCase = `CASE mod(cast(contour_values as int), ${interval}) WHEN 0 THEN TRUE ELSE FALSE END as ${intervalTypeFieldName} `
+  const contourLineCase = `CASE mod(cast(contour_values as int), ${interval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
   const contourTableFunction = isPolygons
     ? "tf_raster_contour_polygons"
     : "tf_raster_contour_lines"

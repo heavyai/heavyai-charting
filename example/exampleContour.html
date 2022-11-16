@@ -69,7 +69,7 @@
       .popupSearchRadius(2)
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
       
-      const intervalTypeFieldName = "is_major"
+      const isMajorFieldName = "is_major"
       
       const contourPolygonLayer = dc.rasterLayer("polys")
       .crossfilter(crossFilter)
@@ -90,7 +90,7 @@
           flip_latitude: false,
           contour_offset: 0,
           interval: {
-            intervalTypeFieldName,
+            isMajorFieldName,
             major: config.major_contour_interval,
             minor: config.minor_contour_interval
           }
@@ -139,7 +139,7 @@
           flip_latitude: false,
           contour_offset: 0,
           interval: {
-            intervalTypeFieldName,
+            isMajorFieldName,
             major: config.major_contour_interval,
             minor: config.minor_contour_interval
           }
@@ -154,7 +154,7 @@
         encoding: {
           geocol: "contour_lines",
           color: {
-            field: intervalTypeFieldName,
+            field: isMajorFieldName,
             type: "nominal",
             scale: { 
               domain: [false, true], 
@@ -162,7 +162,7 @@
             }
           },
           strokeWidth: {
-            field: intervalTypeFieldName,
+            field: isMajorFieldName,
             type: "nominal", 
             scale: { 
               domain: [false, true], 
@@ -170,7 +170,7 @@
             } 
           },
           opacity: {
-            field: intervalTypeFieldName,
+            field: isMajorFieldName,
             type: "nominal",
             scale: { 
               domain: [false, true], 
