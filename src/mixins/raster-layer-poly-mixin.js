@@ -428,7 +428,9 @@ export default function rasterLayerPolyMixin(_layer) {
         ),
         default: adjustOpacity(
           polyDefaultScaleColor,
-          hasShowOther ? 0 : state.encoding.color.opacity || polyDefaultScaleOpacity
+          hasShowOther
+            ? 0
+            : state.encoding.color.opacity || polyDefaultScaleOpacity
         )
       }
       fillColor = {
