@@ -122,4 +122,4 @@ export const getContourScales = ({ stroke }) => [
 ]
 
 export const isContourType = (state = {}) =>
-  state.data && state.data[0] && state.data[0].type === CONTOUR_TYPE
+  state?.data?.[0]?.type === CONTOUR_TYPE

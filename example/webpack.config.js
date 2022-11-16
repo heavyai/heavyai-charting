@@ -1,10 +1,8 @@
-const webpack = require("webpack")
 const path = require("path")
 
 module.exports = {
   entry: {
     "heavyai-charting": [
-      "babel-polyfill",
       "script-loader!@heavyai/connector/dist/browser-connector.js",
       "script-loader!@heavyai/crossfilter/dist/mapd-crossfilter.js",
       "script-loader!@heavyai/d3-combo-chart/dist/d3ComboChart.js",
@@ -19,6 +17,7 @@ module.exports = {
     ),
     geoheat: path.resolve(__dirname, "./exampleGeoHeat.js"),
     windbarb: path.resolve(__dirname, "./exampleWindBarbs.js"),
+    contour: path.resolve(__dirname, "./exampleContour.js"),
     exampleD3ComboChartCrossfilter: path.resolve(
       __dirname,
       "./exampleD3ComboChartCrossfilter.js"
@@ -48,6 +47,7 @@ module.exports = {
           path.resolve(__dirname, "../index.js"),
           path.resolve(__dirname, "./exampleGeoHeat.js"),
           path.resolve(__dirname, "./exampleWindBarbs.js"),
+          path.resolve(__dirname, "./exampleContours.js"),
           path.resolve(__dirname, "./exampleD3ComboChartCrossfilter.js")
         ],
         loader: "babel-loader"
