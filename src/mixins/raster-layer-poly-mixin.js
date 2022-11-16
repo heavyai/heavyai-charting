@@ -14,6 +14,7 @@ import { buildContourSQL, isContourType } from "../utils/utils-contour"
 
 const polyDefaultScaleColor = "#d6d7d6"
 const polyNullScaleColor = "#d6d7d6"
+const polyDefaultScaleOpacity = 0.65
 
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
@@ -423,11 +424,13 @@ export default function rasterLayerPolyMixin(_layer) {
         ],
         nullValue: adjustOpacity(
           polyNullScaleColor,
-          state.encoding.color.opacity || 0.65
+          state.encoding.color.opacity || polyDefaultScaleOpacity
         ),
         default: adjustOpacity(
           polyDefaultScaleColor,
-          hasShowOther ? 0 : state.encoding.color.opacity || 0.65
+          hasShowOther
+            ? 0
+            : state.encoding.color.opacity || polyDefaultScaleOpacity
         )
       }
       fillColor = {
@@ -452,11 +455,11 @@ export default function rasterLayerPolyMixin(_layer) {
           range: colorRange,
           nullValue: adjustOpacity(
             polyNullScaleColor,
-            state.encoding.color.opacity || 0.65
+            state.encoding.color.opacity || polyDefaultScaleOpacity
           ),
           default: adjustOpacity(
             polyDefaultScaleColor,
-            state.encoding.color.opacity || 0.65
+            state.encoding.color.opacity || polyDefaultScaleOpacity
           )
         }
       } else {
@@ -470,7 +473,7 @@ export default function rasterLayerPolyMixin(_layer) {
           range: colorRange,
           nullValue: adjustOpacity(
             polyNullScaleColor,
-            state.encoding.color.opacity || 0.65
+            state.encoding.color.opacity || polyDefaultScaleOpacity
           ),
           default: adjustOpacity(
             state.encoding.color.defaultOtherRange ||
@@ -478,7 +481,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
             hasShowOther
               ? 0 // When Other is toggled OFF, we make the Other category transparent
-              : state.encoding.color.opacity || 0.65
+              : state.encoding.color.opacity || polyDefaultScaleOpacity
           )
         }
       }
