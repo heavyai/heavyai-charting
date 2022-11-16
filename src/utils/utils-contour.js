@@ -27,12 +27,15 @@ const buildParamsSQL = (params = {}) =>
     .join(", ")
 
 export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
+  if (!isContourType(state)) {
+    throw new Error(
+      "Error generating SQL, attempting to generate contour layer sql for a non contour layer"
+    )
+  }
+
   const data = state.data[0]
-  const encoding = state.encoding
   const {
     table,
-    minor_contour_interval,
-    major_contour_interval,
     agg_type = "AVG",
     fill_agg_type = "AVG",
     bin_dim_meters = 180,
@@ -42,11 +45,14 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
     flip_latitude = false,
     contour_value_field = "z",
     lat_field = "raster_lat",
-    lon_field = "raster_lon"
+    lon_field = "raster_lon",
+    interval
   } = data
 
+  const { intervalTypeFieldName = "is_major", minor } = interval
+
   const contourParams = {
-    contour_interval: minor_contour_interval,
+    contour_interval: minor,
     agg_type,
     fill_agg_type,
     bin_dim_meters,
@@ -65,7 +71,7 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
   const contourParamsSQL = buildParamsSQL(contourParams)
 
   const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
-  const contourLineCase = `CASE mod(cast(contour_values as int), ${major_contour_interval}) WHEN 0 THEN 1 ELSE 0 END as ${encoding.color.field} `
+  const contourLineCase = `CASE mod(cast(contour_values as int), ${interval}) WHEN 0 THEN TRUE ELSE FALSE END as ${intervalTypeFieldName} `
   const contourTableFunction = isPolygons
     ? "tf_raster_contour_polygons"
     : "tf_raster_contour_lines"
