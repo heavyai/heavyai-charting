@@ -351,9 +351,19 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const mapBounds = chart.map().getBounds()
     const geoTable = _layer.getState().encoding.geoTable
     const geoCol = _layer.getState().encoding.geocol
+    const data = _layer.getState().data
 
-    const preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
-
+    let preflightQuery
+    if (geoTable && geoCol) {
+      preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
+    } else if (data && data[0] && data[0].table) {
+      preflightQuery = `SELECT COUNT(*) AS n FROM ${data[0].table}`
+    }
+    if (!preflightQuery) {
+      return Promise.reject(
+        "Error generating preflight query, 'data' is empty and `geoTable` and `geoCol` are not specified."
+      )
+    }
     return chart.con().queryAsync(preflightQuery, {})
   }
 

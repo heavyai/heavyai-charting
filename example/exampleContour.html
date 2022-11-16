@@ -72,6 +72,50 @@
       .useLonLat(true)
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
 
+      const contourPolygonLayer = dc.rasterLayer("polys")
+      .crossfilter(crossFilter)
+      .setState({
+          data: [
+            {
+              type: "contour",
+              table: config.table,
+              source: config.table,
+              contour_value_field: config.value,
+              lat_field: config.lat_field,
+              lon_field: config.lon_field,
+              agg_type: 'AVG',
+              fill_agg_type: 'AVG',
+              bin_dim_meters: config.bin_dim_meters,
+              neighborhood_fill_radius: 0,
+              fill_only_nulls: false,
+              flip_latitude: false,
+              minor_contour_interval: config.minor_contour_interval,
+              major_contour_interval: config.major_contour_interval,
+              contour_offset: 0,
+            }
+          ],
+          transform: {
+            projection: "mercator_map_projection",
+          },
+          enableHitTesting: false,
+          mark: {
+            type: "poly",
+            strokeColor: "white",
+            strokeWidth: 0,
+            fillColor: "",
+            lineJoin: "miter",
+            miterLimit: 10
+          },
+          encoding: {
+            color: {
+              type: "linear",
+              domain: [0, 6000],
+              range: ["#FF0000", "#0000FF"],
+              opacity: 0.50
+            }
+          }
+        })
+
 
     const contourLayer = dc.rasterLayer("lines")
       .crossfilter(crossFilter)
@@ -134,12 +178,12 @@
           stroke: {
             minor: {
               width: 1,
-              color: "#999999",
+              color: "#666666",
               opacity: 0.75
             },
             major: {
               width: 2,
-              color: "#999999",
+              color: "#666666",
               opacity: 0.8
             }
           }
@@ -148,17 +192,21 @@
         enableHitTesting: false
       })
 
-      ContourChart.pushLayer("contourLayer", contourLayer).init().then((chart) => {
-        // This will zoom to data extent
-        chart.zoomToLocation({
-          bounds: {
-            sw: [-109.5400307407924, 36.77053773368342],
-            ne: [-101.56912902650292, 41.34207288081009]
-          }
-        })
+      ContourChart
+        .pushLayer("contourPolygonLayer", contourPolygonLayer)
+        .pushLayer("contourLayer", contourLayer)
+        .init()
+        .then((chart) => {
+          // This will zoom to data extent
+          chart.zoomToLocation({
+            bounds: {
+              sw: [-109.5400307407924, 36.77053773368342],
+              ne: [-101.56912902650292, 41.34207288081009]
+            }
+          })
 
-        dc.renderAllAsync()
-      })
+          dc.renderAllAsync()
+        })
 
 
     window.addEventListener("resize", _.debounce(resizeAll, 100));
