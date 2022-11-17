@@ -15,7 +15,8 @@ import {
   buildContourSQL,
   getContourMarks,
   getContourScales,
-  isContourType
+  isContourType,
+  validateContourState
 } from "../utils/utils-contour"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
@@ -362,6 +363,7 @@ export default function rasterLayerLineMixin(_layer) {
 
     let sql
     if (isContourType(state)) {
+      validateContourState(state)
       sql = buildContourSQL(state, mapBounds)
     } else {
       sql = parser.writeSQL({

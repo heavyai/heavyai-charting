@@ -50,13 +50,13 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
     contour_value_field = "z",
     lat_field = "raster_lat",
     lon_field = "raster_lon",
-    interval
+    intervals
   } = data
 
-  const { isMajorFieldName = "is_major", minor } = interval
+  const { isMajorFieldName = "is_major", minor: minorInterval, major: majorInterval } = intervals
 
   const contourParams = {
-    contour_interval: minor,
+    contour_interval: minorInterval,
     agg_type,
     fill_agg_type,
     bin_dim_meters,
@@ -75,7 +75,7 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
   const contourParamsSQL = buildParamsSQL(contourParams)
 
   const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
-  const contourLineCase = `CASE mod(cast(contour_values as int), ${interval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
+  const contourLineCase = `CASE mod(cast(contour_values as int), ${majorInterval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
   const contourTableFunction = isPolygons
     ? "tf_raster_contour_polygons"
     : "tf_raster_contour_lines"
@@ -138,4 +138,19 @@ export const getContourScales = ({ strokeWidth, opacity, color }) => {
       ]
     }
   ]
+}
+
+export const validateContourState = (state) => {
+  if (!state.data || !state.data.length) {
+    throw new Error("Contour layer requires exactly 1 item in the data list")
+  }
+
+  const data = state.data[0]
+  const {intervals} = data
+  if (!intervals) {
+    throw new Error("'intervals' is a required property of the data block")
+  }
+  if (intervals.major % intervals.minor !== 0) {
+    throw new Error("Minor interval must be a proper divisor of the major interval")
+  }
 }
