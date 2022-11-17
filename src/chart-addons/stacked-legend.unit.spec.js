@@ -64,7 +64,14 @@ describe("Stacked Legend", () => {
         open: true,
         domain: [0, 100],
         position: "bottom-left",
-        range: ["#27aeef", "#ea5545"]
+        range: [
+          "#27aeef",
+          "#ea5545",
+          "#87bc45",
+          "#b33dc6",
+          "#f46a9b",
+          "#ede15b"
+        ]
       })
     })
     it("should undefined", () => {})
