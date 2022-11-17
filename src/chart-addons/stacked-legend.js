@@ -134,7 +134,8 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
 
         return {
           ...materialized_color_scale,
-          legend: color_legend
+          legend: color_legend,
+          version: 2.0
         }
       } else {
         // TODO(croot): this can be removed once all raster layer types are
@@ -143,12 +144,14 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
         const layerState = layer.getState()
         const color = layer.getState().encoding.color
 
+        let color_legend_descriptor = null
+
         if (layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
           if (
             typeof color.scale === "object" &&
             color.scale.domain === "auto"
           ) {
-            return {
+            color_legend_descriptor = {
               ...color,
               scale: {
                 ...color.scale,
@@ -159,15 +162,20 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
             typeof color.scale === "undefined" &&
             color.domain === "auto"
           ) {
-            return {
+            color_legend_descriptor = {
               ...color,
               domain: layer.colorDomain()
             }
           } else {
-            return color
+            color_legend_descriptor = { ...color }
           }
         } else {
-          return color
+          color_legend_descriptor = { ...color }
+        }
+
+        return {
+          ...color_legend_descriptor,
+          version: 1.0
         }
       }
     }),
@@ -306,7 +314,69 @@ const formatNumber = d => (String(d).length > 4 ? format(".2s")(d) : commafy(d))
 const color_literal_alpha_regex = /^\s*[a-z,A-Z]{3}[aA]\s*\([\d.]+,[\d.]+,[\d.]+,([\d.]+)\)$/i
 
 // eslint-disable-next-line complexity
-function legendState(state, useMap = true) {
+function legendState_v1(state, useMap) {
+  if (state.type === "ordinal") {
+    return {
+      type: "nominal",
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      // When there is Other category (categories besides topN), we show it in the Color Palette in chart editor.
+      // We also need to include the Other category in legend. Thus, when there is Other category exist in result
+      // where hideOther is false we include Other in domain.
+      // For it's color swatch, we have two options:
+      // 1. When the Other toggle is enabled, we show color swatch (color defined from color palette in chart editor) for the Other category range,
+      // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
+      range:
+        !state.hideOther &&
+        state.hasOwnProperty("showOther") &&
+        state.showOther === true
+          ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
+          : state.range,
+      domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
+      position: useMap ? "bottom-left" : "top-right"
+    }
+  } else if (
+    state.type === "quantitative" &&
+    state.domain &&
+    isNullLegend(state.domain)
+  ) {
+    // handles quantitative legend for all null color measure column, ["NULL", "NULL"] domain
+    return {
+      type: "nominal", // show nominal legend with one "NULL" value when all null quantitavie color measure is selected
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: state.range,
+      domain: state.domain.slice(1),
+      position: useMap ? "bottom-left" : "top-right"
+    }
+  } else if (state.type === "quantitative") {
+    return {
+      type: "gradient",
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      locked: hasLegendLockedProp(state) ? state.legend.locked : false,
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: state.range,
+      domain: state.domain,
+      position: "bottom-left"
+    }
+  } else if (state.type === "quantize") {
+    const { scale } = state
+    return {
+      type: "gradient",
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      locked: hasLegendLockedProp(state) ? state.legend.locked : false,
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: scale.range,
+      domain: scale.domain,
+      position: "bottom-left"
+    }
+  } else {
+    return {}
+  }
+}
+
+// eslint-disable-next-line complexity
+function legendState_v2(state, useMap) {
   const state_type =
     typeof state.type === "string" ? state.type.toLowerCase() : ""
   const { legend = {} } = state
@@ -392,25 +462,13 @@ function legendState(state, useMap = true) {
     assert(Array.isArray(state.domain))
     assert(state.domain.length === 2)
     assert(typeof state.domain[0] === "number")
-    const range_diff = (state.domain[1] - state.domain[0]) / state.range.length
-    let curr_val = state.domain[0]
-    const domain_labels = state.range.map((item, index, range_array) => {
-      const prev_val = curr_val
-      curr_val += range_diff
-      if (index === 0) {
-        return `< ${formatNumber(curr_val)}`
-      } else if (index === range_array.length - 1) {
-        return `>= ${formatNumber(prev_val)}`
-      } else {
-        return `[${formatNumber(prev_val)}, ${formatNumber(curr_val)})`
-      }
-    })
     return {
-      type: "nominal",
+      type: "gradient",
       title,
+      locked,
       open,
       position,
-      domain: domain_labels,
+      domain: state.domain,
       range: state.range
     }
   } else if (is_quantitative_type) {
@@ -418,18 +476,39 @@ function legendState(state, useMap = true) {
     const domain = scale.domain || state.domain
     const range = scale.range || state.range
     const min_size = Math.min(domain.length, range.length)
+    // TODO(croot): may want to consider filling out the auto-gradient here
+    // using a max-number of stops. The best way to do this will most likely
+    // be to create a d3 scale of similar type, and generate new ranges from
+    // it at auto-gradient stops. Unforunately the legendables library will only
+    // auto fill the domain as long as the domain is only of size 2 and the range
+    // has more than 2 values. Instead, we need to handle the case where there's
+    // an implied gradient between multiple values in domain/range where there is
+    // an equal number of domains as ranges. So if we have a domain of [0,100] and
+    // a range of ["blue", "red"], a domain value of 50 would produce purple.
+    // This is currently not accounted for in ledgendables gradient, and therefore
+    // can result in a loss of legend color mapping. So, we would need to auto fill
+    // in some more domain/range stops so the legendables library has data to
+    // display. Because of the varied nature of the quantitative code (linear, pow, log, etc),
+    // it would be best to generate a d3 scale to generate values at linear stops.
     return {
       type: "gradient",
       title,
       locked,
       open,
-      position: "bottom-left",
+      position,
       range: range.slice(0, min_size),
       domain: domain.slice(0, min_size)
     }
   } else {
     return {}
   }
+}
+
+function legendState(state, useMap = true) {
+  const { version = 1.0 } = state
+  return version >= 2.0
+    ? legendState_v2(state, useMap)
+    : legendState_v1(state, useMap)
 }
 
 export function toLegendState(states = [], chart, useMap) {
