@@ -47,7 +47,7 @@ module.exports = {
           path.resolve(__dirname, "../index.js"),
           path.resolve(__dirname, "./exampleGeoHeat.js"),
           path.resolve(__dirname, "./exampleWindBarbs.js"),
-          path.resolve(__dirname, "./exampleContours.js"),
+          path.resolve(__dirname, "./exampleContour.js"),
           path.resolve(__dirname, "./exampleD3ComboChartCrossfilter.js")
         ],
         loader: "babel-loader"
