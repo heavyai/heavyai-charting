@@ -4,7 +4,6 @@ export const CONTOUR_TYPE = "contour"
 export const CONTOUR_COLOR_SCALE = "contour_color"
 export const CONTOUR_STROKE_WIDTH_SCALE = "contour_width"
 
-
 export const isContourType = (state = {}) =>
   state.data && state.data[0] && state.data[0].type === CONTOUR_TYPE
 
@@ -53,7 +52,11 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
     intervals
   } = data
 
-  const { isMajorFieldName = "is_major", minor: minorInterval, major: majorInterval } = intervals
+  const {
+    isMajorFieldName = "is_major",
+    minor: minorInterval,
+    major: majorInterval
+  } = intervals
 
   const contourParams = {
     contour_interval: minorInterval,
@@ -140,17 +143,19 @@ export const getContourScales = ({ strokeWidth, opacity, color }) => {
   ]
 }
 
-export const validateContourState = (state) => {
+export const validateContourState = state => {
   if (!state.data || !state.data.length) {
     throw new Error("Contour layer requires exactly 1 item in the data list")
   }
 
   const data = state.data[0]
-  const {intervals} = data
+  const { intervals } = data
   if (!intervals) {
     throw new Error("'intervals' is a required property of the data block")
   }
   if (intervals.major % intervals.minor !== 0) {
-    throw new Error("Minor interval must be a proper divisor of the major interval")
+    throw new Error(
+      "Minor interval must be a proper divisor of the major interval"
+    )
   }
 }
