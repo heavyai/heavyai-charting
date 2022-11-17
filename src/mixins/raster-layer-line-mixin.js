@@ -15,7 +15,8 @@ import {
   buildContourSQL,
   getContourMarks,
   getContourScales,
-  isContourType
+  isContourType,
+  validateContourState
 } from "../utils/utils-contour"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
@@ -350,6 +351,7 @@ export default function rasterLayerLineMixin(_layer) {
   }) {
     const autocolors = usesAutoColors()
     const getStatsLayerName = () => layerName + "_stats"
+    const state = _layer.getState()
 
     const size = getSizing(
       state.encoding.size,
@@ -361,7 +363,8 @@ export default function rasterLayerLineMixin(_layer) {
 
     let sql
     if (isContourType(state)) {
-      sql = buildContourSQL(state.data[0], mapBounds)
+      validateContourState(state)
+      sql = buildContourSQL(state, mapBounds)
     } else {
       sql = parser.writeSQL({
         type: "root",
@@ -509,7 +512,7 @@ export default function rasterLayerLineMixin(_layer) {
         state.transform.groupby.length
       ) {
         popupColsSet.add("sampled_geo")
-      } else {
+      } else if (state.encoding.geocol) {
         popupColsSet.add(state.encoding.geocol)
       }
     }

@@ -1,6 +1,11 @@
 import { adjustOpacity } from "./utils-vega"
 
 export const CONTOUR_TYPE = "contour"
+export const CONTOUR_COLOR_SCALE = "contour_color"
+export const CONTOUR_STROKE_WIDTH_SCALE = "contour_width"
+
+export const isContourType = (state = {}) =>
+  state.data && state.data[0] && state.data[0].type === CONTOUR_TYPE
 
 const buildParamsSQL = (params = {}) =>
   Object.entries(params)
@@ -25,10 +30,15 @@ const buildParamsSQL = (params = {}) =>
     .join(", ")
 
 export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
+  if (!isContourType(state)) {
+    throw new Error(
+      "Error generating SQL, attempting to generate contour layer sql for a non contour layer"
+    )
+  }
+
+  const data = state.data[0]
   const {
     table,
-    minor_contour_interval,
-    major_contour_interval,
     agg_type = "AVG",
     fill_agg_type = "AVG",
     bin_dim_meters = 180,
@@ -38,11 +48,18 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
     flip_latitude = false,
     contour_value_field = "z",
     lat_field = "raster_lat",
-    lon_field = "raster_lon"
-  } = state
+    lon_field = "raster_lon",
+    intervals
+  } = data
+
+  const {
+    isMajorFieldName = "is_major",
+    minor: minorInterval,
+    major: majorInterval
+  } = intervals
 
   const contourParams = {
-    contour_interval: minor_contour_interval,
+    contour_interval: minorInterval,
     agg_type,
     fill_agg_type,
     bin_dim_meters,
@@ -61,7 +78,7 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
   const contourParamsSQL = buildParamsSQL(contourParams)
 
   const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
-  const contourLineCase = `CASE mod(cast(contour_values as int), ${major_contour_interval}) WHEN 0 THEN 1 ELSE 0 END as is_major `
+  const contourLineCase = `CASE mod(cast(contour_values as int), ${majorInterval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
   const contourTableFunction = isPolygons
     ? "tf_raster_contour_polygons"
     : "tf_raster_contour_lines"
@@ -91,35 +108,54 @@ export const getContourMarks = (layerName, state) => [
         field: "y"
       },
       strokeColor: {
-        scale: "contour_color",
-        field: "is_major"
+        scale: CONTOUR_COLOR_SCALE,
+        field: state.encoding.color.field
       },
       strokeWidth: {
-        scale: "contour_width",
-        field: "is_major"
+        scale: CONTOUR_STROKE_WIDTH_SCALE,
+        field: state.encoding.strokeWidth.field
       },
       lineJoin: state.mark.lineJoin
     }
   }
 ]
 
-export const getContourScales = ({ stroke }) => [
-  {
-    name: "contour_width",
-    type: "ordinal",
-    domain: [0, 1],
-    range: [stroke.minor.width, stroke.major.width] // [minor, major]
-  },
-  {
-    name: "contour_color",
-    type: "ordinal",
-    domain: [0, 1],
-    range: [
-      adjustOpacity(stroke.minor.color, stroke.minor.opacity),
-      adjustOpacity(stroke.major.color, stroke.major.opacity)
-    ] // 1 is major, 0 is minor
-  }
-]
+export const getContourScales = ({ strokeWidth, opacity, color }) => {
+  const [minorOpacity, majorOpacity] = opacity.scale.range
+  const [minorColor, majorColor] = color.scale.range
 
-export const isContourType = (state = {}) =>
-  state.data && state.data[0] && state.data[0].type === CONTOUR_TYPE
+  return [
+    {
+      name: CONTOUR_STROKE_WIDTH_SCALE,
+      type: "ordinal",
+      domain: strokeWidth.scale.domain,
+      range: strokeWidth.scale.range
+    },
+    {
+      name: CONTOUR_COLOR_SCALE,
+      type: "ordinal",
+      domain: color.scale.domain,
+      range: [
+        adjustOpacity(minorColor, minorOpacity),
+        adjustOpacity(majorColor, majorOpacity)
+      ]
+    }
+  ]
+}
+
+export const validateContourState = state => {
+  if (!state.data || !state.data.length) {
+    throw new Error("Contour layer requires exactly 1 item in the data list")
+  }
+
+  const data = state.data[0]
+  const { intervals } = data
+  if (!intervals) {
+    throw new Error("'intervals' is a required property of the data block")
+  }
+  if (intervals.major % intervals.minor !== 0) {
+    throw new Error(
+      "Minor interval must be a proper divisor of the major interval"
+    )
+  }
+}
