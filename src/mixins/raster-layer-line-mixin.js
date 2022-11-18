@@ -363,15 +363,11 @@ export default function rasterLayerLineMixin(_layer) {
     let sql
     if (isContourType(state)) {
       validateContourState(state)
-      const filterTransforms = _layer.getTransforms(
-        table,
-        filter,
-        globalFilter,
-        state,
-        lastFilteredSize
-      ).filter((f) => f.type === "filter")
+      const filterTransforms = _layer
+        .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        .filter(f => f.type === "filter")
       sql = buildContourSQL({
-        state: state.data[0], 
+        state: state.data[0],
         filterTransforms
       })
     } else {

@@ -73,7 +73,7 @@ export const buildContourSQL = ({
   }
 
   const rasterSelectFilter = filterTransforms.length
-    ? `where ${filterTransforms.map((ft) => ft.expr).join("AND")}`
+    ? `where ${filterTransforms.map(ft => ft.expr).join("AND")}`
     : ""
   const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
 
@@ -147,7 +147,7 @@ export const getContourScales = ({ strokeWidth, opacity, color }) => {
   ]
 }
 
-export const validateContourState = (state) => {
+export const validateContourState = state => {
   if (!state.data || !state.data.length) {
     throw new Error("Contour layer requires exactly 1 item in the data list")
   }

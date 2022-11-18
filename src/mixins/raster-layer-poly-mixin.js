@@ -531,15 +531,17 @@ export default function rasterLayerPolyMixin(_layer) {
 
     let data
     if (isContourType(state)) {
-      const filterTransforms = _layer.getTransforms({
-        bboxFilter,
-        filter,
-        globalFilter,
-        layerFilter,
-        filtersInverse,
-        state,
-        lastFilteredSize
-      }).filter((f) => f.type === "filter")
+      const filterTransforms = _layer
+        .getTransforms({
+          bboxFilter,
+          filter,
+          globalFilter,
+          layerFilter,
+          filtersInverse,
+          state,
+          lastFilteredSize
+        })
+        .filter(f => f.type === "filter")
       const sql = buildContourSQL({
         state: state.data[0],
         filterTransforms,
