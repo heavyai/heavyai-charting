@@ -623,7 +623,9 @@ export default function rasterLayerPolyMixin(_layer) {
         layerName,
         autocolors
       })
-      scales.push(scale)
+      if (scale) {
+        scales.push(scale)
+      }
       fillColor = polyFillColor
     }
 
@@ -697,6 +699,9 @@ export default function rasterLayerPolyMixin(_layer) {
       marks[0].properties.x.scale = "x"
       marks[0].properties.y.scale = "y"
     }
+    console.log({
+      data, scales, marks
+    })
 
     return {
       data,
