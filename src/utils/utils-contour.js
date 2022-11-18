@@ -29,13 +29,16 @@ const buildParamsSQL = (params = {}) =>
     }, [])
     .join(", ")
 
-export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
+export const buildContourSQL = ({
+  state,
+  filterTransforms = [],
+  isPolygons = false
+}) => {
   if (!isContourType(state)) {
     throw new Error(
       "Error generating SQL, attempting to generate contour layer sql for a non contour layer"
     )
   }
-
   const data = state.data[0]
   const {
     table,
@@ -69,14 +72,15 @@ export const buildContourSQL = (state, mapBounds, isPolygons = false) => {
     flip_latitude
   }
 
-  const rasterSelectFilter = mapBounds
-    ? `where ${lat_field} >= ${mapBounds._sw.lat} AND ${lat_field} <= ${mapBounds._ne.lat} AND ${lon_field} >= ${mapBounds._sw.lng} AND ${lon_field} <= ${mapBounds._ne.lng}`
+  const rasterSelectFilter = filterTransforms.length
+    ? `where ${filterTransforms.map(ft => ft.expr).join("AND")}`
     : ""
   const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
 
+  // TODO: Use geocol here
   const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
   const contourLineCase = `CASE mod(cast(contour_values as int), ${majorInterval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
   const contourTableFunction = isPolygons

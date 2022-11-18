@@ -341,7 +341,6 @@ export default function rasterLayerLineMixin(_layer) {
 
   _layer.__genVega = function({
     table,
-    mapBounds,
     filter,
     lastFilteredSize,
     globalFilter,
@@ -364,7 +363,13 @@ export default function rasterLayerLineMixin(_layer) {
     let sql
     if (isContourType(state)) {
       validateContourState(state)
-      sql = buildContourSQL(state, mapBounds)
+      const filterTransforms = _layer
+        .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        .filter(f => f.type === "filter")
+      sql = buildContourSQL({
+        state: state.data[0],
+        filterTransforms
+      })
     } else {
       sql = parser.writeSQL({
         type: "root",
@@ -489,10 +494,8 @@ export default function rasterLayerLineMixin(_layer) {
         })
     }
 
-    const mapBounds = chart.map().getBounds()
     _vega = _layer.__genVega({
       layerName,
-      mapBounds,
       table: _layer.crossfilter().getTable()[0],
       filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
