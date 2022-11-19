@@ -699,9 +699,6 @@ export default function rasterLayerPolyMixin(_layer) {
       marks[0].properties.x.scale = "x"
       marks[0].properties.y.scale = "y"
     }
-    console.log({
-      data, scales, marks
-    })
 
     return {
       data,
