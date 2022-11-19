@@ -462,5 +462,49 @@ describe("rasterLayerPolyMixin", () => {
         ]
       })
     })
+
+    it("should not create null scales", () => {
+      const layer = rasterLayer("polys")
+      layer.setState({
+        data: [
+          {
+            table: "heavyai_us_states",
+            attr: "rowid"
+          }
+        ],
+        transform: {
+          sample: true,
+          limit: 150000,
+          tableSize: 52
+        },
+        mark: {
+          type: "poly",
+          strokeColor: "#ffffff",
+          strokeWidth: 0,
+          lineJoin: "miter",
+          miterLimit: 10
+        },
+        encoding: {
+          color: {
+            type: "solid",
+            value: "#27aeef",
+            opacity: 0.85
+          },
+          geocol: "geom",
+          geoTable: "heavyai_us_states"
+        },
+        enableHitTesting: true,
+        currentLayer: 0,
+        bboxCount: 52
+      })
+      expect(
+        layer.__genVega({
+          table: "heavyai_us_states",
+          layerName: "polys",
+          filter: "",
+          useProjection: false
+        }).scales
+      ).to.not.include(undefined)
+    })
   })
 })

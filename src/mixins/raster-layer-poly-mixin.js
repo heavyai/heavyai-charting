@@ -623,7 +623,9 @@ export default function rasterLayerPolyMixin(_layer) {
         layerName,
         autocolors
       })
-      scales.push(scale)
+      if (scale) {
+        scales.push(scale)
+      }
       fillColor = polyFillColor
     }
 
