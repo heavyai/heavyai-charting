@@ -367,7 +367,7 @@ export default function rasterLayerLineMixin(_layer) {
         .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
         .filter(f => f.type === "filter")
       sql = buildContourSQL({
-        state: state.data[0],
+        state,
         filterTransforms
       })
     } else {

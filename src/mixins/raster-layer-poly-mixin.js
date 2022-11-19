@@ -543,7 +543,7 @@ export default function rasterLayerPolyMixin(_layer) {
         })
         .filter(f => f.type === "filter")
       const sql = buildContourSQL({
-        state: state.data[0],
+        state,
         filterTransforms,
         isPolygons: true
       })
