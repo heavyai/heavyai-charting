@@ -463,7 +463,6 @@ describe("rasterLayerPolyMixin", () => {
       })
     })
 
-
     it("should not create null scales", () => {
       const layer = rasterLayer("polys")
       layer.setState({
@@ -498,12 +497,14 @@ describe("rasterLayerPolyMixin", () => {
         currentLayer: 0,
         bboxCount: 52
       })
-      expect(layer.__genVega({
-        table: "heavyai_us_states",
-        layerName: "polys",
-        filter: "",
-        useProjection: false
-      }).scales).to.not.include(undefined)
+      expect(
+        layer.__genVega({
+          table: "heavyai_us_states",
+          layerName: "polys",
+          filter: "",
+          useProjection: false
+        }).scales
+      ).to.not.include(undefined)
     })
   })
 })
