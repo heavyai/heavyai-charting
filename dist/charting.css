@@ -1015,18 +1015,18 @@ body {
       animation: fadeInMapPoint .5s; }
     .dc-chart .map-poly.fadeOutPoly {
       animation: fadeOutMapPoint .25s; }
-  .dc-chart .map-polyline {
+  .dc-chart .map-polyline g {
     fill: none;
     stroke: #ffffff;
     stroke-width: 4;
     pointer-events: none; }
-    .dc-chart .map-polyline.popupPoly {
+    .dc-chart .map-polyline g.popupPoly {
       animation: showMapPoint .5s; }
-    .dc-chart .map-polyline.removePoly {
+    .dc-chart .map-polyline g.removePoly {
       animation: hideMapPoint .25s; }
-    .dc-chart .map-polyline.fadeInPoly {
+    .dc-chart .map-polyline g.fadeInPoly {
       animation: fadeInMapPoint .5s; }
-    .dc-chart .map-polyline.fadeOutPoly {
+    .dc-chart .map-polyline g.fadeOutPoly {
       animation: fadeOutMapPoint .25s; }
 
 @keyframes showMapPopup {
