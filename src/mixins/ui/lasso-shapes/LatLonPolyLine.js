@@ -1,12 +1,12 @@
-"use strict"
-
-import * as Draw from "@heavyai/draw/dist/draw"
+import * as LatLonUtils from "../../../utils/utils-latlon"
+import * as Draw from "@heavyai/draw/dist/mapd-draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
+import assert from "assert"
 
 const { AABox2d, Mat2d, Point2d } = Draw
 const MathExt = Draw.Math
 
-export default class LatLonPoly extends Draw.Poly {
+export default class LatLonPolyLine extends Draw.PolyLine {
   constructor(draw_engine, opts) {
     if (opts.debug === undefined) {
       // if true, will activate the use of the _drawDebug method for drawing
@@ -151,7 +151,6 @@ export default class LatLonPoly extends Draw.Poly {
       for (let i = 1; i < this._screenPts.length; i += 1) {
         ctx.lineTo(this._screenPts[i][0], this._screenPts[i][1])
       }
-      ctx.closePath()
     }
   }
 
@@ -177,7 +176,7 @@ export default class LatLonPoly extends Draw.Poly {
 
   toJSON() {
     return Object.assign(super.toJSON(), {
-      type: "LatLonPoly" // this must match the name of the class
+      type: "LatLonPolyLine" // this must match the name of the class
     })
   }
 }

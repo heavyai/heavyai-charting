@@ -6,6 +6,7 @@ import simplify from "simplify-js"
 import { logger } from "../../utils/logger"
 import LatLonCircle from "./lasso-shapes/LatLonCircle"
 import LatLonPoly from "./lasso-shapes/LatLonPoly"
+import LatLonPolyLine from "./lasso-shapes/LatLonPolyLine"
 
 const { AABox2d, Mat2, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
@@ -75,6 +76,7 @@ class ShapeHandler {
     this.canvas.focus()
   }
 
+  /* eslint-disable no-unused-vars, no-empty-function */
   mousedownCB(event) {}
   mouseupCB(event) {}
   mousemoveCB(event) {}
@@ -82,6 +84,7 @@ class ShapeHandler {
   clickCB(event) {}
   dblclickCB(event) {}
   keydownCB(event) {}
+  /* eslint-enable no-unused-vars, no-empty-function */
 
   isMouseEventInCanvas(mouseEvent) {
     const width = this.canvas.offsetWidth
@@ -95,8 +98,6 @@ class ShapeHandler {
   }
 
   getRelativeMousePosFromEvent(mouseEvent) {
-    const width = this.canvas.offsetWidth
-    const height = this.canvas.offsetHeight
     const rect = this.canvas.getBoundingClientRect()
 
     const diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft
@@ -273,7 +274,7 @@ class CircleShapeHandler extends ShapeHandler {
     event.preventDefault()
   }
 
-  mouseupCB(event) {
+  mouseupCB() {
     this.deactivateShape()
   }
 
@@ -304,7 +305,7 @@ class CircleShapeHandler extends ShapeHandler {
     }
   }
 
-  clickCB(event) {
+  clickCB() {
     this.deactivateShape()
   }
 
@@ -733,6 +734,302 @@ class LassoShapeHandler extends ShapeHandler {
   }
 }
 
+class CrossSectionShapeHandler extends ShapeHandler {
+  constructor(
+    parent,
+    drawEngine,
+    chart,
+    buttonGroup,
+    buttonId,
+    defaultStyle,
+    defaultSelectStyle
+  ) {
+    super(
+      parent,
+      drawEngine,
+      chart,
+      buttonGroup,
+      buttonId,
+      defaultStyle,
+      defaultSelectStyle
+    )
+    this.activeShape = null
+    this.startVert = null
+    this.lastVert = null
+    this.lineShape = null
+    this.prevVertPos = null
+    // this.activeIdx = -1
+    this.startPosAABox = AABox2d.create()
+    this.timer = null
+
+    this.enableBasemapDebounceFunc = chart.debounce(() => {
+      if (this.active) {
+        this.enableBasemapEvents()
+      }
+    }, 100)
+  }
+
+  destroy(destroy_line = false) {
+    if (this.startVert) {
+      this.drawEngine.deleteShape(this.startVert)
+    }
+    if (this.lastVert) {
+      this.drawEngine.deleteShape(this.lastVert)
+    }
+    if (this.lineShape && destroy_line) {
+      this.drawEngine.deleteShape(this.lineShape)
+      this.lineShape = null
+    }
+
+    this.startVert = null
+    this.lastVert = null
+    this.activeShape = null
+    this.prevVertPos = null
+    AABox2d.initEmpty(this.startPosAABox)
+    // this.activeIdx = -1
+  }
+
+  appendVertex(mousepos, mouseworldpos) {
+    if (this.lineShape) {
+      if (
+        !this.prevVertPos ||
+        Math.abs(mousepos[0] - this.prevVertPos[0]) > 2 ||
+        Math.abs(mousepos[1] - this.prevVertPos[1]) > 2
+      ) {
+        this.prevVertPos = mousepos
+        // return this.lineShape.appendVert(mouseworldpos)
+        this.lineShape.appendVert(mouseworldpos)
+      }
+    }
+    // return -1
+  }
+
+  finishShape() {
+    if (this.lineShape.numVerts > 1) {
+      this.lineShape.setStyle(this.defaultStyle)
+      this.setupFinalShape(this.lineShape)
+      // clear out all other shapes using our destroy method
+      this.destroy(false)
+    } else {
+      this.destroy(true)
+      this.enableBasemapEvents()
+    }
+
+    // const verts = this.lineShape ? this.lineShape.vertsRef : []
+    // const removeLastVert =
+    //   verts.length > 1 &&
+    //   !Point2d.equals(verts[0], verts[verts.length - 1]) &&
+    //   this.lastVert &&
+    //   !Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef())
+    // if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
+    //   // Check if there is a loop in the current verts, remove the last point
+    //   // if so
+    //   if (removeLastVert) {
+    //     verts.pop()
+    //   }
+
+    //   const args = []
+    //   let PolyClass = null
+    //   if (this.useLonLat) {
+    //     PolyClass = LatLonPoly
+    //     args.push(this.drawEngine)
+    //   } else {
+    //     PolyClass = Draw.Poly
+    //   }
+    //   args.push(
+    //     Object.assign(
+    //       {
+    //         verts
+    //       },
+    //       this.defaultStyle
+    //     )
+    //   )
+    //   const poly = new PolyClass(...args)
+    //   this.setupFinalShape(poly)
+
+    //   // clear out all other shapes using our destroy method
+    //   this.destroy()
+    // } else {
+    //   this.destroy()
+    //   this.enableBasemapEvents()
+    // }
+  }
+
+  mousedownCB(event) {
+    if (!this.isMouseEventInCanvas(event)) {
+      this.timer = null
+      return
+    }
+
+    this.timer = performance.now()
+  }
+
+  mouseupCB(event) {
+    if (this.timer && performance.now() - this.timer < 500) {
+      this.disableBasemapEvents()
+
+      let shapeBuilt = false
+      const mousepos = this.getRelativeMousePosFromEvent(event)
+      const mouseworldpos = Point2d.create(0, 0)
+      this.drawEngine.project(mouseworldpos, mousepos)
+
+      if (!this.startVert) {
+        const args = []
+        let PolyLineClass = null
+        if (this.useLonLat) {
+          PolyLineClass = LatLonPolyLine
+          args.push(this.drawEngine)
+        } else {
+          PolyLineClass = Draw.PolyLine
+        }
+        args.push(
+          Object.assign(
+            {
+              verts: [mouseworldpos]
+            },
+            this.defaultSelectStyle
+          )
+        )
+        this.lineShape = new PolyLineClass(...args)
+        this.addShape(this.lineShape)
+        this.startVert = new Draw.Point({
+          position: mouseworldpos,
+          size: 5
+        })
+        this.addShape(this.startVert)
+        this.activeShape = this.startVert
+        this.prevVertPos = mousepos
+        // this.activeIdx = 0
+      } else {
+        const startpos = this.startVert.getPosition()
+        this.drawEngine.unproject(startpos, startpos)
+        AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10])
+        if (!AABox2d.containsPt(this.startPosAABox, mousepos)) {
+          this.finishShape()
+          shapeBuilt = true
+        }
+      }
+
+      // else if (!this.lastVert && this.lineShape.numVerts > 1) {
+      //   const verts = this.lineShape.vertsRef
+      //   this.lastVert = new Draw.Point({
+      //     position: verts[1],
+      //     size: 5
+      //   })
+      //   this.addShape(this.lastVert)
+      //   this.activeShape = this.lastVert
+      //   this.activeIdx = 1
+      // } else if (this.lastVert) {
+      //   const startpos = this.startVert.getPosition()
+      //   this.drawEngine.unproject(startpos, startpos)
+      //   AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10])
+      //   if (AABox2d.containsPt(this.startPosAABox, mousepos)) {
+      //     this.finishShape()
+      //     shapeBuilt = true
+      //   } else {
+      //     const verts = this.lineShape.vertsRef
+      //     this.lastVert.setPosition(verts[verts.length - 1])
+      //     this.activeShape = this.lastVert
+      //   }
+      // }
+
+      if (!shapeBuilt) {
+        this.enableBasemapDebounceFunc()
+        this.canvas.focus()
+        this.activeShape = null
+        // this.activeIdx = -1
+      }
+      event.preventDefault()
+    }
+  }
+
+  mousemoveCB(event) {
+    if (this.lineShape) {
+      if (this.lineShape.numVerts === 1) {
+        const mousepos = this.getRelativeMousePosFromEvent(event)
+        const mouseworldpos = Point2d.create(0, 0)
+        this.drawEngine.project(mouseworldpos, mousepos)
+        this.activeIdx = this.appendVertex(mousepos, mouseworldpos)
+      } else {
+        const mousepos = this.getRelativeMousePosFromEvent(event)
+        const mouseworldpos = Point2d.create(0, 0)
+        this.drawEngine.project(mouseworldpos, mousepos)
+
+        if (event.shiftKey) {
+          // if (this.activeIdx === 1) {
+          const diff = Vec2d.create()
+          const prevmousepos = Point2d.create()
+          const verts = this.lineShape.vertsRef
+          this.drawEngine.unproject(prevmousepos, verts[0])
+          Point2d.sub(diff, mousepos, prevmousepos)
+          let angle = Math.atan2(diff[1], diff[0])
+          angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
+          const transformDir = [Math.cos(angle), Math.sin(angle)]
+          Vec2d.scale(diff, transformDir, Vec2d.dot(diff, transformDir))
+          Point2d.addVec2(mousepos, prevmousepos, diff)
+          this.drawEngine.project(mouseworldpos, mousepos)
+          // } else if (this.activeIdx > 1) {
+          //   const verts = this.lineShape.vertsRef
+          //   const pt1 = Point2d.create()
+          //   this.drawEngine.unproject(pt1, verts[this.activeIdx - 2])
+          //   const pt2 = Point2d.create()
+          //   this.drawEngine.unproject(pt2, verts[this.activeIdx - 1])
+          //   const dir1 = Vec2d.create()
+          //   Point2d.sub(dir1, pt2, pt1)
+          //   Vec2d.normalize(dir1, dir1)
+          //   const dir2 = [0, 0]
+          //   Point2d.sub(dir2, mousepos, pt2)
+          //   // Vec2d.normalize(dir2, dir2)
+          //   let angle = Vec2d.angle(dir1, dir2)
+          //   angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
+          //   const matrix = Mat2.create()
+          //   Mat2.fromRotation(matrix, angle)
+          //   const transformDir = [0, 0]
+          //   Vec2d.transformMat2(transformDir, dir1, matrix)
+          //   Vec2d.scale(
+          //     transformDir,
+          //     transformDir,
+          //     Vec2d.dot(dir2, transformDir)
+          //   )
+          //   Point2d.addVec2(mousepos, pt2, transformDir)
+          //   this.drawEngine.project(mouseworldpos, mousepos)
+          // }
+        }
+
+        this.lineShape.setVertPosition(1, mouseworldpos)
+        this.canvas.focus()
+        event.preventDefault()
+      }
+    }
+  }
+
+  dblclickCB(event) {
+    if (!this.isMouseEventInCanvas(event)) {
+      return
+    }
+
+    this.finishShape()
+  }
+
+  keydownCB(event) {
+    if (
+      event.key === "Escape" ||
+      event.code === "Escape" ||
+      event.keyCode === 27
+    ) {
+      this.destroy(true)
+      this.enableBasemapEvents()
+    } else if (
+      event.key === "Enter" ||
+      event.code === "Enter" ||
+      event.code === "NumpadEnter" ||
+      event.keyCode === 13
+    ) {
+      this.finishShape()
+    }
+  }
+}
+
 /* istanbul ignore next */
 export default class LassoButtonGroupController {
   constructor(
@@ -753,6 +1050,8 @@ export default class LassoButtonGroupController {
     this._dragbeginCB = this._dragbeginCB.bind(this)
     this._dragendCB = this._dragendCB.bind(this)
     this._keyboardCB = this._keyboardCB.bind(this)
+
+    this._handlers = []
     this._initControls(defaultStyle, defaultSelectStyle)
   }
 
@@ -761,9 +1060,7 @@ export default class LassoButtonGroupController {
       const canvas = this._drawEngine.getCanvas()
       canvas.removeEventListener("keydown", this._keyboardCB)
 
-      this._circleHandler.deactivate()
-      this._polylineHandler.deactivate()
-      this._lassoHandler.deactivate()
+      this._handlers.forEach(handler => handler.deactivate())
 
       this._drawEngine.off(
         Draw.ShapeBuilder.EventConstants.DRAG_END,
@@ -1024,24 +1321,22 @@ export default class LassoButtonGroupController {
       this._dragendCB
     )
 
-    this._circleHandler = this._createButtonControl(
-      "circle",
-      CircleShapeHandler,
-      defaultStyle,
-      defaultSelectStyle
-    )
-    this._polylineHandler = this._createButtonControl(
-      "polyline",
-      PolylineShapeHandler,
-      defaultStyle,
-      defaultSelectStyle
-    )
-    this._lassoHandler = this._createButtonControl(
-      "lasso",
-      LassoShapeHandler,
-      defaultStyle,
-      defaultSelectStyle
-    )
+    const context = this
+    const add_handler = (handler_id_string, handler_class) => {
+      context._handlers.push(
+        context._createButtonControl(
+          handler_id_string,
+          handler_class,
+          defaultStyle,
+          defaultSelectStyle
+        )
+      )
+    }
+
+    add_handler("circle", CircleShapeHandler)
+    add_handler("polyline", PolylineShapeHandler)
+    add_handler("lasso", LassoShapeHandler)
+    add_handler("CrossSection", CrossSectionShapeHandler)
 
     // NOTE: the canvas dom element needs to have a "tabindex" set to have
     // focusability, and best to have "outline: none" as part
