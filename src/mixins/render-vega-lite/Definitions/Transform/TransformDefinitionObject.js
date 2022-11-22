@@ -1,6 +1,8 @@
 import PropertiesDefinitionInterface from "../PropertiesDefinitionInterface"
 import SampleDefinitionObject from "../Transform/Transforms/SampleDefinitionObject"
 import LimitDefinitionObject from "../Transform/Transforms/LimitDefinitionObject"
+import RasterMesh2dDefinitionObject from "../Transform/Transforms/RasterMesh2dDefinitionObject"
+import CrossSection2dDefinitionObject from "../Transform/Transforms/CrossSection2dDefinitionObject"
 
 export default class TransformDefinitionObject extends PropertiesDefinitionInterface {
   /**
@@ -38,6 +40,24 @@ export default class TransformDefinitionObject extends PropertiesDefinitionInter
           new LimitDefinitionObject(xform_definition, {
             parent: this,
             prop_name: `${index}/${LimitDefinitionObject.key}`
+          })
+        )
+      } else if (
+        Object.hasOwn(xform_definition, RasterMesh2dDefinitionObject.key)
+      ) {
+        this.transforms_.push(
+          new RasterMesh2dDefinitionObject(xform_definition, {
+            parent: this,
+            prop_name: `${index}/${RasterMesh2dDefinitionObject.key}`
+          })
+        )
+      } else if (
+        Object.hasOwn(xform_definition, CrossSection2dDefinitionObject.key)
+      ) {
+        this.transforms_.push(
+          new CrossSection2dDefinitionObject(xform_definition, {
+            parent: this,
+            prop_name: `${index}/${CrossSection2dDefinitionObject.key}`
           })
         )
       } else {

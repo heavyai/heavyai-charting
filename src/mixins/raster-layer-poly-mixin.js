@@ -751,7 +751,7 @@ export default function rasterLayerPolyMixin(_layer) {
       layerFilter: _layer.filters(),
       lastFilteredSize: _layer.getState().bboxCount,
       filtersInverse: _layer.filtersInverse(),
-      useProjection: chart._useGeoTypes
+      useProjection: chart.useGeoTypes()
     })
     return _vega
   }
@@ -759,7 +759,7 @@ export default function rasterLayerPolyMixin(_layer) {
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
     // add the poly geometry to the query
 
-    if (chart._useGeoTypes) {
+    if (chart.useGeoTypes()) {
       if (state.encoding.geocol) {
         popupColsSet.add(state.encoding.geocol)
       }

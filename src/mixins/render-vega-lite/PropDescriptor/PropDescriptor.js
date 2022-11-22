@@ -1,6 +1,10 @@
 import PropLocation from "./Enums/PropLocation"
 import MeasurementType from "./Enums/MeasurementType"
 
+// jsdoc import only
+// eslint-disable-next-line no-unused-vars
+import RasterLayerContext from "../RasterLayerContext"
+
 export { PropLocation, MeasurementType }
 export default class PropDescriptor {
   /**
@@ -77,6 +81,14 @@ export default class PropDescriptor {
   }
 
   /**
+   * Validates the property descriptor with the active context
+   * Should throw an error if validation fails
+   * @param {RasterLayerContext} raster_layer_context
+   */
+  // eslint-disable-next-line no-unused-vars
+  validateContext(raster_layer_context) {}
+
+  /**
    * @param {(string|number|boolean)} prop_definition
    */
   isValidMarkDefinition(prop_definition) {
@@ -141,6 +153,7 @@ export default class PropDescriptor {
    */
   // eslint-disable-next-line no-unused-vars
   buildDefaultScaleDefinition(parent_info) {
+    // eslint-disable-next-line no-warning-comments
     // TODO(croot): move this into a scale-enabled descriptor mixin
     return {}
   }

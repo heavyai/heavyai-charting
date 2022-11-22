@@ -19,6 +19,8 @@ module.exports = {
     ),
     geoheat: path.resolve(__dirname, "./exampleGeoHeat.js"),
     windbarb: path.resolve(__dirname, "./exampleWindBarbs.js"),
+    rastermesh: path.resolve(__dirname, "./exampleRasterMesh.js"),
+    crosssection: path.resolve(__dirname, "./exampleCrossSection.js"),
     exampleD3ComboChartCrossfilter: path.resolve(
       __dirname,
       "./exampleD3ComboChartCrossfilter.js"
@@ -48,6 +50,8 @@ module.exports = {
           path.resolve(__dirname, "../index.js"),
           path.resolve(__dirname, "./exampleGeoHeat.js"),
           path.resolve(__dirname, "./exampleWindBarbs.js"),
+          path.resolve(__dirname, "./exampleRasterMesh.js"),
+          path.resolve(__dirname, "./exampleCrossSection.js"),
           path.resolve(__dirname, "./exampleD3ComboChartCrossfilter.js")
         ],
         loader: "babel-loader"

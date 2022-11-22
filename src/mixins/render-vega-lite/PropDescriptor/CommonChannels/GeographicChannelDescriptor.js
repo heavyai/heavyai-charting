@@ -1,9 +1,14 @@
+import assert from "assert"
+
 import {
   default as PropDescriptor,
   PropLocation,
   MeasurementType
 } from "../PropDescriptor"
-import assert from "assert"
+
+// jsdoc imports only
+// eslint-disable-next-line no-unused-vars
+import RasterLayerContext from "../../RasterLayerContext"
 
 export default class GeographicChannelDescriptor extends PropDescriptor {
   /**
@@ -11,7 +16,20 @@ export default class GeographicChannelDescriptor extends PropDescriptor {
    * @param {string} [vega_prop_name=null]
    */
   constructor(prop_name, vega_prop_name = null) {
-    super(prop_name, vega_prop_name, PropLocation.kEncodingOnly, [], false)
+    super(prop_name, vega_prop_name, PropLocation.kEncodingOnly, null, false)
+  }
+
+  /**
+   * Validates the property descriptor with the active context
+   * Should throw an error if validation fails
+   * @param {RasterLayerContext} raster_layer_context
+   */
+  validateContext(raster_layer_context) {
+    if (!raster_layer_context.chart.useGeoTypes()) {
+      throw new Error(
+        `Cannot use the Geographic property '${this.prop_name}' with the raster chart as the raster chart is not configured to use geographic data`
+      )
+    }
   }
 
   isValidMarkDefinition() {

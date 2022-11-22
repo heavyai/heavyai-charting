@@ -94,4 +94,14 @@ export default class PropertiesDefinitionInterface {
   materializeProperty(prop_descriptor, vega_property_output_state) {
     assert(false, `Needs to be overwritten by a derived class`)
   }
+
+  /**
+   * After all the vega properties/state have been materialized, there is one last pass/opportunity
+   * for definition objects to realign with the prebuilt state for whatever purpose. Note:
+   * realignment is done in a FIFO queue.
+   * @param {Map<string,PropDescriptor>} prop_descriptors
+   * @param {VegaPropertyOutputState} vega_property_output_state
+   */
+  // eslint-disable-next-line no-unused-vars
+  realign(prop_descriptors, vega_property_output_state) {}
 }
