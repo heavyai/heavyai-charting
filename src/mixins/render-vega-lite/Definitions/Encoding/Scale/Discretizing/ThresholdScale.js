@@ -113,14 +113,6 @@ export default class ThresholdScale extends DiscretizingScale {
         }
       )
 
-      ContinuousScale.buildExtentsVegaTransform(
-        parent.output,
-        this.root_context.layer_name,
-        prop_descriptor.prop_name,
-        // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
-        ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
-      )
-
       vega_property_output_state.addVegaTransform(
         prop_descriptor.prop_name,
         vega_xform_obj
