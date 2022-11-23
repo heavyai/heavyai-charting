@@ -170,6 +170,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _layerNames = {}
   }
 
+  _chart.removeLayer = function(layerName) {
+    const layer = _layerNames[layerName]
+    delete _layerNames[layerName]
+    _layers = _layers.filter(name => layerName !== name)
+    return layer
+  }
+
   _chart.pushLayer = function(layerName, layer) {
     if (_layerNames[layerName]) {
       return
