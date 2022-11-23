@@ -74,6 +74,9 @@ export default class ContinuousScale extends ScaleDefinitionObject {
     }
   }
 
+  // eslint-disable-next-line no-undef
+  static max_subdivisions = 25
+
   /**
    * @param {string} field_output
    * @param {string} layer_name
@@ -90,6 +93,7 @@ export default class ContinuousScale extends ScaleDefinitionObject {
     extent_flags,
     num_subdivisions = 0
   ) {
+    assert(num_subdivisions <= ContinuousScale.max_subdivisions)
     return ExtentFlags.buildVegaTransformFromExtentFlags(
       field_output,
       layer_name,
@@ -179,6 +183,16 @@ export default class ContinuousScale extends ScaleDefinitionObject {
        */
       const parent = this.parent
       assert(parent instanceof FieldDefinitionObject)
+
+      const num_subdivisions = this.range_.length - 2
+      if (num_subdivisions > ContinuousScale.max_subdivisions) {
+        throw new Error(
+          `There are too many ranges (${
+            this.range_.length
+          }) to auto-fill a domain. The max number of ranges is ${ContinuousScale.max_subdivisions +
+            2}`
+        )
+      }
 
       const {
         vega_xform_obj,
