@@ -75,26 +75,26 @@
       .crossfilter(crossFilter)
       .setState({
         data: [
-        {
-          type: "contour",
-          table: config.table,
-          source: config.table,
-          contour_value_field: config.value,
-          lat_field: config.lat_field,
-          lon_field: config.lon_field,
-          agg_type: 'AVG',
-          fill_agg_type: 'AVG',
-          bin_dim_meters: config.bin_dim_meters,
-          neighborhood_fill_radius: 0,
-          fill_only_nulls: false,
-          flip_latitude: false,
-          contour_offset: 0,
-          intervals: {
-            isMajorFieldName,
-            major: config.major_contour_interval,
-            minor: config.minor_contour_interval
+          {
+            type: "contour",
+            table: config.table,
+            source: config.table,
+            contour_value_field: config.value,
+            lat_field: config.lat_field,
+            lon_field: config.lon_field,
+            agg_type: 'AVG',
+            fill_agg_type: 'AVG',
+            bin_dim_meters: config.bin_dim_meters,
+            neighborhood_fill_radius: 0,
+            fill_only_nulls: false,
+            flip_latitude: false,
+            contour_offset: 0,
+            intervals: {
+              isMajorFieldName,
+              major: config.major_contour_interval,
+              minor: config.minor_contour_interval
+            }
           }
-        }
         ],
         transform: {
           projection: "mercator_map_projection",
