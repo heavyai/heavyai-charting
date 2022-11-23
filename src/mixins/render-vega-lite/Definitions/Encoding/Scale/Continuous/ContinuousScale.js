@@ -79,12 +79,16 @@ export default class ContinuousScale extends ScaleDefinitionObject {
    * @param {string} layer_name
    * @param {string} prop_name
    * @param {ExtentFlags} extent_flags
+   * @param {number} [num_subdivisions=0] Number of subdivisions between the computed extents.
+   *                                      This could be used, for example, to fill out a linear
+   *                                      stop for a certain number of ranges
    */
   static buildExtentsVegaTransform(
     field_output,
     layer_name,
     prop_name,
-    extent_flags
+    extent_flags,
+    num_subdivisions = 0
   ) {
     return ExtentFlags.buildVegaTransformFromExtentFlags(
       field_output,
@@ -127,10 +131,32 @@ export default class ContinuousScale extends ScaleDefinitionObject {
       ({ formula_xform_objs, vega_xform_outputs }) => {
         if (vega_xform_outputs.length === 0) {
           assert(formula_xform_objs.length >= 2)
-          vega_xform_outputs.push(
-            formula_xform_objs[formula_xform_objs.length - 2].as,
-            formula_xform_objs[formula_xform_objs.length - 1].as
-          )
+          const start_range_formula =
+            formula_xform_objs[formula_xform_objs.length - 2]
+          const end_range_formula =
+            formula_xform_objs[formula_xform_objs.length - 1]
+          vega_xform_outputs.push(start_range_formula.as)
+          if (num_subdivisions > 0) {
+            const diff_var_name = `${field_output}_extents_diff`
+            formula_xform_objs.push({
+              type: "formula",
+              expr: `(${end_range_formula.as} - ${
+                start_range_formula.as
+              }) / ${num_subdivisions + 1}.0`,
+              as: diff_var_name
+            })
+
+            for (let i = 1; i <= num_subdivisions; ++i) {
+              const var_name = `${field_output}_extents_stop_${i}`
+              formula_xform_objs.push({
+                type: "formula",
+                expr: `${start_range_formula.as} + ${i}*${diff_var_name}`,
+                as: var_name
+              })
+              vega_xform_outputs.push(var_name)
+            }
+          }
+          vega_xform_outputs.push(end_range_formula.as)
         }
         assert(vega_xform_outputs.length >= 2)
       }
@@ -162,7 +188,8 @@ export default class ContinuousScale extends ScaleDefinitionObject {
         this.root_context.layer_name,
         prop_descriptor.prop_name,
         // should equate to: [max(min, avg - 2*stddev), min(max, avg + 2*stddev)]
-        ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma
+        ExtentFlags.kMin | ExtentFlags.kMax | ExtentFlags.kTwoSigma,
+        this.range_.length - 2
       )
 
       vega_property_output_state.addVegaTransform(
