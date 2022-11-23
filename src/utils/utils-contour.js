@@ -73,7 +73,7 @@ export const buildContourSQL = ({
   }
 
   const rasterSelectFilter = filterTransforms.length
-    ? `where ${filterTransforms.map(ft => ft.expr).join("AND")}`
+    ? `where ${filterTransforms.map(ft => ft.expr).join(" AND ")}`
     : ""
   const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
 
