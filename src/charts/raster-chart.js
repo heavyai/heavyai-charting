@@ -172,7 +172,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.removeLayer = function(layerName) {
     const layer = _layerNames[layerName]
-    if (layer && layer.destroyLayer && typeof layer.destroyLayer === 'function') {
+    if (
+      layer &&
+      layer.destroyLayer &&
+      typeof layer.destroyLayer === "function"
+    ) {
       layer.destroyLayer(_chart)
     }
     delete _layerNames[layerName]
