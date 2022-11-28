@@ -109,6 +109,6 @@ export default class DiscretizingScale extends ScaleDefinitionObject {
    */
   // eslint-disable-next-line no-unused-vars
   _materializeExtraVegaScaleProps(prop_descriptor, vega_scale_object) {
-    assert(false)
+    // no-op
   }
 }
