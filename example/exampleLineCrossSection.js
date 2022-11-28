@@ -5,6 +5,10 @@ import mapboxgl from "mapbox-gl"
 import _ from "lodash"
 import LatLonPolyLine from "../src/mixins/ui/lasso-shapes/LatLonPolyLine.js"
 import * as LatLonUtils from "../src/utils/utils-latlon"
+import {
+  LassoShapeEventConstants,
+  LassoGlobalEventConstants
+} from "../src/mixins/ui/lasso-event-constants"
 import { Point2d, Mat2d } from "@heavyai/draw/dist/mapd-draw"
 import assert from "assert"
 
@@ -22,7 +26,7 @@ function create_charts(
 
   linemap_crossfilter
     .dimension(null)
-    .projectOn(["longitude", "latitude", "Air_Temperature"])
+    .projectOn(["longitude", "latitude", "Wind_Speed"])
 
   linemap_crossfilter.dimension("model_ts").filter("2022-09-25 18:00:00")
   linemap_crossfilter.dimension("forecast_hour").filter(0)
@@ -126,41 +130,86 @@ function create_charts(
       /* Here enable the lasso tool draw control and pass in a coordinate filter */
       pointMapChart.addDrawControl()
 
-      const draw_engine = pointMapChart.getDrawEngine()
-      draw_engine.on("draw:drag:end", event_obj => {
-        if (cross_section_layer) {
-          event_obj.shapes.forEach(shape => {
-            if (shape instanceof LatLonPolyLine) {
-              const verts = shape.vertsRef
-              assert(verts.length === 2)
-              assert(cross_section_layer_state)
-              assert(Array.isArray(cross_section_layer_state.transform))
-              assert(cross_section_layer_state.transform.length === 1)
-              assert(cross_section_layer_state.transform[0].crossSection2d)
-              assert(
-                Array.isArray(
-                  cross_section_layer_state.transform[0].crossSection2d
-                    .crossSectionLine
-                )
-              )
-              assert(
-                cross_section_layer_state.transform[0].crossSection2d
-                  .crossSectionLine.length === 2
-              )
-              // eslint-disable-next-line max-nested-callbacks
-              verts.forEach((vert, i) => {
-                const vert_copy =
-                  cross_section_layer_state.transform[0].crossSection2d
-                    .crossSectionLine[i]
-                Point2d.copy(vert_copy, vert)
-                Point2d.transformMat2d(vert_copy, vert_copy, shape.globalXform)
-                LatLonUtils.conv900913To4326(vert_copy, vert_copy)
-              })
-              HeavyCharting.redrawAllAsync()
-            }
+      function setCrossSectionLineStateFromShape(shape) {
+        if (shape instanceof LatLonPolyLine) {
+          const verts = shape.vertsRef
+          assert(verts.length === 2)
+          assert(cross_section_layer_state)
+          assert(Array.isArray(cross_section_layer_state.transform))
+          assert(cross_section_layer_state.transform.length === 1)
+          assert(cross_section_layer_state.transform[0].crossSection2d)
+          assert(
+            Array.isArray(
+              cross_section_layer_state.transform[0].crossSection2d
+                .crossSectionLine
+            )
+          )
+          assert(
+            cross_section_layer_state.transform[0].crossSection2d
+              .crossSectionLine.length === 2
+          )
+          // eslint-disable-next-line max-nested-callbacks
+          verts.forEach((vert, i) => {
+            const vert_copy =
+              cross_section_layer_state.transform[0].crossSection2d
+                .crossSectionLine[i]
+            Point2d.copy(vert_copy, vert)
+            Point2d.transformMat2d(vert_copy, vert_copy, shape.globalXform)
+            LatLonUtils.conv900913To4326(vert_copy, vert_copy)
           })
+          return true
         }
-      })
+        return false
+      }
+
+      const shape_edit_end_callback = event_obj => {
+        assert(event_obj.target instanceof LatLonPolyLine)
+        console.log(`CROOT - SHAPE EDIT END`)
+        if (setCrossSectionLineStateFromShape(event_obj.target)) {
+          HeavyCharting.renderAllAsync()
+        }
+      }
+
+      const draw_engine = pointMapChart.getDrawEngine()
+      draw_engine.on(
+        LassoGlobalEventConstants.LASSO_SHAPE_CREATE,
+        event_obj => {
+          if (cross_section_layer) {
+            const { shape } = event_obj
+            if (shape instanceof LatLonPolyLine) {
+              shape.on(
+                LassoShapeEventConstants.LASSO_SHAPE_EDIT_END,
+                shape_edit_end_callback
+              )
+            }
+            if (setCrossSectionLineStateFromShape(shape)) {
+              HeavyCharting.renderAllAsync()
+            }
+          }
+        }
+      )
+      draw_engine.on(
+        LassoGlobalEventConstants.LASSO_SHAPE_DESTROY,
+        event_obj => {
+          const { shape } = event_obj
+          if (shape instanceof LatLonPolyLine) {
+            shape.off(
+              LassoShapeEventConstants.LASSO_SHAPE_EDIT_END,
+              shape_edit_end_callback
+            )
+          }
+        }
+      )
+
+      // draw_engine.on("draw:drag:end", event_obj => {
+      //   if (cross_section_layer) {
+      //     event_obj.shapes.forEach(shape => {
+      //       if (setCrossSectionLineStateFromShape(shape)) {
+      //         HeavyCharting.redrawAllAsync()
+      //       }
+      //     })
+      //   }
+      // })
 
       HeavyCharting.renderAllAsync()
     })

@@ -7,6 +7,11 @@ import { logger } from "../../utils/logger"
 import LatLonCircle from "./lasso-shapes/LatLonCircle"
 import LatLonPoly from "./lasso-shapes/LatLonPoly"
 import LatLonPolyLine from "./lasso-shapes/LatLonPolyLine"
+import assert from "assert"
+import {
+  LassoShapeEventConstants,
+  LassoGlobalEventConstants
+} from "./lasso-event-constants"
 
 const { AABox2d, Mat2, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
@@ -54,6 +59,7 @@ class ShapeHandler {
   }
 
   addShape(shape, selectOpts = {}) {
+    shape.registerEvents(Object.values(LassoShapeEventConstants))
     this.drawEngine.addShape(shape, selectOpts)
     this.drawEngine.moveShapeToTop(shape)
   }
@@ -89,6 +95,11 @@ class ShapeHandler {
     if (this.isFilterableShape()) {
       this.chart.addFilterShape(shape)
     }
+
+    this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_CREATE, {
+      shape
+    })
+
     this.canvas.focus()
   }
 
@@ -157,6 +168,13 @@ class ShapeHandler {
 
       this.active = false
     }
+  }
+
+  destroy() {
+    assert(
+      false,
+      `${ShapeHandler.name}::destroy() needs to be overridden by derived class`
+    )
   }
 }
 
@@ -237,6 +255,9 @@ class CircleShapeHandler extends ShapeHandler {
   destroy() {
     if (this.activeShape) {
       this.drawEngine.deleteShape(this.activeShape)
+      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+        shape: this.activeShape
+      })
       this.activeShape = null
     }
   }
@@ -361,6 +382,7 @@ class PolylineShapeHandler extends ShapeHandler {
     this.startVert = null
     this.lastVert = null
     this.lineShape = null
+    this.polyShape = null
     this.prevVertPos = null
     this.activeIdx = -1
     this.startPosAABox = AABox2d.create()
@@ -384,8 +406,16 @@ class PolylineShapeHandler extends ShapeHandler {
       this.drawEngine.deleteShape(this.lineShape)
     }
 
-    this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = null
+    if (this.polyShape) {
+      this.drawEngine.deleteShape(this.polyShape)
+      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+        shape: this.polyShape
+      })
+    }
+
+    this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = this.polyShape = null
     AABox2d.initEmpty(this.startPosAABox)
+    this.activeShape = null
     this.activeIdx = -1
   }
 
@@ -433,11 +463,17 @@ class PolylineShapeHandler extends ShapeHandler {
           this.defaultStyle
         )
       )
+
+      // NOTE: we're intentionally avoiding setting this.polyShape
+      // here and instead doing it at the end of this if clause because
+      // this.polyShape is checked to be deleted in the destroy() call
       const poly = new PolyClass(...args)
       this.setupFinalShape(poly)
 
       // clear out all other shapes using our destroy method
       this.destroy()
+
+      this.polyShape = poly
     } else {
       this.destroy()
       this.enableBasemapEvents()
@@ -623,6 +659,7 @@ class LassoShapeHandler extends ShapeHandler {
       defaultSelectStyle
     )
     this.activeShape = null
+    this.polyShape = null
     this.lastPos = null
     this.lastWorldPos = null
   }
@@ -632,6 +669,15 @@ class LassoShapeHandler extends ShapeHandler {
       this.drawEngine.deleteShape(this.activeShape)
       this.activeShape = null
     }
+
+    if (this.polyShape) {
+      this.drawEngine.deleteShape(this.polyShape)
+      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+        shape: this.polyShape
+      })
+      this.polyShape = null
+    }
+
     this.lastPos = this.lastWorldPos = null
   }
 
@@ -731,6 +777,7 @@ class LassoShapeHandler extends ShapeHandler {
         const poly = new PolyClass(...args)
         this.drawEngine.deleteShape(this.activeShape)
         this.setupFinalShape(poly)
+        this.polyShape = poly
         event.preventDefault()
       }
     }
@@ -794,6 +841,9 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
     }
     if (this.lineShape && destroy_line) {
       this.drawEngine.deleteShape(this.lineShape)
+      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+        shape: this.lineShape
+      })
       this.lineShape = null
     }
 
@@ -1069,6 +1119,8 @@ export default class LassoButtonGroupController {
     this._activeButton = null
     this._activeShape = null
 
+    this._drawEngine.registerEvents(Object.values(LassoGlobalEventConstants))
+
     this._selectionchangedCB = this._selectionchangedCB.bind(this)
     this._dragbeginCB = this._dragbeginCB.bind(this)
     this._dragendCB = this._dragendCB.bind(this)
@@ -1268,11 +1320,15 @@ export default class LassoButtonGroupController {
     }
   }
 
-  _dragbeginCB(event) {
+  _dragbeginCB(event_obj) {
     if (!this._activeShape && !this._activeButton) {
       const canvas = this._drawEngine.getCanvas()
       canvas.focus()
     }
+
+    event_obj.shapes.forEach(shape => {
+      shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_BEGIN)
+    })
   }
 
   _dragendCB(event) {
@@ -1283,6 +1339,7 @@ export default class LassoButtonGroupController {
         // new radius
         shape.resetInitialRadius()
       }
+      shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_END)
     })
   }
 
@@ -1298,6 +1355,9 @@ export default class LassoButtonGroupController {
         this._drawEngine.deleteSelectedShapes()
         selectedShapes.forEach(shape => {
           this._chart.deleteFilterShape(shape)
+          this._drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+            shape
+          })
         })
       }
       event.preventDefault()
