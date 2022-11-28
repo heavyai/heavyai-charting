@@ -15,6 +15,8 @@ import {
 
 const { AABox2d, Mat2, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
+const DragEpsilon = 0.1 // this is a screen-space epsilon to validate that drag events are doing something
+// this can be relatively big since we're talking about screen coords
 
 /* istanbul ignore next */
 class ShapeHandler {
@@ -1326,12 +1328,15 @@ export default class LassoButtonGroupController {
       canvas.focus()
     }
 
+    this._drag_start_pt = event_obj.dragInfo.currentPos
+
     event_obj.shapes.forEach(shape => {
       shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_BEGIN)
     })
   }
 
   _dragendCB(event) {
+    const context = this
     event.shapes.forEach(shape => {
       if (shape instanceof LatLonCircle) {
         // need to reset the inital radius of the latlon circle
@@ -1339,7 +1344,16 @@ export default class LassoButtonGroupController {
         // new radius
         shape.resetInitialRadius()
       }
-      shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_END)
+
+      if (
+        context._drag_start_pt &&
+        Point2d.squaredDistance(
+          context._drag_start_pt,
+          event.dragInfo.currentPos
+        ) > DragEpsilon
+      ) {
+        shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_END)
+      }
     })
   }
 
