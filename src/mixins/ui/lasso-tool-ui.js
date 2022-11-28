@@ -58,6 +58,19 @@ class ShapeHandler {
     this.drawEngine.moveShapeToTop(shape)
   }
 
+  /**
+   * Tags whether this particular shape is a filterable shape or not
+   * If it is a filterable shape, the shape will be registered with
+   * the parent chart in order to generate a SQL filter expression.
+   * If false, the shape will not be registered as a filter with the
+   * chart and therefore will not be used to generate a SQL filter
+   * expression.
+   * @returns {Boolean}
+   */
+  isFilterableShape() {
+    return true
+  }
+
   setupFinalShape(shape, selectOpts = {}) {
     // deactivate the button associated with this shape handler
     // first to make sure that when the shape is selected,
@@ -72,7 +85,10 @@ class ShapeHandler {
       this.drawEngine.addShape(shape, selectOpts, true)
       this.drawEngine.moveShapeToTop(shape)
     }
-    this.chart.addFilterShape(shape)
+
+    if (this.isFilterableShape()) {
+      this.chart.addFilterShape(shape)
+    }
     this.canvas.focus()
   }
 
@@ -787,6 +803,13 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
     this.prevVertPos = null
     AABox2d.initEmpty(this.startPosAABox)
     // this.activeIdx = -1
+  }
+
+  isFilterableShape() {
+    // by default, the cross section line shape will not generate any filters.
+    // It is only used to generate a line to be used as an input to a
+    // cross-section generation function
+    return false
   }
 
   appendVertex(mousepos, mouseworldpos) {
