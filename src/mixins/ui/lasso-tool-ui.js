@@ -734,7 +734,7 @@ class LassoShapeHandler extends ShapeHandler {
   }
 }
 
-class CrossSectionShapeHandler extends ShapeHandler {
+class CrossSectionLineShapeHandler extends ShapeHandler {
   constructor(
     parent,
     drawEngine,
@@ -1336,7 +1336,7 @@ export default class LassoButtonGroupController {
     add_handler("circle", CircleShapeHandler)
     add_handler("polyline", PolylineShapeHandler)
     add_handler("lasso", LassoShapeHandler)
-    add_handler("CrossSection", CrossSectionShapeHandler)
+    add_handler("CrossSection", CrossSectionLineShapeHandler)
 
     // NOTE: the canvas dom element needs to have a "tabindex" set to have
     // focusability, and best to have "outline: none" as part
