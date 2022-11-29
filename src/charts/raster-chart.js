@@ -16,7 +16,6 @@ import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
 import { shallowCopyVega } from "../utils/utils-vega"
-import * as HeavyConnect from "@heavyai/connector"
 import assert from "assert"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
@@ -697,18 +696,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     callback,
     fetchEvenIfEmpty = false
   ) {
+    if (!point) {
+      return
+    }
+
     const height =
       typeof _chart.effectiveHeight === "function"
         ? _chart.effectiveHeight()
         : _chart.height()
     const pixelRatio = _chart._getPixelRatio() || 1
-    const pixel = new HeavyConnect.TPixel({
+    const pixel = {
       x: Math.round(point.x * pixelRatio),
       y: Math.round((height - point.y) * pixelRatio)
-    })
-
-    if (!point) {
-      return
     }
 
     let cnt = 0
