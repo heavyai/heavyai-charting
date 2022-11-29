@@ -9,7 +9,7 @@ import {
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
-import { AABox2d, Point2d } from "@heavyai/draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]

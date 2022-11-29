@@ -1,7 +1,7 @@
 import * as LatLonUtils from "../utils/utils-latlon"
 import LassoButtonGroupController from "./ui/lasso-tool-ui"
 import * as _ from "lodash"
-import * as Draw from "@heavyai/draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/draw"
 import { redrawAllAsync } from "../core/core-async"
 import LatLonCircle from "./ui/lasso-shapes/LatLonCircle"
 import LatLonPoly from "./ui/lasso-shapes/LatLonPoly"
