@@ -52,7 +52,7 @@ export const buildContourSQL = ({
     contour_value_field = "z",
     lat_field = "raster_lat",
     lon_field = "raster_lon",
-    is_geo_point_type,
+    is_geo_point_type = false,
     intervals
   } = data
 
