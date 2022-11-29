@@ -170,6 +170,32 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _layerNames = {}
   }
 
+  _chart.removeLayer = function(layerName) {
+    const layer = _layerNames[layerName]
+    if (
+      layer &&
+      layer.destroyLayer &&
+      typeof layer.destroyLayer === "function"
+    ) {
+      layer.destroyLayer(_chart)
+    }
+    delete _layerNames[layerName]
+    _layers = _layers.filter(name => layerName !== name)
+    return layer
+  }
+
+  _chart.unshiftLayer = function(layerName, layer) {
+    if (_layerNames[layerName]) {
+      return
+    } else if (!layerName.match(/^\w+$/)) {
+      throw new Error(
+        "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
+      )
+    }
+    _layers.unshift(layerName)
+    _layerNames[layerName] = layer
+  }
+
   _chart.pushLayer = function(layerName, layer) {
     if (_layerNames[layerName]) {
       return

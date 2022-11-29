@@ -73,8 +73,9 @@ export const buildContourSQL = ({
     flip_latitude
   }
 
-  const rasterSelectFilter = filterTransforms.length
-    ? `where ${filterTransforms.map(ft => ft.expr).join("AND")}`
+  const validRasterTransforms = filterTransforms.filter(ft => ft && ft.expr)
+  const rasterSelectFilter = validRasterTransforms.length
+    ? `where ${validRasterTransforms.map(ft => ft.expr).join(" AND ")}`
     : ""
   const rasterSelect = is_geo_point_type
     ? `select ST_X(${lon_field}), ST_Y(${lat_field}),  ${contour_value_field} from ${table} ${rasterSelectFilter}`
