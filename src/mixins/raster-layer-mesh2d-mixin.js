@@ -1,6 +1,6 @@
 import assert from "assert"
 import { parser } from "../utils/utils"
-import { AABox2d } from "@heavyai/draw/dist/mapd-draw"
+import { AABox2d } from "@heavyai/draw/dist/draw"
 import { lastFilteredSize } from "../core/core-async"
 import { createRasterLayerGetterSetter } from "../utils/utils-vega"
 import { isValidPostFilter } from "./raster-layer-point-mixin"

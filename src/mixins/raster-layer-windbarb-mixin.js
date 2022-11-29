@@ -2,7 +2,7 @@ import { lastFilteredSize } from "../core/core-async"
 import { createRasterLayerGetterSetter } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import { AGGREGATES, isValidPostFilter } from "./raster-layer-point-mixin"
-import { AABox2d } from "@heavyai/draw/dist/mapd-draw"
+import { AABox2d } from "@heavyai/draw/dist/draw"
 import {
   ColorChannelDescriptor,
   OpacityChannelDescriptor,

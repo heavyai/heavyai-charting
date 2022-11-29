@@ -1,6 +1,6 @@
 "use strict"
 
-import * as Draw from "@heavyai/draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/draw"
 
 /**
  * Calculates the distance in meters between two lon/lat coordinates
