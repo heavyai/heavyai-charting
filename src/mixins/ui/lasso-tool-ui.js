@@ -824,7 +824,6 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
     this.lastVert = null
     this.lineShape = null
     this.prevVertPos = null
-    // this.activeIdx = -1
     this.startPosAABox = AABox2d.create()
     this.timer = null
 
@@ -855,7 +854,6 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
     this.activeShape = null
     this.prevVertPos = null
     AABox2d.initEmpty(this.startPosAABox)
-    // this.activeIdx = -1
   }
 
   isFilterableShape() {
@@ -873,11 +871,9 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
         Math.abs(mousepos[1] - this.prevVertPos[1]) > 2
       ) {
         this.prevVertPos = mousepos
-        // return this.lineShape.appendVert(mouseworldpos)
         this.lineShape.appendVert(mouseworldpos)
       }
     }
-    // return -1
   }
 
   finishShape() {
@@ -890,45 +886,6 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
       this.destroy(true)
       this.enableBasemapEvents()
     }
-
-    // const verts = this.lineShape ? this.lineShape.vertsRef : []
-    // const removeLastVert =
-    //   verts.length > 1 &&
-    //   !Point2d.equals(verts[0], verts[verts.length - 1]) &&
-    //   this.lastVert &&
-    //   !Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef())
-    // if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
-    //   // Check if there is a loop in the current verts, remove the last point
-    //   // if so
-    //   if (removeLastVert) {
-    //     verts.pop()
-    //   }
-
-    //   const args = []
-    //   let PolyClass = null
-    //   if (this.useLonLat) {
-    //     PolyClass = LatLonPoly
-    //     args.push(this.drawEngine)
-    //   } else {
-    //     PolyClass = Draw.Poly
-    //   }
-    //   args.push(
-    //     Object.assign(
-    //       {
-    //         verts
-    //       },
-    //       this.defaultStyle
-    //     )
-    //   )
-    //   const poly = new PolyClass(...args)
-    //   this.setupFinalShape(poly)
-
-    //   // clear out all other shapes using our destroy method
-    //   this.destroy()
-    // } else {
-    //   this.destroy()
-    //   this.enableBasemapEvents()
-    // }
   }
 
   mousedownCB(event) {
@@ -975,7 +932,6 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
         this.addShape(this.startVert)
         this.activeShape = this.startVert
         this.prevVertPos = mousepos
-        // this.activeIdx = 0
       } else {
         const startpos = this.startVert.getPosition()
         this.drawEngine.unproject(startpos, startpos)
@@ -985,29 +941,6 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
           shapeBuilt = true
         }
       }
-
-      // else if (!this.lastVert && this.lineShape.numVerts > 1) {
-      //   const verts = this.lineShape.vertsRef
-      //   this.lastVert = new Draw.Point({
-      //     position: verts[1],
-      //     size: 5
-      //   })
-      //   this.addShape(this.lastVert)
-      //   this.activeShape = this.lastVert
-      //   this.activeIdx = 1
-      // } else if (this.lastVert) {
-      //   const startpos = this.startVert.getPosition()
-      //   this.drawEngine.unproject(startpos, startpos)
-      //   AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10])
-      //   if (AABox2d.containsPt(this.startPosAABox, mousepos)) {
-      //     this.finishShape()
-      //     shapeBuilt = true
-      //   } else {
-      //     const verts = this.lineShape.vertsRef
-      //     this.lastVert.setPosition(verts[verts.length - 1])
-      //     this.activeShape = this.lastVert
-      //   }
-      // }
 
       if (!shapeBuilt) {
         this.enableBasemapDebounceFunc()
@@ -1032,7 +965,6 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
         this.drawEngine.project(mouseworldpos, mousepos)
 
         if (event.shiftKey) {
-          // if (this.activeIdx === 1) {
           const diff = Vec2d.create()
           const prevmousepos = Point2d.create()
           const verts = this.lineShape.vertsRef
@@ -1044,32 +976,6 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
           Vec2d.scale(diff, transformDir, Vec2d.dot(diff, transformDir))
           Point2d.addVec2(mousepos, prevmousepos, diff)
           this.drawEngine.project(mouseworldpos, mousepos)
-          // } else if (this.activeIdx > 1) {
-          //   const verts = this.lineShape.vertsRef
-          //   const pt1 = Point2d.create()
-          //   this.drawEngine.unproject(pt1, verts[this.activeIdx - 2])
-          //   const pt2 = Point2d.create()
-          //   this.drawEngine.unproject(pt2, verts[this.activeIdx - 1])
-          //   const dir1 = Vec2d.create()
-          //   Point2d.sub(dir1, pt2, pt1)
-          //   Vec2d.normalize(dir1, dir1)
-          //   const dir2 = [0, 0]
-          //   Point2d.sub(dir2, mousepos, pt2)
-          //   // Vec2d.normalize(dir2, dir2)
-          //   let angle = Vec2d.angle(dir1, dir2)
-          //   angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
-          //   const matrix = Mat2.create()
-          //   Mat2.fromRotation(matrix, angle)
-          //   const transformDir = [0, 0]
-          //   Vec2d.transformMat2(transformDir, dir1, matrix)
-          //   Vec2d.scale(
-          //     transformDir,
-          //     transformDir,
-          //     Vec2d.dot(dir2, transformDir)
-          //   )
-          //   Point2d.addVec2(mousepos, pt2, transformDir)
-          //   this.drawEngine.project(mouseworldpos, mousepos)
-          // }
         }
 
         this.lineShape.setVertPosition(1, mouseworldpos)
