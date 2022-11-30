@@ -1,6 +1,6 @@
 import d3 from "d3"
 import wellknown from "wellknown"
-import { AABox2d, Point2d, PolyLine } from "@heavyai/draw/dist/mapd-draw"
+import { AABox2d, Point2d, PolyLine } from "@heavyai/draw/dist/draw"
 export function notNull(value) {
   return value != null /* double-equals also catches undefined */
 }

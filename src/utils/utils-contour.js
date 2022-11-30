@@ -52,6 +52,7 @@ export const buildContourSQL = ({
     contour_value_field = "z",
     lat_field = "raster_lat",
     lon_field = "raster_lon",
+    is_geo_point_type = false,
     intervals
   } = data
 
@@ -76,7 +77,9 @@ export const buildContourSQL = ({
   const rasterSelectFilter = validRasterTransforms.length
     ? `where ${validRasterTransforms.map(ft => ft.expr).join(" AND ")}`
     : ""
-  const rasterSelect = `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
+  const rasterSelect = is_geo_point_type
+    ? `select ST_X(${lon_field}), ST_Y(${lat_field}),  ${contour_value_field} from ${table} ${rasterSelectFilter}`
+    : `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
