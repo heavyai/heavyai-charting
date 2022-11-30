@@ -18,7 +18,7 @@ const buildParamsSQL = (params = {}) =>
       const stringParams = ["agg_type", "fill_agg_type"]
       let parsedVal = val
       if (floatParams.includes(key)) {
-        parsedVal = val.toFixed(1)
+        parsedVal = Number.parseFloat(val).toFixed(1)
       } else if (stringParams.includes(key)) {
         parsedVal = `'${val}'`
       } else if (typeof val === "boolean") {
