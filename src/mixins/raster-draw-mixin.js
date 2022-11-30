@@ -654,7 +654,7 @@ export function rasterDrawMixin(chart) {
     return chart
   }
 
-  chart.getDrawEngine = () => drawEngine
+  chart.onDrawEvent = (event, callback) => drawEngine.on(event, callback)
 
   chart.coordFilter = filter => {
     // noop - for backwards compatibility

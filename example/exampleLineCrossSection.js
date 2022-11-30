@@ -9,7 +9,7 @@ import {
   LassoShapeEventConstants,
   LassoGlobalEventConstants
 } from "../src/mixins/ui/lasso-event-constants"
-import { Point2d, Mat2d } from "@heavyai/draw/dist/draw"
+import { Point2d } from "@heavyai/draw/dist/draw"
 import assert from "assert"
 
 function create_charts(
@@ -127,12 +127,23 @@ function create_charts(
     .init()
     .then(() => {
       /* --------------------------LASSO TOOL DRAW CONTROL------------------------------ */
-      /* Here enable the lasso tool draw control and pass in a coordinate filter */
       pointMapChart.addDrawControl()
 
+      /**
+       * This is a function to be called from shape create/edit callback method
+       * that will set the new cross-section state from the current drawn line.
+       * @param {Draw.BaseShape} shape
+       * @returns {Boolean} Returns true if the cross-section state was modified,
+       *                    false otherwise
+       */
       function setCrossSectionLineStateFromShape(shape) {
         if (shape instanceof LatLonPolyLine) {
           const verts = shape.vertsRef
+
+          // various asserts to ensure we have appropriate/expected input/output
+          // data. The line drawn, for example, must currently only have two vertices.
+          // The current state of the the cross section layer must have a crossSection2d
+          // transform
           assert(verts.length === 2)
           assert(cross_section_layer_state)
           assert(Array.isArray(cross_section_layer_state.transform))
@@ -150,45 +161,88 @@ function create_charts(
           )
           // eslint-disable-next-line max-nested-callbacks
           verts.forEach((vert, i) => {
+            // get the corresponding vertex definition from the
+            // cross section state to copy the vertex data to.
             const vert_copy =
               cross_section_layer_state.transform[0].crossSection2d
                 .crossSectionLine[i]
+
+            // copy the vert
             Point2d.copy(vert_copy, vert)
+
+            // the vert by default is in object-local space, i.e. no affine transforms
+            // like scale/rotate are applied yet. So apply the transforms here.
             Point2d.transformMat2d(vert_copy, vert_copy, shape.globalXform)
+
+            // since mapd-draw currently only draws points in a cartesian space, the stored
+            // verts are therefore in mercator coordinates, so convert from mercator to
+            // wgs84 (srid 4326) lat/lon
             LatLonUtils.conv900913To4326(vert_copy, vert_copy)
           })
+
+          // now reset the state for the cross-section layer
+          // NOTE: technically we don't need to call setState() here as the
+          // state is currently stored as a reference at the raster layer level,
+          // but this it is safer to push the state when done modifying it in the
+          // event that it is deep-copied
+          cross_section_layer.setState(cross_section_layer_state)
+
           return true
         }
         return false
       }
 
+      /**
+       * Callback function called when a cross section line is edited.
+       * @param {Object} event_obj Event object describing the context
+       *          of event fired. In the case of a cross-section line
+       *          edit, this will be an event object describing a
+       *          LassoShapeEventConstants.LASSO_SHAPE_EDIT_END event.
+       *          What we care about here is event_obj.target, which
+       *          is the cross section line instance
+       */
       const shape_edit_end_callback = event_obj => {
         assert(event_obj.target instanceof LatLonPolyLine)
-        console.log(`CROOT - SHAPE EDIT END`)
         if (setCrossSectionLineStateFromShape(event_obj.target)) {
           HeavyCharting.renderAllAsync()
         }
       }
 
-      const draw_engine = pointMapChart.getDrawEngine()
-      draw_engine.on(
+      // setup an event trigger for when a lasso shape is created
+      pointMapChart.onDrawEvent(
         LassoGlobalEventConstants.LASSO_SHAPE_CREATE,
         event_obj => {
           if (cross_section_layer) {
             const { shape } = event_obj
             if (shape instanceof LatLonPolyLine) {
+              // if the newly created lasso shape is a 'LatLonPolyLine', which is
+              // the current name of a cross section line shape, then attach an
+              // edit callback to it to capture any/all edits after creation.
+
+              // TODO(croot): find a better way to tag a shape as being a "cross-section line"
+              // Using 'instance of' may be too broad if we end up using LatLonPolyLine as a
+              // general tool for generating a line to filter results using a 'buffer'
+              // Also 'instance of' could be too narrow if we use another shape to draw a cross
+              // section other than LatLonPolyLine
+              // LatLonPolyLine will suffice for now as a differentiator.
+
               shape.on(
                 LassoShapeEventConstants.LASSO_SHAPE_EDIT_END,
                 shape_edit_end_callback
               )
-            }
-            if (setCrossSectionLineStateFromShape(shape)) {
-              HeavyCharting.renderAllAsync()
+
+              // now update the cross section state after shape creation.
+              if (setCrossSectionLineStateFromShape(shape)) {
+                HeavyCharting.renderAllAsync()
+              }
             }
           }
         }
       )
-      draw_engine.on(
+
+      // capture the shape delete event and deactivate the edit callback on
+      // the shape if it is a cross-section line
+      pointMapChart.onDrawEvent(
         LassoGlobalEventConstants.LASSO_SHAPE_DESTROY,
         event_obj => {
           const { shape } = event_obj
@@ -200,16 +254,6 @@ function create_charts(
           }
         }
       )
-
-      // draw_engine.on("draw:drag:end", event_obj => {
-      //   if (cross_section_layer) {
-      //     event_obj.shapes.forEach(shape => {
-      //       if (setCrossSectionLineStateFromShape(shape)) {
-      //         HeavyCharting.redrawAllAsync()
-      //       }
-      //     })
-      //   }
-      // })
 
       HeavyCharting.renderAllAsync()
     })
