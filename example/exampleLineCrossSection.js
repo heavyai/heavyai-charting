@@ -226,6 +226,14 @@ function create_charts(
               // section other than LatLonPolyLine
               // LatLonPolyLine will suffice for now as a differentiator.
 
+              // NOTE: adding an edit event callback directly on a cross-section line shape is one
+              // way to do this. An alternative way is to add a global edit event callback for all edited
+              // shapes. See the commented out code w/ note below.
+              // The advantage of doing it this way directly on the shape is it is potentially more performant
+              // as you don't have to iterate the edited shapes in the list to find the cross section
+              // line. You know right away that it is a cross section line.
+              // The disadvantage is you may need to disable the callback when the shape is deleted.
+              // See other note in the LASSO_SHAPE_DESTROY event callback below
               shape.on(
                 LassoShapeEventConstants.LASSO_SHAPE_EDIT_END,
                 shape_edit_end_callback
@@ -240,6 +248,26 @@ function create_charts(
         }
       )
 
+      // NOTE: this is an alternative way to capture shape edit events globally
+      // rather than locally. This way you need to check the list of shapes for
+      // the cross-section line shape, tho generally speaking the list is going
+      // to be very small
+      // pointMapChart.onDrawEvent(
+      //   LassoGlobalEventConstants.LASSO_SHAPE_EDITS_END,
+      //   event_obj => {
+      //     if (cross_section_layer) {
+      //       event_obj.shapes.forEach(shape => {
+      //         if (shape instanceof LatLonPolyLine) {
+      //           // now update the cross section state after shape creation.
+      //           if (setCrossSectionLineStateFromShape(shape)) {
+      //             HeavyCharting.renderAllAsync()
+      //           }
+      //         }
+      //       })
+      //     }
+      //   }
+      // )
+
       // capture the shape delete event and deactivate the edit callback on
       // the shape if it is a cross-section line
       pointMapChart.onDrawEvent(
@@ -247,6 +275,18 @@ function create_charts(
         event_obj => {
           const { shape } = event_obj
           if (shape instanceof LatLonPolyLine) {
+            // may want to reset the cross-section line to something else
+            // here when the original drawn cross section line is deleted
+            // For example, one approach is to set the line to be the bottom
+            // edge of the current map view or the bottom edge of the raster
+            // volume
+
+            // turn off the croos-section line-local edit event callback
+            // this is not really necessary, but it's good shutdown/cleanup
+            // practice
+            // NOTE: this is not necessary at all if capturing the shape
+            // edit event globally, and not locally, via the
+            // LassoGlobalEventConstants.LASSO_SHAPE_EDITS_END event signal
             shape.off(
               LassoShapeEventConstants.LASSO_SHAPE_EDIT_END,
               shape_edit_end_callback

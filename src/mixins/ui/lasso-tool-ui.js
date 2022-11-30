@@ -1330,6 +1330,13 @@ export default class LassoButtonGroupController {
 
     this._drag_start_pt = event_obj.dragInfo.currentPos
 
+    // fire a global shape edits begin event for all shapes
+    this._drawEngine.fire(
+      LassoGlobalEventConstants.LASSO_SHAPE_EDITS_BEGIN,
+      event_obj
+    )
+
+    // as well as fire a shape-local edit event
     event_obj.shapes.forEach(shape => {
       shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_BEGIN)
     })
@@ -1337,6 +1344,22 @@ export default class LassoButtonGroupController {
 
   _dragendCB(event) {
     const context = this
+
+    const fire_drag_event =
+      context._drag_start_pt &&
+      Point2d.squaredDistance(
+        context._drag_start_pt,
+        event.dragInfo.currentPos
+      ) > DragEpsilon
+
+    if (fire_drag_event) {
+      // fire a global shape edits end event for all shapes
+      this._drawEngine.fire(
+        LassoGlobalEventConstants.LASSO_SHAPE_EDITS_END,
+        event
+      )
+    }
+
     event.shapes.forEach(shape => {
       if (shape instanceof LatLonCircle) {
         // need to reset the inital radius of the latlon circle
@@ -1345,13 +1368,8 @@ export default class LassoButtonGroupController {
         shape.resetInitialRadius()
       }
 
-      if (
-        context._drag_start_pt &&
-        Point2d.squaredDistance(
-          context._drag_start_pt,
-          event.dragInfo.currentPos
-        ) > DragEpsilon
-      ) {
+      if (fire_drag_event) {
+        // fire a shape local edit end event for each specific shape
         shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_END)
       }
     })
