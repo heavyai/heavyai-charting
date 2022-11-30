@@ -1,7 +1,5 @@
-import * as LatLonUtils from "../../../utils/utils-latlon"
 import * as Draw from "@heavyai/draw/dist/draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
-import assert from "assert"
 
 const { AABox2d, Mat2d, Point2d } = Draw
 const MathExt = Draw.Math
