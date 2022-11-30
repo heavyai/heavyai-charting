@@ -9,6 +9,7 @@ import {
   LassoShapeEventConstants,
   LassoGlobalEventConstants
 } from "../src/mixins/ui/lasso-event-constants"
+import LassoToolSetTypes from "../src/mixins/ui/lasso-tool-set-types.js"
 import { Point2d } from "@heavyai/draw/dist/draw"
 import assert from "assert"
 
@@ -127,7 +128,7 @@ function create_charts(
     .init()
     .then(() => {
       /* --------------------------LASSO TOOL DRAW CONTROL------------------------------ */
-      pointMapChart.addDrawControl()
+      pointMapChart.addDrawControl(LassoToolSetTypes.kCrossSection)
 
       /**
        * This is a function to be called from shape create/edit callback method

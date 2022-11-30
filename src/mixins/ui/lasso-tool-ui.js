@@ -12,6 +12,7 @@ import {
   LassoShapeEventConstants,
   LassoGlobalEventConstants
 } from "./lasso-event-constants"
+import LassoToolSetTypes from "./lasso-tool-set-types"
 
 const { AABox2d, Mat2, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
@@ -1112,7 +1113,8 @@ export default class LassoButtonGroupController {
     parentChart,
     parentDrawEngine,
     defaultStyle,
-    defaultSelectStyle
+    defaultSelectStyle,
+    lassoToolSetTypes = LassoToolSetTypes.kStandard
   ) {
     this._container = parentContainer
     this._chart = parentChart
@@ -1129,7 +1131,7 @@ export default class LassoButtonGroupController {
     this._keyboardCB = this._keyboardCB.bind(this)
 
     this._handlers = []
-    this._initControls(defaultStyle, defaultSelectStyle)
+    this._initControls(defaultStyle, defaultSelectStyle, lassoToolSetTypes)
   }
 
   destroy() {
@@ -1396,7 +1398,7 @@ export default class LassoButtonGroupController {
     }
   }
 
-  _initControls(defaultStyle, defaultSelectStyle) {
+  _initControls(defaultStyle, defaultSelectStyle, lassoToolSetTypes) {
     let margins = null
     if (typeof this._chart.margins === "function") {
       margins = this._chart.margins()
@@ -1448,10 +1450,18 @@ export default class LassoButtonGroupController {
       )
     }
 
-    add_handler("circle", CircleShapeHandler)
-    add_handler("polyline", PolylineShapeHandler)
-    add_handler("lasso", LassoShapeHandler)
-    add_handler("CrossSection", CrossSectionLineShapeHandler)
+    if (lassoToolSetTypes & LassoToolSetTypes.kCircle) {
+      add_handler("circle", CircleShapeHandler)
+    }
+    if (lassoToolSetTypes & LassoToolSetTypes.kPolyLine) {
+      add_handler("polyline", PolylineShapeHandler)
+    }
+    if (lassoToolSetTypes & LassoToolSetTypes.kLasso) {
+      add_handler("lasso", LassoShapeHandler)
+    }
+    if (lassoToolSetTypes & LassoToolSetTypes.kCrossSection) {
+      add_handler("CrossSection", CrossSectionLineShapeHandler)
+    }
 
     // NOTE: the canvas dom element needs to have a "tabindex" set to have
     // focusability, and best to have "outline: none" as part
