@@ -1,5 +1,5 @@
 import * as LatLonUtils from "../../../utils/utils-latlon"
-import * as Draw from "@heavyai/draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
 import assert from "assert"
 

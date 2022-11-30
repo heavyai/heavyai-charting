@@ -9,7 +9,7 @@ import {
   LassoShapeEventConstants,
   LassoGlobalEventConstants
 } from "../src/mixins/ui/lasso-event-constants"
-import { Point2d, Mat2d } from "@heavyai/draw/dist/mapd-draw"
+import { Point2d, Mat2d } from "@heavyai/draw/dist/draw"
 import assert from "assert"
 
 function create_charts(
