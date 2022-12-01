@@ -930,6 +930,11 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
     if (this.lineShape.numVerts > 1) {
       this.lineShape.setStyle(this.defaultStyle)
       this.setupFinalShape(this.lineShape)
+
+      // tag the line shape as finished useful for
+      // logic elsewhere
+      this.lineShape.is_create_finished = true
+
       // clear out all other shapes using our destroy method
       this.destroy(false)
     } else {
@@ -957,6 +962,11 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
       this.drawEngine.project(mouseworldpos, mousepos)
 
       if (!this.startVert) {
+        // call destroy to clear out any previously existing
+        // lines as there can only be one cross-section line
+        // at a time.
+        this.destroy(true)
+
         const args = []
         let PolyLineClass = null
         if (this.useLonLat) {
@@ -974,6 +984,11 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
           )
         )
         this.lineShape = new PolyLineClass(...args)
+        // add a tag to the lineShape to determine if it is complete
+        // or incomplete (still being created)
+        // This will be set to true in the finishShape() method
+        this.lineShape.is_create_finished = false
+
         this.addShape(this.lineShape)
         this.startVert = new Draw.Point({
           position: mouseworldpos,
@@ -1003,7 +1018,7 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
   }
 
   mousemoveCB(event) {
-    if (this.lineShape) {
+    if (this.lineShape && !this.lineShape.is_create_finished) {
       if (this.lineShape.numVerts === 1) {
         const mousepos = this.getRelativeMousePosFromEvent(event)
         const mouseworldpos = Point2d.create(0, 0)
