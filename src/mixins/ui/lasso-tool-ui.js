@@ -37,7 +37,7 @@ class DestroyType {
    * @enum
    */
   // eslint-disable-next-line no-undef
-  static kUndefined = new DestroyType(0)
+  static kUndefined = new DestroyType(0, "unefined")
 
   /**
    * Signifies that destroy was called as a result of
@@ -45,7 +45,7 @@ class DestroyType {
    * @enum
    */
   // eslint-disable-next-line no-undef
-  static kCompleted = new DestroyType(1)
+  static kCompleted = new DestroyType(1, "completed")
 
   /**
    * Signifies that destroy was called as a result of
@@ -54,7 +54,7 @@ class DestroyType {
    * @enum
    */
   // eslint-disable-next-line no-undef
-  static kCancelled = new DestroyType(2)
+  static kCancelled = new DestroyType(2, "cancelled")
 
   /**
    * Signifies that destroy was called as a result of
@@ -63,7 +63,7 @@ class DestroyType {
    * @enum
    */
   // eslint-disable-next-line no-undef
-  static kDeactivated = new DestroyType(3)
+  static kDeactivated = new DestroyType(3, "deactivated")
 
   /**
    * Signifies that destroy was called as the tool being reset
@@ -71,7 +71,7 @@ class DestroyType {
    * @enum
    */
   // eslint-disable-next-line no-undef
-  static kReset = new DestroyType(4)
+  static kReset = new DestroyType(4, "reset")
 
   /**
    * Returns true if the destroy type is a cancellable type (i.e. cancelled or reset)
@@ -85,8 +85,15 @@ class DestroyType {
     )
   }
 
-  constructor(value) {
+  /**
+   * Constructs a new DestroyType enum. Should only be called to instantiate static
+   * items.
+   * @param {Number} value
+   * @param {String} description
+   */
+  constructor(value, description) {
     this.value = value
+    this.description_str = description
   }
 
   valueOf() {
@@ -94,7 +101,7 @@ class DestroyType {
   }
 
   toString() {
-    return `${this.value}`
+    return this.description_str
   }
 }
 
@@ -131,6 +138,9 @@ class ShapeHandler {
       typeof this.chart.useLonLat === "function" && this.chart.useLonLat()
   }
 
+  /**
+   * @returns {LassoToolSetTypes}
+   */
   getLassoToolType() {
     assert(
       false,
@@ -184,6 +194,9 @@ class ShapeHandler {
     // handler is only run when all the button are deactivated,
     // so need to deactivate the button first, and the select
     // the new shape
+
+    // destroying other, temp shapes first, then notifying
+    // the stop event later
     this.destroy(DestroyType.kCompleted)
     this.buttonGroup.deactivateButton(this.buttonId)
     if (this.drawEngine.hasShape(shape)) {
@@ -200,6 +213,8 @@ class ShapeHandler {
     this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_CREATE, {
       shape
     })
+
+    this.notifyDrawStop(DestroyType.kCompleted)
 
     this.canvas.focus()
   }
@@ -258,7 +273,9 @@ class ShapeHandler {
 
   deactivate() {
     if (this.active) {
-      this.destroy(DestroyType.kDeactivated)
+      if (this.destroy(DestroyType.kDeactivated)) {
+        this.notifyDrawStop(DestroyType.kDeactivated)
+      }
       document.removeEventListener("mousedown", this.mousedownCB)
       document.removeEventListener("mouseup", this.mouseupCB)
       document.removeEventListener("mousemove", this.mousemoveCB)
@@ -288,6 +305,26 @@ class ShapeHandler {
       false,
       `${ShapeHandler.name}::destroy() needs to be overridden by derived class`
     )
+  }
+
+  /**
+   * Called to fire a tool-create-ended event signal, using a destroy type to provide
+   * some extra metadata as to why the draw stopped.
+   * @param {DestroyType} destroy_type Enum describing the context under why the draw stopped
+   */
+  notifyDrawStop(destroy_type) {
+    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_CREATE_ENDED, {
+      ended_reason: destroy_type.toString()
+    })
+  }
+
+  /**
+   * Should be called when a shape draw is cancelled for some reason
+   */
+  cancelDraw() {
+    if (this.destroy(DestroyType.kCancelled)) {
+      this.notifyDrawStop(DestroyType.kCancelled)
+    }
   }
 }
 
@@ -374,8 +411,10 @@ class CircleShapeHandler extends ShapeHandler {
    * may have been drawn
    * @param {DestroyType} destroy_type Enum describing the context under which destroy()
    *                                   was called.
+   * @returns {Boolean} returrns true if one or more shapes were deleted as part of the destroy
    */
   destroy(destroy_type) {
+    let is_shape_deleted = false
     if (DestroyType.isCancellableDestroyType(destroy_type)) {
       if (this.activeShape) {
         this.drawEngine.deleteShape(this.activeShape)
@@ -383,8 +422,10 @@ class CircleShapeHandler extends ShapeHandler {
           shape: this.activeShape
         })
         this.activeShape = null
+        is_shape_deleted = true
       }
     }
+    return is_shape_deleted
   }
 
   mousedownCB(event) {
@@ -478,7 +519,7 @@ class CircleShapeHandler extends ShapeHandler {
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
-      this.destroy(DestroyType.kCancelled)
+      this.cancelDraw()
       this.enableBasemapEvents()
     }
   }
@@ -534,16 +575,24 @@ class PolylineShapeHandler extends ShapeHandler {
    * may have been drawn
    * @param {DestroyType} destroy_type Enum describing the context under which destroy()
    *                                   was called.
+   * @returns {Boolean} returns true if one or more shapes were deleted as part of the destroy
    */
   destroy(destroy_type) {
+    let is_shape_deleted = false
     if (this.startVert) {
       this.drawEngine.deleteShape(this.startVert)
+      this.startVert = null
+      is_shape_deleted = true
     }
     if (this.lastVert) {
       this.drawEngine.deleteShape(this.lastVert)
+      this.lastVert = null
+      is_shape_deleted = true
     }
     if (this.lineShape) {
       this.drawEngine.deleteShape(this.lineShape)
+      this.lineShape = null
+      is_shape_deleted = true
     }
 
     if (DestroyType.isCancellableDestroyType(destroy_type)) {
@@ -553,13 +602,16 @@ class PolylineShapeHandler extends ShapeHandler {
           shape: this.polyShape
         })
         this.polyShape = null
+        is_shape_deleted = true
       }
     }
 
-    this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = null
     AABox2d.initEmpty(this.startPosAABox)
+    this.prevVertPos = null
     this.activeShape = null
     this.activeIdx = -1
+
+    return is_shape_deleted
   }
 
   appendVertex(mousepos, mouseworldpos) {
@@ -610,7 +662,7 @@ class PolylineShapeHandler extends ShapeHandler {
       this.polyShape = new PolyClass(...args)
       this.setupFinalShape(this.polyShape)
     } else {
-      this.destroy(DestroyType.kCancelled)
+      this.cancelDraw()
       this.enableBasemapEvents()
     }
   }
@@ -762,7 +814,7 @@ class PolylineShapeHandler extends ShapeHandler {
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
-      this.destroy(DestroyType.kCancelled)
+      this.cancelDraw()
       this.enableBasemapEvents()
     } else if (
       event.key === "Enter" ||
@@ -814,11 +866,14 @@ class LassoShapeHandler extends ShapeHandler {
    * may have been drawn
    * @param {DestroyType} destroy_type Enum describing the context under which destroy()
    *                                   was called.
+   * @returns {Boolean} returns true if one or more shapes were deleted as a result of the destroy call
    */
   destroy(destroy_type) {
+    let is_shape_deleted = false
     if (this.activeShape) {
       this.drawEngine.deleteShape(this.activeShape)
       this.activeShape = null
+      is_shape_deleted = true
     }
 
     if (DestroyType.isCancellableDestroyType(destroy_type)) {
@@ -828,10 +883,12 @@ class LassoShapeHandler extends ShapeHandler {
           shape: this.polyShape
         })
         this.polyShape = null
+        is_shape_deleted = true
       }
     }
 
     this.lastPos = this.lastWorldPos = null
+    return is_shape_deleted
   }
 
   mousedownCB(event) {
@@ -851,7 +908,7 @@ class LassoShapeHandler extends ShapeHandler {
   mousemoveCB(event) {
     if (!this.isMouseEventInCanvas(event)) {
       if (this.activeShape) {
-        this.destroy(DestroyType.kCancelled)
+        this.cancelDraw()
         this.enableBasemapEvents()
       }
       return
@@ -906,7 +963,9 @@ class LassoShapeHandler extends ShapeHandler {
         logger.warn(
           "The resulting lasso shape is a point or a straight line. Cannot build a polygon from it. Please try again"
         )
-        this.destroy(DestroyType.kReset)
+        if (this.destroy(DestroyType.kReset)) {
+          this.notifyDrawStop(DestroyType.kReset)
+        }
       } else {
         const args = []
         let PolyClass = null
@@ -939,7 +998,7 @@ class LassoShapeHandler extends ShapeHandler {
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
-      this.destroy(DestroyType.kCancelled)
+      this.cancelDraw()
       this.enableBasemapEvents()
     }
   }
@@ -992,15 +1051,19 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
    * may have been drawn
    * @param {DestroyType} destroy_type Enum describing the context under which destroy()
    *                                   was called.
+   * @returns {Boolean} returns true if one or more shapes were deleted as part of the destroy
    */
   destroy(destroy_type) {
+    let is_shape_deleted = false
     if (this.startVert) {
       this.drawEngine.deleteShape(this.startVert)
       this.startVert = null
+      is_shape_deleted = true
     }
     if (this.lastVert) {
       this.drawEngine.deleteShape(this.lastVert)
       this.lastVert = null
+      is_shape_deleted = true
     }
 
     if (DestroyType.isCancellableDestroyType(destroy_type)) {
@@ -1010,12 +1073,15 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
           shape: this.lineShape
         })
         this.lineShape = null
+        is_shape_deleted = true
       }
     }
 
     this.activeShape = null
     this.prevVertPos = null
     AABox2d.initEmpty(this.startPosAABox)
+
+    return is_shape_deleted
   }
 
   isFilterableShape() {
@@ -1046,7 +1112,7 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
       this.lineShape.is_create_finished = true
       this.setupFinalShape(this.lineShape)
     } else {
-      this.destroy(DestroyType.kCancelled)
+      this.cancelDraw()
       this.enableBasemapEvents()
     }
   }
@@ -1079,6 +1145,7 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
         // call destroy to clear out any previously existing
         // lines as there can only be one cross-section line
         // at a time.
+        // NOTE: not firing a LASSO_TOOL_CREATE_ENDED event signal here
         this.destroy(DestroyType.kReset)
 
         const args = []
@@ -1177,7 +1244,7 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
-      this.destroy(DestroyType.kCancelled)
+      this.cancelDraw()
       this.enableBasemapEvents()
     } else if (
       event.key === "Enter" ||
