@@ -30,13 +30,13 @@ export const LassoGlobalEventConstants = {
   /**
    * triggered when a new shape is being drawn via a lasso tool
    */
-  LASSO_TOOL_CREATE_STARTED: "lasso:tool:create:started",
+  LASSO_TOOL_DRAW_STARTED: "lasso:tool:draw:started",
 
   /**
    * triggered when a new shape draw ends for some reason,
    * either the shape is successfully completed, or cancelled
    */
-  LASSO_TOOL_CREATE_ENDED: "lasso:tool:create:ended",
+  LASSO_TOOL_DRAW_ENDED: "lasso:tool:draw:ended",
 
   /**
    * triggered when a new lasso shape is created

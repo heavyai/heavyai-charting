@@ -313,7 +313,7 @@ class ShapeHandler {
    * @param {DestroyType} destroy_type Enum describing the context under why the draw stopped
    */
   notifyDrawStop(destroy_type) {
-    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_CREATE_ENDED, {
+    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_ENDED, {
       ended_reason: destroy_type.toString()
     })
   }
@@ -473,7 +473,7 @@ class CircleShapeHandler extends ShapeHandler {
     }
     this.canvas.focus()
     this.addShape(this.activeShape, selectOpts)
-    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_CREATE_STARTED)
+    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
     event.stopImmediatePropagation()
     event.preventDefault()
   }
@@ -704,7 +704,7 @@ class PolylineShapeHandler extends ShapeHandler {
         this.prevVertPos = mousepos
         this.activeIdx = 0
 
-        this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_CREATE_STARTED)
+        this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
       } else if (!this.lastVert && this.lineShape.numVerts > 1) {
         const verts = this.lineShape.vertsRef
         this.lastVert = new Draw.Point({
@@ -901,7 +901,7 @@ class LassoShapeHandler extends ShapeHandler {
     this.lastPos = this.getRelativeMousePosFromEvent(event)
     this.lastWorldPos = Point2d.create(0, 0)
     this.drawEngine.project(this.lastWorldPos, this.lastPos)
-    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_CREATE_STARTED)
+    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
     event.preventDefault()
   }
 
@@ -1140,12 +1140,12 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
         // before the destroy below to allow users the ability
         // to check whether a shape-destroy signal is the result
         // of a new shape create, if they need that level of control
-        this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_CREATE_STARTED)
+        this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
 
         // call destroy to clear out any previously existing
         // lines as there can only be one cross-section line
         // at a time.
-        // NOTE: not firing a LASSO_TOOL_CREATE_ENDED event signal here
+        // NOTE: not firing a LASSO_TOOL_DRAW_ENDED event signal here
         this.destroy(DestroyType.kReset)
 
         const args = []
