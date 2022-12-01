@@ -717,37 +717,41 @@ export default function rasterLayerPolyMixin(_layer) {
   _layer._genVega = function(chart, layerName) {
     let polyFilterString = ""
     let bboxFilter = ""
-      const mapBounds = chart.map().getBounds()
+    const mapBounds = chart.map().getBounds()
 
-      const state = _layer.getState()
-      const data = state.data[0]
-      if (isContourType(_layer.getState()) && data) {
-        
-        const table = data.table
-        const isGeoPoint = data.is_geo_point_type
-        const latField = isGeoPoint ? `ST_Y(${table}.${data.lat_field})` : `${table}.${data.lat_field}`
-        const lonField = isGeoPoint ? `ST_X${data.lon_field}` : `${table}.${data.lon_field}`
-        bboxFilter = `${lonField} >= ${mapBounds._sw.lng} AND ${lonField} <= ${mapBounds._ne.lng} AND ${latField} >= ${mapBounds._sw.lat} AND ${latField} <= ${mapBounds._ne.lat}`
-      } else {
-        const columnExpr = `${state.encoding.geoTable}.${state.encoding.geocol}`
-        bboxFilter = `ST_XMax(${columnExpr}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
+    const state = _layer.getState()
+    const data = state.data[0]
+    if (isContourType(_layer.getState()) && data) {
+      const table = data.table
+      const isGeoPoint = data.is_geo_point_type
+      const latField = isGeoPoint
+        ? `ST_Y(${table}.${data.lat_field})`
+        : `${table}.${data.lat_field}`
+      const lonField = isGeoPoint
+        ? `ST_X${data.lon_field}`
+        : `${table}.${data.lon_field}`
+      bboxFilter = `${lonField} >= ${mapBounds._sw.lng} AND ${lonField} <= ${mapBounds._ne.lng} AND ${latField} >= ${mapBounds._sw.lat} AND ${latField} <= ${mapBounds._ne.lat}`
+    } else {
+      const columnExpr = `${state.encoding.geoTable}.${state.encoding.geocol}`
+      bboxFilter = `ST_XMax(${columnExpr}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
+    }
+
+    const allFilters = _layer.crossfilter().getFilter(layerName)
+    const otherChartFilters = allFilters.filter(
+      (f, i) =>
+        !_layer.dimension() ||
+        (i !== _layer.dimension().getDimensionIndex() && f !== "" && f !== null)
+    )
+
+    let firstElem = true
+
+    otherChartFilters.forEach(value => {
+      if (!firstElem) {
+        polyFilterString += " AND "
       }
-
-      const allFilters = _layer.crossfilter().getFilter(layerName)
-      const otherChartFilters = allFilters.filter(
-        (f, i) => !_layer.dimension() || 
-          i !== _layer.dimension().getDimensionIndex() && f !== "" && f !== null
-      )
-
-      let firstElem = true
-
-      otherChartFilters.forEach(value => {
-        if (!firstElem) {
-          polyFilterString += " AND "
-        }
-        firstElem = false
-        polyFilterString += value
-      })
+      firstElem = false
+      polyFilterString += value
+    })
 
     _vega = _layer.__genVega({
       chart,
@@ -853,7 +857,11 @@ export default function rasterLayerPolyMixin(_layer) {
       const geoTableCol = `${geoTable}.${geoCol}`
       // when poly selection filter cleared, we reapply the bbox filter for the NON geo joined poly
       // For geo joined poly, we don't run crossfilter
-      if (_layer && _layer.getState().data && _layer.getState().data.length < 2) {
+      if (
+        _layer &&
+        _layer.getState().data &&
+        _layer.getState().data.length < 2
+      ) {
         const viewboxdim = _layer.dimension().set(() => [geoTableCol])
         const mapBounds = chart.map().getBounds()
         _layer.viewBoxDim(viewboxdim)
@@ -865,7 +873,6 @@ export default function rasterLayerPolyMixin(_layer) {
         })
       }
     }
-    
 
     _listeners.filtered(_layer, _filtersArray)
   }
