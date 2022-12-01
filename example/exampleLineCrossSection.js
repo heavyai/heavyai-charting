@@ -233,18 +233,11 @@ function create_charts(
         LassoGlobalEventConstants.LASSO_SHAPE_CREATE,
         event_obj => {
           if (cross_section_layer) {
-            const { shape } = event_obj
-            if (shape instanceof LatLonPolyLine) {
-              // if the newly created lasso shape is a 'LatLonPolyLine', which is
-              // the current name of a cross section line shape, then attach an
-              // edit callback to it to capture any/all edits after creation.
-
-              // TODO(croot): find a better way to tag a shape as being a "cross-section line"
-              // Using 'instance of' may be too broad if we end up using LatLonPolyLine as a
-              // general tool for generating a line to filter results using a 'buffer'
-              // Also 'instance of' could be too narrow if we use another shape to draw a cross
-              // section other than LatLonPolyLine
-              // LatLonPolyLine will suffice for now as a differentiator.
+            const { shape, lasso_tool_type = null } = event_obj
+            if (lasso_tool_type === LassoToolSetTypes.kCrossSection) {
+              // if the newly created shape was created as a result of the
+              // CrossSection tool then attach an edit callback to it to
+              // capture any/all edits after creation.
 
               // NOTE: adding an edit event callback directly on a cross-section line shape is one
               // way to do this. An alternative way is to add a global edit event callback for all edited

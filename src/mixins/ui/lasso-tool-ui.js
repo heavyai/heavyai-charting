@@ -59,6 +59,13 @@ class ShapeHandler {
     )
   }
 
+  fireEvent(event_signal, event_obj = {}) {
+    this.drawEngine.fire(event_signal, {
+      ...event_obj,
+      lasso_tool_type: this.getLassoToolType()
+    })
+  }
+
   disableBasemapEvents(options = {}) {
     this.chart.hidePopup(true)
     this.chart.enableInteractions(false, options)
@@ -106,7 +113,7 @@ class ShapeHandler {
       this.chart.addFilterShape(shape)
     }
 
-    this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_CREATE, {
+    this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_CREATE, {
       shape
     })
 
@@ -161,10 +168,7 @@ class ShapeHandler {
 
       this.active = true
 
-      this.drawEngine.fire(
-        LassoGlobalEventConstants.LASSO_TOOL_TYPE_ACTIVATED,
-        { lasso_tool_type: this.getLassoToolType() }
-      )
+      this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_TYPE_ACTIVATED)
     }
   }
 
@@ -183,10 +187,7 @@ class ShapeHandler {
 
       this.active = false
 
-      this.drawEngine.fire(
-        LassoGlobalEventConstants.LASSO_TOOL_TYPE_DEACTIVATED,
-        { lasso_tool_type: this.getLassoToolType() }
-      )
+      this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_TYPE_DEACTIVATED)
     }
   }
 
@@ -282,7 +283,7 @@ class CircleShapeHandler extends ShapeHandler {
   destroy() {
     if (this.activeShape) {
       this.drawEngine.deleteShape(this.activeShape)
-      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+      this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
         shape: this.activeShape
       })
       this.activeShape = null
@@ -442,7 +443,7 @@ class PolylineShapeHandler extends ShapeHandler {
 
     if (this.polyShape) {
       this.drawEngine.deleteShape(this.polyShape)
-      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+      this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
         shape: this.polyShape
       })
     }
@@ -713,7 +714,7 @@ class LassoShapeHandler extends ShapeHandler {
 
     if (this.polyShape) {
       this.drawEngine.deleteShape(this.polyShape)
-      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+      this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
         shape: this.polyShape
       })
       this.polyShape = null
@@ -888,7 +889,7 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
     }
     if (this.lineShape && destroy_line) {
       this.drawEngine.deleteShape(this.lineShape)
-      this.drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+      this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
         shape: this.lineShape
       })
       this.lineShape = null
