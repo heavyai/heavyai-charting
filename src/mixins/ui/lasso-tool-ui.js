@@ -52,6 +52,13 @@ class ShapeHandler {
       typeof this.chart.useLonLat === "function" && this.chart.useLonLat()
   }
 
+  getLassoToolType() {
+    assert(
+      false,
+      `${ShapeHandler.name}::getLassoToolType() needs to be overridden by derived class`
+    )
+  }
+
   disableBasemapEvents(options = {}) {
     this.chart.hidePopup(true)
     this.chart.enableInteractions(false, options)
@@ -183,6 +190,9 @@ class ShapeHandler {
 
 /* istanbul ignore next */
 class CircleShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kCircle
+
   constructor(
     parent,
     drawEngine,
@@ -208,6 +218,10 @@ class CircleShapeHandler extends ShapeHandler {
     }
     this.activeshape = null
     this.timer = null
+  }
+
+  getLassoToolType() {
+    return CircleShapeHandler.lasso_tool_type
   }
 
   deactivateShape() {
@@ -363,6 +377,9 @@ class CircleShapeHandler extends ShapeHandler {
 
 /* istanbul ignore next */
 class PolylineShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kPolyLine
+
   constructor(
     parent,
     drawEngine,
@@ -396,6 +413,10 @@ class PolylineShapeHandler extends ShapeHandler {
         this.enableBasemapEvents()
       }
     }, 100)
+  }
+
+  getLassoToolType() {
+    return PolylineShapeHandler.lasso_tool_type
   }
 
   destroy() {
@@ -643,6 +664,9 @@ class PolylineShapeHandler extends ShapeHandler {
 
 /* istanbul ignore next */
 class LassoShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kLasso
+
   constructor(
     parent,
     drawEngine,
@@ -665,6 +689,10 @@ class LassoShapeHandler extends ShapeHandler {
     this.polyShape = null
     this.lastPos = null
     this.lastWorldPos = null
+  }
+
+  getLassoToolType() {
+    return LassoShapeHandler.lasso_tool_type
   }
 
   destroy() {
@@ -801,6 +829,9 @@ class LassoShapeHandler extends ShapeHandler {
 }
 
 class CrossSectionLineShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kCrossSection
+
   constructor(
     parent,
     drawEngine,
@@ -832,6 +863,10 @@ class CrossSectionLineShapeHandler extends ShapeHandler {
         this.enableBasemapEvents()
       }
     }, 100)
+  }
+
+  getLassoToolType() {
+    return CrossSectionLineShapeHandler.lasso_tool_type
   }
 
   destroy(destroy_line = false) {
@@ -1356,17 +1391,19 @@ export default class LassoButtonGroupController {
       )
     }
 
-    if (lassoToolSetTypes & LassoToolSetTypes.kCircle) {
-      add_handler("circle", CircleShapeHandler)
+    const available_lasso_tools = {
+      circle: CircleShapeHandler,
+      polyline: PolylineShapeHandler,
+      lasso: LassoShapeHandler,
+      CrossSection: CrossSectionLineShapeHandler
     }
-    if (lassoToolSetTypes & LassoToolSetTypes.kPolyLine) {
-      add_handler("polyline", PolylineShapeHandler)
-    }
-    if (lassoToolSetTypes & LassoToolSetTypes.kLasso) {
-      add_handler("lasso", LassoShapeHandler)
-    }
-    if (lassoToolSetTypes & LassoToolSetTypes.kCrossSection) {
-      add_handler("CrossSection", CrossSectionLineShapeHandler)
+
+    for (const [lasso_tool_name, lasso_tool_class] of Object.entries(
+      available_lasso_tools
+    )) {
+      if (lassoToolSetTypes & lasso_tool_class.lasso_tool_type) {
+        add_handler(lasso_tool_name, lasso_tool_class)
+      }
     }
 
     // NOTE: the canvas dom element needs to have a "tabindex" set to have
