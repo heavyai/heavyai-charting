@@ -79,6 +79,10 @@ class ShapeHandler {
     shape.registerEvents(Object.values(LassoShapeEventConstants))
     this.drawEngine.addShape(shape, selectOpts)
     this.drawEngine.moveShapeToTop(shape)
+
+    // now tag the shape to the originating tool, which may be useful
+    // for callback handlers to know
+    shape.lasso_tool_type = this.getLassoToolType()
   }
 
   /**
