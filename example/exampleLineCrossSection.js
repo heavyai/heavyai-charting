@@ -209,6 +209,25 @@ function create_charts(
         }
       }
 
+      let is_cross_section_enabled = false
+      pointMapChart.onDrawEvent(
+        LassoGlobalEventConstants.LASSO_TOOL_TYPE_ACTIVATED,
+        event_obj => {
+          if (event_obj.lasso_tool_type === LassoToolSetTypes.kCrossSection) {
+            is_cross_section_enabled = true
+          }
+        }
+      )
+
+      pointMapChart.onDrawEvent(
+        LassoGlobalEventConstants.LASSO_TOOL_TYPE_DEACTIVATED,
+        event_obj => {
+          if (event_obj.lasso_tool_type === LassoToolSetTypes.kCrossSection) {
+            is_cross_section_enabled = false
+          }
+        }
+      )
+
       // setup an event trigger for when a lasso shape is created
       pointMapChart.onDrawEvent(
         LassoGlobalEventConstants.LASSO_SHAPE_CREATE,
@@ -281,6 +300,15 @@ function create_charts(
             // For example, one approach is to set the line to be the bottom
             // edge of the current map view or the bottom edge of the raster
             // volume
+            // Tho you may want to ignore doing this if the shape was deleted
+            // as a result of a new line being drawn. You can check for this
+            // case by checking the "is_cross_section_enabled" variable that's
+            // tied to tool activate/deactivate signals
+            if (!is_cross_section_enabled) {
+              // no cross-section lines are currently drawn or being drawn on
+              // the map, so may want to reset the cross section endpoints to
+              // some default here.
+            }
 
             // turn off the croos-section line-local edit event callback
             // this is not really necessary, but it's good shutdown/cleanup

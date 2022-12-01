@@ -160,6 +160,11 @@ class ShapeHandler {
       this.canvas.focus()
 
       this.active = true
+
+      this.drawEngine.fire(
+        LassoGlobalEventConstants.LASSO_TOOL_TYPE_ACTIVATED,
+        { lasso_tool_type: this.getLassoToolType() }
+      )
     }
   }
 
@@ -177,6 +182,11 @@ class ShapeHandler {
       this.canvas.blur()
 
       this.active = false
+
+      this.drawEngine.fire(
+        LassoGlobalEventConstants.LASSO_TOOL_TYPE_DEACTIVATED,
+        { lasso_tool_type: this.getLassoToolType() }
+      )
     }
   }
 

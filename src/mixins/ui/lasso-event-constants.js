@@ -14,6 +14,20 @@ export const LassoShapeEventConstants = {
 
 export const LassoGlobalEventConstants = {
   /**
+   * triggered when a new lasso tool is activated by pressing its
+   * corresponding button in the lasso tool set ui
+   */
+  LASSO_TOOL_TYPE_ACTIVATED: "lasso:tool:activated",
+
+  /**
+   * triggered when a lasso tool is deactivated. This can happen
+   * when a shape finishes drawing, when a user cancels a drawing
+   * (via esc key) or when the user clicks on its corresponding button
+   * in the lasso tool set ui to manually deactivate it.
+   */
+  LASSO_TOOL_TYPE_DEACTIVATED: "lasso:tool:deactivated",
+
+  /**
    * triggered when a new lasso shape is created
    */
   LASSO_SHAPE_CREATE: "lasso:shape:create",
