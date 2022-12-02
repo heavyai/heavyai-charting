@@ -720,8 +720,8 @@ export default function rasterLayerPolyMixin(_layer) {
     const mapBounds = chart.map().getBounds()
 
     const state = _layer.getState()
-    const data = state.data[0]
-    if (isContourType(_layer.getState()) && data) {
+    const data = state && state.data && state.data.length ? state.data[0] : null
+    if (isContourType(state) && data) {
       const table = data.table
       const isGeoPoint = data.is_geo_point_type
       const latField = isGeoPoint
