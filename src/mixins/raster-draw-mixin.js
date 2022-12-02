@@ -5,6 +5,7 @@ import * as Draw from "@heavyai/draw/dist/draw"
 import { redrawAllAsync } from "../core/core-async"
 import LatLonCircle from "./ui/lasso-shapes/LatLonCircle"
 import LatLonPoly from "./ui/lasso-shapes/LatLonPoly"
+import LassoToolSetTypes from "./ui/lasso-tool-set-types"
 
 /** Configure HeavyAI Draw */
 Draw.Configure.setMatrixArrayType(Float64Array)
@@ -496,8 +497,10 @@ export function rasterDrawMixin(chart) {
     }
   }
 
-  chart.addDrawControl = () => {
+  chart.addDrawControl = (lassoToolSetTypes = LassoToolSetTypes.kStandard) => {
     if (drawEngine) {
+      // TODO(croot): if the requested tool set types are different,
+      // should we update the button group controller here?
       return chart
     }
 
@@ -546,7 +549,8 @@ export function rasterDrawMixin(chart) {
       chart,
       drawEngine,
       defaultStyle,
-      defaultSelectStyle
+      defaultSelectStyle,
+      lassoToolSetTypes
     )
 
     function updateDraw() {
@@ -653,6 +657,8 @@ export function rasterDrawMixin(chart) {
 
     return chart
   }
+
+  chart.onDrawEvent = (event, callback) => drawEngine.on(event, callback)
 
   chart.coordFilter = filter => {
     // noop - for backwards compatibility
