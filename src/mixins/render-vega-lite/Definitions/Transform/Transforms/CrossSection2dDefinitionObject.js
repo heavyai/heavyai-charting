@@ -73,16 +73,10 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
       obj.crossSectionLine.length !== 2 ||
       !Array.isArray(obj.crossSectionLine[0]) ||
       obj.crossSectionLine[0].length !== 2 ||
-      (typeof obj.crossSectionLine[0][0] !== "number" &&
-        typeof obj.crossSectionLine[0][0] !== "string") ||
-      (typeof obj.crossSectionLine[0][1] !== "number" &&
-        typeof obj.crossSectionLine[0][1] !== "string") ||
+      !obj.crossSectionLine[0].every(p => ["number", "string"].includes(typeof p)) ||
       !Array.isArray(obj.crossSectionLine[1]) ||
       obj.crossSectionLine[1].length !== 2 ||
-      (typeof obj.crossSectionLine[1][0] !== "number" &&
-        typeof obj.crossSectionLine[1][0] !== "string") ||
-      (typeof obj.crossSectionLine[1][1] !== "number" &&
-        typeof obj.crossSectionLine[1][1] !== "string")
+      !obj.crossSectionLine[1].every(p => ["number", "string"].includes(typeof p))
     ) {
       throw new Error(
         `Invalid '${key}' transform definition. The 'crossSectionLine' property must exist and be an array of two 2d points (i.e. [[0, 1], [1, 2]])`
