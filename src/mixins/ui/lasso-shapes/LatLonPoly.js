@@ -1,6 +1,5 @@
 "use strict"
 
-import * as LatLonUtils from "../../../utils/utils-latlon"
 import * as Draw from "@heavyai/draw/dist/draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
 
@@ -24,77 +23,13 @@ export default class LatLonPoly extends Draw.Poly {
     // set the viewDirty flag to force a rebuild of the drawn vertices when
     // the camera changes. This is required because we are doing a screen-space-based
     // line subdivision that is obviously dependent on the view.
-    const that = this
-    this._draw_engine.camera.on("changed", event => {
-      that._viewDirty = true
+    const context = this
+    this._draw_engine.camera.on("changed", () => {
+      context._viewDirty = true
     })
 
     // maximum length of subdivided line segment in pixels
     this._max_segment_pixel_distance = 40
-  }
-
-  /**
-   * Determines whether a line segment defined by a start/end point
-   * should be subdivided for drawing. If the segment should be subdivided,
-   * will append subdivided points the array of screen-projected points
-   * to draw.
-   * @param {ProjectedPointData} start_point_data Start point of the line segment
-   * @param {ProjectedPointData} end_point_data End point of the line segment
-   * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
-   *                                      intersection between the shape and the current view
-   *                                      in WGS84 lat/lon coords
-   * @param {Mat2d} world_to_screen_matrix Matrix defining world-to-screen transformation
-   * @returns
-   */
-  _subdivideLineSegment(
-    start_point_data,
-    end_point_data,
-    view_aabox,
-    world_to_screen_matrix
-  ) {
-    const view_intersect_data = LatLonViewIntersectUtils.intersectViewBounds(
-      start_point_data,
-      end_point_data,
-      view_aabox,
-      world_to_screen_matrix
-    )
-
-    if (!view_intersect_data.subdivide) {
-      return
-    }
-
-    console.assert(view_intersect_data.lonlat_pts.length === 2)
-
-    const [start_lonlat_pt, end_lonlat_pt] = view_intersect_data.lonlat_pts
-    const [start_screen_pt, end_screen_pt] = view_intersect_data.screen_pts
-
-    const distance = Point2d.distance(start_screen_pt, end_screen_pt)
-    if (distance > this._max_segment_pixel_distance) {
-      // do subdivisions in a cartesian space using lon/lat
-      // This is how ST_Contains behaves in the server right now
-      const num_subdivisions = Math.ceil(
-        distance / this._max_segment_pixel_distance
-      )
-      for (let i = 1; i < num_subdivisions; i += 1) {
-        const new_segment_point = Point2d.create()
-        Point2d.lerp(
-          new_segment_point,
-          start_lonlat_pt,
-          end_lonlat_pt,
-          i / num_subdivisions
-        )
-        // conver the new segment point back to mercator for drawing
-        LatLonUtils.conv4326To900913(new_segment_point, new_segment_point)
-
-        // now convert to screen space
-        Point2d.transformMat2d(
-          new_segment_point,
-          new_segment_point,
-          world_to_screen_matrix
-        )
-        this._screenPts.push(Point2d.clone(new_segment_point))
-      }
-    }
   }
 
   /**
@@ -160,11 +95,13 @@ export default class LatLonPoly extends Draw.Poly {
         )
 
         // check if this line segment needs subdividing
-        this._subdivideLineSegment(
+        LatLonViewIntersectUtils.subdivideLineSegment(
           start_point_data,
           end_point_data,
           world_bounds,
-          world_to_screen_matrix
+          world_to_screen_matrix,
+          this._max_segment_pixel_distance,
+          this._screenPts
         )
         this._screenPts.push(Point2d.clone(end_point_data.screen_point))
 
@@ -175,11 +112,13 @@ export default class LatLonPoly extends Draw.Poly {
       }
 
       // check if the final line segment that closes the loop needs subdividing
-      this._subdivideLineSegment(
+      LatLonViewIntersectUtils.subdivideLineSegment(
         start_point_data,
         first_point_data,
         world_bounds,
-        world_to_screen_matrix
+        world_to_screen_matrix,
+        this._max_segment_pixel_distance,
+        this._screenPts
       )
 
       // NOTE: we are not re-adding the first point as the draw call will close the loop

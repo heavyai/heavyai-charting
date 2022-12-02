@@ -2,8 +2,9 @@
 
 import * as LatLonUtils from "../../../utils/utils-latlon"
 import * as Draw from "@heavyai/draw/dist/draw"
+import assert from "assert"
 
-const { AABox2d, Mat2d, Point2d, Vec2d } = Draw
+const { AABox2d, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
 
 /**
@@ -34,6 +35,289 @@ function canIntersect(numerator, denominator) {
     return true
   }
   return false
+}
+
+/**
+ * @typedef {object} ViewBoundsIntersectData
+ *
+ * Describes intersection data defined by intersecting a specific line segment
+ * against a view. This intersection data will include points that either
+ * intersect or is contained by a view. The arrays of intersection points will
+ * either be of size 2 (line segment intersects or is contained by a view) or
+ * be size 0 (line segment does not intersect or is not contained by a view)
+ *
+ * @property {Point2d[]} lonlat_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
+ * @property {Point2d[]} screen_pts Array of points defined in screen space that either intersect or are contained by a view
+ *                                           This is the same set of points as lonlat_pts above, but transformed into screen space.
+ * @property {number[]} pts_t Array of real numbers between [0-1] indicating the normalized distance of the intersection pts relative to
+ *                            the original line segment. For example, if t=0, the intersection point is the starting point of the line
+ *                            segment. If t=1, it is the end point of the line segment, and if t=0.5, it is the midpoint of the
+ *                            line segment. This will be in ascending sorted order.
+ * @property {boolean} subdivide Set to true if the caller should subdivide the insection points found here.
+ *                               For instance, We may not want to subdivide if the intersection line segment is completely horizontal or vertical
+ */
+
+/**
+ * Determines the intersect/contained points of a line segment
+ * defined by a start/end point against the bounds of a view
+ * Returns a struct describing any intersection points (will either be 2 or 0 points)
+ * as well as a flag indicating whether the line segment defined by the intersection
+ * points should be subdivided for draw.
+ * @param {ProjectedPointData} start_point_data The start point of the line segment
+ * @param {ProjectedPointData} end_point_data The end point of the line segment
+ * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
+ *                                      intersection between the aabox of the current shape
+ *                                      and the current view
+ * @param {Mat2d} world_to_screen_matrix The world-to-screen transformation matrix
+ * @returns {ViewBoundsIntersectData}
+ */
+function _intersect_view_bounds(
+  start_point_data,
+  end_point_data,
+  view_aabox,
+  world_to_screen_matrix
+) {
+  const x1 = start_point_data.lonlat_point[0]
+  const y1 = start_point_data.lonlat_point[1]
+  const x2 = end_point_data.lonlat_point[0]
+  const y2 = end_point_data.lonlat_point[1]
+
+  const line_aabox = AABox2d.create()
+  AABox2d.encapsulatePt(line_aabox, line_aabox, start_point_data.lonlat_point)
+  AABox2d.encapsulatePt(line_aabox, line_aabox, end_point_data.lonlat_point)
+
+  const intersect_aabox = AABox2d.create()
+  AABox2d.intersection(intersect_aabox, view_aabox, line_aabox)
+
+  // The current stored t value for bounds intersection points.
+  // The max t for intersection points will be 1, so setting this to
+  // 2 as an initial value. Reminder we will return with 2 points, and
+  // those 2 points should be returned in t ascending order to be continuous
+  // with the start-point/end-point arguments passed. So when the 2nd intersect
+  // point has been found, the comparison of the t for that intersection and
+  // current_t (which would be associated with the first interesection
+  // point) will determine whether to insert the new intersection point to the
+  // front or the back of the array
+  let current_t = 2.0
+
+  /**
+   * The returned object. It will either be empty (no interesections with the
+   * view bounds) or it will have exactly 2 intersection points.
+   */
+  const rtn_obj = {
+    /** intersect points in lat/lon space */
+    lonlat_pts: [],
+
+    /** intersect points in screen space */
+    screen_pts: [],
+
+    // the normalized distance of each intersection point relative to the original
+    // line segment. This will be in ascending sorted order.
+    pts_t: [],
+
+    /** whether the caller should subdivide the line segments between the
+     * intersection points found here */
+    subdivide: false
+  }
+
+  if (AABox2d.isEmpty(intersect_aabox)) {
+    // no intersection with the view bounds
+    // return empty intersection object
+    return rtn_obj
+  }
+
+  const delta_x = x1 - x2
+  const delta_y = y1 - y2
+
+  if (delta_x === 0 || delta_y === 0) {
+    // Early out:
+    // The line segment lies on a line of latitude or longitude
+    // Such lines do not need to be subdivided in web-mercator-projected
+    // space because they will be vertical/horizontal when projected (i.e.
+    // they will not exhibit any curvature)
+    // Return empty object.
+
+    // eslint-disable-next-line no-warning-comments
+    // TODO(croot): support other projections?
+
+    return rtn_obj
+  }
+
+  if (AABox2d.equals(intersect_aabox, line_aabox)) {
+    // Early out: the intersection bounding box equals the
+    // line segment's bounding box, meaning the entire line
+    // segment is in view. Add the start/end points as intersection
+    // points and mark the segment as needing subdividing.
+    rtn_obj.lonlat_pts.push(start_point_data.lonlat_point)
+    rtn_obj.screen_pts.push(start_point_data.screen_point)
+    rtn_obj.pts_t.push(0)
+    rtn_obj.lonlat_pts.push(end_point_data.lonlat_point)
+    rtn_obj.screen_pts.push(end_point_data.screen_point)
+    rtn_obj.pts_t.push(1)
+    rtn_obj.subdivide = true
+  } else {
+    // need to do intersection checks against the side of the intersection bounds. There will be
+    // exactly 2 intersections. The intersection check is a slightly simplified version of a
+    // bezier-based line segment intersection formula:
+    // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
+    // This formula can be slightly simplified due to the intersection bounds being axis-aligned.
+    // Ultimately you can eliminate some operations knowing that coordinate differences will be 0
+
+    if (
+      intersect_aabox[AABox2d.MINX] === intersect_aabox[AABox2d.MAXX] ||
+      intersect_aabox[AABox2d.MINY] === intersect_aabox[AABox2d.MAXY]
+    ) {
+      // early out: there's no intersection with the view bounds
+      // if the intersection aabox has no size in either dimension
+      // by the time we reach here. The case where the line is horizontal/vertical
+      // or the line is fully contained by the view should already be handled.
+      // return empty intersection object
+      return rtn_obj
+    }
+
+    const x3 = intersect_aabox[AABox2d.MINX]
+    const x4 = intersect_aabox[AABox2d.MAXX]
+    const y3 = intersect_aabox[AABox2d.MINY]
+    const y4 = intersect_aabox[AABox2d.MAXY]
+
+    const check_full_intersect = (
+      numerator_t_functor,
+      denominator_t_functor,
+      numerator_u_functor,
+      denominator_u_functor
+    ) => {
+      const denominator_t = denominator_t_functor()
+      if (denominator_t === 0) {
+        // colinear
+        // eslint-disable-next-line no-warning-comments
+        // TODO(croot): this needs filling out in the general case
+        // NOTE: this should never be hit in the LonLatPoly case because of
+        // the delta_x/delta_y === 0 check.
+
+        // eslint-disable-next-line no-console
+        console.assert(false, `Collinear intersection needs completing`)
+
+        return true
+      }
+      const numerator_t = numerator_t_functor()
+      if (
+        canIntersect(numerator_t, denominator_t) &&
+        canIntersect(numerator_u_functor(), denominator_u_functor())
+      ) {
+        // NOTE: denominator_t should never be zero. There's an early out for
+        // that case.
+        const t = numerator_t / denominator_t
+
+        if (MathExt.floatingPtEquals(t, current_t)) {
+          // already found this specific interesection, so don't re-add
+          // In this specific use case, since we're doing intersection tests
+          // against each wall of an axis-aligned bounding box, the original
+          // line-segment can intersect two walls that meet at a corner. In
+          // that case one of the endpoitns of the original line defines the
+          // bounds at that corner. That can result in recalculating the same
+          // t at the corner for the two separate walls, so avoiding adding
+          // a duplicate intersection point with this test.
+          return false
+        }
+
+        let lonlat_pt = null
+        let screen_pt = null
+        if (MathExt.floatingPtEquals(t, 0)) {
+          // the intersection point is the start point of the original segment, so
+          // just re-use the start coord
+          lonlat_pt = start_point_data.lonlat_point
+          screen_pt = start_point_data.screen_point
+        } else if (MathExt.floatingPtEquals(t, 1)) {
+          // the intersection point is the end point of the original segment, so
+          // just re-use the end coord
+          lonlat_pt = end_point_data.lonlat_point
+          screen_pt = end_point_data.screen_point
+        } else {
+          // calculate the lon/lat and screen point for the
+          // intersection point given t
+          const new_lonlat_pt = Point2d.create(-delta_x * t, -delta_y * t)
+          Point2d.addVec2(
+            new_lonlat_pt,
+            start_point_data.lonlat_point,
+            new_lonlat_pt
+          )
+          lonlat_pt = new_lonlat_pt
+
+          const new_screen_pt = Point2d.clone(new_lonlat_pt)
+          // conver the new segment point back to mercator for drawing
+          LatLonUtils.conv4326To900913(new_screen_pt, new_screen_pt)
+
+          // now convert to screen space
+          Point2d.transformMat2d(
+            new_screen_pt,
+            new_screen_pt,
+            world_to_screen_matrix
+          )
+          screen_pt = new_screen_pt
+        }
+        rtn_obj.subdivide = true
+
+        // insersection points must be stored by t in ascending order.
+        // There will be exactly 2 points in the end, so just need to check
+        // whether to insert this new intersection point at the front or back
+        // of the returned point array
+        if (t < current_t) {
+          rtn_obj.lonlat_pts.splice(0, 0, lonlat_pt)
+          rtn_obj.screen_pts.splice(0, 0, screen_pt)
+          rtn_obj.pts_t.splice(0, 0, t)
+        } else {
+          rtn_obj.lonlat_pts.push(lonlat_pt)
+          rtn_obj.screen_pts.push(screen_pt)
+          rtn_obj.pts_t.push(t)
+        }
+        current_t = t
+        return true
+      }
+      return false
+    }
+
+    // check left-edge of the bounds first, we know that delta_x = 0 for the points defining the left edge
+    let delta_edge = x1 - x3
+    check_full_intersect(
+      () => delta_edge,
+      () => delta_x,
+      () => -delta_x * (y1 - y3) - -delta_y * delta_edge,
+      () => delta_x * (y3 - y4)
+    )
+
+    // bounds top-edge
+    delta_edge = y1 - y3
+    check_full_intersect(
+      () => -delta_edge,
+      () => -delta_y,
+      () => -delta_x * delta_edge - -delta_y * (x1 - x3),
+      () => -delta_y * (x3 - x4)
+    )
+
+    if (rtn_obj.lonlat_pts.length < 2) {
+      // bounds right-edge, we know that delta_x = 0 for the points defining the right edge
+      delta_edge = x1 - x4
+      check_full_intersect(
+        () => delta_edge,
+        () => delta_x,
+        () => -delta_x * (y1 - y3) - -delta_y * delta_edge,
+        () => delta_x * (y3 - y4)
+      )
+
+      if (rtn_obj.lonlat_pts.length < 2) {
+        // bounds top edge
+        delta_edge = y1 - y4
+        check_full_intersect(
+          () => -delta_edge,
+          () => -delta_y,
+          () => -delta_x * delta_edge - -delta_y * (x1 - x3),
+          () => -delta_y * (x3 - x4)
+        )
+      }
+    }
+  }
+
+  return rtn_obj
 }
 
 export default {
@@ -134,26 +418,6 @@ export default {
   },
 
   /**
-   * @typedef {object} ViewBoundsIntersectData
-   *
-   * Describes intersection data defined by intersecting a specific line segment
-   * against a view. This intersection data will include points that either
-   * intersect or is contained by a view. The arrays of intersection points will
-   * either be of size 2 (line segment intersects or is contained by a view) or
-   * be size 0 (line segment does not intersect or is not contained by a view)
-   *
-   * @property {Point2d[]} lonlat_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
-   * @property {Point2d[]} screen_pts Array of points defined in screen space that either intersect or are contained by a view
-   *                                           This is the same set of points as lonlat_pts above, but transformed into screen space.
-   * @property {number[]} pts_t Array of real numbers between [0-1] indicating the normalized distance of the intersection pts relative to
-   *                            the original line segment. For example, if t=0, the intersection point is the starting point of the line
-   *                            segment. If t=1, it is the end point of the line segment, and if t=0.5, it is the midpoint of the
-   *                            line segment. This will be in ascending sorted order.
-   * @property {boolean} subdivide Set to true if the caller should subdivide the insection points found here.
-   *                               For instance, We may not want to subdivide if the intersection line segment is completely horizontal or vertical
-   */
-
-  /**
    * Determines the intersect/contained points of a line segment
    * defined by a start/end point against the bounds of a view
    * Returns a struct describing any intersection points (will either be 2 or 0 points)
@@ -172,242 +436,13 @@ export default {
     end_point_data,
     view_aabox,
     world_to_screen_matrix
-  ) => {
-    const x1 = start_point_data.lonlat_point[0]
-    const y1 = start_point_data.lonlat_point[1]
-    const x2 = end_point_data.lonlat_point[0]
-    const y2 = end_point_data.lonlat_point[1]
-
-    const line_aabox = AABox2d.create()
-    AABox2d.encapsulatePt(line_aabox, line_aabox, start_point_data.lonlat_point)
-    AABox2d.encapsulatePt(line_aabox, line_aabox, end_point_data.lonlat_point)
-
-    const intersect_aabox = AABox2d.create()
-    AABox2d.intersection(intersect_aabox, view_aabox, line_aabox)
-
-    // The current stored t value for bounds intersection points.
-    // The max t for intersection points will be 1, so setting this to
-    // 2 as an initial value. Reminder we will return with 2 points, and
-    // those 2 points should be returned in t ascending order to be continuous
-    // with the start-point/end-point arguments passed. So when the 2nd intersect
-    // point has been found, the comparison of the t for that intersection and
-    // current_t (which would be associated with the first interesection
-    // point) will determine whether to insert the new intersection point to the
-    // front or the back of the array
-    let current_t = 2.0
-
-    /**
-     * The returned object. It will either be empty (no interesections with the
-     * view bounds) or it will have exactly 2 intersection points.
-     */
-    const rtn_obj = {
-      /** intersect points in lat/lon space */
-      lonlat_pts: [],
-
-      /** intersect points in screen space */
-      screen_pts: [],
-
-      // the normalized distance of each intersection point relative to the original
-      // line segment. This will be in ascending sorted order.
-      pts_t: [],
-
-      /** whether the caller should subdivide the line segments between the
-       * intersection points found here */
-      subdivide: false
-    }
-
-    if (AABox2d.isEmpty(intersect_aabox)) {
-      // no intersection with the view bounds
-      // return empty intersection object
-      return rtn_obj
-    }
-
-    const delta_x = x1 - x2
-    const delta_y = y1 - y2
-
-    if (delta_x === 0 || delta_y === 0) {
-      // Early out:
-      // The line segment lies on a line of latitude or longitude
-      // Such lines do not need to be subdivided in web-mercator-projected
-      // space because they will be vertical/horizontal when projected (i.e.
-      // they will not exhibit any curvature)
-      // Return empty object.
-      // TODO(croot): support other projections?
-      return rtn_obj
-    }
-
-    if (AABox2d.equals(intersect_aabox, line_aabox)) {
-      // Early out: the intersection bounding box equals the
-      // line segment's bounding box, meaning the entire line
-      // segment is in view. Add the start/end points as intersection
-      // points and mark the segment as needing subdividing.
-      rtn_obj.lonlat_pts.push(start_point_data.lonlat_point)
-      rtn_obj.screen_pts.push(start_point_data.screen_point)
-      rtn_obj.pts_t.push(0)
-      rtn_obj.lonlat_pts.push(end_point_data.lonlat_point)
-      rtn_obj.screen_pts.push(end_point_data.screen_point)
-      rtn_obj.pts_t.push(1)
-      rtn_obj.subdivide = true
-    } else {
-      // need to do intersection checks against the side of the intersection bounds. There will be
-      // exactly 2 intersections. The intersection check is a slightly simplified version of a
-      // bezier-based line segment intersection formula:
-      // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
-      // This formula can be slightly simplified due to the intersection bounds being axis-aligned.
-      // Ultimately you can eliminate some operations knowing that coordinate differences will be 0
-
-      if (
-        intersect_aabox[AABox2d.MINX] === intersect_aabox[AABox2d.MAXX] ||
-        intersect_aabox[AABox2d.MINY] === intersect_aabox[AABox2d.MAXY]
-      ) {
-        // early out: there's no intersection with the view bounds
-        // if the intersection aabox has no size in either dimension
-        // by the time we reach here. The case where the line is horizontal/vertical
-        // or the line is fully contained by the view should already be handled.
-        // return empty intersection object
-        return rtn_obj
-      }
-
-      const x3 = intersect_aabox[AABox2d.MINX]
-      const x4 = intersect_aabox[AABox2d.MAXX]
-      const y3 = intersect_aabox[AABox2d.MINY]
-      const y4 = intersect_aabox[AABox2d.MAXY]
-
-      const check_full_intersect = (
-        numerator_t_functor,
-        denominator_t_functor,
-        numerator_u_functor,
-        denominator_u_functor
-      ) => {
-        const denominator_t = denominator_t_functor()
-        if (denominator_t === 0) {
-          // colinear
-          // TODO(croot): this needs filling out in the general case
-          // NOTE: this should never be hit in the LonLatPoly case because of
-          // the delta_x/delta_y === 0 check.
-          console.assert(false, `Collinear intersection needs completing`)
-          return true
-        }
-        const numerator_t = numerator_t_functor()
-        if (
-          canIntersect(numerator_t, denominator_t) &&
-          canIntersect(numerator_u_functor(), denominator_u_functor())
-        ) {
-          // NOTE: denominator_t should never be zero. There's an early out for
-          // that case.
-          const t = numerator_t / denominator_t
-
-          if (MathExt.floatingPtEquals(t, current_t)) {
-            // already found this specific interesection, so don't re-add
-            // In this specific use case, since we're doing intersection tests
-            // against each wall of an axis-aligned bounding box, the original
-            // line-segment can intersect two walls that meet at a corner. In
-            // that case one of the endpoitns of the original line defines the
-            // bounds at that corner. That can result in recalculating the same
-            // t at the corner for the two separate walls, so avoiding adding
-            // a duplicate intersection point with this test.
-            return false
-          }
-
-          let lonlat_pt = null
-          let screen_pt = null
-          if (MathExt.floatingPtEquals(t, 0)) {
-            // the intersection point is the start point of the original segment, so
-            // just re-use the start coord
-            lonlat_pt = start_point_data.lonlat_point
-            screen_pt = start_point_data.screen_point
-          } else if (MathExt.floatingPtEquals(t, 1)) {
-            // the intersection point is the end point of the original segment, so
-            // just re-use the end coord
-            lonlat_pt = end_point_data.lonlat_point
-            screen_pt = end_point_data.screen_point
-          } else {
-            // calculate the lon/lat and screen point for the
-            // intersection point given t
-            const new_lonlat_pt = Point2d.create(-delta_x * t, -delta_y * t)
-            Point2d.addVec2(
-              new_lonlat_pt,
-              start_point_data.lonlat_point,
-              new_lonlat_pt
-            )
-            lonlat_pt = new_lonlat_pt
-
-            const new_screen_pt = Point2d.clone(new_lonlat_pt)
-            // conver the new segment point back to mercator for drawing
-            LatLonUtils.conv4326To900913(new_screen_pt, new_screen_pt)
-
-            // now convert to screen space
-            Point2d.transformMat2d(
-              new_screen_pt,
-              new_screen_pt,
-              world_to_screen_matrix
-            )
-            screen_pt = new_screen_pt
-          }
-          rtn_obj.subdivide = true
-
-          // insersection points must be stored by t in ascending order.
-          // There will be exactly 2 points in the end, so just need to check
-          // whether to insert this new intersection point at the front or back
-          // of the returned point array
-          if (t < current_t) {
-            rtn_obj.lonlat_pts.splice(0, 0, lonlat_pt)
-            rtn_obj.screen_pts.splice(0, 0, screen_pt)
-            rtn_obj.pts_t.splice(0, 0, t)
-          } else {
-            rtn_obj.lonlat_pts.push(lonlat_pt)
-            rtn_obj.screen_pts.push(screen_pt)
-            rtn_obj.pts_t.push(t)
-          }
-          current_t = t
-          return true
-        }
-        return false
-      }
-
-      // check left-edge of the bounds first, we know that delta_x = 0 for the points defining the left edge
-      let delta_edge = x1 - x3
-      check_full_intersect(
-        () => delta_edge,
-        () => delta_x,
-        () => -delta_x * (y1 - y3) - -delta_y * delta_edge,
-        () => delta_x * (y3 - y4)
-      )
-
-      // bounds top-edge
-      delta_edge = y1 - y3
-      check_full_intersect(
-        () => -delta_edge,
-        () => -delta_y,
-        () => -delta_x * delta_edge - -delta_y * (x1 - x3),
-        () => -delta_y * (x3 - x4)
-      )
-
-      if (rtn_obj.lonlat_pts.length < 2) {
-        // bounds right-edge, we know that delta_x = 0 for the points defining the right edge
-        delta_edge = x1 - x4
-        check_full_intersect(
-          () => delta_edge,
-          () => delta_x,
-          () => -delta_x * (y1 - y3) - -delta_y * delta_edge,
-          () => delta_x * (y3 - y4)
-        )
-
-        if (rtn_obj.lonlat_pts.length < 2) {
-          // bounds top edge
-          delta_edge = y1 - y4
-          check_full_intersect(
-            () => -delta_edge,
-            () => -delta_y,
-            () => -delta_x * delta_edge - -delta_y * (x1 - x3),
-            () => -delta_y * (x3 - x4)
-          )
-        }
-      }
-    }
-
-    return rtn_obj
-  },
+  ) =>
+    _intersect_view_bounds(
+      start_point_data,
+      end_point_data,
+      view_aabox,
+      world_to_screen_matrix
+    ),
 
   /**
    * Converts an axis-aligned bounding box in web-mercator (srid 900913) coordinates
@@ -431,5 +466,76 @@ export default {
     )
 
     return output_bounds
+  },
+
+  /**
+   * Determines whether a line segment defined by a start/end point
+   * should be subdivided for drawing. If the segment should be subdivided,
+   * will append subdivided points to an array of screen-projected points
+   * for drawing.
+   * @param {ProjectedPointData} start_point_data Start point of the line segment
+   * @param {ProjectedPointData} end_point_data End point of the line segment
+   * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
+   *                                      intersection between the shape and the current view
+   *                                      in WGS84 lat/lon coords
+   * @param {Mat2d} world_to_screen_matrix Matrix defining world-to-screen transformation
+   * @param {Number} max_segment_pixel_distance Threshold of a length of a line segment in screen space
+   *                                            after which the line segment can be subdivided for additional
+   *                                            detail.
+   * @param {Point2d[]} screen_pts Array of 2d points in screen space to append new subdivided points to
+   * @returns
+   */
+  subdivideLineSegment(
+    start_point_data,
+    end_point_data,
+    view_aabox,
+    world_to_screen_matrix,
+    max_segment_pixel_distance,
+    screen_pts
+  ) {
+    const view_intersect_data = _intersect_view_bounds(
+      start_point_data,
+      end_point_data,
+      view_aabox,
+      world_to_screen_matrix
+    )
+
+    if (!view_intersect_data.subdivide) {
+      return
+    }
+
+    assert(
+      view_intersect_data.lonlat_pts.length === 2,
+      `${view_intersect_data.lonlat_pts}`
+    )
+
+    const [start_lonlat_pt, end_lonlat_pt] = view_intersect_data.lonlat_pts
+    const [start_screen_pt, end_screen_pt] = view_intersect_data.screen_pts
+
+    const distance = Point2d.distance(start_screen_pt, end_screen_pt)
+    if (distance > max_segment_pixel_distance) {
+      // do subdivisions in a cartesian space using lon/lat
+      // This is how ST_Contains behaves in the server right now
+      const num_subdivisions = Math.ceil(distance / max_segment_pixel_distance)
+      for (let i = 1; i < num_subdivisions; i += 1) {
+        const new_segment_point = Point2d.create()
+        Point2d.lerp(
+          new_segment_point,
+          start_lonlat_pt,
+          end_lonlat_pt,
+          i / num_subdivisions
+        )
+        // conver the new segment point back to mercator for drawing
+        LatLonUtils.conv4326To900913(new_segment_point, new_segment_point)
+
+        // now convert to screen space
+        Point2d.transformMat2d(
+          new_segment_point,
+          new_segment_point,
+          world_to_screen_matrix
+        )
+        screen_pts.push(Point2d.clone(new_segment_point))
+      }
+    }
   }
 }
