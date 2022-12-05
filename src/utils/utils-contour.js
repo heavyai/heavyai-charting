@@ -167,3 +167,16 @@ export const validateContourState = state => {
     )
   }
 }
+
+export const getContourBoundingBox = (data, mapBounds) => {
+  const table = data.table
+  const isGeoPoint = data.is_geo_point_type
+  const latField = isGeoPoint
+    ? `ST_Y(${table}.${data.lat_field})`
+    : `${table}.${data.lat_field}`
+  const lonField = isGeoPoint
+    ? `ST_X${data.lon_field}`
+    : `${table}.${data.lon_field}`
+  const bboxFilter = `${lonField} >= ${mapBounds._sw.lng} AND ${lonField} <= ${mapBounds._ne.lng} AND ${latField} >= ${mapBounds._sw.lat} AND ${latField} <= ${mapBounds._ne.lat}`
+  return bboxFilter
+}

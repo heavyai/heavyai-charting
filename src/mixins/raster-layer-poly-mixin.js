@@ -10,7 +10,7 @@ import { events } from "../core/events"
 import { parser } from "../utils/utils"
 import { lastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
-import { buildContourSQL, isContourType } from "../utils/utils-contour"
+import { buildContourSQL, getContourBoundingBox, isContourType } from "../utils/utils-contour"
 
 const polyDefaultScaleColor = "#d6d7d6"
 const polyNullScaleColor = "#d6d7d6"
@@ -722,15 +722,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const state = _layer.getState()
     const data = state && state.data && state.data.length ? state.data[0] : null
     if (isContourType(state) && data) {
-      const table = data.table
-      const isGeoPoint = data.is_geo_point_type
-      const latField = isGeoPoint
-        ? `ST_Y(${table}.${data.lat_field})`
-        : `${table}.${data.lat_field}`
-      const lonField = isGeoPoint
-        ? `ST_X${data.lon_field}`
-        : `${table}.${data.lon_field}`
-      bboxFilter = `${lonField} >= ${mapBounds._sw.lng} AND ${lonField} <= ${mapBounds._ne.lng} AND ${latField} >= ${mapBounds._sw.lat} AND ${latField} <= ${mapBounds._ne.lat}`
+      bboxFilter = getContourBoundingBox(data, mapBounds)
     } else {
       const columnExpr = `${state.encoding.geoTable}.${state.encoding.geocol}`
       bboxFilter = `ST_XMax(${columnExpr}) >= ${mapBounds._sw.lng} AND ST_XMin(${columnExpr}) <= ${mapBounds._ne.lng} AND ST_YMax(${columnExpr}) >= ${mapBounds._sw.lat} AND ST_YMin(${columnExpr}) <= ${mapBounds._ne.lat}`
