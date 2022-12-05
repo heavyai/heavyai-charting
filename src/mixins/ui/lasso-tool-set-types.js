@@ -24,46 +24,49 @@ export default class LassoToolSetTypes {
    * @type {Number}
    */
   // eslint-disable-next-line no-undef
-  static kCircle = new LassoToolSetTypes(1 << 0)
+  static kCircle = new LassoToolSetTypes(1 << 0, "circle")
 
   /**
    * Bitflag identifier for the Polyline draw tool
    * @type {Number}
    */
   // eslint-disable-next-line no-undef
-  static kPolyLine = new LassoToolSetTypes(1 << 1)
+  static kPolyLine = new LassoToolSetTypes(1 << 1, "polyline")
 
   /**
    * Bitflag identifier for the Lasso draw tool
    * @type {Number}
    */
   // eslint-disable-next-line no-undef
-  static kLasso = new LassoToolSetTypes(1 << 2)
+  static kLasso = new LassoToolSetTypes(1 << 2, "lasso")
 
   /**
    * Bitflag identifier for the CrossSection draw tool
    * @type {Number}
    */
   // eslint-disable-next-line no-undef
-  static kCrossSection = new LassoToolSetTypes(1 << 3)
+  static kCrossSection = new LassoToolSetTypes(1 << 3, "cross section")
 
   // eslint-disable-next-line no-undef
   static kAll = new LassoToolSetTypes(
     LassoToolSetTypes.kCircle |
       LassoToolSetTypes.kPolyLine |
       LassoToolSetTypes.kLasso |
-      LassoToolSetTypes.kCrossSection
+      LassoToolSetTypes.kCrossSection,
+    "all"
   )
 
   // eslint-disable-next-line no-undef
   static kStandard = new LassoToolSetTypes(
     LassoToolSetTypes.kCircle |
       LassoToolSetTypes.kPolyLine |
-      LassoToolSetTypes.kLasso
+      LassoToolSetTypes.kLasso,
+    "standard"
   )
 
-  constructor(value) {
+  constructor(value, description = null) {
     this.value = value
+    this.description = description
   }
 
   valueOf() {
@@ -71,6 +74,6 @@ export default class LassoToolSetTypes {
   }
 
   toString() {
-    return `${this.value}`
+    return `${this.description !== null ? this.description : this.value}`
   }
 }
