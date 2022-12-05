@@ -10,7 +10,11 @@ import { events } from "../core/events"
 import { parser } from "../utils/utils"
 import { lastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
-import { buildContourSQL, getContourBoundingBox, isContourType } from "../utils/utils-contour"
+import {
+  buildContourSQL,
+  getContourBoundingBox,
+  isContourType
+} from "../utils/utils-contour"
 
 const polyDefaultScaleColor = "#d6d7d6"
 const polyNullScaleColor = "#d6d7d6"

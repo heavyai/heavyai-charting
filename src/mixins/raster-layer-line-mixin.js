@@ -368,7 +368,10 @@ export default function rasterLayerLineMixin(_layer) {
       const filterTransforms = _layer
         .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
         .filter(f => f.type === "filter")
-      const bboxFilter = getContourBoundingBox(state.data[0], chart.map().getBounds())
+      const bboxFilter = getContourBoundingBox(
+        state.data[0],
+        chart.map().getBounds()
+      )
       filterTransforms.push({
         type: "filter",
         expr: bboxFilter
