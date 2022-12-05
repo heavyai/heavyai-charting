@@ -5,6 +5,7 @@ import * as Draw from "@heavyai/draw/dist/draw"
 import { redrawAllAsync } from "../core/core-async"
 import LatLonCircle from "./ui/lasso-shapes/LatLonCircle"
 import LatLonPoly from "./ui/lasso-shapes/LatLonPoly"
+import LatLonPolyLine from "./ui/lasso-shapes/LatLonPolyLine"
 import LassoToolSetTypes from "./ui/lasso-tool-set-types"
 
 /** Configure HeavyAI Draw */
@@ -474,6 +475,20 @@ export function rasterDrawMixin(chart) {
           args.push(drawEngine)
         } else {
           PolyClass = Draw.Poly
+        }
+        args.push(filterArg)
+        newShape = new PolyClass(...args)
+      } else if (
+        filterArg.type === "LatLonPolyLine" ||
+        filterArg.type === "PolyLine"
+      ) {
+        const args = []
+        let PolyClass = null
+        if (useLonLat) {
+          PolyClass = LatLonPolyLine
+          args.push(drawEngine)
+        } else {
+          PolyClass = Draw.PolyLine
         }
         args.push(filterArg)
         newShape = new PolyClass(...args)
