@@ -175,7 +175,7 @@ export const getContourBoundingBox = (data, mapBounds) => {
     ? `ST_Y(${table}.${data.lat_field})`
     : `${table}.${data.lat_field}`
   const lonField = isGeoPoint
-    ? `ST_X${data.lon_field}`
+    ? `ST_X(${table}.${data.lon_field})`
     : `${table}.${data.lon_field}`
   const bboxFilter = `${lonField} >= ${mapBounds._sw.lng} AND ${lonField} <= ${mapBounds._ne.lng} AND ${latField} >= ${mapBounds._sw.lat} AND ${latField} <= ${mapBounds._ne.lat}`
   return bboxFilter
