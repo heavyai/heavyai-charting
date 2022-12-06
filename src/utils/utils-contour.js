@@ -92,9 +92,7 @@ export const buildOptimizedContourSQL = ({
   group by lon_int, lat_int
   `
 
-  const rasterSelect = is_geo_point_type
-    ? `select ${lonFieldParsed}, ${latFieldParsed},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
-    : `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contour_value_field} from (${subSubQuery})`
+  const rasterSelect = `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contour_value_field} from (${subSubQuery})`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
