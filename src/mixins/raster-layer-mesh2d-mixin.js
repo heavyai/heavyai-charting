@@ -188,17 +188,14 @@ export default function rasterLayerMesh2dMixin(_layer) {
   }
 
   function createCrossfilterDimensionProxy(range) {
-    assert(Array.isArray(range))
-    assert(range.length === 2)
     let range_ = [...range]
     return {
       type: "crossfilter_dimension_proxy",
       getFilter: () => [range_],
       filter: new_range => {
-        assert(Array.isArray(new_range))
-        assert(new_range.length === 2)
         range_ = new_range
-      }
+      },
+      dispose: () => {}
     }
   }
 
