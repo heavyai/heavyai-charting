@@ -13,7 +13,8 @@ import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 import {
   buildContourSQL,
   getContourBoundingBox,
-  isContourType
+  isContourType,
+  validateContourState
 } from "../utils/utils-contour"
 
 const polyDefaultScaleColor = "#d6d7d6"
@@ -725,7 +726,8 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const state = _layer.getState()
     const data = state && state.data && state.data.length ? state.data[0] : null
-    if (isContourType(state) && data) {
+    if (isContourType(state)) {
+      validateContourState(state)
       bboxFilter = getContourBoundingBox(data, mapBounds)
     } else {
       const columnExpr = `${state.encoding.geoTable}.${state.encoding.geocol}`

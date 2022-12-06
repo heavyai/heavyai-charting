@@ -166,6 +166,9 @@ export const validateContourState = state => {
       "Minor interval must be a proper divisor of the major interval"
     )
   }
+  if (!data.hasOwnProperty("lat_field") || !data.hasOwnProperty("lon_field")){
+    throw new Error("Latitude and Longitude fields must be provided in data array")
+  }
 }
 
 export const getContourBoundingBox = (data, mapBounds) => {
