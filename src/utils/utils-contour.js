@@ -29,6 +29,94 @@ const buildParamsSQL = (params = {}) =>
     }, [])
     .join(", ")
 
+
+export const buildOptimizedContourSQL = ({
+  state,
+  filterTransforms = [],
+  isPolygons = false
+}) => {
+  if (!isContourType(state)) {
+    throw new Error(
+      "Error generating SQL, attempting to generate contour layer sql for a non contour layer"
+    )
+  }
+  const data = state.data[0]
+  const {
+    table,
+    agg_type = "AVG",
+    fill_agg_type = "AVG",
+    bin_dim_meters = 180,
+    contour_offset = 0.0,
+    neighborhood_fill_radius = 0.0,
+    fill_only_nulls = false,
+    flip_latitude = false,
+    contour_value_field = "z",
+    lat_field = "raster_lat",
+    lon_field = "raster_lon",
+    is_geo_point_type = false,
+    intervals
+  } = data
+
+  const {
+    isMajorFieldName = "is_major",
+    minor: minorInterval,
+    major: majorInterval
+  } = intervals
+
+  const contourParams = {
+    contour_interval: minorInterval,
+    agg_type,
+    fill_agg_type,
+    bin_dim_meters,
+    contour_offset,
+    neighborhood_fill_radius,
+    fill_only_nulls,
+    flip_latitude
+  }
+
+  const validRasterTransforms = filterTransforms.filter(ft => ft && ft.expr)
+  const rasterSelectFilter = validRasterTransforms.length
+    ? `where ${validRasterTransforms.map(ft => ft.expr).join(" AND ")}`
+    : ""
+  const multiplier = Number.parseFloat(1/Math.round(100000.0 * 2.0 / bin_dim_meters)).toFixed(10)
+
+  const subSubQuery = `select
+    cast(${lon_field} / ${multiplier} as int) as lon_int,
+    cast(${lat_field} / ${multiplier} as int) as lat_int,
+    avg(${contour_value_field}) as ${contour_value_field}
+  from
+    ${table}
+    ${rasterSelectFilter}
+  group by lon_int, lat_int
+  `
+
+  const rasterSelect = is_geo_point_type
+    ? `select ST_X(${lon_field}), ST_Y(${lat_field}),  ${contour_value_field} from ${table} ${rasterSelectFilter}`
+    : `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contour_value_field} from (${subSubQuery})`
+
+  // Transform params object into 'param_name' => 'param_value', ... for sql query
+  const contourParamsSQL = buildParamsSQL(contourParams)
+
+  const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
+  const contourLineCase = `CASE mod(cast(contour_values as int), ${majorInterval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
+  const contourTableFunction = isPolygons
+    ? "tf_raster_contour_polygons"
+    : "tf_raster_contour_lines"
+    
+  const sql = `select 
+    ${geometryColumn}, 
+    contour_values${isPolygons ? "" : ","}
+    ${isPolygons ? "" : contourLineCase}
+  from table(
+    ${contourTableFunction}(
+      raster => cursor(${rasterSelect}), ${contourParamsSQL}
+    )
+  )`
+  console.log(sql)
+  return sql
+}
+
+
 export const buildContourSQL = ({
   state,
   filterTransforms = [],
@@ -99,6 +187,9 @@ export const buildContourSQL = ({
       raster => cursor(${rasterSelect}), ${contourParamsSQL}
     )
   )`
+
+  console.log("Old stuff", sql)
+  console.log("Optimized Stuff", buildOptimizedContourSQL({state, filterTransforms, isPolygons}))
   return sql
 }
 
