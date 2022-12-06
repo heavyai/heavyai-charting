@@ -13,6 +13,7 @@ import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import {
   buildContourSQL,
+  getContourBoundingBox,
   getContourMarks,
   getContourScales,
   isContourType,
@@ -340,6 +341,7 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.__genVega = function({
+    chart,
     table,
     filter,
     lastFilteredSize,
@@ -366,6 +368,14 @@ export default function rasterLayerLineMixin(_layer) {
       const filterTransforms = _layer
         .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
         .filter(f => f.type === "filter")
+      const bboxFilter = getContourBoundingBox(
+        state.data[0],
+        chart.map().getBounds()
+      )
+      filterTransforms.push({
+        type: "filter",
+        expr: bboxFilter
+      })
       sql = buildContourSQL({
         state,
         filterTransforms
@@ -495,6 +505,7 @@ export default function rasterLayerLineMixin(_layer) {
     }
 
     _vega = _layer.__genVega({
+      chart,
       layerName,
       table: _layer.crossfilter().getTable()[0],
       filter: _layer.crossfilter().getFilterString(layerName),
