@@ -636,8 +636,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           const scale_idx = _materializedVegaSpec.scales.findIndex(
             scale => scale.name === name
           )
-          assert(scale_idx >= 0)
-          _materializedVegaSpec.scales[scale_idx] = scale_definition
+          if (scale_idx >= 0) {
+            _materializedVegaSpec.scales[scale_idx] = scale_definition
+          }
         })
       }
     }
