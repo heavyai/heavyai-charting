@@ -80,9 +80,11 @@ export const buildOptimizedContourSQL = ({
     : ""
   const multiplier = Number.parseFloat(1/Math.round(100000.0 * 2.0 / bin_dim_meters)).toFixed(10)
 
+  const latFieldParsed = is_geo_point_type ? `ST_Y(${lat_field})` : lat_field
+  const lonFieldParsed = is_geo_point_type ? `ST_X(${lon_field})` : lon_field
   const subSubQuery = `select
-    cast(${lon_field} / ${multiplier} as int) as lon_int,
-    cast(${lat_field} / ${multiplier} as int) as lat_int,
+    cast((${lonFieldParsed}) / ${multiplier} as int) as lon_int,
+    cast((${latFieldParsed}) / ${multiplier} as int) as lat_int,
     avg(${contour_value_field}) as ${contour_value_field}
   from
     ${table}
@@ -91,7 +93,7 @@ export const buildOptimizedContourSQL = ({
   `
 
   const rasterSelect = is_geo_point_type
-    ? `select ST_X(${lon_field}), ST_Y(${lat_field}),  ${contour_value_field} from ${table} ${rasterSelectFilter}`
+    ? `select ${lonFieldParsed}, ${latFieldParsed},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
     : `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contour_value_field} from (${subSubQuery})`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
@@ -188,8 +190,6 @@ export const buildContourSQL = ({
     )
   )`
 
-  console.log("Old stuff", sql)
-  console.log("Optimized Stuff", buildOptimizedContourSQL({state, filterTransforms, isPolygons}))
   return sql
 }
 
