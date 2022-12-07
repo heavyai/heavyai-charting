@@ -12,6 +12,7 @@ import { lastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 import {
   buildContourSQL,
+  buildOptimizedContourSQL,
   getContourBoundingBox,
   isContourType,
   validateContourState
@@ -547,7 +548,7 @@ export default function rasterLayerPolyMixin(_layer) {
           lastFilteredSize
         })
         .filter(f => f.type === "filter")
-      const sql = buildContourSQL({
+      const sql = buildOptimizedContourSQL({
         state,
         filterTransforms,
         isPolygons: true

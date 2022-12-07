@@ -13,6 +13,7 @@ import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import {
   buildContourSQL,
+  buildOptimizedContourSQL,
   getContourBoundingBox,
   getContourMarks,
   getContourScales,
@@ -376,7 +377,7 @@ export default function rasterLayerLineMixin(_layer) {
         type: "filter",
         expr: bboxFilter
       })
-      sql = buildContourSQL({
+      sql = buildOptimizedContourSQL({
         state,
         filterTransforms
       })
