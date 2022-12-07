@@ -29,7 +29,6 @@ const buildParamsSQL = (params = {}) =>
     }, [])
     .join(", ")
 
-
 export const buildOptimizedContourSQL = ({
   state,
   filterTransforms = [],
@@ -78,11 +77,16 @@ export const buildOptimizedContourSQL = ({
   const rasterSelectFilter = validRasterTransforms.length
     ? `where ${validRasterTransforms.map(ft => ft.expr).join(" AND ")}`
     : ""
-  const multiplier = Number.parseFloat(1/Math.round(100000.0 * 2.0 / bin_dim_meters)).toFixed(10)
+
+  const BASE_MULTIPLIER = 100000.0
+  const multiplier = Number.parseFloat(
+    1 / Math.round((BASE_MULTIPLIER * 2.0) / bin_dim_meters)
+  ).toFixed(10)
 
   const latFieldParsed = is_geo_point_type ? `ST_Y(${lat_field})` : lat_field
   const lonFieldParsed = is_geo_point_type ? `ST_X(${lon_field})` : lon_field
-  const subSubQuery = `select
+  // Aggregates rounded lat/lng
+  const groupedQuery = `select
     cast((${lonFieldParsed}) / ${multiplier} as int) as lon_int,
     cast((${latFieldParsed}) / ${multiplier} as int) as lat_int,
     avg(${contour_value_field}) as ${contour_value_field}
@@ -92,7 +96,8 @@ export const buildOptimizedContourSQL = ({
   group by lon_int, lat_int
   `
 
-  const rasterSelect = `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contour_value_field} from (${subSubQuery})`
+  // Converts rounded and grouped lat/lngs back to double values
+  const rasterSelect = `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contour_value_field} from (${groupedQuery})`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
@@ -102,7 +107,7 @@ export const buildOptimizedContourSQL = ({
   const contourTableFunction = isPolygons
     ? "tf_raster_contour_polygons"
     : "tf_raster_contour_lines"
-    
+
   const sql = `select 
     ${geometryColumn}, 
     contour_values${isPolygons ? "" : ","}
@@ -112,10 +117,8 @@ export const buildOptimizedContourSQL = ({
       raster => cursor(${rasterSelect}), ${contourParamsSQL}
     )
   )`
-  console.log(sql)
   return sql
 }
-
 
 export const buildContourSQL = ({
   state,
