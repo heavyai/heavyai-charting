@@ -619,7 +619,8 @@ export default function rasterLayerPolyMixin(_layer) {
         domain: state.encoding.color.domain,
         range: state.encoding.color.range.map(c =>
           adjustOpacity(c, state.encoding.color.opacity)
-        )
+        ),
+        clamp: Boolean(state.encoding.color.clamp)
       })
     } else {
       const { scale, fillColor: polyFillColor } = getPolygonScale({
