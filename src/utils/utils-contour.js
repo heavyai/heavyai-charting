@@ -49,9 +49,9 @@ export const buildOptimizedContourSQL = ({
     neighborhood_fill_radius = 0.0,
     fill_only_nulls = false,
     flip_latitude = false,
-    contour_value_field = "z",
-    lat_field = "raster_lat",
-    lon_field = "raster_lon",
+    contour_value_field,
+    lat_field,
+    lon_field,
     is_geo_point_type = false,
     intervals
   } = data
@@ -86,10 +86,11 @@ export const buildOptimizedContourSQL = ({
   const latFieldParsed = is_geo_point_type ? `ST_Y(${lat_field})` : lat_field
   const lonFieldParsed = is_geo_point_type ? `ST_X(${lon_field})` : lon_field
   // Aggregates rounded lat/lng
+  const contourValueName = "agg_contour_value"
   const groupedQuery = `select
     cast((${lonFieldParsed}) / ${multiplier} as int) as lon_int,
     cast((${latFieldParsed}) / ${multiplier} as int) as lat_int,
-    avg(${contour_value_field}) as ${contour_value_field}
+    avg(${contour_value_field.value}) as ${contourValueName}
   from
     ${table}
     ${rasterSelectFilter}
@@ -97,7 +98,7 @@ export const buildOptimizedContourSQL = ({
   `
 
   // Converts rounded and grouped lat/lngs back to double values
-  const rasterSelect = `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contour_value_field} from (${groupedQuery})`
+  const rasterSelect = `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contourValueName} from (${groupedQuery})`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
@@ -140,7 +141,7 @@ export const buildContourSQL = ({
     neighborhood_fill_radius = 0.0,
     fill_only_nulls = false,
     flip_latitude = false,
-    contour_value_field = "z",
+    contour_value_field,
     lat_field = "raster_lat",
     lon_field = "raster_lon",
     is_geo_point_type = false,
@@ -169,8 +170,8 @@ export const buildContourSQL = ({
     ? `where ${validRasterTransforms.map(ft => ft.expr).join(" AND ")}`
     : ""
   const rasterSelect = is_geo_point_type
-    ? `select ST_X(${lon_field}), ST_Y(${lat_field}),  ${contour_value_field} from ${table} ${rasterSelectFilter}`
-    : `select ${lon_field}, ${lat_field},  ${contour_value_field} from ${table} ${rasterSelectFilter}`
+    ? `select ST_X(${lon_field}), ST_Y(${lat_field}),  ${contour_value_field.value} from ${table} ${rasterSelectFilter}`
+    : `select ${lon_field}, ${lat_field},  ${contour_value_field.value} from ${table} ${rasterSelectFilter}`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
