@@ -224,12 +224,12 @@ function init() {
 
 
   new HeavyConnect.DbCon()
-  .protocol("https")
-  .host("kali.mapd.com")
-  .port("10043")
-  .dbName("mapd")
-  .user("joe.ohallaron")
-  .password("5cKqKXN49FtP")
+    .protocol("https")
+    .host("metis.mapd.com")
+    .port("443")
+    .dbName("mapd")
+    .user("mapd")
+    .password("HyperInteractive")
     .connect((error, con) => {
       HeavyCrossfilter.crossfilter(con, config.table)
         .then((cf) => {
