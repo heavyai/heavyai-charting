@@ -13,9 +13,12 @@ import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import {
   buildContourSQL,
+  buildOptimizedContourSQL,
+  getContourBoundingBox,
   getContourMarks,
   getContourScales,
-  isContourType
+  isContourType,
+  validateContourState
 } from "../utils/utils-contour"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
@@ -339,8 +342,8 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.__genVega = function({
+    chart,
     table,
-    mapBounds,
     filter,
     lastFilteredSize,
     globalFilter,
@@ -350,6 +353,7 @@ export default function rasterLayerLineMixin(_layer) {
   }) {
     const autocolors = usesAutoColors()
     const getStatsLayerName = () => layerName + "_stats"
+    const state = _layer.getState()
 
     const size = getSizing(
       state.encoding.size,
@@ -361,7 +365,22 @@ export default function rasterLayerLineMixin(_layer) {
 
     let sql
     if (isContourType(state)) {
-      sql = buildContourSQL(state.data[0], mapBounds)
+      validateContourState(state)
+      const filterTransforms = _layer
+        .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        .filter(f => f.type === "filter")
+      const bboxFilter = getContourBoundingBox(
+        state.data[0],
+        chart.map().getBounds()
+      )
+      filterTransforms.push({
+        type: "filter",
+        expr: bboxFilter
+      })
+      sql = buildOptimizedContourSQL({
+        state,
+        filterTransforms
+      })
     } else {
       sql = parser.writeSQL({
         type: "root",
@@ -486,30 +505,29 @@ export default function rasterLayerLineMixin(_layer) {
         })
     }
 
-    const mapBounds = chart.map().getBounds()
     _vega = _layer.__genVega({
+      chart,
       layerName,
-      mapBounds,
       table: _layer.crossfilter().getTable()[0],
       filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio(),
-      useProjection: chart._useGeoTypes
+      useProjection: chart.useGeoTypes()
     })
 
     return _vega
   }
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
-    if (chart._useGeoTypes) {
+    if (chart.useGeoTypes()) {
       if (
         state.encoding.geocol &&
         state.transform.groupby &&
         state.transform.groupby.length
       ) {
         popupColsSet.add("sampled_geo")
-      } else {
+      } else if (state.encoding.geocol) {
         popupColsSet.add(state.encoding.geocol)
       }
     }

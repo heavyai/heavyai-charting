@@ -1,14 +1,109 @@
 "use strict"
 
 import * as LatLonUtils from "../../utils/utils-latlon"
-import * as Draw from "@heavyai/draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/draw"
 import simplify from "simplify-js"
 import { logger } from "../../utils/logger"
 import LatLonCircle from "./lasso-shapes/LatLonCircle"
 import LatLonPoly from "./lasso-shapes/LatLonPoly"
+import LatLonPolyLine from "./lasso-shapes/LatLonPolyLine"
+import assert from "assert"
+import {
+  LassoShapeEventConstants,
+  LassoGlobalEventConstants
+} from "./lasso-event-constants"
+import LassoToolSetTypes from "./lasso-tool-set-types"
 
 const { AABox2d, Mat2, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
+const DragEpsilon = 0.1 // this is a screen-space epsilon to validate that drag events are doing something
+// this can be relatively big since we're talking about screen coords
+
+/**
+ * Enum class that defines the different contexts in which a shape handler's destroy() method
+ * might be called. The enum context can be used in ShapeHandler-derived detroy() method to
+ * destroy the appropriate shapes that may have been created by the handler. For example,
+ * temporary shapes may be created while creating a new shape (i.e. a simple circle for each
+ * vertex for visual emphasis). The shape handler may want to only delete the temporary shapes
+ * in its destroy() method and not its primary shape.
+ */
+class DestroyType {
+  // NOTE: the below no-undef disabling is due to the outdated nature of
+  // the babel-eslint package and its apparent inappropriate handling of.
+  // static member variables
+
+  /**
+   * Signifies that the DestroyType is undefined.
+   * @enum
+   */
+  // eslint-disable-next-line no-undef
+  static kUndefined = new DestroyType(0, "unefined")
+
+  /**
+   * Signifies that destroy was called as a result of
+   * the shape handler successfully completing a shape
+   * @enum
+   */
+  // eslint-disable-next-line no-undef
+  static kCompleted = new DestroyType(1, "completed")
+
+  /**
+   * Signifies that destroy was called as a result of
+   * the shape handler creation being cancelled for some
+   * reason
+   * @enum
+   */
+  // eslint-disable-next-line no-undef
+  static kCancelled = new DestroyType(2, "cancelled")
+
+  /**
+   * Signifies that destroy was called as a result of
+   * the shape handler's parent tool control being
+   * deactivated
+   * @enum
+   */
+  // eslint-disable-next-line no-undef
+  static kDeactivated = new DestroyType(3, "deactivated")
+
+  /**
+   * Signifies that destroy was called as the tool being reset
+   * for some reason
+   * @enum
+   */
+  // eslint-disable-next-line no-undef
+  static kReset = new DestroyType(4, "reset")
+
+  /**
+   * Returns true if the destroy type is a cancellable type (i.e. cancelled or reset)
+   * @param {*} destroy_type
+   * @return {Boolean}
+   */
+  static isCancellableDestroyType(destroy_type) {
+    return (
+      destroy_type === DestroyType.kCancelled ||
+      destroy_type === DestroyType.kReset
+    )
+  }
+
+  /**
+   * Constructs a new DestroyType enum. Should only be called to instantiate static
+   * items.
+   * @param {Number} value
+   * @param {String} description
+   */
+  constructor(value, description) {
+    this.value = value
+    this.description_str = description
+  }
+
+  valueOf() {
+    return this.value
+  }
+
+  toString() {
+    return this.description_str
+  }
+}
 
 /* istanbul ignore next */
 class ShapeHandler {
@@ -43,6 +138,23 @@ class ShapeHandler {
       typeof this.chart.useLonLat === "function" && this.chart.useLonLat()
   }
 
+  /**
+   * @returns {LassoToolSetTypes}
+   */
+  getLassoToolType() {
+    assert(
+      false,
+      `${ShapeHandler.name}::getLassoToolType() needs to be overridden by derived class`
+    )
+  }
+
+  fireEvent(event_signal, event_obj = {}) {
+    this.drawEngine.fire(event_signal, {
+      ...event_obj,
+      lasso_tool_type: this.getLassoToolType()
+    })
+  }
+
   disableBasemapEvents(options = {}) {
     this.chart.hidePopup(true)
     this.chart.enableInteractions(false, options)
@@ -53,8 +165,26 @@ class ShapeHandler {
   }
 
   addShape(shape, selectOpts = {}) {
+    shape.registerEvents(Object.values(LassoShapeEventConstants))
     this.drawEngine.addShape(shape, selectOpts)
     this.drawEngine.moveShapeToTop(shape)
+
+    // now tag the shape to the originating tool, which may be useful
+    // for callback handlers to know
+    shape.lasso_tool_type = this.getLassoToolType()
+  }
+
+  /**
+   * Tags whether this particular shape is a filterable shape or not
+   * If it is a filterable shape, the shape will be registered with
+   * the parent chart in order to generate a SQL filter expression.
+   * If false, the shape will not be registered as a filter with the
+   * chart and therefore will not be used to generate a SQL filter
+   * expression.
+   * @returns {Boolean}
+   */
+  isFilterableShape() {
+    return true
   }
 
   setupFinalShape(shape, selectOpts = {}) {
@@ -64,6 +194,10 @@ class ShapeHandler {
     // handler is only run when all the button are deactivated,
     // so need to deactivate the button first, and the select
     // the new shape
+
+    // destroying other, temp shapes first, then notifying
+    // the stop event later
+    this.destroy(DestroyType.kCompleted)
     this.buttonGroup.deactivateButton(this.buttonId)
     if (this.drawEngine.hasShape(shape)) {
       this.drawEngine.selectShape(shape)
@@ -71,10 +205,21 @@ class ShapeHandler {
       this.drawEngine.addShape(shape, selectOpts, true)
       this.drawEngine.moveShapeToTop(shape)
     }
-    this.chart.addFilterShape(shape)
+
+    if (this.isFilterableShape()) {
+      this.chart.addFilterShape(shape)
+    }
+
+    this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_CREATE, {
+      shape
+    })
+
+    this.notifyDrawStop(DestroyType.kCompleted)
+
     this.canvas.focus()
   }
 
+  /* eslint-disable no-unused-vars, no-empty-function */
   mousedownCB(event) {}
   mouseupCB(event) {}
   mousemoveCB(event) {}
@@ -82,6 +227,7 @@ class ShapeHandler {
   clickCB(event) {}
   dblclickCB(event) {}
   keydownCB(event) {}
+  /* eslint-enable no-unused-vars, no-empty-function */
 
   isMouseEventInCanvas(mouseEvent) {
     const width = this.canvas.offsetWidth
@@ -95,8 +241,6 @@ class ShapeHandler {
   }
 
   getRelativeMousePosFromEvent(mouseEvent) {
-    const width = this.canvas.offsetWidth
-    const height = this.canvas.offsetHeight
     const rect = this.canvas.getBoundingClientRect()
 
     const diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft
@@ -122,12 +266,16 @@ class ShapeHandler {
       this.canvas.focus()
 
       this.active = true
+
+      this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_TYPE_ACTIVATED)
     }
   }
 
   deactivate() {
     if (this.active) {
-      this.destroy()
+      if (this.destroy(DestroyType.kDeactivated)) {
+        this.notifyDrawStop(DestroyType.kDeactivated)
+      }
       document.removeEventListener("mousedown", this.mousedownCB)
       document.removeEventListener("mouseup", this.mouseupCB)
       document.removeEventListener("mousemove", this.mousemoveCB)
@@ -139,12 +287,52 @@ class ShapeHandler {
       this.canvas.blur()
 
       this.active = false
+
+      this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_TYPE_DEACTIVATED)
+    }
+  }
+
+  /**
+   * Called under various contexts to destroy either temporary shapes that might have
+   * been created during the shape draw and optionally destroy the primary shape that
+   * may have been drawn
+   * @param {DestroyType} destroy_type Enum describing the context under which destroy()
+   *                                   was called.
+   */
+  // eslint-disable-next-line no-unused-vars
+  destroy(destroy_type) {
+    assert(
+      false,
+      `${ShapeHandler.name}::destroy() needs to be overridden by derived class`
+    )
+  }
+
+  /**
+   * Called to fire a tool-create-ended event signal, using a destroy type to provide
+   * some extra metadata as to why the draw stopped.
+   * @param {DestroyType} destroy_type Enum describing the context under why the draw stopped
+   */
+  notifyDrawStop(destroy_type) {
+    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_ENDED, {
+      ended_reason: destroy_type.toString()
+    })
+  }
+
+  /**
+   * Should be called when a shape draw is cancelled for some reason
+   */
+  cancelDraw() {
+    if (this.destroy(DestroyType.kCancelled)) {
+      this.notifyDrawStop(DestroyType.kCancelled)
     }
   }
 }
 
 /* istanbul ignore next */
 class CircleShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kCircle
+
   constructor(
     parent,
     drawEngine,
@@ -170,6 +358,10 @@ class CircleShapeHandler extends ShapeHandler {
     }
     this.activeshape = null
     this.timer = null
+  }
+
+  getLassoToolType() {
+    return CircleShapeHandler.lasso_tool_type
   }
 
   deactivateShape() {
@@ -208,20 +400,32 @@ class CircleShapeHandler extends ShapeHandler {
           shape.radius = Math.min(projDims[0], projDims[1])
         }
       }
-      // need to unset the active shape here first
-      // before calling setupFinalShape, because
-      // inside that call it's going to call destroy()
-      this.activeShape = null
       shape.setStyle(this.defaultStyle)
       this.setupFinalShape(shape)
     }
   }
 
-  destroy() {
-    if (this.activeShape) {
-      this.drawEngine.deleteShape(this.activeShape)
-      this.activeShape = null
+  /**
+   * Called under various contexts to destroy either temporary shapes that might have
+   * been created during the shape draw and optionally destroy the primary shape that
+   * may have been drawn
+   * @param {DestroyType} destroy_type Enum describing the context under which destroy()
+   *                                   was called.
+   * @returns {Boolean} returrns true if one or more shapes were deleted as part of the destroy
+   */
+  destroy(destroy_type) {
+    let is_shape_deleted = false
+    if (DestroyType.isCancellableDestroyType(destroy_type)) {
+      if (this.activeShape) {
+        this.drawEngine.deleteShape(this.activeShape)
+        this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+          shape: this.activeShape
+        })
+        this.activeShape = null
+        is_shape_deleted = true
+      }
     }
+    return is_shape_deleted
   }
 
   mousedownCB(event) {
@@ -269,11 +473,12 @@ class CircleShapeHandler extends ShapeHandler {
     }
     this.canvas.focus()
     this.addShape(this.activeShape, selectOpts)
+    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
     event.stopImmediatePropagation()
     event.preventDefault()
   }
 
-  mouseupCB(event) {
+  mouseupCB() {
     this.deactivateShape()
   }
 
@@ -304,7 +509,7 @@ class CircleShapeHandler extends ShapeHandler {
     }
   }
 
-  clickCB(event) {
+  clickCB() {
     this.deactivateShape()
   }
 
@@ -314,7 +519,7 @@ class CircleShapeHandler extends ShapeHandler {
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
-      this.destroy()
+      this.cancelDraw()
       this.enableBasemapEvents()
     }
   }
@@ -322,6 +527,9 @@ class CircleShapeHandler extends ShapeHandler {
 
 /* istanbul ignore next */
 class PolylineShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kPolyLine
+
   constructor(
     parent,
     drawEngine,
@@ -344,6 +552,7 @@ class PolylineShapeHandler extends ShapeHandler {
     this.startVert = null
     this.lastVert = null
     this.lineShape = null
+    this.polyShape = null
     this.prevVertPos = null
     this.activeIdx = -1
     this.startPosAABox = AABox2d.create()
@@ -356,20 +565,53 @@ class PolylineShapeHandler extends ShapeHandler {
     }, 100)
   }
 
-  destroy() {
+  getLassoToolType() {
+    return PolylineShapeHandler.lasso_tool_type
+  }
+
+  /**
+   * Called under various contexts to destroy either temporary shapes that might have
+   * been created during the shape draw and optionally destroy the primary shape that
+   * may have been drawn
+   * @param {DestroyType} destroy_type Enum describing the context under which destroy()
+   *                                   was called.
+   * @returns {Boolean} returns true if one or more shapes were deleted as part of the destroy
+   */
+  destroy(destroy_type) {
+    let is_shape_deleted = false
     if (this.startVert) {
       this.drawEngine.deleteShape(this.startVert)
+      this.startVert = null
+      is_shape_deleted = true
     }
     if (this.lastVert) {
       this.drawEngine.deleteShape(this.lastVert)
+      this.lastVert = null
+      is_shape_deleted = true
     }
     if (this.lineShape) {
       this.drawEngine.deleteShape(this.lineShape)
+      this.lineShape = null
+      is_shape_deleted = true
     }
 
-    this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = null
+    if (DestroyType.isCancellableDestroyType(destroy_type)) {
+      if (this.polyShape) {
+        this.drawEngine.deleteShape(this.polyShape)
+        this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+          shape: this.polyShape
+        })
+        this.polyShape = null
+        is_shape_deleted = true
+      }
+    }
+
     AABox2d.initEmpty(this.startPosAABox)
+    this.prevVertPos = null
+    this.activeShape = null
     this.activeIdx = -1
+
+    return is_shape_deleted
   }
 
   appendVertex(mousepos, mouseworldpos) {
@@ -416,13 +658,11 @@ class PolylineShapeHandler extends ShapeHandler {
           this.defaultStyle
         )
       )
-      const poly = new PolyClass(...args)
-      this.setupFinalShape(poly)
 
-      // clear out all other shapes using our destroy method
-      this.destroy()
+      this.polyShape = new PolyClass(...args)
+      this.setupFinalShape(this.polyShape)
     } else {
-      this.destroy()
+      this.cancelDraw()
       this.enableBasemapEvents()
     }
   }
@@ -463,6 +703,8 @@ class PolylineShapeHandler extends ShapeHandler {
         this.activeShape = this.startVert
         this.prevVertPos = mousepos
         this.activeIdx = 0
+
+        this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
       } else if (!this.lastVert && this.lineShape.numVerts > 1) {
         const verts = this.lineShape.vertsRef
         this.lastVert = new Draw.Point({
@@ -572,7 +814,7 @@ class PolylineShapeHandler extends ShapeHandler {
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
-      this.destroy()
+      this.cancelDraw()
       this.enableBasemapEvents()
     } else if (
       event.key === "Enter" ||
@@ -587,6 +829,9 @@ class PolylineShapeHandler extends ShapeHandler {
 
 /* istanbul ignore next */
 class LassoShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kLasso
+
   constructor(
     parent,
     drawEngine,
@@ -606,16 +851,44 @@ class LassoShapeHandler extends ShapeHandler {
       defaultSelectStyle
     )
     this.activeShape = null
+    this.polyShape = null
     this.lastPos = null
     this.lastWorldPos = null
   }
 
-  destroy() {
+  getLassoToolType() {
+    return LassoShapeHandler.lasso_tool_type
+  }
+
+  /**
+   * Called under various contexts to destroy either temporary shapes that might have
+   * been created during the shape draw and optionally destroy the primary shape that
+   * may have been drawn
+   * @param {DestroyType} destroy_type Enum describing the context under which destroy()
+   *                                   was called.
+   * @returns {Boolean} returns true if one or more shapes were deleted as a result of the destroy call
+   */
+  destroy(destroy_type) {
+    let is_shape_deleted = false
     if (this.activeShape) {
       this.drawEngine.deleteShape(this.activeShape)
       this.activeShape = null
+      is_shape_deleted = true
     }
+
+    if (DestroyType.isCancellableDestroyType(destroy_type)) {
+      if (this.polyShape) {
+        this.drawEngine.deleteShape(this.polyShape)
+        this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+          shape: this.polyShape
+        })
+        this.polyShape = null
+        is_shape_deleted = true
+      }
+    }
+
     this.lastPos = this.lastWorldPos = null
+    return is_shape_deleted
   }
 
   mousedownCB(event) {
@@ -628,16 +901,14 @@ class LassoShapeHandler extends ShapeHandler {
     this.lastPos = this.getRelativeMousePosFromEvent(event)
     this.lastWorldPos = Point2d.create(0, 0)
     this.drawEngine.project(this.lastWorldPos, this.lastPos)
+    this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
     event.preventDefault()
   }
 
   mousemoveCB(event) {
     if (!this.isMouseEventInCanvas(event)) {
       if (this.activeShape) {
-        this.drawEngine.deleteShape(this.activeShape)
-        this.activeShape = null
-        this.lastPos = null
-        this.lastWorldPos = null
+        this.cancelDraw()
         this.enableBasemapEvents()
       }
       return
@@ -692,8 +963,9 @@ class LassoShapeHandler extends ShapeHandler {
         logger.warn(
           "The resulting lasso shape is a point or a straight line. Cannot build a polygon from it. Please try again"
         )
-        this.drawEngine.deleteShape(this.activeShape)
-        this.activeShape = null
+        if (this.destroy(DestroyType.kReset)) {
+          this.notifyDrawStop(DestroyType.kReset)
+        }
       } else {
         const args = []
         let PolyClass = null
@@ -711,9 +983,8 @@ class LassoShapeHandler extends ShapeHandler {
             this.defaultStyle
           )
         )
-        const poly = new PolyClass(...args)
-        this.drawEngine.deleteShape(this.activeShape)
-        this.setupFinalShape(poly)
+        this.polyShape = new PolyClass(...args)
+        this.setupFinalShape(this.polyShape)
         event.preventDefault()
       }
     }
@@ -727,8 +998,261 @@ class LassoShapeHandler extends ShapeHandler {
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
-      this.destroy()
+      this.cancelDraw()
       this.enableBasemapEvents()
+    }
+  }
+}
+
+class CrossSectionLineShapeHandler extends ShapeHandler {
+  // eslint-disable-next-line no-undef
+  static lasso_tool_type = LassoToolSetTypes.kCrossSection
+
+  constructor(
+    parent,
+    drawEngine,
+    chart,
+    buttonGroup,
+    buttonId,
+    defaultStyle,
+    defaultSelectStyle
+  ) {
+    super(
+      parent,
+      drawEngine,
+      chart,
+      buttonGroup,
+      buttonId,
+      defaultStyle,
+      defaultSelectStyle
+    )
+    this.activeShape = null
+    this.startVert = null
+    this.lastVert = null
+    this.lineShape = null
+    this.prevVertPos = null
+    this.startPosAABox = AABox2d.create()
+    this.timer = null
+
+    this.enableBasemapDebounceFunc = chart.debounce(() => {
+      if (this.active) {
+        this.enableBasemapEvents()
+      }
+    }, 100)
+  }
+
+  getLassoToolType() {
+    return CrossSectionLineShapeHandler.lasso_tool_type
+  }
+
+  /**
+   * Called under various contexts to destroy either temporary shapes that might have
+   * been created during the shape draw and optionally destroy the primary shape that
+   * may have been drawn
+   * @param {DestroyType} destroy_type Enum describing the context under which destroy()
+   *                                   was called.
+   * @returns {Boolean} returns true if one or more shapes were deleted as part of the destroy
+   */
+  destroy(destroy_type) {
+    let is_shape_deleted = false
+    if (this.startVert) {
+      this.drawEngine.deleteShape(this.startVert)
+      this.startVert = null
+      is_shape_deleted = true
+    }
+    if (this.lastVert) {
+      this.drawEngine.deleteShape(this.lastVert)
+      this.lastVert = null
+      is_shape_deleted = true
+    }
+
+    if (DestroyType.isCancellableDestroyType(destroy_type)) {
+      if (this.lineShape) {
+        this.drawEngine.deleteShape(this.lineShape)
+        this.fireEvent(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+          shape: this.lineShape
+        })
+        this.lineShape = null
+        is_shape_deleted = true
+      }
+    }
+
+    this.activeShape = null
+    this.prevVertPos = null
+    AABox2d.initEmpty(this.startPosAABox)
+
+    return is_shape_deleted
+  }
+
+  isFilterableShape() {
+    // by default, the cross section line shape will not generate any filters.
+    // It is only used to generate a line to be used as an input to a
+    // cross-section generation function
+    return false
+  }
+
+  appendVertex(mousepos, mouseworldpos) {
+    if (this.lineShape) {
+      if (
+        !this.prevVertPos ||
+        Math.abs(mousepos[0] - this.prevVertPos[0]) > 2 ||
+        Math.abs(mousepos[1] - this.prevVertPos[1]) > 2
+      ) {
+        this.prevVertPos = mousepos
+        this.lineShape.appendVert(mouseworldpos)
+      }
+    }
+  }
+
+  finishShape() {
+    if (this.lineShape.numVerts > 1) {
+      this.lineShape.setStyle(this.defaultStyle)
+      // tag the line shape as finished useful for
+      // logic elsewhere
+      this.lineShape.is_create_finished = true
+      this.setupFinalShape(this.lineShape)
+    } else {
+      this.cancelDraw()
+      this.enableBasemapEvents()
+    }
+  }
+
+  mousedownCB(event) {
+    if (!this.isMouseEventInCanvas(event)) {
+      this.timer = null
+      return
+    }
+
+    this.timer = performance.now()
+  }
+
+  mouseupCB(event) {
+    if (this.timer && performance.now() - this.timer < 500) {
+      this.disableBasemapEvents()
+
+      let shapeBuilt = false
+      const mousepos = this.getRelativeMousePosFromEvent(event)
+      const mouseworldpos = Point2d.create(0, 0)
+      this.drawEngine.project(mouseworldpos, mousepos)
+
+      if (!this.startVert) {
+        // fire tool start event signal. This should be done
+        // before the destroy below to allow users the ability
+        // to check whether a shape-destroy signal is the result
+        // of a new shape create, if they need that level of control
+        this.fireEvent(LassoGlobalEventConstants.LASSO_TOOL_DRAW_STARTED)
+
+        // call destroy to clear out any previously existing
+        // lines as there can only be one cross-section line
+        // at a time.
+        // NOTE: not firing a LASSO_TOOL_DRAW_ENDED event signal here
+        this.destroy(DestroyType.kReset)
+
+        const args = []
+        let PolyLineClass = null
+        if (this.useLonLat) {
+          PolyLineClass = LatLonPolyLine
+          args.push(this.drawEngine)
+        } else {
+          PolyLineClass = Draw.PolyLine
+        }
+        args.push(
+          Object.assign(
+            {
+              verts: [mouseworldpos]
+            },
+            this.defaultSelectStyle
+          )
+        )
+        this.lineShape = new PolyLineClass(...args)
+        // add a tag to the lineShape to determine if it is complete
+        // or incomplete (still being created)
+        // This will be set to true in the finishShape() method
+        this.lineShape.is_create_finished = false
+
+        this.addShape(this.lineShape)
+        this.startVert = new Draw.Point({
+          position: mouseworldpos,
+          size: 5
+        })
+        this.addShape(this.startVert)
+        this.activeShape = this.startVert
+        this.prevVertPos = mousepos
+      } else {
+        const startpos = this.startVert.getPosition()
+        this.drawEngine.unproject(startpos, startpos)
+        AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10])
+        if (!AABox2d.containsPt(this.startPosAABox, mousepos)) {
+          this.finishShape()
+          shapeBuilt = true
+        }
+      }
+
+      if (!shapeBuilt) {
+        this.enableBasemapDebounceFunc()
+        this.canvas.focus()
+        this.activeShape = null
+      }
+      event.preventDefault()
+    }
+  }
+
+  mousemoveCB(event) {
+    if (this.lineShape && !this.lineShape.is_create_finished) {
+      if (this.lineShape.numVerts === 1) {
+        const mousepos = this.getRelativeMousePosFromEvent(event)
+        const mouseworldpos = Point2d.create(0, 0)
+        this.drawEngine.project(mouseworldpos, mousepos)
+        this.activeIdx = this.appendVertex(mousepos, mouseworldpos)
+      } else {
+        const mousepos = this.getRelativeMousePosFromEvent(event)
+        const mouseworldpos = Point2d.create(0, 0)
+        this.drawEngine.project(mouseworldpos, mousepos)
+
+        if (event.shiftKey) {
+          const diff = Vec2d.create()
+          const prevmousepos = Point2d.create()
+          const verts = this.lineShape.vertsRef
+          this.drawEngine.unproject(prevmousepos, verts[0])
+          Point2d.sub(diff, mousepos, prevmousepos)
+          let angle = Math.atan2(diff[1], diff[0])
+          angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
+          const transformDir = [Math.cos(angle), Math.sin(angle)]
+          Vec2d.scale(diff, transformDir, Vec2d.dot(diff, transformDir))
+          Point2d.addVec2(mousepos, prevmousepos, diff)
+          this.drawEngine.project(mouseworldpos, mousepos)
+        }
+
+        this.lineShape.setVertPosition(1, mouseworldpos)
+        this.canvas.focus()
+        event.preventDefault()
+      }
+    }
+  }
+
+  dblclickCB(event) {
+    if (!this.isMouseEventInCanvas(event)) {
+      return
+    }
+
+    this.finishShape()
+  }
+
+  keydownCB(event) {
+    if (
+      event.key === "Escape" ||
+      event.code === "Escape" ||
+      event.keyCode === 27
+    ) {
+      this.cancelDraw()
+      this.enableBasemapEvents()
+    } else if (
+      event.key === "Enter" ||
+      event.code === "Enter" ||
+      event.code === "NumpadEnter" ||
+      event.keyCode === 13
+    ) {
+      this.finishShape()
     }
   }
 }
@@ -740,7 +1264,8 @@ export default class LassoButtonGroupController {
     parentChart,
     parentDrawEngine,
     defaultStyle,
-    defaultSelectStyle
+    defaultSelectStyle,
+    lassoToolSetTypes = LassoToolSetTypes.kStandard
   ) {
     this._container = parentContainer
     this._chart = parentChart
@@ -749,11 +1274,15 @@ export default class LassoButtonGroupController {
     this._activeButton = null
     this._activeShape = null
 
+    this._drawEngine.registerEvents(Object.values(LassoGlobalEventConstants))
+
     this._selectionchangedCB = this._selectionchangedCB.bind(this)
     this._dragbeginCB = this._dragbeginCB.bind(this)
     this._dragendCB = this._dragendCB.bind(this)
     this._keyboardCB = this._keyboardCB.bind(this)
-    this._initControls(defaultStyle, defaultSelectStyle)
+
+    this._handlers = []
+    this._initControls(defaultStyle, defaultSelectStyle, lassoToolSetTypes)
   }
 
   destroy() {
@@ -761,9 +1290,7 @@ export default class LassoButtonGroupController {
       const canvas = this._drawEngine.getCanvas()
       canvas.removeEventListener("keydown", this._keyboardCB)
 
-      this._circleHandler.deactivate()
-      this._polylineHandler.deactivate()
-      this._lassoHandler.deactivate()
+      this._handlers.forEach(handler => handler.deactivate())
 
       this._drawEngine.off(
         Draw.ShapeBuilder.EventConstants.DRAG_END,
@@ -948,20 +1475,55 @@ export default class LassoButtonGroupController {
     }
   }
 
-  _dragbeginCB(event) {
+  _dragbeginCB(event_obj) {
     if (!this._activeShape && !this._activeButton) {
       const canvas = this._drawEngine.getCanvas()
       canvas.focus()
     }
+
+    this._drag_start_pt = event_obj.dragInfo.currentPos
+
+    // fire a global shape edits begin event for all shapes
+    this._drawEngine.fire(
+      LassoGlobalEventConstants.LASSO_SHAPE_EDITS_BEGIN,
+      event_obj
+    )
+
+    // as well as fire a shape-local edit event
+    event_obj.shapes.forEach(shape => {
+      shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_BEGIN)
+    })
   }
 
   _dragendCB(event) {
+    const context = this
+
+    const fire_drag_event =
+      context._drag_start_pt &&
+      Point2d.squaredDistance(
+        context._drag_start_pt,
+        event.dragInfo.currentPos
+      ) > DragEpsilon
+
+    if (fire_drag_event) {
+      // fire a global shape edits end event for all shapes
+      this._drawEngine.fire(
+        LassoGlobalEventConstants.LASSO_SHAPE_EDITS_END,
+        event
+      )
+    }
+
     event.shapes.forEach(shape => {
       if (shape instanceof LatLonCircle) {
         // need to reset the inital radius of the latlon circle
         // so that any rescaling is done relative to this
         // new radius
         shape.resetInitialRadius()
+      }
+
+      if (fire_drag_event) {
+        // fire a shape local edit end event for each specific shape
+        shape.fire(LassoShapeEventConstants.LASSO_SHAPE_EDIT_END)
       }
     })
   }
@@ -978,13 +1540,16 @@ export default class LassoButtonGroupController {
         this._drawEngine.deleteSelectedShapes()
         selectedShapes.forEach(shape => {
           this._chart.deleteFilterShape(shape)
+          this._drawEngine.fire(LassoGlobalEventConstants.LASSO_SHAPE_DESTROY, {
+            shape
+          })
         })
       }
       event.preventDefault()
     }
   }
 
-  _initControls(defaultStyle, defaultSelectStyle) {
+  _initControls(defaultStyle, defaultSelectStyle, lassoToolSetTypes) {
     let margins = null
     if (typeof this._chart.margins === "function") {
       margins = this._chart.margins()
@@ -1024,24 +1589,32 @@ export default class LassoButtonGroupController {
       this._dragendCB
     )
 
-    this._circleHandler = this._createButtonControl(
-      "circle",
-      CircleShapeHandler,
-      defaultStyle,
-      defaultSelectStyle
-    )
-    this._polylineHandler = this._createButtonControl(
-      "polyline",
-      PolylineShapeHandler,
-      defaultStyle,
-      defaultSelectStyle
-    )
-    this._lassoHandler = this._createButtonControl(
-      "lasso",
-      LassoShapeHandler,
-      defaultStyle,
-      defaultSelectStyle
-    )
+    const context = this
+    const add_handler = (handler_id_string, handler_class) => {
+      context._handlers.push(
+        context._createButtonControl(
+          handler_id_string,
+          handler_class,
+          defaultStyle,
+          defaultSelectStyle
+        )
+      )
+    }
+
+    const available_lasso_tools = {
+      circle: CircleShapeHandler,
+      polyline: PolylineShapeHandler,
+      lasso: LassoShapeHandler,
+      CrossSection: CrossSectionLineShapeHandler
+    }
+
+    for (const [lasso_tool_name, lasso_tool_class] of Object.entries(
+      available_lasso_tools
+    )) {
+      if (lassoToolSetTypes & lasso_tool_class.lasso_tool_type) {
+        add_handler(lasso_tool_name, lasso_tool_class)
+      }
+    }
 
     // NOTE: the canvas dom element needs to have a "tabindex" set to have
     // focusability, and best to have "outline: none" as part

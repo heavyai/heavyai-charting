@@ -1,6 +1,6 @@
 import d3 from "d3"
 import wellknown from "wellknown"
-import { AABox2d, Point2d, PolyLine } from "@heavyai/draw/dist/mapd-draw"
+import { AABox2d, Point2d, PolyLine } from "@heavyai/draw/dist/draw"
 export function notNull(value) {
   return value != null /* double-equals also catches undefined */
 }
@@ -507,7 +507,7 @@ export function __displayPopup(svgProps) {
   const layerType = _layer.layerType()
 
   let geoPathFormatter = null
-  if (chart._useGeoTypes) {
+  if (chart.useGeoTypes()) {
     if (!state.encoding.geocol) {
       throw new Error(
         "No poly/multipolygon column specified. Cannot build poly outline popup."
@@ -521,7 +521,7 @@ export function __displayPopup(svgProps) {
         ? "sampled_geo"
         : state.encoding.geocol
     geoPathFormatter = new GeoSvgFormatter(geoCol)
-  } else if (!chart._useGeoTypes && layerType === "polys") {
+  } else if (!chart.useGeoTypes() && layerType === "polys") {
     geoPathFormatter = new LegacyPolySvgFormatter()
   } else {
     throw new Error("Cannot build outline popup.")

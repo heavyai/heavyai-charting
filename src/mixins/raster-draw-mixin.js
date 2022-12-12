@@ -1,10 +1,12 @@
 import * as LatLonUtils from "../utils/utils-latlon"
 import LassoButtonGroupController from "./ui/lasso-tool-ui"
 import * as _ from "lodash"
-import * as Draw from "@heavyai/draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/draw"
 import { redrawAllAsync } from "../core/core-async"
 import LatLonCircle from "./ui/lasso-shapes/LatLonCircle"
 import LatLonPoly from "./ui/lasso-shapes/LatLonPoly"
+import LatLonPolyLine from "./ui/lasso-shapes/LatLonPolyLine"
+import LassoToolSetTypes from "./ui/lasso-tool-set-types"
 
 /** Configure HeavyAI Draw */
 Draw.Configure.setMatrixArrayType(Float64Array)
@@ -476,6 +478,20 @@ export function rasterDrawMixin(chart) {
         }
         args.push(filterArg)
         newShape = new PolyClass(...args)
+      } else if (
+        filterArg.type === "LatLonPolyLine" ||
+        filterArg.type === "PolyLine"
+      ) {
+        const args = []
+        let PolyClass = null
+        if (useLonLat) {
+          PolyClass = LatLonPolyLine
+          args.push(drawEngine)
+        } else {
+          PolyClass = Draw.PolyLine
+        }
+        args.push(filterArg)
+        newShape = new PolyClass(...args)
       } else if (typeof Draw[filterArg.type] !== "undefined") {
         newShape = new Draw[filterArg.type](filterArg)
       } else {
@@ -496,8 +512,10 @@ export function rasterDrawMixin(chart) {
     }
   }
 
-  chart.addDrawControl = () => {
+  chart.addDrawControl = (lassoToolSetTypes = LassoToolSetTypes.kStandard) => {
     if (drawEngine) {
+      // TODO(croot): if the requested tool set types are different,
+      // should we update the button group controller here?
       return chart
     }
 
@@ -546,7 +564,8 @@ export function rasterDrawMixin(chart) {
       chart,
       drawEngine,
       defaultStyle,
-      defaultSelectStyle
+      defaultSelectStyle,
+      lassoToolSetTypes
     )
 
     function updateDraw() {
@@ -652,6 +671,12 @@ export function rasterDrawMixin(chart) {
     }
 
     return chart
+  }
+
+  chart.onDrawEvent = (event, callback) => {
+    if (drawEngine) {
+      drawEngine.on(event, callback)
+    }
   }
 
   chart.coordFilter = filter => {

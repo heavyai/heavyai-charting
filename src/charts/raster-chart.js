@@ -83,7 +83,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   let _xLatLngBnds = null
   let _yLatLngBnds = null
-  const _useGeoTypes = false
+  let _useGeoTypes = false
 
   let _usePixelRatio = false
   let _pixelRatio = 1
@@ -168,6 +168,32 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart._resetLayers = function() {
     _layers = []
     _layerNames = {}
+  }
+
+  _chart.removeLayer = function(layerName) {
+    const layer = _layerNames[layerName]
+    if (
+      layer &&
+      layer.destroyLayer &&
+      typeof layer.destroyLayer === "function"
+    ) {
+      layer.destroyLayer(_chart)
+    }
+    delete _layerNames[layerName]
+    _layers = _layers.filter(name => layerName !== name)
+    return layer
+  }
+
+  _chart.unshiftLayer = function(layerName, layer) {
+    if (_layerNames[layerName]) {
+      return
+    } else if (!layerName.match(/^\w+$/)) {
+      throw new Error(
+        "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
+      )
+    }
+    _layers.unshift(layerName)
+    _layerNames[layerName] = layer
   }
 
   _chart.pushLayer = function(layerName, layer) {
@@ -305,7 +331,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   }
 
   _chart.useGeoTypes = function(geoTypesEnabled) {
-    _chart._useGeoTypes = geoTypesEnabled
+    if (!arguments.length) {
+      return _useGeoTypes
+    }
+    _useGeoTypes = Boolean(geoTypesEnabled)
     return _chart
   }
 
@@ -462,7 +491,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     // if _chart.useLonLat() is not true, the chart bounds have already been projected into mercator space
     // TODO(adb): could probably collape this into line 353
     if (
-      _chart._useGeoTypes &&
+      _useGeoTypes &&
       typeof _chart.useLonLat === "function" &&
       _chart.useLonLat()
     ) {
@@ -607,8 +636,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           const scale_idx = _materializedVegaSpec.scales.findIndex(
             scale => scale.name === name
           )
-          assert(scale_idx >= 0)
-          _materializedVegaSpec.scales[scale_idx] = scale_definition
+          if (scale_idx >= 0) {
+            _materializedVegaSpec.scales[scale_idx] = scale_definition
+          }
         })
       }
     }
@@ -667,18 +697,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     callback,
     fetchEvenIfEmpty = false
   ) {
+    if (!point) {
+      return
+    }
+
     const height =
       typeof _chart.effectiveHeight === "function"
         ? _chart.effectiveHeight()
         : _chart.height()
     const pixelRatio = _chart._getPixelRatio() || 1
-    const pixel = new TPixel({
+    const pixel = {
       x: Math.round(point.x * pixelRatio),
       y: Math.round((height - point.y) * pixelRatio)
-    })
-
-    if (!point) {
-      return
     }
 
     let cnt = 0
@@ -868,9 +898,10 @@ function genLayeredVega(chart) {
 
   // NOTE(adb): When geo types are enabled, vega spatial projections are applied and the scales for the x and y properties are not being used. However, we still need the legacy scaling terms to properly size poly popups on hover, which is why _xLatLngBnds, etc are separate scales
   const projections = []
-  if (chart._useGeoTypes) {
+  const projection_name = "mercator_map_projection"
+  if (chart.useGeoTypes()) {
     projections.push({
-      name: "mercator_map_projection",
+      name: projection_name,
       type: "mercator",
       bounds: {
         x: chart.xLatLngBnds(),
@@ -881,7 +912,21 @@ function genLayeredVega(chart) {
   const marks = []
 
   chart.getLayerNames().forEach(layerName => {
-    const layerVega = chart.getLayer(layerName).genVega(chart, layerName)
+    const raster_layer = chart.getLayer(layerName)
+    const layerVega = raster_layer.genVega(chart, layerName)
+
+    if (
+      projections.length === 1 &&
+      typeof raster_layer.useProjection === "function" &&
+      raster_layer.useProjection()
+    ) {
+      layerVega.marks.forEach(mark_json => {
+        mark_json.transform = {
+          projection: projection_name,
+          ...mark_json.transform
+        }
+      })
+    }
 
     data.push(...layerVega.data)
     scales.push(...layerVega.scales)
