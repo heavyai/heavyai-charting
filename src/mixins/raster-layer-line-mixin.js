@@ -12,7 +12,6 @@ import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import {
-  buildContourSQL,
   buildOptimizedContourSQL,
   getContourBoundingBox,
   getContourMarks,

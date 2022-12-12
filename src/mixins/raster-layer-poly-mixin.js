@@ -11,7 +11,6 @@ import { parser } from "../utils/utils"
 import { lastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 import {
-  buildContourSQL,
   buildOptimizedContourSQL,
   getContourBoundingBox,
   isContourType,
