@@ -1,4 +1,6 @@
 import * as HeavyConnect from "@heavyai/connector"
+import * as HeavyCrossfilter from "@heavyai/crossfilter"
+import * as HeavyCharting from "../src/index.js"
 
 function createCharts(crossFilter, dc, config, con) {
   const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
@@ -223,15 +225,15 @@ function init() {
 
   new HeavyConnect.DbCon()
   .protocol("https")
-  .host("metis.mapd.com")
-  .port("443")
+  .host("kali.mapd.com")
+  .port("10043")
   .dbName("mapd")
-  .user("mapd")
-  .password("HyperInteractive")
+  .user("joe.ohallaron")
+  .password("5cKqKXN49FtP")
     .connect((error, con) => {
-      crossfilter.crossfilter(con, config.table)
+      HeavyCrossfilter.crossfilter(con, config.table)
         .then((cf) => {
-          createCharts(cf, dc, config, con)
+          createCharts(cf, HeavyCharting, config, con)
         })
       ;
     });
