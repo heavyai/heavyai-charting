@@ -90,7 +90,7 @@ export const buildOptimizedContourSQL = ({
   const groupedQuery = `select
     cast((${lonFieldParsed}) / ${multiplier} as int) as lon_int,
     cast((${latFieldParsed}) / ${multiplier} as int) as lat_int,
-    avg(${contour_value_field}) as ${contourValueName}
+    ${agg_type}(${contour_value_field}) as ${contourValueName}
   from
     ${table}
     ${rasterSelectFilter}
