@@ -67,7 +67,9 @@ const linearScale = d3.scale.linear()
 
 const capAttrMap = {
   FillColor: "color",
-  Size: "size"
+  Size: "size",
+  StrokeColor: "color",
+  StrokeWidth: "strokeWidth"
 }
 
 export function createVegaAttrMixin(
@@ -173,7 +175,11 @@ export function createVegaAttrMixin(
       rtnVal = layerObj[nullFunc]()
     } else if (input !== undefined && useScale) {
       const encodingAttrName = capAttrMap[capAttrName]
-      const capAttrObj = layerObj.getState().encoding[encodingAttrName]
+      let capAttrObj = layerObj.getState().encoding[encodingAttrName]
+      const scaleType = capAttrObj.type
+      if (capAttrObj.scale) {
+        capAttrObj = capAttrObj.scale
+      }
       if (
         capAttrObj &&
         capAttrObj.domain &&
@@ -190,13 +196,23 @@ export function createVegaAttrMixin(
           }
           domainVals = layerObj[domainGetterFunc]()
         }
-        if (capAttrObj.type === "ordinal") {
+        if (scaleType === "ordinal") {
           ordScale.domain(domainVals).range(capAttrObj.range)
           // if color range is not in domain, it's an Other item
           rtnVal =
             domainVals.indexOf(input) === -1
               ? ordScale("Other")
               : ordScale(input)
+        } else if (scaleType === "nominal") {
+          let formattedInput = input
+          if (domainVals.every(v => typeof v === 'boolean')) {
+            formattedInput = Boolean(input)
+          }
+          const indexOfVal = domainVals.indexOf(formattedInput)
+          if (indexOfVal === -1) {
+            return rtnVal
+          }
+          return capAttrObj.range[indexOfVal]
         } else if (
           Array.isArray(domainVals) &&
           domainVals[0] === domainVals[1]
@@ -591,11 +607,11 @@ export function __displayPopup(svgProps) {
   const popupStyle = _layer.popupStyle()
   let fillColor = _layer.getFillColorVal(data[rndrProps.fillColor])
   let strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor])
-  let strokeWidth = 1
+  let strokeWidth = _layer.getStrokeWidthVal(data[rndrProps.strokeWidth])
   if (typeof popupStyle === "object" && !isScaled) {
     fillColor = popupStyle.fillColor || fillColor
     strokeColor = popupStyle.strokeColor || strokeColor
-    strokeWidth = popupStyle.strokeWidth
+    strokeWidth = popupStyle.strokeWidth || strokeWidth
   }
 
   // build out the svg
