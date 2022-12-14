@@ -120,7 +120,7 @@
     "mocha": "^2.5.3",
     "mocha-jenkins-reporter": "^0.1.9",
     "node-sass": "^4.14.1",
-    "nyc": "^10.3.0",
+    "nyc": "^15.0.0",
     "prettier": "^1.19.1",
     "proxyquire": "1.7.4",
     "sass-loader": "6.0.7",
