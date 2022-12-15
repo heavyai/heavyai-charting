@@ -205,7 +205,7 @@ export function createVegaAttrMixin(
               : ordScale(input)
         } else if (scaleType === "nominal") {
           let formattedInput = input
-          if (domainVals.every(v => typeof v === 'boolean')) {
+          if (domainVals.every(v => typeof v === "boolean")) {
             formattedInput = Boolean(input)
           }
           const indexOfVal = domainVals.indexOf(formattedInput)
