@@ -719,6 +719,8 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
 
   _layer._genVega = function(chart, layerName) {
     let polyFilterString = ""
