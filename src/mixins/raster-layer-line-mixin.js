@@ -473,6 +473,8 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
 
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
@@ -503,7 +505,6 @@ export default function rasterLayerLineMixin(_layer) {
           setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
     }
-
     _vega = _layer.__genVega({
       chart,
       layerName,
