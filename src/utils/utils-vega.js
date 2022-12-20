@@ -176,19 +176,14 @@ export function createVegaAttrMixin(
     } else if (input !== undefined && useScale) {
       const encodingAttrName = capAttrMap[capAttrName]
       let capAttrObj = layerObj.getState().encoding[encodingAttrName]
-      const scaleType = capAttrObj.type
 
-      if (capAttrObj && capAttrObj.scale) {
+      if (capAttrObj?.scale) {
         capAttrObj = capAttrObj.scale
       }
-      if (
-        !capAttrObj ||
-        !capAttrObj.domain ||
-        !capAttrObj.domain.length ||
-        !capAttrObj.range.length
-      ) {
+      if (!capAttrObj?.domain?.length || !capAttrObj?.range?.length) {
         return rtnVal
       }
+      const scaleType = capAttrObj?.type
 
       let domainVals = capAttrObj.domain
       if (domainVals === "auto") {
