@@ -4,9 +4,6 @@ export const CONTOUR_TYPE = "contour"
 export const CONTOUR_COLOR_SCALE = "contour_color"
 export const CONTOUR_STROKE_WIDTH_SCALE = "contour_width"
 
-export const isContourType = (state = {}) =>
-  state.data && state.data[0] && state.data[0].type === CONTOUR_TYPE
-
 const buildParamsSQL = (params = {}) =>
   Object.entries(params)
     .reduce((prev, [key, val]) => {
@@ -242,6 +239,8 @@ export const getContourScales = ({ strokeWidth, opacity, color }) => {
     }
   ]
 }
+export const isContourType = (state = {}) =>
+  state?.data?.[0]?.type === CONTOUR_TYPE
 
 export const validateContourState = state => {
   if (!state.data || !state.data.length) {
