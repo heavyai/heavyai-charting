@@ -187,7 +187,7 @@ export function createVegaAttrMixin(
         !capAttrObj.domain.length ||
         !capAttrObj.range.length
       ) {
-          return rtnVal
+        return rtnVal
       }
 
       let domainVals = capAttrObj.domain
@@ -203,10 +203,8 @@ export function createVegaAttrMixin(
       if (scaleType === "ordinal") {
         ordScale.domain(domainVals).range(capAttrObj.range)
         rtnVal =
-          domainVals.indexOf(input) === -1
-            ? ordScale("Other")
-            : ordScale(input)
-      }  else if (scaleType === "nominal") {
+          domainVals.indexOf(input) === -1 ? ordScale("Other") : ordScale(input)
+      } else if (scaleType === "nominal") {
         ordScale.domain(domainVals).range(capAttrObj.range)
         let formattedInput = input
         // Newer versions of d3 will work with boolean domain and 0/1 values
@@ -215,10 +213,7 @@ export function createVegaAttrMixin(
           formattedInput = Boolean(input)
         }
         rtnVal = ordScale(formattedInput)
-      }else if (
-        Array.isArray(domainVals) &&
-        domainVals[0] === domainVals[1]
-      ) {
+      } else if (Array.isArray(domainVals) && domainVals[0] === domainVals[1]) {
         // handling case where domain min/max are the same (FE-7408)
         linearScale.domain(domainVals).range(capAttrObj.range)
         rtnVal = Math.round(linearScale(input))
