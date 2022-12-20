@@ -177,53 +177,54 @@ export function createVegaAttrMixin(
       const encodingAttrName = capAttrMap[capAttrName]
       let capAttrObj = layerObj.getState().encoding[encodingAttrName]
       const scaleType = capAttrObj.type
-      if (capAttrObj.scale) {
+
+      if (capAttrObj && capAttrObj.scale) {
         capAttrObj = capAttrObj.scale
       }
       if (
-        capAttrObj &&
-        capAttrObj.domain &&
-        capAttrObj.domain.length &&
-        capAttrObj.range.length
+        !capAttrObj ||
+        !capAttrObj.domain ||
+        !capAttrObj.domain.length ||
+        !capAttrObj.range.length
       ) {
-        let domainVals = capAttrObj.domain
-        if (domainVals === "auto") {
-          const domainGetterFunc = encodingAttrName + "Domain"
-          if (typeof layerObj[domainGetterFunc] !== "function") {
-            throw new Error(
-              `Looking for a ${domainGetterFunc} function on for attr ${attrName}`
-            )
-          }
-          domainVals = layerObj[domainGetterFunc]()
+          return rtnVal
+      }
+
+      let domainVals = capAttrObj.domain
+      if (domainVals === "auto") {
+        const domainGetterFunc = encodingAttrName + "Domain"
+        if (typeof layerObj[domainGetterFunc] !== "function") {
+          throw new Error(
+            `Looking for a ${domainGetterFunc} function on for attr ${attrName}`
+          )
         }
-        if (scaleType === "ordinal") {
-          ordScale.domain(domainVals).range(capAttrObj.range)
-          // if color range is not in domain, it's an Other item
-          rtnVal =
-            domainVals.indexOf(input) === -1
-              ? ordScale("Other")
-              : ordScale(input)
-        } else if (scaleType === "nominal") {
-          let formattedInput = input
-          if (domainVals.every(v => typeof v === "boolean")) {
-            formattedInput = Boolean(input)
-          }
-          const indexOfVal = domainVals.indexOf(formattedInput)
-          if (indexOfVal === -1) {
-            return rtnVal
-          }
-          return capAttrObj.range[indexOfVal]
-        } else if (
-          Array.isArray(domainVals) &&
-          domainVals[0] === domainVals[1]
-        ) {
-          // handling case where domain min/max are the same (FE-7408)
-          linearScale.domain(domainVals).range(capAttrObj.range)
-          rtnVal = Math.round(linearScale(input))
-        } else {
-          quantScale.domain(domainVals).range(capAttrObj.range)
-          rtnVal = quantScale(input)
+        domainVals = layerObj[domainGetterFunc]()
+      }
+      if (scaleType === "ordinal") {
+        ordScale.domain(domainVals).range(capAttrObj.range)
+        rtnVal =
+          domainVals.indexOf(input) === -1
+            ? ordScale("Other")
+            : ordScale(input)
+      }  else if (scaleType === "nominal") {
+        ordScale.domain(domainVals).range(capAttrObj.range)
+        let formattedInput = input
+        // Newer versions of d3 will work with boolean domain and 0/1 values
+        // but ours is too old. Manually convert 0/1s to false/true here
+        if (domainVals.every(v => typeof v === "boolean")) {
+          formattedInput = Boolean(input)
         }
+        rtnVal = ordScale(formattedInput)
+      }else if (
+        Array.isArray(domainVals) &&
+        domainVals[0] === domainVals[1]
+      ) {
+        // handling case where domain min/max are the same (FE-7408)
+        linearScale.domain(domainVals).range(capAttrObj.range)
+        rtnVal = Math.round(linearScale(input))
+      } else {
+        quantScale.domain(domainVals).range(capAttrObj.range)
+        rtnVal = quantScale(input)
       }
     }
 
