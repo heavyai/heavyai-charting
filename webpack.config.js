@@ -1,7 +1,6 @@
-var webpack = require("webpack");
-var path = require("path");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const webpack = require("webpack");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const path = require('path')
 
 module.exports = {
   context: __dirname,
@@ -9,7 +8,7 @@ module.exports = {
     "charting": "./index.js"
   },
   output: {
-    path: __dirname + "/dist",
+    path: path.join(__dirname, "/dist"),
     filename: "[name].js",
     libraryTarget: "umd",
     library: "charting"
@@ -52,6 +51,5 @@ module.exports = {
       }
     }),
     new ExtractTextPlugin("charting.css"),
-    // new UglifyJSPlugin()
   ]
 };
