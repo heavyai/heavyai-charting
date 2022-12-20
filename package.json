@@ -105,7 +105,7 @@
     "babel-preset-es2020": "^1.0.2",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
-    "codecov": "^2.1.0",
+    "codecov": "^3.7.1",
     "cross-env": "^5.2.1",
     "css-loader": "^0.22.0",
     "documentation": "4.0.0-rc.1",
