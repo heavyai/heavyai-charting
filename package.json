@@ -107,8 +107,8 @@
     "chai-spies": "^0.7.1",
     "codecov": "^2.1.0",
     "cross-env": "^5.2.1",
-    "css-loader": "^0.22.0",
-    "documentation": "4.0.0-rc.1",
+    "css-loader": "^6.7.3",
+    "documentation": "14.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^3.1.0",
     "eslint-plugin-import": "^2.8.0",
@@ -126,7 +126,7 @@
     "sass-loader": "6.0.7",
     "selenium-standalone": "^6.24.0",
     "style-loader": "^0.13.0",
-    "webpack": "^3.2.0",
+    "webpack": "^5.75.0",
     "webpack-dev-server": "^2.5.1"
   },
   "nyc": {
