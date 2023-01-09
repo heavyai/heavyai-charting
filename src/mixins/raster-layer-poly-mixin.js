@@ -718,6 +718,12 @@ export default function rasterLayerPolyMixin(_layer) {
     return false
   }
 
+  let _onClickFiltering = true
+
+  _layer.setOnClickFiltering = function(value) {
+    _onClickFiltering = value
+  }
+
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
   _layer.xDim = createRasterLayerGetterSetter(_layer, null)
   _layer.yDim = createRasterLayerGetterSetter(_layer, null)
@@ -902,8 +908,9 @@ export default function rasterLayerPolyMixin(_layer) {
     if (!data) {
       return
     } else if (
-      _layer.getState().currentLayer === "master" &&
-      chartHasMoreThanOnePolyLayers(chart)
+      (_layer.getState().currentLayer === "master" &&
+        chartHasMoreThanOnePolyLayers(chart)) ||
+      !_onClickFiltering
     ) {
       // don't filter from Master, FE-8685
       return
