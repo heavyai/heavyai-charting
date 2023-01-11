@@ -534,7 +534,7 @@ export function toLegendState(states = [], chart, useMap) {
   }
 }
 
-function isNullLegend(domain) {
+function isNullLegend(domain = []) {
   // only return true if there is more than one "NULL" value
-  return domain.reduce((cnt, d) => (d === "NULL" ? cnt + 1 : cnt), 0) > 1
+  return Array.isArray(domain) && domain?.filter(d => d === "NULL")?.length > 1
 }

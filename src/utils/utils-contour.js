@@ -209,7 +209,7 @@ export const getContourMarks = (layerName, state) => [
         field: state.encoding.color.field
       },
       strokeWidth: {
-        scale:  `${layerName}_${CONTOUR_STROKE_WIDTH_SCALE}`,
+        scale: `${layerName}_${CONTOUR_STROKE_WIDTH_SCALE}`,
         field: state.encoding.strokeWidth.field
       },
       lineJoin: state.mark.lineJoin
@@ -217,7 +217,10 @@ export const getContourMarks = (layerName, state) => [
   }
 ]
 
-export const getContourScales = (layerName, { strokeWidth, opacity, color }) => {
+export const getContourScales = (
+  layerName,
+  { strokeWidth, opacity, color }
+) => {
   const [minorOpacity, majorOpacity] = opacity.scale.range
   const [minorColor, majorColor] = color.scale.range
 
