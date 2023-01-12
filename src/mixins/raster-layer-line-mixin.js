@@ -417,7 +417,7 @@ export default function rasterLayerLineMixin(_layer) {
 
     let scales
     if (isContourType(state)) {
-      scales = getContourScales(state.encoding)
+      scales = getContourScales(layerName, state.encoding)
     } else {
       scales = getScales(
         state.encoding,

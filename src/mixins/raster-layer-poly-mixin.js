@@ -614,7 +614,7 @@ export default function rasterLayerPolyMixin(_layer) {
     let fillColor = "#AAAAAA"
     if (isContourType(state)) {
       scales.push({
-        name: "contour_fill",
+        name: `${layerName}_contour_fill`,
         type: state.encoding.color.type,
         domain: state.encoding.color.domain,
         range: state.encoding.color.range.map(c =>
@@ -651,7 +651,7 @@ export default function rasterLayerPolyMixin(_layer) {
           },
           fillColor: {
             field: "contour_values",
-            scale: "contour_fill"
+            scale: `${layerName}_contour_fill`
           },
           strokeColor: "white",
           strokeWidth: 0,
