@@ -2,6 +2,7 @@ import * as _ from "lodash"
 import { getRealLayers } from "../utils/utils-vega"
 import assert from "assert"
 import { format } from "d3-format"
+import { logger } from "../utils/logger"
 
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
@@ -458,10 +459,12 @@ function legendState_v2(state, useMap) {
       range: state.range
     }
   } else if (state_type === "quantize") {
-    assert(Array.isArray(state.range))
-    assert(Array.isArray(state.domain))
-    assert(state.domain.length === 2)
-    assert(typeof state.domain[0] === "number")
+    const errors = validateQuantizeDomain(state)
+    // Failing domain validation, warn about problems and don't crash
+    if (errors.length > 0) {
+      errors.forEach(logger.warn)
+      return {}
+    }
     return {
       type: "gradient",
       title,
@@ -504,6 +507,24 @@ function legendState_v2(state, useMap) {
   }
 }
 
+function validateQuantizeDomain(state) {
+  const errors = []
+  if (!Array.isArray(state.range)) {
+    errors.push(`Range must be an array, but was ${JSON.stringify(state.range)}`)
+  }
+  if (!Array.isArray(state.domain)) {
+    errors.push(`Domain must be an Array, but was ${JSON.stringify(state.domain)}`)
+  }
+  if (state.domain.length !== 2) {
+    errors.push(
+      `Domain must have length of exactly 2, but was ${state.domain.length}`
+    )
+  }
+  if (typeof state.domain[0] !== "number") {
+    errors.push(`Domain must be array of integers but was ${JSON.stringify(state.domain)}`)
+  }
+  return errors
+}
 function legendState(state, useMap = true) {
   const { version = 1.0 } = state
   return version >= 2.0
