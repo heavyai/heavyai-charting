@@ -359,7 +359,9 @@ export default function rasterLayerWindBarbMixin(_layer) {
 
   _layer.getPrimaryColorScaleAndLegend = function() {
     let prop_descriptor = prop_descriptors.get("stroke")
-    let scale_obj = _vega_property_output_state?.getScaleForProp(prop_descriptor)
+    let scale_obj = _vega_property_output_state?.getScaleForProp(
+      prop_descriptor
+    )
     if (!scale_obj) {
       prop_descriptor = prop_descriptors.get("fill")
       scale_obj = _vega_property_output_state?.getScaleForProp(prop_descriptor)

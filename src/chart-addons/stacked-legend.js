@@ -510,10 +510,14 @@ function legendState_v2(state, useMap) {
 function validateQuantizeDomain(state) {
   const errors = []
   if (!Array.isArray(state.range)) {
-    errors.push(`Range must be an array, but was ${JSON.stringify(state.range)}`)
+    errors.push(
+      `Range must be an array, but was ${JSON.stringify(state.range)}`
+    )
   }
   if (!Array.isArray(state.domain)) {
-    errors.push(`Domain must be an Array, but was ${JSON.stringify(state.domain)}`)
+    errors.push(
+      `Domain must be an Array, but was ${JSON.stringify(state.domain)}`
+    )
   }
   if (state.domain.length !== 2) {
     errors.push(
@@ -521,7 +525,9 @@ function validateQuantizeDomain(state) {
     )
   }
   if (typeof state.domain[0] !== "number") {
-    errors.push(`Domain must be array of integers but was ${JSON.stringify(state.domain)}`)
+    errors.push(
+      `Domain must be array of numbers but was ${JSON.stringify(state.domain)}`
+    )
   }
   return errors
 }
