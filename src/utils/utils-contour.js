@@ -83,7 +83,6 @@ export const buildOptimizedContourSQL = ({
   const latFieldParsed = is_geo_point_type ? `ST_Y(${lat_field})` : lat_field
   const lonFieldParsed = is_geo_point_type ? `ST_X(${lon_field})` : lon_field
 
-
   const latFieldName = lat_field.replace(".", "_")
   const lonFieldName = lon_field.replace(".", "_")
 
