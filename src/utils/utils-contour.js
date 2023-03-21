@@ -82,6 +82,10 @@ export const buildOptimizedContourSQL = ({
 
   const latFieldParsed = is_geo_point_type ? `ST_Y(${lat_field})` : lat_field
   const lonFieldParsed = is_geo_point_type ? `ST_X(${lon_field})` : lon_field
+
+  const latFieldName = lat_field.replace(".", "_")
+  const lonFieldName = lon_field.replace(".", "_")
+
   // Aggregates rounded lat/lng
   const contourValueName = "agg_contour_value"
   const groupedQuery = `select
@@ -95,7 +99,7 @@ export const buildOptimizedContourSQL = ({
   `
 
   // Converts rounded and grouped lat/lngs back to double values
-  const rasterSelect = `select cast(lon_int * ${multiplier} as double) as ${lon_field}, cast(lat_int * ${multiplier} as double) as ${lat_field},  ${contourValueName} from (${groupedQuery})`
+  const rasterSelect = `select cast(lon_int * ${multiplier} as double) as ${lonFieldName}, cast(lat_int * ${multiplier} as double) as ${latFieldName},  ${contourValueName} from (${groupedQuery})`
 
   // Transform params object into 'param_name' => 'param_value', ... for sql query
   const contourParamsSQL = buildParamsSQL(contourParams)
@@ -268,14 +272,13 @@ export const validateContourState = state => {
 }
 
 export const getContourBoundingBox = (data, mapBounds) => {
-  const table = data.table
   const isGeoPoint = data.is_geo_point_type
   const latField = isGeoPoint
-    ? `(ST_Y(${table}.${data.lat_field}))`
-    : `(${table}.${data.lat_field})`
+    ? `(ST_Y(${data.lat_field}))`
+    : `(${data.lat_field})`
   const lonField = isGeoPoint
-    ? `(ST_X(${table}.${data.lon_field}))`
-    : `(${table}.${data.lon_field})`
+    ? `(ST_X(${data.lon_field}))`
+    : `(${data.lon_field})`
   const bboxFilter = `${lonField} >= ${mapBounds._sw.lng} AND ${lonField} <= ${mapBounds._ne.lng} AND ${latField} >= ${mapBounds._sw.lat} AND ${latField} <= ${mapBounds._ne.lat}`
   return bboxFilter
 }
