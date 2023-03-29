@@ -473,8 +473,14 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
-  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
-  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
+
+  // linemap bbox filter gets broken if these are set for its layer, but contour
+  // needs them to be set for its bbox filter; therefore wrap in a method that
+  // can be called from contour setup prior to setting vals
+  _layer.setContourXYDims = function() {
+    _layer.xDim = createRasterLayerGetterSetter(_layer, null)
+    _layer.yDim = createRasterLayerGetterSetter(_layer, null)
+  }
 
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
