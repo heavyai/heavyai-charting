@@ -53,7 +53,7 @@
     "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --opts ./test/mocha.unit.opts"
   },
   "dependencies": {
-    "@heavyai/data-layer": "npm:mapd-data-layer-2@0.0.25",
+    "@heavyai/data-layer": "https://github.com/heavyai/metis.git#6b552ff",
     "@heavyai/draw": "https://github.com/heavyai/mapd-draw.git#fc0b065",
     "@mapbox/unitbezier": "0.0.0",
     "@mapd/connector": "github:omnisci/mapd-connector#d75148077a2a4b23d66d89c63d05c20e5735af2e",
