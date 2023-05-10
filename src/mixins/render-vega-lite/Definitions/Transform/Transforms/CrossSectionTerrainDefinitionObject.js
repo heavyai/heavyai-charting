@@ -104,6 +104,19 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
       }
       this.cross_section_dimension_name_ = obj.crossSectionDimensionName
     }
+
+    /**
+     * @type {number}
+     */
+    this.num_points_ = 0
+    if (Object.hasOwn(obj, "numberOfPoints")) {
+      if (typeof obj.numberOfPoints !== "number") {
+        throw new Error(
+          `Invalid '${key}' transform definition. The 'numberOfPoints' property must be a number`
+        )
+      }
+      this.num_points_ = obj.numberOfPoints
+    }
   }
 
   /**
