@@ -9,7 +9,7 @@ import VegaPropertyOutputState from "../../../VegaPropertyOutputState"
 
 export default class CrossSectionTerrainDefinitionObject extends PropertiesDefinitionInterface {
   // eslint-disable-next-line no-undef
-  static key = "crossSectionTerrain"
+  static key = "cross_section1d"
 
   /**
    * @param {Object} definition_object

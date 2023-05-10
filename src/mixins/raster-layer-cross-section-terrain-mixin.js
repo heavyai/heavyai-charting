@@ -85,6 +85,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
     "fill",
     new ColorChannelDescriptor("fill", "fillColor", color_prop_descriptor)
   )
+  // TODO[C]: FIX THESE TO ADD STROKE STUFF
   prop_descriptors.set("opacity", new OpacityChannelDescriptor("opacity"))
   prop_descriptors.set(
     "fillOpacity",
