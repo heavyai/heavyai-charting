@@ -95,15 +95,15 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
     /**
      * @type {string}
      */
-    this.cross_section_dimension_name_ = "distance"
-    if (Object.hasOwn(obj, "crossSectionDimensionName")) {
-      if (typeof obj.crossSectionDimensionName !== "string") {
-        throw new Error(
-          `Invalid '${key}' transform definition. The 'crossSectionDimensionName' property must be a string`
-        )
-      }
-      this.cross_section_dimension_name_ = obj.crossSectionDimensionName
-    }
+    // this.cross_section_dimension_name_ = "distance"
+    // if (Object.hasOwn(obj, "crossSectionDimensionName")) {
+    //   if (typeof obj.crossSectionDimensionName !== "string") {
+    //     throw new Error(
+    //       `Invalid '${key}' transform definition. The 'crossSectionDimensionName' property must be a string`
+    //     )
+    //   }
+    //   this.cross_section_dimension_name_ = obj.crossSectionDimensionName
+    // }
 
     /**
      * @type {number}
@@ -155,8 +155,16 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
    * The name of the new xy dimension created by the cross-section cut
    * @type {string}
    */
-  get crossSectionDimensionName() {
-    return this.cross_section_dimension_name_
+  // get crossSectionDimensionName() {
+  //   return this.cross_section_dimension_name_
+  // }
+
+  /**
+   * Required by the renderer for the line generation. Should be half of chart width
+   * @type {number}
+   */
+  get numPoints() {
+    return this.num_points_
   }
 
   /**
@@ -199,7 +207,8 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
           z: this.z
         },
         xy_cross_section: this.crossSectionLine,
-        cross_section_dimension: this.crossSectionDimensionName
+        // cross_section_dimension: this.crossSectionDimensionName,
+        num_points: this.numPoints
       }
     })
 
@@ -245,18 +254,18 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
           let new_field_name = ""
           let cross_prop_name = ""
           if (vega_prop_name === "x") {
-            new_field_name = this.crossSectionDimensionName
-            cross_prop_name = "crossSectionDimensionName"
+            new_field_name = "x"
+            cross_prop_name = "x"
           } else {
-            new_field_name = this.z
-            cross_prop_name = "z"
+            new_field_name = "y"
+            cross_prop_name = "y"
           }
 
-          if (sql_obj.expr !== new_field_name) {
-            throw new Error(
-              `Invalid '${transform_name}' transform definition. The '${vega_prop_name}' mark position property must be linked with the '${cross_prop_name}' property. It is linked to '${sql_obj.expr}'`
-            )
-          }
+          // if (sql_obj.expr !== new_field_name) {
+          //   throw new Error(
+          //     `Invalid '${transform_name}' transform definition. The '${vega_prop_name}' mark position property must be linked with the '${cross_prop_name}' property. It is linked to '${sql_obj.expr}'`
+          //   )
+          // }
 
           // drop any mention of the dynamically-created columns from the sql list
           vega_property_output_state.sql_parser_transforms.delete(
