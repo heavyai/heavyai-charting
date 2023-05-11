@@ -9,8 +9,12 @@ import {
   ColorChannelDescriptor,
   GeographicChannelDescriptor,
   OpacityChannelDescriptor,
-  PositionChannelDescriptor
+  PositionChannelDescriptor,
+  PropLocation
 } from "./render-vega-lite/PropDescriptor/CommonChannelDescriptors"
+import StringPropDescriptor from "./render-vega-lite/PropDescriptor/BaseTypes/StringPropDescriptor"
+import NumericPropDescriptor from "./render-vega-lite/PropDescriptor/BaseTypes/NumericPropDescriptor"
+import { is_zero_to_one } from "./render-vega-lite/PropDescriptor/BaseTypes/NumericPropValidators"
 import CrossSectionTerrainConfigDefinitionObject from "./render-vega-lite/Definitions/Mark/CrossSectionTerrainConfigDefinitionObject"
 import { materializePropDescriptors } from "./render-vega-lite/RenderVegaLite"
 
@@ -65,7 +69,6 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   // It is not currently believed that Mesh2d marks need to support export, so the "getTransforms" method is not
   // going to be included
 
-  const color_prop_descriptor = new ColorChannelDescriptor("color", "")
   const prop_descriptors = new Map()
 
   prop_descriptors.set("x", new PositionChannelDescriptor("x"))
@@ -82,14 +85,36 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   )
 
   prop_descriptors.set(
-    "fill",
-    new ColorChannelDescriptor("fill", "fillColor", color_prop_descriptor)
+    "strokeColor",
+    new StringPropDescriptor(
+      "strokeColor",
+      null,
+      PropLocation.kMarkDefOnly,
+      null,
+      false
+    )
   )
-  // TODO[C]: FIX THESE TO ADD STROKE STUFF
-  prop_descriptors.set("opacity", new OpacityChannelDescriptor("opacity"))
   prop_descriptors.set(
-    "fillOpacity",
-    new OpacityChannelDescriptor("fillOpacity")
+    "strokeWidth",
+    new NumericPropDescriptor(
+      "strokeWidth",
+      null,
+      PropLocation.kMarkDefOnly,
+      null,
+      false,
+      is_zero_to_one
+    )
+  )
+  prop_descriptors.set(
+    "fillBelowLine",
+    new NumericPropDescriptor(
+      "fillBelowLine",
+      null,
+      PropLocation.kMarkDefOnly,
+      null,
+      false,
+      is_zero_to_one
+    )
   )
 
   _layer.__genVega = function({
@@ -232,16 +257,16 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
     return _vega
   }
 
-  _layer.getPrimaryColorScaleAndLegend = function() {
-    const prop_descriptor = prop_descriptors.get("fill")
-    const scale_obj = _vega_property_output_state.getScaleForProp(
-      prop_descriptor
-    )
-    const legend_obj = prop_descriptor
-      ? _vega_property_output_state.getLegendForProperty(prop_descriptor)
-      : null
-    return [scale_obj, legend_obj]
-  }
+  // _layer.getPrimaryColorScaleAndLegend = function() {
+  //   const prop_descriptor = prop_descriptors.get("fill")
+  //   const scale_obj = _vega_property_output_state.getScaleForProp(
+  //     prop_descriptor
+  //   )
+  //   const legend_obj = prop_descriptor
+  //     ? _vega_property_output_state.getLegendForProperty(prop_descriptor)
+  //     : null
+  //   return [scale_obj, legend_obj]
+  // }
 
   _layer.useProjection = function() {
     const geographic_props = [
