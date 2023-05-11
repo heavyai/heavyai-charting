@@ -61,4 +61,16 @@ export default class CrossSectionTerrainConfigDefinitionObject extends ConfigDef
   get fillOpacity() {
     return this.fillOpacity_
   }
+
+  get strokeColor() {
+    return this.strokeColor_
+  }
+
+  get strokeWidth() {
+    return this.strokeWidth_
+  }
+
+  get fillBelowLine() {
+    return this.fillBelowLine_
+  }
 }
