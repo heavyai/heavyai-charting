@@ -109,13 +109,13 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
      * @type {number}
      */
     this.num_points_ = 0
-    if (Object.hasOwn(obj, "numberOfPoints")) {
-      if (typeof obj.numberOfPoints !== "number") {
+    if (Object.hasOwn(obj, "numPoints")) {
+      if (typeof obj.numPoints !== "number") {
         throw new Error(
-          `Invalid '${key}' transform definition. The 'numberOfPoints' property must be a number`
+          `Invalid '${key}' transform definition. The 'numPoints' property must be a number`
         )
       }
-      this.num_points_ = obj.numberOfPoints
+      this.num_points_ = obj.numPoints
     }
   }
 
