@@ -217,12 +217,7 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
             `${vega_prop_name}`
           )
 
-          let new_field_name = ""
-          if (vega_prop_name === "x") {
-            new_field_name = "x"
-          } else {
-            new_field_name = "y"
-          }
+          const new_field_name = vega_prop_name === "x" ? "x" : "y"
 
           // drop any mention of the dynamically-created columns from the sql list
           vega_property_output_state.sql_parser_transforms.delete(
