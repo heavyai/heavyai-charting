@@ -193,7 +193,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
         from: {
           data: layerName
         },
-        properties: Object.assign({}, ...mark_properties)
+        properties: { ...mark_properties}
       }
     ]
 
