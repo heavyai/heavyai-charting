@@ -8,9 +8,7 @@ export default class CrossSectionTerrainConfigDefinitionObject extends ConfigDef
   static defaults = {
     strokeColor: "black",
     strokeWidth: 1,
-    fillBelowLine: 1,
-    opacity: 1,
-    fillOpacity: 1
+    fillBelowLine: 1
   }
 
   /**
@@ -35,15 +33,6 @@ export default class CrossSectionTerrainConfigDefinitionObject extends ConfigDef
     if (Object.hasOwn(definition_object, "fillBelowLine")) {
       this.fillBelowLine_ = definition_object.fillBelowLine
     }
-    this.opacity_ = CrossSectionTerrainConfigDefinitionObject.defaults.opacity
-    if (Object.hasOwn(definition_object, "opacity")) {
-      this.opacity_ = definition_object.opacity
-    }
-    this.fillOpacity_ =
-      CrossSectionTerrainConfigDefinitionObject.defaults.fillOpacity
-    if (Object.hasOwn(definition_object, "fillOpacity")) {
-      this.fillOpacity_ = definition_object.fillOpacity
-    }
   }
 
   get color() {
@@ -52,14 +41,6 @@ export default class CrossSectionTerrainConfigDefinitionObject extends ConfigDef
 
   get fill() {
     return this.fill_
-  }
-
-  get opacity() {
-    return this.opacity_
-  }
-
-  get fillOpacity() {
-    return this.fillOpacity_
   }
 
   get strokeColor() {
