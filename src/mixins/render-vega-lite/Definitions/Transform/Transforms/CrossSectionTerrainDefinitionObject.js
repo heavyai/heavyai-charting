@@ -93,19 +93,6 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
     ]
 
     /**
-     * @type {string}
-     */
-    // this.cross_section_dimension_name_ = "distance"
-    // if (Object.hasOwn(obj, "crossSectionDimensionName")) {
-    //   if (typeof obj.crossSectionDimensionName !== "string") {
-    //     throw new Error(
-    //       `Invalid '${key}' transform definition. The 'crossSectionDimensionName' property must be a string`
-    //     )
-    //   }
-    //   this.cross_section_dimension_name_ = obj.crossSectionDimensionName
-    // }
-
-    /**
      * @type {number}
      */
     this.num_points_ = 0
@@ -150,14 +137,6 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
   get crossSectionLine() {
     return this.cross_section_line_
   }
-
-  /**
-   * The name of the new xy dimension created by the cross-section cut
-   * @type {string}
-   */
-  // get crossSectionDimensionName() {
-  //   return this.cross_section_dimension_name_
-  // }
 
   /**
    * Required by the renderer for the line generation. Should be half of chart width
@@ -220,19 +199,6 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
    * @param {VegaPropertyOutputState} vega_property_output_state
    */
   realign(prop_descriptors, vega_property_output_state) {
-    const transform_name = CrossSectionTerrainDefinitionObject.key
-    // const format_obj = vega_property_output_state.vega_data_formats.get(
-    //   this.key
-    // )
-    // assert(
-    //   typeof format_obj === "object" &&
-    //     Object.hasOwn(format_obj, "format") &&
-    //     Object.hasOwn(format_obj.format, "coords") &&
-    //     typeof format_obj.format.coords === "object" &&
-    //     Object.hasOwn(format_obj.format.coords, "x") &&
-    //     Object.hasOwn(format_obj.format.coords, "y"),
-    //   `${format_obj}`
-    // )
     /* eslint-disable max-depth */
     for (const prop_descriptor of prop_descriptors.values()) {
       if (prop_descriptor instanceof PositionChannelDescriptor) {
@@ -252,20 +218,11 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
           )
 
           let new_field_name = ""
-          let cross_prop_name = ""
           if (vega_prop_name === "x") {
             new_field_name = "x"
-            cross_prop_name = "x"
           } else {
             new_field_name = "y"
-            cross_prop_name = "y"
           }
-
-          // if (sql_obj.expr !== new_field_name) {
-          //   throw new Error(
-          //     `Invalid '${transform_name}' transform definition. The '${vega_prop_name}' mark position property must be linked with the '${cross_prop_name}' property. It is linked to '${sql_obj.expr}'`
-          //   )
-          // }
 
           // drop any mention of the dynamically-created columns from the sql list
           vega_property_output_state.sql_parser_transforms.delete(
@@ -284,36 +241,7 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
             vega_mark_prop_obj[vega_prop_name].field = new_field_name
           }
         }
-        // const vega_mark_prop_obj = vega_property_output_state.mark_properties.get(
-        //   prop_descriptor.prop_name
-        // )
-        // assert(
-        //   prop_descriptor.vega_mark_prop_names.length === 1,
-        //   `${prop_descriptor.vega_mark_prop_names.length}`
-        // )
-        // const vega_prop_name = prop_descriptor.vega_mark_prop_names[0]
-        // if (
-        //   vega_mark_prop_obj &&
-        //   Object.hasOwn(vega_mark_prop_obj, vega_prop_name) &&
-        //   Object.hasOwn(vega_mark_prop_obj[vega_prop_name], "field")
-        // ) {
-        //   assert(
-        //     Object.hasOwn(format_obj.format.coords, vega_prop_name),
-        //     `${vega_prop_name}`
-        //   )
-        //   const value = vega_mark_prop_obj[vega_prop_name].field
-        //   format_obj.format.coords[vega_prop_name] = value
-        //   this[`${vega_prop_name}_`] = value
-        //   vega_mark_prop_obj[vega_prop_name].field = vega_prop_name
-        // }
       }
-      // TODO(croot): may want to do a Geographic channel check here, but that would require the prop_descriptors input
-      // to this function to only be the prop descriptors that were "handled"
-      //  else if (prop_descriptor instanceof GeographicChannelDescriptor) {
-      //   throw new Error(
-      //     `Invalid '${transform_name}' transform definition. ${transform_name} transforms cannot be used with geographic channel '${prop_descriptor.prop_name}'`
-      //   )
-      // }
     }
     /* eslint-enable max-depth */
   }
