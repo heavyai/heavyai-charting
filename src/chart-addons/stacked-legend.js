@@ -478,6 +478,10 @@ function legendState_v2(state, useMap) {
     const { scale = {} } = state
     const domain = scale.domain || state.domain
     const range = scale.range || state.range
+    // Safety valve
+    if (!Array.isArray(domain)) {
+      return {}
+    }
     const min_size = Math.min(domain.length, range.length)
     // TODO(croot): may want to consider filling out the auto-gradient here
     // using a max-number of stops. The best way to do this will most likely
