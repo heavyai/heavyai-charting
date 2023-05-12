@@ -6,9 +6,7 @@ import { createRasterLayerGetterSetter } from "../utils/utils-vega"
 import { isValidPostFilter } from "./raster-layer-point-mixin"
 import RasterLayerContext from "./render-vega-lite/RasterLayerContext"
 import {
-  ColorChannelDescriptor,
   GeographicChannelDescriptor,
-  OpacityChannelDescriptor,
   PositionChannelDescriptor,
   PropLocation
 } from "./render-vega-lite/PropDescriptor/CommonChannelDescriptors"
@@ -22,9 +20,7 @@ import { materializePropDescriptors } from "./render-vega-lite/RenderVegaLite"
 // eslint-disable-next-line no-unused-vars
 import VegaPropertyOutputState from "./render-vega-lite/VegaPropertyOutputState"
 
-// eslint-disable-next-line no-warning-comments
-// TODO(croot): this seems like it is used in at least one other layer mixin. Make into a utility somewhere
-function create_post_filter_transform(post_filters) {
+function createPostFilterTransform(post_filters) {
   const post_filter =
     post_filters && Array.isArray(post_filters) ? post_filters[0] : null // may change to map when we have more than one postFilter
   if (post_filter && isValidPostFilter(post_filter)) {
@@ -66,7 +62,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   // NOTE: as of 11/14/22 the "getTransforms" method that is found in most of the other raster layer mixin classes
   // only seems to be called from immerse via the buildRasterExportSql() method in raster-sql.ts
   //
-  // It is not currently believed that Mesh2d marks need to support export, so the "getTransforms" method is not
+  // It is not currently believed that terrain layer marks need to support export, so the "getTransforms" method is not
   // going to be included
 
   const prop_descriptors = new Map()
@@ -123,8 +119,6 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
     filter,
     lastFilteredSize,
     globalFilter,
-    // eslint-disable-next-line no-unused-vars
-    pixelRatio,
     layerName
   }) {
     const raster_layer_context = new RasterLayerContext(
@@ -158,9 +152,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
       })
     }
 
-    const post_filter_transform = create_post_filter_transform(
-      state.postFilters
-    )
+    const post_filter_transform = createPostFilterTransform(state.postFilters)
 
     if (post_filter_transform) {
       sql_parser_transforms.push(post_filter_transform)
@@ -176,7 +168,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
     const data = [
       {
         name: layerName,
-        ...(vega_data_formats.length ? vega_data_formats[0] : {}),
+        ...(vega_data_formats?.[0] ?? {}),
         sql: parser.writeSQL({
           type: "root",
           source: table,
@@ -242,8 +234,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   const _cf = null
   _layer.crossfilter = createRasterLayerGetterSetter(_layer, _cf)
 
-  // eslint-disable-next-line no-unused-vars
-  _layer._genVega = function(chart, layerName, group, query) {
+  _layer._genVega = function(chart, layerName) {
     const realLayerName = layerName
     _vega = _layer.__genVega({
       chart,
@@ -256,17 +247,6 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
     })
     return _vega
   }
-
-  // _layer.getPrimaryColorScaleAndLegend = function() {
-  //   const prop_descriptor = prop_descriptors.get("fill")
-  //   const scale_obj = _vega_property_output_state.getScaleForProp(
-  //     prop_descriptor
-  //   )
-  //   const legend_obj = prop_descriptor
-  //     ? _vega_property_output_state.getLegendForProperty(prop_descriptor)
-  //     : null
-  //   return [scale_obj, legend_obj]
-  // }
 
   _layer.useProjection = function() {
     const geographic_props = [
