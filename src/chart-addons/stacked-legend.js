@@ -147,7 +147,10 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
 
         let color_legend_descriptor = null
 
-        if (layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
+        if (
+          (layers.length > 1 || _.isEqual(selectedLayer, layerState)) &&
+          typeof color !== "undefined"
+        ) {
           if (
             typeof color.scale === "object" &&
             color.scale.domain === "auto"
