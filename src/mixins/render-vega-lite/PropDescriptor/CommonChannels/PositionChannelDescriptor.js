@@ -52,11 +52,26 @@ export default class PositionChannelDescriptor extends PropDescriptor {
    */
   buildDefaultScaleDefinition(parent_info) {
     const chart = parent_info.parent.root_context.chart
-    let chart_function_name = `_get${this.prop_name}ScaleName`
-    if (typeof chart[chart_function_name] !== "function") {
-      chart_function_name = `_get${this.prop_name.toUpperCase()}ScaleName`
-      assert(typeof chart[chart_function_name] === "function")
+    const layer = parent_info.parent.root_context.layer
+    let scale_function_name = `_get${this.prop_name}ScaleName`
+
+    // added check for get..ScaleName on layer level, as cross section terrain
+    // needs to create a separate y scale from cross section when multi-layered
+    if (
+      typeof chart[scale_function_name] !== "function" &&
+      typeof layer[scale_function_name] !== "function"
+    ) {
+      scale_function_name = `_get${this.prop_name.toUpperCase()}ScaleName`
+      assert(
+        typeof chart[scale_function_name] === "function" ||
+          typeof layer[scale_function_name] === "function"
+      )
     }
-    return { name: chart[chart_function_name](), type: "internal-passthru" }
+
+    if (typeof layer[scale_function_name] === "function") {
+      return { name: layer[scale_function_name](), type: "internal-passthru" }
+    } else {
+      return { name: chart[scale_function_name](), type: "internal-passthru" }
+    }
   }
 }
