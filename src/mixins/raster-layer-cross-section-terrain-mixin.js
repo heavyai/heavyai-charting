@@ -40,6 +40,7 @@ function createPostFilterTransform(post_filters) {
 
 export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   let state = null
+  let yScaleName = "y"
 
   /**
    * @type {VegaPropertyOutputState}
@@ -57,6 +58,19 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
 
   _layer.getState = function() {
     return state
+  }
+
+  _layer.setYScaleName = function(setter) {
+    if (typeof setter === "function") {
+      yScaleName = setter(yScaleName)
+    } else {
+      yScaleName = setter
+    }
+    return _layer
+  }
+
+  _layer._getYScaleName = function() {
+    return yScaleName
   }
 
   // NOTE: as of 11/14/22 the "getTransforms" method that is found in most of the other raster layer mixin classes
@@ -168,7 +182,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
     const data = [
       {
         name: layerName,
-        ...(vega_data_formats?.[0] ?? {}),
+        ...(vega_data_formats.length ? vega_data_formats[0] : {}),
         sql: parser.writeSQL({
           type: "root",
           source: table,
