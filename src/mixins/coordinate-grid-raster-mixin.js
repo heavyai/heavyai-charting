@@ -133,6 +133,8 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _yAxisLabel
   let _yAxisLabelPadding = 0
 
+  let _y2Axis = d3.svg.axis().orient("right")
+
   let _renderHorizontalGridLine = false
   let _renderVerticalGridLine = false
 
@@ -144,6 +146,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _rangeBandPadding = 0
 
   let _useRightYAxis = false
+  let _useTwoYAxes = false
 
   let _maxBounds = [[-Infinity, -Infinity], [Infinity, Infinity]]
 
@@ -628,6 +631,23 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   /**
+   * Gets or sets whether the chart should be drawn with two y axes, one on the right and one on the left.
+   * @name useTwoYAxes
+   * @memberof dc.coordinateGridRasterMixin
+   * @instance
+   * @param {Boolean} [useTwoYAxes=false]
+   * @return {Boolean}
+   * @return {dc.coordinateGridRasterMixin}
+   */
+  _chart.useTwoYAxes = function (useTwoYAxes) {
+    if (!arguments.length) {
+      return _useTwoYAxes
+    }
+    _useTwoYAxes = useTwoYAxes
+    return _chart
+  }
+
+  /**
    * Returns true if the chart is using ordinal xUnits ({@link #units.ordinal units.ordinal}, or false
    * otherwise. Most charts behave differently with ordinal data and use the result of this method to
    * trigger the appropriate logic.
@@ -1023,6 +1043,24 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     _chart.prepareLockAxis("y")
   }
 
+  _chart._prepareY2Axis = function (g, y, transitionDuration) {
+    y.range([Math.round(_chart.yAxisHeight()), 0])
+
+    _y2Axis = _y2Axis.scale(y)
+
+    _y2Axis.ticks(_chart.effectiveHeight() / _y2Axis.scale().ticks().length < 16 ? Math.ceil(_chart.effectiveHeight() / 16) : 10)
+
+    if (_useRightYAxis) {
+      _y2Axis.orient("right")
+    }
+
+    setYAxisFormat()
+
+    _chart._renderHorizontalGridLinesForAxis(g, y, _y2Axis, transitionDuration)
+    _chart.prepareLabelEdit("y")
+    _chart.prepareLockAxis("y")
+  }
+
   _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
     const root = _chart.root()
 
@@ -1382,6 +1420,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
     _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
+    if (chart.useTwoYAxes()) {
+      _chart._prepareY2Axis(_chart.g(), _chart.y(), transitionDuration)
+    }
 
     if (_chart.elasticX() || _resizing || render) {
       _chart.renderXAxis(_chart.g(), transitionDuration)
@@ -1389,6 +1430,13 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     if (_chart.elasticY() || _resizing || render) {
       _chart.renderYAxis(_chart.g(), transitionDuration)
+
+      if (_chart.useTwoYAxes()) {
+        _chart.useRightYAxis(true)
+        _chart.renderYAxis(_chart.g(), transitionDuration)
+        // TODO(C): is this needed?
+        _chart.useRightYAxis(false)
+      }
     }
 
     _chart.fadeDeselectedArea()
