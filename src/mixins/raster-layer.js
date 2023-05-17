@@ -5,6 +5,7 @@ import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
 import rasterLayerLineMixin from "./raster-layer-line-mixin"
 import rasterLayerWindBarbMixin from "./raster-layer-windbarb-mixin"
 import rasterLayerMesh2dMixin from "./raster-layer-mesh2d-mixin"
+import rasterLayerCrossSectionTerrainMixin from "./raster-layer-cross-section-terrain-mixin"
 import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
@@ -18,7 +19,8 @@ const validLayerTypes = [
   "heat",
   "lines",
   "windbarbs",
-  "mesh2d"
+  "mesh2d",
+  "crossSectionTerrain"
 ]
 
 export default function rasterLayer(layerType) {
@@ -70,6 +72,8 @@ export default function rasterLayer(layerType) {
     _layer = rasterLayerWindBarbMixin(_layer)
   } else if (layerType === "mesh2d") {
     _layer = rasterLayerMesh2dMixin(_layer)
+  } else if (layerType === "crossSectionTerrain") {
+    _layer = rasterLayerCrossSectionTerrainMixin(_layer)
   } else {
     throw new Error(
       '"' +

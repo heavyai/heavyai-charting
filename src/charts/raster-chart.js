@@ -866,6 +866,37 @@ function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
 }
 
+function checkMultiYScaleLayers(chart, scales) {
+  const layers = chart.getAllLayers()
+  const layerTypes = layers.map(l => l?.layerType())
+  const terrainLayer = layers.filter(
+    l => l?.layerType() === "crossSectionTerrain"
+  )
+  const mesh2dLayer = layers.filter(l => l?.layerType() === "mesh2d")
+  // check if new array contains both cs and cs terrain types
+  if (
+    layerTypes.includes("crossSectionTerrain") &&
+    layerTypes.includes("mesh2d") &&
+    terrainLayer.length > 0 &&
+    mesh2dLayer.length > 0
+  ) {
+    // ensure the domain of the y scale is the range set from the mesh2d yDim
+    // TODO(C): need to check how multi 2-D CS's are handled to tell if this is the
+    // correct approach for setting the y domain or not
+    scales[1].domain = mesh2dLayer[0].yDim().getFilter()[0]
+    // add a new y scale for the terrain layer, updating the name in the layer and setting
+    // the appropriate domain for this new scale
+    terrainLayer[0].setYScaleName("y1d")
+    scales.push({
+      name: "y1d",
+      type: chart._determineScaleType(chart.y()),
+      domain: terrainLayer[0].yDim().getFilter()[0],
+      range: "height",
+      nullValue: -100
+    })
+  }
+}
+
 function genLayeredVega(chart) {
   const pixelRatio = chart._getPixelRatio()
   const width =
@@ -895,6 +926,7 @@ function genLayeredVega(chart) {
       nullValue: -100
     }
   ]
+  checkMultiYScaleLayers(chart, scales)
 
   // NOTE(adb): When geo types are enabled, vega spatial projections are applied and the scales for the x and y properties are not being used. However, we still need the legacy scaling terms to properly size poly popups on hover, which is why _xLatLngBnds, etc are separate scales
   const projections = []
