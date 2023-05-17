@@ -244,6 +244,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _layerNames[layerName] = layer
     }
 
+    const currentLayerTypes = _chart.getAllLayerTypes()
+    if (
+      currentLayerTypes.includes("mesh2d") &&
+      currentLayerTypes.includes("crossSectionTerrain")
+    ) {
+      _chart.useTwoYAxes(true)
+    }
+
     return _chart
   }
 
@@ -283,6 +291,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.getLayerNames = function() {
     return _layers
+  }
+
+  _chart.getAllLayerTypes = function() {
+    return _layers.map(layer => layer?.layerType())
   }
 
   _chart.xRangeFilter = function(filter) {

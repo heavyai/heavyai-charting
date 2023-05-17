@@ -1420,7 +1420,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
     _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
-    if (chart.useTwoYAxes()) {
+    if (_chart.useTwoYAxes()) {
       _chart._prepareY2Axis(_chart.g(), _chart.y(), transitionDuration)
     }
 
