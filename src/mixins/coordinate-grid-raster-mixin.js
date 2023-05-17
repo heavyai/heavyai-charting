@@ -1050,9 +1050,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     _y2Axis.ticks(_chart.effectiveHeight() / _y2Axis.scale().ticks().length < 16 ? Math.ceil(_chart.effectiveHeight() / 16) : 10)
 
-    if (_useRightYAxis) {
-      _y2Axis.orient("right")
-    }
+    _y2Axis.orient("right")
 
     setYAxisFormat()
 

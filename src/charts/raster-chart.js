@@ -294,7 +294,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   }
 
   _chart.getAllLayerTypes = function() {
-    return _layers.map(layer => layer?.layerType())
+    return _chart.getAllLayers().map(l => l?.layerType())
   }
 
   _chart.xRangeFilter = function(filter) {
