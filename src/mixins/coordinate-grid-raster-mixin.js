@@ -693,6 +693,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       .attr("width", width * pixelRatio)
       .attr("height", height * pixelRatio)
 
+    if (_chart.useTwoYAxes()) {
+      _chartBody.style("right", right + "px")
+    }
+
     _parent.style("width", (width + (right + left)) + "px")
       .style("height", (height + (top + bottom)) + "px")
       .attr("width", (width + (right + left)) * pixelRatio)
@@ -1066,6 +1070,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     if (yLabel.empty()) {
       yLabel = root.append("div")
+        // .attr("class", axisClass + "-axis-label")
         .attr("class", "y-axis-label")
     }
 
@@ -1102,6 +1107,14 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const labelPosition = _useRightYAxis ? (_chart.width() - _yAxisLabelPadding) : _yAxisLabelPadding
     const rotation = _useRightYAxis ? 90 : -90
     _chart.renderYAxisLabel("y", _chart.yAxisLabel(), rotation, labelPosition)
+  }
+
+  _chart.renderY2Axis = function (g, transitionDuration) {
+    const axisPosition = _chart.width() - _chart.margins().right
+    _chart.renderYAxisAt("y2", _y2Axis, axisPosition, transitionDuration)
+    const labelPosition = (_chart.width() + _yAxisLabelPadding)
+    const rotation = 90
+    _chart.renderYAxisLabel("y2", _chart.yAxisLabel(), rotation, labelPosition)
   }
 
   _chart._renderHorizontalGridLinesForAxis = function (g, scale, axis, transitionDuration) {
@@ -1430,8 +1443,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       _chart.renderYAxis(_chart.g(), transitionDuration)
 
       if (_chart.useTwoYAxes()) {
+        _chart.margins().right = 60
         _chart.useRightYAxis(true)
-        _chart.renderYAxis(_chart.g(), transitionDuration)
+        _chart.renderY2Axis(_chart.g(), transitionDuration)
         // TODO(C): is this needed?
         _chart.useRightYAxis(false)
       }

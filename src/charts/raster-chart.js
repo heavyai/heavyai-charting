@@ -880,7 +880,7 @@ function valuesOb(obj) {
 
 function checkMultiYScaleLayers(chart, scales) {
   const layers = chart.getAllLayers()
-  const layerTypes = layers.map(l => l?.layerType())
+  const layerTypes = chart.getAllLayerTypes()
   const terrainLayer = layers.filter(
     l => l?.layerType() === "crossSectionTerrain"
   )
