@@ -1444,10 +1444,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
       if (_chart.useTwoYAxes()) {
         _chart.margins().right = 60
-        _chart.useRightYAxis(true)
         _chart.renderY2Axis(_chart.g(), transitionDuration)
-        // TODO(C): is this needed?
-        _chart.useRightYAxis(false)
       }
     }
 
