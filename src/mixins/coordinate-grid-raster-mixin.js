@@ -1117,7 +1117,6 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   _chart.renderY2Axis = function (g, transitionDuration) {
-    console.log("y2 axis position", _chart.width() - _chart.margins().right)
     const axisPosition = _chart.width() - _chart.margins().right
     _chart.renderYAxisAt("y2", _y2Axis, axisPosition, transitionDuration)
     const labelPosition = (_chart.width() + _yAxisLabelPadding)

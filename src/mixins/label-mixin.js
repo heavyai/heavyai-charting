@@ -129,7 +129,7 @@ export default function labelMixin(chart) {
     }
 
     if (type === "y2") {
-      iconPosition.left = `${getXaxisLeftPosition(hasLegend) * 2}px`
+      iconPosition.left = `${chart.width() - chart.margins().right / 2.5}px`
     }
 
     chart
