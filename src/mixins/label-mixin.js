@@ -121,8 +121,15 @@ export default function labelMixin(chart) {
       chart.legend().legendType() === "quantitative"
 
     const iconPosition = {
-      left: type === "y" ? "" : `${getXaxisLeftPosition(hasLegend)}px`,
-      top: type === "y" ? `${getYaxisTopPosition()}px` : ""
+      left:
+        type === "y" || type === "y2"
+          ? ""
+          : `${getXaxisLeftPosition(hasLegend)}px`,
+      top: type === "y" || type === "y2" ? `${getYaxisTopPosition()}px` : ""
+    }
+
+    if (type === "y2") {
+      iconPosition.left = `${getXaxisLeftPosition(hasLegend) * 2}px`
     }
 
     chart
@@ -132,7 +139,7 @@ export default function labelMixin(chart) {
 
     chart
       .root()
-      .selectAll(".y-axis-label, .x-axis-label")
+      .selectAll(".y-axis-label, .x-axis-label, .y2-axis-label")
       .style("display", "none")
 
     const editorWrapper = chart
