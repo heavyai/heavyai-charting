@@ -526,6 +526,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         _y.domain([renderBounds[2][1], renderBounds[0][1]])
       }
     } else {
+      // TODO(C): THIS IS WHERE THIS IS HAPPENING
       const layers = getLayers()
       const xRanges = []
       const yRanges = []

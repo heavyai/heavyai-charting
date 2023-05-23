@@ -101,6 +101,7 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
   }
 
   _chart.getDataRenderBounds = function() {
+    // TODO(C): THIS COULD ALSO BE WHERE THIS IS HAPPENING
     const dimRangeData = initializeXYDimsAndRanges(_chart)
     const xRanges = dimRangeData.xRanges
     const yRanges = dimRangeData.yRanges
