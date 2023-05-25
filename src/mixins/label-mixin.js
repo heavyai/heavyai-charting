@@ -121,11 +121,10 @@ export default function labelMixin(chart) {
       chart.legend().legendType() === "quantitative"
 
     const iconPosition = {
-      left:
-        type === "y" || type === "y2"
-          ? ""
-          : `${getXaxisLeftPosition(hasLegend)}px`,
-      top: type === "y" || type === "y2" ? `${getYaxisTopPosition()}px` : ""
+      left: ["y", "y2"].includes(type)
+        ? ""
+        : `${getXaxisLeftPosition(hasLegend)}px`,
+      top: ["y", "y2"].includes(type) ? `${getYaxisTopPosition()}px` : ""
     }
 
     if (type === "y2") {

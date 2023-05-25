@@ -76,16 +76,13 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
         }
 
         if (
+          typeof layer.yDim === "function" &&
           _chart.useTwoYAxes() &&
           layer.layerType() === "crossSectionTerrain"
         ) {
-          if (typeof layer.yDim === "function") {
-            addDimAndRange(layer.yDim(), y2Dims, y2Ranges)
-          }
-        } else {
-          if (typeof layer.yDim === "function") {
-            addDimAndRange(layer.yDim(), yDims, yRanges)
-          }
+          addDimAndRange(layer.yDim(), y2Dims, y2Ranges)
+        } else if (typeof layer.yDim === "function") {
+          addDimAndRange(layer.yDim(), yDims, yRanges)
         }
       })
     }
