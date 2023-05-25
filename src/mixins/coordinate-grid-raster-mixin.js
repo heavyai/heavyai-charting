@@ -133,6 +133,11 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _yAxisLabel
   let _yAxisLabelPadding = 0
 
+  let _y2Axis = d3.svg.axis().orient("right")
+  let _y2AxisPadding = 0
+  let _y2AxisLabel
+  let _y2AxisLabelPadding = 0
+
   let _renderHorizontalGridLine = false
   let _renderVerticalGridLine = false
 
@@ -144,6 +149,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _rangeBandPadding = 0
 
   let _useRightYAxis = false
+  let _useTwoYAxes = false
 
   let _maxBounds = [[-Infinity, -Infinity], [Infinity, Infinity]]
 
@@ -628,6 +634,23 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   /**
+   * Gets or sets whether the chart should be drawn with two y axes, one on the right and one on the left.
+   * @name useTwoYAxes
+   * @memberof dc.coordinateGridRasterMixin
+   * @instance
+   * @param {Boolean} [useTwoYAxes=false]
+   * @return {Boolean}
+   * @return {dc.coordinateGridRasterMixin}
+   */
+  _chart.useTwoYAxes = function (useTwoYAxes) {
+    if (!arguments.length) {
+      return _useTwoYAxes
+    }
+    _useTwoYAxes = useTwoYAxes
+    return _chart
+  }
+
+  /**
    * Returns true if the chart is using ordinal xUnits ({@link #units.ordinal units.ordinal}, or false
    * otherwise. Most charts behave differently with ordinal data and use the result of this method to
    * trigger the appropriate logic.
@@ -672,6 +695,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       .style("top", top + "px")
       .attr("width", width * pixelRatio)
       .attr("height", height * pixelRatio)
+
+    if (_chart.useTwoYAxes()) {
+      _chartBody.style("right", right + "px")
+    }
 
     _parent.style("width", (width + (right + left)) + "px")
       .style("height", (height + (top + bottom)) + "px")
@@ -1023,19 +1050,39 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     _chart.prepareLockAxis("y")
   }
 
+  _chart._prepareY2Axis = function (g, y, transitionDuration) {
+    y.range([Math.round(_chart.yAxisHeight()), 0])
+
+    _y2Axis = _y2Axis.scale(y)
+
+    _y2Axis.ticks(_chart.effectiveHeight() / _y2Axis.scale().ticks().length < 16 ? Math.ceil(_chart.effectiveHeight() / 16) : 10)
+
+    _y2Axis.orient("right")
+
+    setYAxisFormat()
+
+    _chart._renderHorizontalGridLinesForAxis(g, y, _y2Axis, transitionDuration)
+    _chart.prepareLabelEdit("y2")
+    _chart.prepareLockAxis("y")
+  }
+
   _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
     const root = _chart.root()
 
-    let yLabel = root.selectAll(".y-axis-label")
+    let yLabel = root.selectAll(`.${axisClass}-axis-label`)
 
     if (yLabel.empty()) {
       yLabel = root.append("div")
-        .attr("class", "y-axis-label")
+        .attr("class", `${axisClass}-axis-label`)
     }
 
     if (text !== "") {
       // TODO(croot): should add the rotation and labelXPosition here
       // As of now (09/02/2016) the chart.css is breaking this.
+
+      if (axisClass === "y2") {
+        yLabel.style("right", 0)
+      }
 
       yLabel
         .style("top", (_chart.effectiveHeight() / 2 + _chart.margins().top) + "px")
@@ -1066,6 +1113,14 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const labelPosition = _useRightYAxis ? (_chart.width() - _yAxisLabelPadding) : _yAxisLabelPadding
     const rotation = _useRightYAxis ? 90 : -90
     _chart.renderYAxisLabel("y", _chart.yAxisLabel(), rotation, labelPosition)
+  }
+
+  _chart.renderY2Axis = function (g, transitionDuration) {
+    const axisPosition = _chart.width() - _chart.margins().right
+    _chart.renderYAxisAt("y2", _y2Axis, axisPosition, transitionDuration)
+    const labelPosition = (_chart.width() + _yAxisLabelPadding)
+    const rotation = 90
+    _chart.renderYAxisLabel("y2", _chart.y2AxisLabel(), rotation, labelPosition)
   }
 
   _chart._renderHorizontalGridLinesForAxis = function (g, scale, axis, transitionDuration) {
@@ -1141,8 +1196,32 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   /**
+   * Set or get the y2 axis label. If setting the label, you may optionally include additional padding
+   * to the margin to make room for the label. By default the padded is set to 12 to accomodate the
+   * text height.
+   * @name y2AxisLabel
+   * @memberof dc.coordinateGridRasterMixin
+   * @instance
+   * @param {String} [labelText]
+   * @param {Number} [padding=12]
+   * @return {String}
+   * @return {dc.coordinateGridRasterMixin}
+   */
+  _chart.y2AxisLabel = function (labelText, padding) {
+    if (!arguments.length) {
+      return _y2AxisLabel
+    }
+    _y2AxisLabel = labelText
+    _chart.margins().left -= _y2AxisLabelPadding
+    _y2AxisLabelPadding = (padding === undefined) ? DEFAULT_AXIS_LABEL_PADDING : padding
+    _chart.margins().left += _y2AxisLabelPadding
+    return _chart
+  }
+
+  /**
    * Set or get the y axis used by the coordinate grid chart instance. This function is most useful
-   * when y axis customization is required. The y axis in dc.js is simply an instance of a [d3 axis
+   * when y axis customization is required. The y   let _yAxisLabelPadding = 0
+axis in dc.js is simply an instance of a [d3 axis
    * object](https://github.com/mbostock/d3/wiki/SVG-Axes#wiki-_axis); therefore it supports any
    * valid d3 axis manipulation. **Caution**: The y axis is usually generated internally by dc
    * resetting it may cause unexpected results.
@@ -1238,6 +1317,28 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       return _yAxisPadding
     }
     _yAxisPadding = padding
+    return _chart
+  }
+
+  /**
+   * Set or get y2 axis padding for the elastic y2 axis. The padding will be added to the top of the y2
+   * axis if elasticY is turned on; otherwise it is ignored.
+   *
+   * padding can be an integer or percentage in string (e.g. "10%"). Padding can be applied to
+   * number or date axes. When padding a date axis, an integer represents number of days being padded
+   * and a percentage string will be treated the same as an integer.
+   * @name y2AxisPadding
+   * @memberof dc.coordinateGridRasterMixin
+   * @instance
+   * @param {Number|String} [padding=0]
+   * @return {Number}
+   * @return {dc.coordinateGridRasterMixin}
+   */
+  _chart.y2AxisPadding = function (padding) {
+    if (!arguments.length) {
+      return _y2AxisPadding
+    }
+    _y2AxisPadding = padding
     return _chart
   }
 
@@ -1382,6 +1483,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
     _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
+    if (_chart.useTwoYAxes()) {
+      _chart._prepareY2Axis(_chart.g(), _chart.y2(), transitionDuration)
+    }
 
     if (_chart.elasticX() || _resizing || render) {
       _chart.renderXAxis(_chart.g(), transitionDuration)
@@ -1389,6 +1493,11 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     if (_chart.elasticY() || _resizing || render) {
       _chart.renderYAxis(_chart.g(), transitionDuration)
+
+      if (_chart.useTwoYAxes()) {
+        _chart.margins().right = 60
+        _chart.renderY2Axis(_chart.g(), transitionDuration)
+      }
     }
 
     _chart.fadeDeselectedArea()

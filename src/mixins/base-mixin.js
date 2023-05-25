@@ -1800,6 +1800,7 @@ export default function baseMixin(_chart) {
       "group",
       "xAxisLabel",
       "yAxisLabel",
+      "y2AxisLabel",
       "stack",
       "title",
       "point",
