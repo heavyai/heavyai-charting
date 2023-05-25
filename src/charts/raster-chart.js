@@ -554,7 +554,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         let xDim = layer.xDim(),
           yDim = layer.yDim()
         if (xDim) {
-          var range = xDim.getFilter()
+          let range = xDim.getFilter()
           if (range !== null) {
             // value coming back is an unnecessarily nested array - [[0, 1]]
             if (range[0] && Array.isArray(range[0])) {
@@ -565,7 +565,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           }
         }
         if (yDim) {
-          var range = yDim.getFilter()
+          let range = yDim.getFilter()
           if (range !== null) {
             // value coming back is an unnecessarily nested array - [[0, 1]]
             if (range[0] && Array.isArray(range[0])) {
@@ -654,13 +654,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           yDim = layer.yDim(),
           viewBoxDim = layer.viewBoxDim()
         if (xDim) {
-          var range = xDim.getFilter()
+          let range = xDim.getFilter()
           if (range !== null) {
             xRanges.push(range)
           }
         }
         if (yDim) {
-          var range = yDim.getFilter()
+          let range = yDim.getFilter()
           if (range !== null) {
             yRanges.push(range)
           }

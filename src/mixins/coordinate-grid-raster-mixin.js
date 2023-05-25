@@ -1073,7 +1073,6 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     if (yLabel.empty()) {
       yLabel = root.append("div")
-        // .attr("class", axisClass + "-axis-label")
         .attr("class", `${axisClass}-axis-label`)
     }
 
