@@ -1485,7 +1485,7 @@ axis in dc.js is simply an instance of a [d3 axis
     prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
     _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
     if (_chart.useTwoYAxes()) {
-      _chart._prepareY2Axis(_chart.g(), _chart.y(), transitionDuration)
+      _chart._prepareY2Axis(_chart.g(), _chart.y2(), transitionDuration)
     }
 
     if (_chart.elasticX() || _resizing || render) {
