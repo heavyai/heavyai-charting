@@ -107,7 +107,7 @@
     "chai-spies": "^0.7.1",
     "codecov": "^2.1.0",
     "cross-env": "^5.2.1",
-    "css-loader": "^0.22.0",
+    "css-loader": "^6.7.3",
     "documentation": "4.0.0-rc.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^3.1.0",
