@@ -505,7 +505,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       renderBounds.length === 4 &&
       renderBounds[0] instanceof Array &&
       renderBounds[0].length === 2 &&
-      !_chart.useTwoYAxes()
+      (typeof _chart.useTwoYAxes !== "function" || !_chart?.useTwoYAxes())
 
     if (_x === null) {
       _x = d3.scale.linear()
@@ -515,7 +515,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _y = d3.scale.linear()
     }
 
-    if (_y2 === null && _chart.useTwoYAxes()) {
+    if (
+      _y2 === null &&
+      typeof _chart.useTwoYAxes === "function" &&
+      _chart?.useTwoYAxes()
+    ) {
       _y2 = d3.scale.linear()
     }
 
@@ -544,7 +548,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         _x.domain([renderBounds[0][0], renderBounds[1][0]])
         _y.domain([renderBounds[2][1], renderBounds[0][1]])
       }
-    } else if (_chart.useTwoYAxes()) {
+    } else if (
+      typeof _chart.useTwoYAxes === "function" &&
+      _chart?.useTwoYAxes()
+    ) {
       const layers = _chart.getLayers()
       const xRanges = []
       const yRanges = []
