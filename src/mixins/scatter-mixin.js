@@ -77,7 +77,8 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
 
         if (
           typeof layer.yDim === "function" &&
-          _chart.useTwoYAxes() &&
+          typeof _chart.useTwoYAxes === "function" &&
+          _chart?.useTwoYAxes() &&
           layer.layerType() === "crossSectionTerrain"
         ) {
           addDimAndRange(layer.yDim(), y2Dims, y2Ranges)

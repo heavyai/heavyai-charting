@@ -696,7 +696,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       .attr("width", width * pixelRatio)
       .attr("height", height * pixelRatio)
 
-    if (_chart.useTwoYAxes()) {
+    if (typeof _chart.useTwoYAxes === "function" && _chart?.useTwoYAxes()) {
       _chartBody.style("right", right + "px")
     }
 
@@ -1483,7 +1483,7 @@ axis in dc.js is simply an instance of a [d3 axis
 
     prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
     _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
-    if (_chart.useTwoYAxes()) {
+    if (typeof _chart.useTwoYAxes === "function" && _chart?.useTwoYAxes()) {
       _chart._prepareY2Axis(_chart.g(), _chart.y2(), transitionDuration)
     }
 
@@ -1494,7 +1494,7 @@ axis in dc.js is simply an instance of a [d3 axis
     if (_chart.elasticY() || _resizing || render) {
       _chart.renderYAxis(_chart.g(), transitionDuration)
 
-      if (_chart.useTwoYAxes()) {
+      if (typeof _chart.useTwoYAxes === "function" && _chart?.useTwoYAxes()) {
         _chart.margins().right = 60
         _chart.renderY2Axis(_chart.g(), transitionDuration)
       }
