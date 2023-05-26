@@ -115,7 +115,7 @@
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^3.0.0",
     "http-server": "^0.11.2",
-    "jsdom": "^11.7.0",
+    "jsdom": "^16.5.0",
     "lodash": "^4.17.21",
     "mocha": "^2.5.3",
     "mocha-jenkins-reporter": "^0.1.9",
