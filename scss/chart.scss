@@ -437,7 +437,7 @@ body {
         fill: $gray5 !important;
     }
 
-    div.x-axis-label, div.y-axis-label, div.axis-label-edit {
+    div.x-axis-label, div.y-axis-label, div.y2-axis-label, div.axis-label-edit {
         position: absolute;
         font-size: 13px !important;
         color: $text-gray;
@@ -447,7 +447,7 @@ body {
         max-width: 100%;
     }
 
-    div.y-axis-label, div.axis-label-edit.type-y {
+    div.y-axis-label, div.axis-label-edit.type-y, div.y2-axis-label, div.axis-label-edit.type-y2 {
         transform-origin: 50% 0;
         transform:translateX(-50%) rotate(270deg) ;
         left: 4px;
@@ -2305,6 +2305,13 @@ body {
     }
 
     &.type-y .axis-input {
+        transform: translate(calc(-100% - 8px), -50%);
+        input {
+            text-align: right;
+        }
+    }
+
+    &.type-y2 .axis-input {
         transform: translate(calc(-100% - 8px), -50%);
         input {
             text-align: right;

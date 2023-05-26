@@ -631,7 +631,7 @@ body {
       fill-opacity: #868686; }
   .dc-chart text.deselected-label {
     fill: #868686 !important; }
-  .dc-chart div.x-axis-label, .dc-chart div.y-axis-label, .dc-chart div.axis-label-edit {
+  .dc-chart div.x-axis-label, .dc-chart div.y-axis-label, .dc-chart div.y2-axis-label, .dc-chart div.axis-label-edit {
     position: absolute;
     font-size: 13px !important;
     color: #868686;
@@ -639,11 +639,11 @@ body {
     pointer-events: none;
     height: 18px;
     max-width: 100%; }
-  .dc-chart div.y-axis-label, .dc-chart div.axis-label-edit.type-y {
+  .dc-chart div.y-axis-label, .dc-chart div.axis-label-edit.type-y, .dc-chart div.y2-axis-label, .dc-chart div.axis-label-edit.type-y2 {
     transform-origin: 50% 0;
     transform: translateX(-50%) rotate(270deg);
     left: 4px; }
-    .dc-chart div.y-axis-label input, .dc-chart div.axis-label-edit.type-y input {
+    .dc-chart div.y-axis-label input, .dc-chart div.axis-label-edit.type-y input, .dc-chart div.y2-axis-label input, .dc-chart div.axis-label-edit.type-y2 input {
       cursor: vertical-text;
       top: -1px; }
   .dc-chart div.x-axis-label, .dc-chart div.axis-label-edit.type-x {
@@ -1832,6 +1832,10 @@ body {
   .axis-lock.type-y .axis-input {
     transform: translate(calc(-100% - 8px), -50%); }
     .axis-lock.type-y .axis-input input {
+      text-align: right; }
+  .axis-lock.type-y2 .axis-input {
+    transform: translate(calc(-100% - 8px), -50%); }
+    .axis-lock.type-y2 .axis-input input {
       text-align: right; }
   .axis-lock .hit-box {
     position: absolute; }
