@@ -109,7 +109,7 @@
     "cross-env": "^5.2.1",
     "css-loader": "^0.22.0",
     "documentation": "4.0.0-rc.1",
-    "eslint": "^4.19.1",
+    "eslint": "^6.1.0",
     "eslint-config-airbnb": "^3.1.0",
     "eslint-plugin-import": "^2.8.0",
     "expose-loader": "^0.7.1",

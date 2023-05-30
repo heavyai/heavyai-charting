@@ -182,7 +182,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
     const data = [
       {
         name: layerName,
-        ...(vega_data_formats.length ? vega_data_formats[0] : {}),
+        ...(vega_data_formats?.[0] ?? {}),
         sql: parser.writeSQL({
           type: "root",
           source: table,

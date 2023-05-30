@@ -138,7 +138,9 @@ module.exports = {
     "use-isnan": 2, // comparing to NaN can be difficult to reason about.
     "valid-jsdoc": 0, // not using jsdoc.
     "valid-typeof": 2, // there are ways to type-check, but will least prevent typos.
-    "yoda": 2 // improves readability and consistency.
+    "yoda": 2, // improves readability and consistency.
+    "no-prototype-builtins": "warn", // Only warn on hasOwnProperty and others
+    "no-self-assign": "warn"
   },
   "env": {
     "es6": true,
