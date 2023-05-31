@@ -7,6 +7,7 @@ import { isValidPostFilter } from "./raster-layer-point-mixin"
 import RasterLayerContext from "./render-vega-lite/RasterLayerContext"
 import {
   GeographicChannelDescriptor,
+  OpacityChannelDescriptor,
   PositionChannelDescriptor,
   PropLocation
 } from "./render-vega-lite/PropDescriptor/CommonChannelDescriptors"
@@ -126,6 +127,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
       is_zero_to_one
     )
   )
+  prop_descriptors.set("opacity", new OpacityChannelDescriptor("opacity"))
 
   _layer.__genVega = function({
     chart,
