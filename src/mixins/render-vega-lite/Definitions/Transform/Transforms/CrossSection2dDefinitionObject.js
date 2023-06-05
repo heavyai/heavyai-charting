@@ -94,6 +94,45 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
     ]
 
     /**
+     * @type {number}
+     */
+    this.num_points_x_ = 0
+    if (Object.hasOwn(obj, "numPointsX")) {
+      if (typeof obj.numPointsX !== "number") {
+        throw new Error(
+          `Invalid '${key}' transform definition. The 'numPointsX' property must be a number`
+        )
+      }
+      this.num_points_x_ = obj.numPointsX
+    }
+
+    /**
+     * @type {number}
+     */
+    this.num_points_y_ = 0
+    if (Object.hasOwn(obj, "numPointsY")) {
+      if (typeof obj.numPointsY !== "number") {
+        throw new Error(
+          `Invalid '${key}' transform definition. The 'numPointsY' property must be a number`
+        )
+      }
+      this.num_points_y_ = obj.numPointsY
+    }
+
+    /**
+     * @type {number}
+     */
+    this.dwithin_distance_ = 0
+    if (Object.hasOwn(obj, "dwithinDistance")) {
+      if (typeof obj.numPointsY !== "number") {
+        throw new Error(
+          `Invalid '${key}' transform definition. The 'dwithinDistance' property must be a number`
+        )
+      }
+      this.dwithin_distance_ = obj.dwithinDistance
+    }
+
+    /**
      * @type {string}
      */
     this.cross_section_dimension_name_ = "distance"
@@ -140,6 +179,30 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
   }
 
   /**
+   * Required by the renderer for the line generation. Should be half of chart width
+   * @type {number}
+   */
+  get numPointsX() {
+    return this.num_points_x_
+  }
+
+  /**
+   * Required by the renderer for the line generation. Should be half of chart width
+   * @type {number}
+   */
+  get numPointsY() {
+    return this.num_points_y_
+  }
+
+  /**
+   * Required by the renderer for the line generation. Should be half of chart width
+   * @type {number}
+   */
+  get dwithinDistance() {
+    return this.dwithin_distance_
+  }
+
+  /**
    * The name of the new xy dimension created by the cross-section cut
    * @type {string}
    */
@@ -183,11 +246,12 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
         type: "cross_section2d",
         coords: {
           x: this.x,
-          y: this.y,
-          z: this.z
+          y: this.y
         },
         xy_cross_section: this.crossSectionLine,
-        cross_section_dimension: this.crossSectionDimensionName
+        num_points_x: this.numPointsX,
+        num_points_y_: this.numPointsY,
+        dwithin_distance: this.dwithinDistance
       }
     })
 
