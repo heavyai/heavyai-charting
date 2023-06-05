@@ -250,7 +250,7 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
         },
         xy_cross_section: this.crossSectionLine,
         num_points_x: this.numPointsX,
-        num_points_y_: this.numPointsY,
+        num_points_y: this.numPointsY,
         dwithin_distance: this.dwithinDistance
       }
     })
@@ -263,19 +263,6 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
    * @param {VegaPropertyOutputState} vega_property_output_state
    */
   realign(prop_descriptors, vega_property_output_state) {
-    const transform_name = CrossSection2dDefinitionObject.key
-    // const format_obj = vega_property_output_state.vega_data_formats.get(
-    //   this.key
-    // )
-    // assert(
-    //   typeof format_obj === "object" &&
-    //     Object.hasOwn(format_obj, "format") &&
-    //     Object.hasOwn(format_obj.format, "coords") &&
-    //     typeof format_obj.format.coords === "object" &&
-    //     Object.hasOwn(format_obj.format.coords, "x") &&
-    //     Object.hasOwn(format_obj.format.coords, "y"),
-    //   `${format_obj}`
-    // )
     /* eslint-disable max-depth */
     for (const prop_descriptor of prop_descriptors.values()) {
       if (prop_descriptor instanceof PositionChannelDescriptor) {
@@ -294,21 +281,7 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
             `${vega_prop_name}`
           )
 
-          let new_field_name = ""
-          let cross_prop_name = ""
-          if (vega_prop_name === "x") {
-            new_field_name = this.crossSectionDimensionName
-            cross_prop_name = "crossSectionDimensionName"
-          } else {
-            new_field_name = this.z
-            cross_prop_name = "z"
-          }
-
-          if (sql_obj.expr !== new_field_name) {
-            throw new Error(
-              `Invalid '${transform_name}' transform definition. The '${vega_prop_name}' mark position property must be linked with the '${cross_prop_name}' property. It is linked to '${sql_obj.expr}'`
-            )
-          }
+          const new_field_name = vega_prop_name === "x" ? "x" : "y"
 
           // drop any mention of the dynamically-created columns from the sql list
           vega_property_output_state.sql_parser_transforms.delete(
