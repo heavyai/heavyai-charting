@@ -81,7 +81,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _y2 = null
   const _xScaleName = "x"
   const _yScaleName = "y"
+  let _yScaleType = "linear"
   const _y2ScaleName = "y2"
+  let _y2ScaleType = "linear"
 
   let _xLatLngBnds = null
   let _yLatLngBnds = null
@@ -147,11 +149,27 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
+  _chart.yScaleType = function(_) {
+    if (!arguments.length) {
+      return _yScaleType
+    }
+    _yScaleType = _
+    return _chart
+  }
+
   _chart.y2 = function(_) {
     if (!arguments.length) {
       return _y2
     }
     _y2 = _
+    return _chart
+  }
+
+  _chart.y2ScaleType = function(_) {
+    if (!arguments.length) {
+      return _y2ScaleType
+    }
+    _y2ScaleType = _
     return _chart
   }
 
@@ -512,7 +530,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (_y === null) {
-      _y = d3.scale.linear()
+      if (_yScaleType === "log") {
+        _y = d3.scale.log()
+      } else {
+        _y = d3.scale.linear()
+      }
     }
 
     if (
@@ -520,7 +542,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       typeof _chart.useTwoYAxes === "function" &&
       _chart?.useTwoYAxes()
     ) {
-      _y2 = d3.scale.linear()
+      if (_y2ScaleType === "log") {
+        _y2 = d3.scale.log()
+      } else {
+        _y2 = d3.scale.linear()
+      }
     }
 
     // if _chart.useLonLat() is not true, the chart bounds have already been projected into mercator space
