@@ -17,6 +17,7 @@ import { materializePropDescriptors } from "./render-vega-lite/RenderVegaLite"
 // only used for jsdoc
 // eslint-disable-next-line no-unused-vars
 import VegaPropertyOutputState from "./render-vega-lite/VegaPropertyOutputState"
+import { LEGEND_POSITIONS } from "../chart-addons/stacked-legend"
 
 // eslint-disable-next-line no-warning-comments
 // TODO(croot): this seems like it is used in at least one other layer mixin. Make into a utility somewhere
@@ -239,7 +240,7 @@ export default function rasterLayerMesh2dMixin(_layer) {
     const legend_obj = prop_descriptor
       ? _vega_property_output_state.getLegendForProperty(prop_descriptor)
       : null
-    return [scale_obj, legend_obj]
+    return [scale_obj, legend_obj, LEGEND_POSITIONS.BOTTOM_LEFT]
   }
 
   _layer.useProjection = function() {
