@@ -5,8 +5,8 @@ import { format } from "d3-format"
 import { logger } from "../utils/logger"
 
 export const LEGEND_POSITIONS = {
-  TOP_RIGHT: 'top-right',
-  BOTTOM_LEFT: 'bottom-left'
+  TOP_RIGHT: "top-right",
+  BOTTOM_LEFT: "bottom-left"
 }
 
 const hasLegendOpenProp = color =>
@@ -117,7 +117,7 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
       .filter((d, i) => i !== selectedLayer.currentLayer)
       .remove()
   }
-  
+
   return toLegendState(
     getRealLayers(chart.getLayerNames()).map(layer_name => {
       const layer = chart.getLayer(layer_name)
@@ -326,8 +326,9 @@ const color_literal_alpha_regex = /^\s*[a-z,A-Z]{3}[aA]\s*\([\d.]+,[\d.]+,[\d.]+
 
 // eslint-disable-next-line complexity
 function legendState_v1(state, useMap) {
-
-  const position = useMap ? LEGEND_POSITIONS.BOTTOM_LEFT : LEGEND_POSITIONS.TOP_RIGHT
+  const position = useMap
+    ? LEGEND_POSITIONS.BOTTOM_LEFT
+    : LEGEND_POSITIONS.TOP_RIGHT
   if (state.type === "ordinal") {
     return {
       type: "nominal",
@@ -346,7 +347,7 @@ function legendState_v1(state, useMap) {
           ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
           : state.range,
       domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
-      position 
+      position
     }
   } else if (
     state.type === "quantitative" &&
@@ -397,7 +398,9 @@ function legendState_v2(state, useMap) {
   const { title = "Legend", open = true, locked = false } = legend
 
   // Try to default legend position, but take explicit legend_position if it exists
-  let position = useMap ? LEGEND_POSITIONS.BOTTOM_LEFT : LEGEND_POSITIONS.TOP_RIGHT
+  let position = useMap
+    ? LEGEND_POSITIONS.BOTTOM_LEFT
+    : LEGEND_POSITIONS.TOP_RIGHT
   if (state.legend_position) {
     position = state.legend_position
   }
