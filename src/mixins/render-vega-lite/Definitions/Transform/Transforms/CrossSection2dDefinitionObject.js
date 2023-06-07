@@ -94,6 +94,45 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
     ]
 
     /**
+     * @type {number}
+     */
+    this.num_points_x_ = 0
+    if (Object.hasOwn(obj, "numPointsX")) {
+      if (typeof obj.numPointsX !== "number") {
+        throw new Error(
+          `Invalid '${key}' transform definition. The 'numPointsX' property must be a number`
+        )
+      }
+      this.num_points_x_ = obj.numPointsX
+    }
+
+    /**
+     * @type {number}
+     */
+    this.num_points_y_ = 0
+    if (Object.hasOwn(obj, "numPointsY")) {
+      if (typeof obj.numPointsY !== "number") {
+        throw new Error(
+          `Invalid '${key}' transform definition. The 'numPointsY' property must be a number`
+        )
+      }
+      this.num_points_y_ = obj.numPointsY
+    }
+
+    /**
+     * @type {number}
+     */
+    this.dwithin_distance_ = 0
+    if (Object.hasOwn(obj, "dwithinDistance")) {
+      if (typeof obj.numPointsY !== "number") {
+        throw new Error(
+          `Invalid '${key}' transform definition. The 'dwithinDistance' property must be a number`
+        )
+      }
+      this.dwithin_distance_ = obj.dwithinDistance
+    }
+
+    /**
      * @type {string}
      */
     this.cross_section_dimension_name_ = "distance"
@@ -140,6 +179,30 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
   }
 
   /**
+   * Required by the renderer for the line generation. Should be half of chart width
+   * @type {number}
+   */
+  get numPointsX() {
+    return this.num_points_x_
+  }
+
+  /**
+   * Required by the renderer for the line generation. Should be half of chart width
+   * @type {number}
+   */
+  get numPointsY() {
+    return this.num_points_y_
+  }
+
+  /**
+   * Required by the renderer for the line generation. Should be half of chart width
+   * @type {number}
+   */
+  get dwithinDistance() {
+    return this.dwithin_distance_
+  }
+
+  /**
    * The name of the new xy dimension created by the cross-section cut
    * @type {string}
    */
@@ -183,11 +246,12 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
         type: "cross_section2d",
         coords: {
           x: this.x,
-          y: this.y,
-          z: this.z
+          y: this.y
         },
-        xy_cross_section: this.crossSectionLine,
-        cross_section_dimension: this.crossSectionDimensionName
+        xyCrossSection: this.crossSectionLine,
+        numPointsX: this.numPointsX,
+        numPointsY: this.numPointsY,
+        dWithinDistance: this.dwithinDistance
       }
     })
 
@@ -199,19 +263,6 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
    * @param {VegaPropertyOutputState} vega_property_output_state
    */
   realign(prop_descriptors, vega_property_output_state) {
-    const transform_name = CrossSection2dDefinitionObject.key
-    // const format_obj = vega_property_output_state.vega_data_formats.get(
-    //   this.key
-    // )
-    // assert(
-    //   typeof format_obj === "object" &&
-    //     Object.hasOwn(format_obj, "format") &&
-    //     Object.hasOwn(format_obj.format, "coords") &&
-    //     typeof format_obj.format.coords === "object" &&
-    //     Object.hasOwn(format_obj.format.coords, "x") &&
-    //     Object.hasOwn(format_obj.format.coords, "y"),
-    //   `${format_obj}`
-    // )
     /* eslint-disable max-depth */
     for (const prop_descriptor of prop_descriptors.values()) {
       if (prop_descriptor instanceof PositionChannelDescriptor) {
@@ -230,21 +281,7 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
             `${vega_prop_name}`
           )
 
-          let new_field_name = ""
-          let cross_prop_name = ""
-          if (vega_prop_name === "x") {
-            new_field_name = this.crossSectionDimensionName
-            cross_prop_name = "crossSectionDimensionName"
-          } else {
-            new_field_name = this.z
-            cross_prop_name = "z"
-          }
-
-          if (sql_obj.expr !== new_field_name) {
-            throw new Error(
-              `Invalid '${transform_name}' transform definition. The '${vega_prop_name}' mark position property must be linked with the '${cross_prop_name}' property. It is linked to '${sql_obj.expr}'`
-            )
-          }
+          const new_field_name = vega_prop_name === "x" ? "x" : "y"
 
           // drop any mention of the dynamically-created columns from the sql list
           vega_property_output_state.sql_parser_transforms.delete(
