@@ -248,10 +248,10 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
           x: this.x,
           y: this.y
         },
-        xy_cross_section: this.crossSectionLine,
-        num_points_x: this.numPointsX,
-        num_points_y: this.numPointsY,
-        dwithin_distance: this.dwithinDistance
+        xyCrossSection: this.crossSectionLine,
+        numPointsX: this.numPointsX,
+        numPointsY: this.numPointsY,
+        dWithinDistance: this.dwithinDistance
       }
     })
 
