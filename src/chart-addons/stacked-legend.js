@@ -197,13 +197,15 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
 
 export function handleLegendToggle() {
   // when chart legend is collapsed, also collapse layer legends
-  this.getLayers().forEach(l =>
-    l.setState(
-      setLegendState(color => ({
-        open: !this.legend().state.open
-      }))
-    )
-  )
+  this.getLayers().forEach(l => {
+    if (l.state?.encoding?.color) {
+      l.setState(
+        setLegendState(color => ({
+          open: !this.legend().state.open
+        }))
+      )
+    }
+  })
   this.legend().setState({
     ...this.legend().state,
     open: !this.legend().state.open
@@ -241,41 +243,46 @@ export function handleLegendOpen(index = 0) {
 export function handleLegendLock({ locked, index = 0 }) {
   const layer = this.getLayers()[index]
 
-  layer.setState(
-    setLegendState(color => ({
-      locked: typeof locked === "undefined" ? true : !locked
-    }))
-  )
+  if (layer?.getState()?.encoding?.color) {
+    layer.setState(
+      setLegendState(color => ({
+        locked: typeof locked === "undefined" ? true : !locked
+      }))
+    )
 
-  const {
-    encoding: { color }
-  } = layer.getState()
-  let redraw = false
-  if (typeof color.scale === "object") {
-    // this if or raster-layer-heatmap-mixin.js
-    if (color.legend.locked) {
-      const colorDomain = color.scale.domain || layer.colorDomain()
-      layer.setState(setColorScaleDomain_v2(colorDomain))
+    const {
+      encoding: { color }
+    } = layer.getState()
+    let redraw = false
+    if (
+      typeof color.scale === "object" &&
+      (color?.scale?.domain || typeof layer.colorDomain === "function")
+    ) {
+      // this if or raster-layer-heatmap-mixin.js
+      if (color.legend.locked) {
+        const colorDomain = color.scale.domain || layer.colorDomain()
+        layer.setState(setColorScaleDomain_v2(colorDomain))
+      } else {
+        layer.setState(setColorScaleDomain_v2("auto"))
+        redraw = true
+      }
+    } else if (
+      typeof color.scale === "undefined" &&
+      typeof color.domain !== "undefined"
+    ) {
+      if (color.legend.locked && color.domain === "auto") {
+        layer.setState(setColorScaleDomain_v1(layer.colorDomain()))
+      } else if (!color.legend.locked) {
+        layer.setState(setColorScaleDomain_v1("auto"))
+        redraw = true
+      }
+    }
+
+    if (redraw) {
+      this.renderAsync() // not setting the state for the legend here because it'll happen on the redraw
     } else {
-      layer.setState(setColorScaleDomain_v2("auto"))
-      redraw = true
+      this.legend().setState(getLegendStateFromChart(this))
     }
-  } else if (
-    typeof color.scale === "undefined" &&
-    typeof color.domain !== "undefined"
-  ) {
-    if (color.legend.locked && color.domain === "auto") {
-      layer.setState(setColorScaleDomain_v1(layer.colorDomain()))
-    } else if (!color.legend.locked) {
-      layer.setState(setColorScaleDomain_v1("auto"))
-      redraw = true
-    }
-  }
-
-  if (redraw) {
-    this.renderAsync() // not setting the state for the legend here because it'll happen on the redraw
-  } else {
-    this.legend().setState(getLegendStateFromChart(this))
   }
 }
 
