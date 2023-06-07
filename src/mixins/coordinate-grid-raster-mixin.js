@@ -1212,9 +1212,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       return _y2AxisLabel
     }
     _y2AxisLabel = labelText
-    _chart.margins().left -= _y2AxisLabelPadding
+    _chart.margins().right -= _y2AxisLabelPadding
     _y2AxisLabelPadding = (padding === undefined) ? DEFAULT_AXIS_LABEL_PADDING : padding
-    _chart.margins().left += _y2AxisLabelPadding
+    _chart.margins().right += _y2AxisLabelPadding
     return _chart
   }
 
@@ -1474,6 +1474,9 @@ axis in dc.js is simply an instance of a [d3 axis
   }
 
   function drawChart (render, imgUrl, renderBounds, queryId) {
+    if (typeof _chart.useTwoYAxes === "function" && _chart?.useTwoYAxes()) {
+      _chart.margins().right = 60
+    }
     // prepare and render the chart first so the grid lines/axes
     // are drawn on top
     prepareChartBody()
@@ -1481,12 +1484,13 @@ axis in dc.js is simply an instance of a [d3 axis
 
     const transitionDuration = (render ? _chart.transitionDuration() : 10)
 
-    prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
-    _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
-    
     if (typeof _chart.useTwoYAxes === "function" && _chart?.useTwoYAxes()) {
       _chart._prepareY2Axis(_chart.g(), _chart.y2(), transitionDuration)
+      _chart.renderY2Axis(_chart.g(), transitionDuration)
     }
+
+    prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
+    _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
 
     if (_chart.elasticX() || _resizing || render) {
       _chart.renderXAxis(_chart.g(), transitionDuration)
@@ -1496,7 +1500,6 @@ axis in dc.js is simply an instance of a [d3 axis
       _chart.renderYAxis(_chart.g(), transitionDuration)
 
       if (typeof _chart.useTwoYAxes === "function" && _chart?.useTwoYAxes()) {
-        _chart.margins().right = 60
         _chart.renderY2Axis(_chart.g(), transitionDuration)
       }
     }
