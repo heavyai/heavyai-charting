@@ -4,6 +4,11 @@ import assert from "assert"
 import { format } from "d3-format"
 import { logger } from "../utils/logger"
 
+export const LEGEND_POSITIONS = {
+  TOP_RIGHT: "top-right",
+  BOTTOM_LEFT: "bottom-left"
+}
+
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
 const hasLegendLockedProp = color =>
@@ -120,7 +125,8 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
         const vega = chart.getMaterializedVegaSpec()
         const [
           color_scale,
-          color_legend
+          color_legend,
+          legend_position
         ] = layer.getPrimaryColorScaleAndLegend()
         if (color_scale === null) {
           return {}
@@ -136,6 +142,7 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
         return {
           ...materialized_color_scale,
           legend: color_legend,
+          legend_position,
           version: 2.0
         }
       } else {
@@ -326,6 +333,9 @@ const color_literal_alpha_regex = /^\s*[a-z,A-Z]{3}[aA]\s*\([\d.]+,[\d.]+,[\d.]+
 
 // eslint-disable-next-line complexity
 function legendState_v1(state, useMap) {
+  const position = useMap
+    ? LEGEND_POSITIONS.BOTTOM_LEFT
+    : LEGEND_POSITIONS.TOP_RIGHT
   if (state.type === "ordinal") {
     return {
       type: "nominal",
@@ -344,7 +354,7 @@ function legendState_v1(state, useMap) {
           ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
           : state.range,
       domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
-      position: useMap ? "bottom-left" : "top-right"
+      position
     }
   } else if (
     state.type === "quantitative" &&
@@ -358,7 +368,7 @@ function legendState_v1(state, useMap) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain.slice(1),
-      position: useMap ? "bottom-left" : "top-right"
+      position
     }
   } else if (state.type === "quantitative") {
     return {
@@ -368,7 +378,7 @@ function legendState_v1(state, useMap) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: "bottom-left"
+      position: LEGEND_POSITIONS.BOTTOM_LEFT
     }
   } else if (state.type === "quantize") {
     const { scale } = state
@@ -379,7 +389,7 @@ function legendState_v1(state, useMap) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: scale.range,
       domain: scale.domain,
-      position: "bottom-left"
+      position: LEGEND_POSITIONS.BOTTOM_LEFT
     }
   } else {
     return {}
@@ -393,7 +403,14 @@ function legendState_v2(state, useMap) {
   const { legend = {} } = state
   assert(typeof legend === "object")
   const { title = "Legend", open = true, locked = false } = legend
-  const position = useMap ? "bottom-left" : "top-right"
+
+  // Try to default legend position, but take explicit legend_position if it exists
+  let position = useMap
+    ? LEGEND_POSITIONS.BOTTOM_LEFT
+    : LEGEND_POSITIONS.TOP_RIGHT
+  if (state.legend_position) {
+    position = state.legend_position
+  }
 
   if (state_type === "ordinal") {
     const extra_domain = []
@@ -514,7 +531,7 @@ function legendState_v2(state, useMap) {
       open,
       position,
       range: range.slice(0, min_size),
-      domain: domain.slice(0, min_size)
+      domain: domain.slice(0, min_size).map(formatNumber)
     }
   } else {
     return {}
@@ -547,6 +564,7 @@ function validateQuantizeDomain(state) {
 }
 function legendState(state, useMap = true) {
   const { version = 1.0 } = state
+
   return version >= 2.0
     ? legendState_v2(state, useMap)
     : legendState_v1(state, useMap)

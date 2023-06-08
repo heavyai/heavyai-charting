@@ -16,7 +16,6 @@ import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
 import { shallowCopyVega } from "../utils/utils-vega"
-import assert from "assert"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
