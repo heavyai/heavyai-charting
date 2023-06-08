@@ -185,8 +185,8 @@ export default class CrossSectionTerrainDefinitionObject extends PropertiesDefin
           y: this.y,
           z: this.z
         },
-        xy_cross_section: this.crossSectionLine,
-        num_points: this.numPoints
+        xyCrossSection: this.crossSectionLine,
+        numPoints: this.numPoints
       }
     })
 
