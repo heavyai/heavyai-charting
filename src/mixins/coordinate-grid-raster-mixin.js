@@ -137,6 +137,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _y2AxisPadding = 0
   let _y2AxisLabel
   let _y2AxisLabelPadding = 0
+  let _y2AxisTransform
 
   let _renderHorizontalGridLine = false
   let _renderVerticalGridLine = false
@@ -650,6 +651,22 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     return _chart
   }
 
+
+  /**
+   * If set this will use the same values for the right y axis as the 
+   * left y axis, but apply the transformation function provided
+   * 
+   * @param {Function} y2AxisTransform - Transformation function
+   * @returns chart
+   */
+  _chart.y2AxisTransform = function(y2AxisTransform) {
+    if (!arguments.length) {
+      return _y2AxisTransform
+    }
+    _y2AxisTransform = y2AxisTransform
+    return _chart
+  }
+
   /**
    * Returns true if the chart is using ordinal xUnits ({@link #units.ordinal units.ordinal}, or false
    * otherwise. Most charts behave differently with ordinal data and use the result of this method to
@@ -1054,8 +1071,13 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     y.range([Math.round(_chart.yAxisHeight()), 0])
 
     _y2Axis = _y2Axis.scale(y)
-
-    _y2Axis.ticks(_chart.effectiveHeight() / _y2Axis.scale().ticks().length < 16 ? Math.ceil(_chart.effectiveHeight() / 16) : 10)
+    
+    if (typeof _y2AxisTransform === "function") {
+      const y2Ticks = _yAxis.scale().ticks().map(_y2AxisTransform)
+      _y2Axis.tickValues(y2Ticks)
+    } else {
+      _y2Axis.ticks(_chart.effectiveHeight() / _y2Axis.scale().ticks().length < 16 ? Math.ceil(_chart.effectiveHeight() / 16) : 10)
+    }
 
     _y2Axis.orient("right")
 
