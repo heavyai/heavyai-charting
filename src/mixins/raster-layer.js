@@ -394,11 +394,8 @@ export default function rasterLayer(layerType) {
   }
 
   function filenameHasExtension(filename, extensions) {
-    return extensions.some(element => {
-      return filename.endsWith(element)
-    })
+    return extensions.some(ext => filename.toLowerCase().endsWith(ext))
   }
-
   function replaceURL(colVal) {
     if (typeof colVal === "string") {
       const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
@@ -410,12 +407,7 @@ export default function rasterLayer(layerType) {
         const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg"]
         let urlContent = url
         if (filenameHasExtension(hyperlink, imageExtensions)) {
-          urlContent =
-            '<img class="' +
-            _popup_box_image_class +
-            '" src="' +
-            hyperlink +
-            '" alt="Image Preview">'
+          urlContent = `<img class="${_popup_box_image_class}" src="${hyperlink}" alt="Image Preview">`
         }
         return (
           '<a href="' +
@@ -729,25 +721,15 @@ export default function rasterLayer(layerType) {
     // Copy from popup content
     const copyPopupContent = () => {
       const copyRange = document.createRange()
-      const allNodes = document
-        .getElementsByClassName(_popup_box_item_wrap_class)
-        .item(0)
-        .querySelectorAll()
-      console.log(allNodes)
+        
       const nodesToCopy = document
         .getElementsByClassName(_popup_box_item_wrap_class)
         .item(0)
         .querySelectorAll(":not(img)")
+      
       console.log(nodesToCopy)
       copyRange.setStartBefore(nodesToCopy[0])
       copyRange.setEndAfter(nodesToCopy[nodesToCopy.length - 1])
-      //debugger;
-      //copyRange.selectNodeContents(
-      //  //document.getElementsByClassName(_popup_box_item_wrap_class).item(0)
-      //  document.getElementsByClassName(_popup_box_item_wrap_class).item(0).querySelectorAll(":not(img)")
-      //)
-      //debugger;
-      console.log(copyRange)
 
       window.getSelection().removeAllRanges()
       window.getSelection().addRange(copyRange)
