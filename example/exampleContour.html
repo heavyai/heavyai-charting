@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+      <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+      <style>
+          .title {
+              font-weight: bold;
+              text-align:center;
+          }
+          .heavyai{
+              position: relative;
+              top: 2px;
+          }
+          .data-count{
+              padding-right:20px;
+          }
+          .filter-count{
+              font-weight: bold;
+              color:  #45B1E8;
+          }
+      </style>
+      <title>Contour Example</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header" style="margin-top:10px">
+                <span class="heavyai">HEAVY.AI Demo</span>
+            </div>
+            <div class="navbar-text navbar-right">
+                <div class="data-count"></div>
+            </div>
+        </div>
+    </nav>
+    <div class="main-container">
+        <div>
+            <div class="title">Contour Map</div>
+            <div id="contourChart"></div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="assets/app.bundle.js"></script>
+    <script src="assets/contour.bundle.js"></script>
+  </body>
+</html>

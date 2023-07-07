@@ -1,7 +1,7 @@
 "use strict"
 
 import * as LatLonUtils from "../../../utils/utils-latlon"
-import * as Draw from "@heavyai/draw/dist/mapd-draw"
+import * as Draw from "@heavyai/draw/dist/draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
 
 const { AABox2d, Mat2d, Point2d, Vec2d } = Draw

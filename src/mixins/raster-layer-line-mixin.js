@@ -11,6 +11,14 @@ import {
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
+import {
+  buildOptimizedContourSQL,
+  getContourBoundingBox,
+  getContourMarks,
+  getContourScales,
+  isContourType,
+  validateContourState
+} from "../utils/utils-contour"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
@@ -318,7 +326,7 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   function usesAutoColors() {
-    return state.encoding.color.domain === "auto"
+    return state.encoding.color && state.encoding.color.domain === "auto"
   }
 
   _layer._updateFromMetadata = (metadata, layerName = "") => {
@@ -333,6 +341,7 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.__genVega = function({
+    chart,
     table,
     filter,
     lastFilteredSize,
@@ -343,6 +352,7 @@ export default function rasterLayerLineMixin(_layer) {
   }) {
     const autocolors = usesAutoColors()
     const getStatsLayerName = () => layerName + "_stats"
+    const state = _layer.getState()
 
     const size = getSizing(
       state.encoding.size,
@@ -352,23 +362,42 @@ export default function rasterLayerLineMixin(_layer) {
       layerName
     )
 
+    let sql
+    if (isContourType(state)) {
+      validateContourState(state)
+      const filterTransforms = _layer
+        .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        .filter(f => f.type === "filter")
+      const bboxFilter = getContourBoundingBox(
+        state.data[0],
+        chart.map().getBounds()
+      )
+      filterTransforms.push({
+        type: "filter",
+        expr: bboxFilter
+      })
+      sql = buildOptimizedContourSQL({
+        state,
+        filterTransforms
+      })
+    } else {
+      sql = parser.writeSQL({
+        type: "root",
+        source: [...new Set(state.data.map(source => source.table))].join(", "),
+        transform: _layer.getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          lastFilteredSize
+        )
+      })
+    }
     const data = [
       {
         name: layerName,
         format: "lines",
-        sql: parser.writeSQL({
-          type: "root",
-          source: [...new Set(state.data.map(source => source.table))].join(
-            ", "
-          ),
-          transform: _layer.getTransforms(
-            table,
-            filter,
-            globalFilter,
-            state,
-            lastFilteredSize
-          )
-        }),
+        sql,
         enableHitTesting: state.enableHitTesting
       }
     ]
@@ -386,36 +415,46 @@ export default function rasterLayerLineMixin(_layer) {
       }
     }
 
-    const scales = getScales(
-      state.encoding,
-      layerName,
-      scaledomainfields,
-      getStatsLayerName()
-    )
+    let scales
+    if (isContourType(state)) {
+      scales = getContourScales(layerName, state.encoding)
+    } else {
+      scales = getScales(
+        state.encoding,
+        layerName,
+        scaledomainfields,
+        getStatsLayerName()
+      )
+    }
 
-    const marks = [
-      {
-        type: "lines",
-        from: {
-          data: layerName
-        },
-        properties: Object.assign(
-          {},
-          {
-            x: {
-              field: "x"
-            },
-            y: {
-              field: "y"
-            },
-            strokeColor: getColor(state.encoding.color, layerName),
-            strokeWidth: size,
-            lineJoin:
-              typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
-          }
-        )
-      }
-    ]
+    let marks
+    if (isContourType(state)) {
+      marks = getContourMarks(layerName, state)
+    } else {
+      marks = [
+        {
+          type: "lines",
+          from: {
+            data: layerName
+          },
+          properties: Object.assign(
+            {},
+            {
+              x: {
+                field: "x"
+              },
+              y: {
+                field: "y"
+              },
+              strokeColor: getColor(state.encoding.color, layerName),
+              strokeWidth: size,
+              lineJoin:
+                typeof state.mark === "object" ? state.mark.lineJoin : "bevel"
+            }
+          )
+        }
+      ]
+    }
 
     if (useProjection) {
       marks[0].transform = {
@@ -434,6 +473,14 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
+
+  // linemap bbox filter gets broken if these are set for its layer, but contour
+  // needs them to be set for its bbox filter; therefore wrap in a method that
+  // can be called from contour setup prior to setting vals
+  _layer.initializeXYDims = function() {
+    _layer.xDim = createRasterLayerGetterSetter(_layer, null)
+    _layer.yDim = createRasterLayerGetterSetter(_layer, null)
+  }
 
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
@@ -464,29 +511,29 @@ export default function rasterLayerLineMixin(_layer) {
           setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
     }
-
     _vega = _layer.__genVega({
+      chart,
       layerName,
       table: _layer.crossfilter().getTable()[0],
       filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio(),
-      useProjection: chart._useGeoTypes
+      useProjection: chart.useGeoTypes()
     })
 
     return _vega
   }
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
-    if (chart._useGeoTypes) {
+    if (chart.useGeoTypes()) {
       if (
         state.encoding.geocol &&
         state.transform.groupby &&
         state.transform.groupby.length
       ) {
         popupColsSet.add("sampled_geo")
-      } else {
+      } else if (state.encoding.geocol) {
         popupColsSet.add(state.encoding.geocol)
       }
     }

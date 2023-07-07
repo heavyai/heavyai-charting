@@ -120,7 +120,10 @@ filters.RangedTwoDimensionalFilter = function(filter) {
       ]
     ]
   } else {
-    fromBottomLeft = [[filter[0], -Infinity], [filter[1], Infinity]]
+    fromBottomLeft = [
+      [filter[0], -Infinity],
+      [filter[1], Infinity]
+    ]
   }
 
   f.isFiltered = function(value) {

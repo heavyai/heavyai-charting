@@ -70,7 +70,10 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
       features: data
     }
     const [xMin, yMin, xMax, yMax] = turfBbox(realGeoJson)
-    return [[xMin, yMin], [xMax, yMax]]
+    return [
+      [xMin, yMin],
+      [xMax, yMax]
+    ]
   }
 
   _chart.fitBounds = function() {

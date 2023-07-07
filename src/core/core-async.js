@@ -134,6 +134,7 @@ export class LockTracker {
       },
       err => {
         cleanup()
+        console.error(err)
         throw err
       }
     )

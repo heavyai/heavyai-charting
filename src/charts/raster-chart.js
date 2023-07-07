@@ -15,6 +15,7 @@ import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
+import { shallowCopyVega } from "../utils/utils-vega"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -55,6 +56,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // unset predefined mandatory attributes
   _chart._mandatoryAttributes([])
 
+  // eslint-disable-next-line no-prototype-builtins
   let _con = window.hasOwnProperty("con") ? con : null
   const _imageOverlay = null
   let _renderBoundsMap = {}
@@ -62,18 +64,29 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _layers = []
   let _hasBeenRendered = false
 
+  // the vega passed to the render_vega call
+  let _vegaSpec = {}
+
+  // the materialized vega spec is a vega where scale metadata returned by a render_vega
+  // call (via the vega_metadata property in the result) will supplant the scales in _vegaSpec
+  let _materializedVegaSpec = {}
+
   const _events = ["vegaSpec"]
   const _listeners = d3.dispatch.apply(d3, _events)
   const _on = _chart.on.bind(_chart)
 
   let _x = null
   let _y = null
+  let _y2 = null
   const _xScaleName = "x"
   const _yScaleName = "y"
+  let _yScaleType = "linear"
+  const _y2ScaleName = "y2"
+  let _y2ScaleType = "linear"
 
   let _xLatLngBnds = null
   let _yLatLngBnds = null
-  const _useGeoTypes = false
+  let _useGeoTypes = false
 
   let _usePixelRatio = false
   let _pixelRatio = 1
@@ -111,6 +124,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _popupDisplayable = Boolean(displayable)
   }
 
+  _chart.getVegaSpec = function() {
+    return _vegaSpec
+  }
+
+  _chart.getMaterializedVegaSpec = function() {
+    return _materializedVegaSpec
+  }
+
   _chart.x = function(x) {
     if (!arguments.length) {
       return _x
@@ -127,12 +148,36 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
+  _chart.yScaleType = function(_) {
+    if (!arguments.length) {
+      return _yScaleType
+    }
+    _yScaleType = _
+    return _chart
+  }
+
+  _chart.y2 = function(_) {
+    if (!arguments.length) {
+      return _y2
+    }
+    _y2 = _
+    return _chart
+  }
+
+  _chart.y2ScaleType = function(_) {
+    if (!arguments.length) {
+      return _y2ScaleType
+    }
+    _y2ScaleType = _
+    return _chart
+  }
+
   _chart.xLatLngBnds = function(_) {
     if (!arguments.length) {
       return _xLatLngBnds
     }
     _xLatLngBnds = _
-    return chart
+    return _chart
   }
 
   _chart.yLatLngBnds = function(_) {
@@ -140,7 +185,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return _yLatLngBnds
     }
     _yLatLngBnds = _
-    return chart
+    return _chart
   }
 
   _chart._resetRenderBounds = function() {
@@ -150,6 +195,32 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart._resetLayers = function() {
     _layers = []
     _layerNames = {}
+  }
+
+  _chart.removeLayer = function(layerName) {
+    const layer = _layerNames[layerName]
+    if (
+      layer &&
+      layer.destroyLayer &&
+      typeof layer.destroyLayer === "function"
+    ) {
+      layer.destroyLayer(_chart)
+    }
+    delete _layerNames[layerName]
+    _layers = _layers.filter(name => layerName !== name)
+    return layer
+  }
+
+  _chart.unshiftLayer = function(layerName, layer) {
+    if (_layerNames[layerName]) {
+      return
+    } else if (!layerName.match(/^\w+$/)) {
+      throw new Error(
+        "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
+      )
+    }
+    _layers.unshift(layerName)
+    _layerNames[layerName] = layer
   }
 
   _chart.pushLayer = function(layerName, layer) {
@@ -200,6 +271,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _layerNames[layerName] = layer
     }
 
+    const currentLayerTypes = _chart.getAllLayerTypes()
+    if (
+      currentLayerTypes.includes("mesh2d") &&
+      currentLayerTypes.includes("crossSectionTerrain")
+    ) {
+      _chart.useTwoYAxes(true)
+    }
+
     return _chart
   }
 
@@ -239,6 +318,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.getLayerNames = function() {
     return _layers
+  }
+
+  _chart.getAllLayerTypes = function() {
+    return _chart.getAllLayers().map(l => l?.layerType())
   }
 
   _chart.xRangeFilter = function(filter) {
@@ -287,7 +370,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   }
 
   _chart.useGeoTypes = function(geoTypesEnabled) {
-    _chart._useGeoTypes = geoTypesEnabled
+    if (!arguments.length) {
+      return _useGeoTypes
+    }
+    _useGeoTypes = Boolean(geoTypesEnabled)
     return _chart
   }
 
@@ -333,9 +419,19 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const mapBounds = chart.map().getBounds()
     const geoTable = _layer.getState().encoding.geoTable
     const geoCol = _layer.getState().encoding.geocol
+    const data = _layer.getState().data
 
-    const preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
-
+    let preflightQuery
+    if (geoTable && geoCol) {
+      preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
+    } else if (data && data[0] && data[0].table) {
+      preflightQuery = `SELECT COUNT(*) AS n FROM ${data[0].table}`
+    }
+    if (!preflightQuery) {
+      return Promise.reject(
+        "Error generating preflight query, 'data' is empty and `geoTable` and `geoCol` are not specified."
+      )
+    }
     return chart.con().queryAsync(preflightQuery, {})
   }
 
@@ -343,10 +439,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _chart._vegaSpec = genLayeredVega(_chart)
+    _vegaSpec = genLayeredVega(_chart)
     _chart
       .con()
-      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_vegaSpec), {})
       .then(result => {
         if (!paused) {
           _renderBoundsMap[result.nonce] = bounds
@@ -394,15 +490,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _chart._vegaSpec = genLayeredVega(
+    _vegaSpec = genLayeredVega(
       _chart,
       group,
       lastFilteredSize(group.getCrossfilterId())
     )
-
     const result = _chart
       .con()
-      .renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec))
+      .renderVega(_chart.__dcFlag__, JSON.stringify(_vegaSpec))
 
     _renderBoundsMap[result.nonce] = bounds
     return result
@@ -416,26 +511,47 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _yScaleName
   }
 
+  _chart._getY2ScaleName = function() {
+    return _y2ScaleName
+  }
+
   _chart._updateXAndYScales = function(renderBounds) {
     // renderBounds should be in this order - top left, top-right, bottom-right, bottom-left
     const useRenderBounds =
       renderBounds &&
       renderBounds.length === 4 &&
       renderBounds[0] instanceof Array &&
-      renderBounds[0].length === 2
+      renderBounds[0].length === 2 &&
+      (typeof _chart.useTwoYAxes !== "function" || !_chart?.useTwoYAxes())
 
     if (_x === null) {
       _x = d3.scale.linear()
     }
 
     if (_y === null) {
-      _y = d3.scale.linear()
+      if (_yScaleType === "log") {
+        _y = d3.scale.log()
+      } else {
+        _y = d3.scale.linear()
+      }
+    }
+
+    if (
+      _y2 === null &&
+      typeof _chart.useTwoYAxes === "function" &&
+      _chart?.useTwoYAxes()
+    ) {
+      if (_y2ScaleType === "log") {
+        _y2 = d3.scale.log()
+      } else {
+        _y2 = d3.scale.linear()
+      }
     }
 
     // if _chart.useLonLat() is not true, the chart bounds have already been projected into mercator space
     // TODO(adb): could probably collape this into line 353
     if (
-      _chart._useGeoTypes &&
+      _useGeoTypes &&
       typeof _chart.useLonLat === "function" &&
       _chart.useLonLat()
     ) {
@@ -457,6 +573,109 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         _x.domain([renderBounds[0][0], renderBounds[1][0]])
         _y.domain([renderBounds[2][1], renderBounds[0][1]])
       }
+    } else if (
+      typeof _chart.useTwoYAxes === "function" &&
+      _chart?.useTwoYAxes()
+    ) {
+      const layers = _chart.getLayers()
+      const xRanges = []
+      const yRanges = []
+      const y2Ranges = []
+
+      for (const layer of layers) {
+        let xDim = layer.xDim(),
+          yDim = layer.yDim()
+        if (xDim) {
+          const range = xDim.getFilter()
+          if (range !== null) {
+            // value coming back is an unnecessarily nested array - [[0, 1]]
+            if (range[0] && Array.isArray(range[0])) {
+              xRanges.push(range.flatMap(r => r))
+            } else {
+              xRanges.push(range)
+            }
+          }
+        }
+        if (yDim) {
+          let range = yDim.getFilter()
+          if (range !== null) {
+            // value coming back is an unnecessarily nested array - [[0, 1]]
+            if (range[0] && Array.isArray(range[0])) {
+              range = range.flatMap(r => r)
+            }
+            layer.layerType() === "crossSectionTerrain"
+              ? y2Ranges.push(range)
+              : yRanges.push(range)
+          }
+        }
+      }
+
+      if (xRanges.length) {
+        const xRange = xRanges.reduce(
+          (prevVal, currVal) => [
+            Math.min(prevVal[0], currVal[0]),
+            Math.max(prevVal[1], currVal[1])
+          ],
+          [Number.MAX_VALUE, -Number.MAX_VALUE]
+        )
+
+        if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
+          _x.domain([
+            _chart.conv4326To900913X(xRange[0]),
+            _chart.conv4326To900913X(xRange[1])
+          ])
+        } else {
+          _x.domain(xRange)
+        }
+      } else {
+        _x.domain([0.001, 0.999])
+      }
+
+      if (yRanges.length) {
+        const yRange = yRanges.reduce(
+          (prevVal, currVal) => [
+            Math.min(prevVal[0], currVal[0]),
+            Math.max(prevVal[1], currVal[1])
+          ],
+          [Number.MAX_VALUE, -Number.MAX_VALUE]
+        )
+
+        // This might be pointless
+        if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
+          _y.domain([
+            _chart.conv4326To900913X(yRange[0]),
+            _chart.conv4326To900913X(yRange[1])
+          ])
+        } else {
+          _y.domain(yRange)
+        }
+      } else {
+        _y.domain([0.001, 0.999])
+      }
+
+      if (y2Ranges.length) {
+        const y2Range = y2Ranges.reduce(
+          (prevVal, currVal) => [
+            Math.min(prevVal[0], currVal[0]),
+            Math.max(prevVal[1], currVal[1])
+          ],
+          [Number.MAX_VALUE, -Number.MAX_VALUE]
+        )
+
+        // This might be pointless
+        if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
+          _y2.domain([
+            _chart.conv4326To900913X(y2Range[0]),
+            _chart.conv4326To900913X(y2Range[1])
+          ])
+        } else {
+          _y2.domain(y2Range)
+        }
+      } else if (y2Ranges.length === 1) {
+        _y2.domain(y2Ranges[0])
+      } else {
+        _y2.domain([0.001, 0.999])
+      }
     } else {
       const layers = getLayers()
       const xRanges = []
@@ -467,13 +686,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           yDim = layer.yDim(),
           viewBoxDim = layer.viewBoxDim()
         if (xDim) {
-          var range = xDim.getFilter()
+          const range = xDim.getFilter()
           if (range !== null) {
             xRanges.push(range)
           }
         }
         if (yDim) {
-          var range = yDim.getFilter()
+          const range = yDim.getFilter()
           if (range !== null) {
             yRanges.push(range)
           }
@@ -557,13 +776,33 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     let selectedLayer = null
+    _materializedVegaSpec = shallowCopyVega(_vegaSpec)
     if (data.vega_metadata) {
       const vega_metadata = JSON.parse(data.vega_metadata)
       for (const layerName in _layerNames) {
         if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          // TODO(croot): I don't understand this logic. Why would the selectedLayer
+          // be set only on the existence of the _updateFromMetadata() method?
+          // My guess is that it's an attempt to get the last layer, but there are
+          // so many better ways to get at that.
+          // I wonder because at least for windbarbs there's no need for an
+          // _updateFromMetadata method, which means they would get excluded
+          // from the 'selectedLayer'
           selectedLayer = _layerNames[layerName].getState()
           _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName)
         }
+      }
+
+      if (Array.isArray(vega_metadata.scales)) {
+        vega_metadata.scales.forEach(scale_definition => {
+          const name = scale_definition.name
+          const scale_idx = _materializedVegaSpec.scales.findIndex(
+            scale => scale.name === name
+          )
+          if (scale_idx >= 0) {
+            _materializedVegaSpec.scales[scale_idx] = scale_definition
+          }
+        })
       }
     }
 
@@ -621,18 +860,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     callback,
     fetchEvenIfEmpty = false
   ) {
+    if (!point) {
+      return
+    }
+
     const height =
       typeof _chart.effectiveHeight === "function"
         ? _chart.effectiveHeight()
         : _chart.height()
     const pixelRatio = _chart._getPixelRatio() || 1
-    const pixel = new TPixel({
+    const pixel = {
       x: Math.round(point.x * pixelRatio),
       y: Math.round((height - point.y) * pixelRatio)
-    })
-
-    if (!point) {
-      return
     }
 
     let cnt = 0
@@ -790,6 +1029,37 @@ function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
 }
 
+function checkMultiYScaleLayers(chart, scales) {
+  const layers = chart.getAllLayers()
+  const layerTypes = chart.getAllLayerTypes()
+  const terrainLayer = layers.filter(
+    l => l?.layerType() === "crossSectionTerrain"
+  )
+  const mesh2dLayer = layers.filter(l => l?.layerType() === "mesh2d")
+  // check if new array contains both cs and cs terrain types
+  if (
+    layerTypes.includes("crossSectionTerrain") &&
+    layerTypes.includes("mesh2d") &&
+    terrainLayer.length > 0 &&
+    mesh2dLayer.length > 0
+  ) {
+    // ensure the domain of the y scale is the range set from the mesh2d yDim
+    // TODO(C): need to check how multi 2-D CS's are handled to tell if this is the
+    // correct approach for setting the y domain or not
+    scales[1].domain = mesh2dLayer[0].yDim().getFilter()[0]
+    // add a new y scale for the terrain layer, updating the name in the layer and setting
+    // the appropriate domain for this new scale
+    terrainLayer[0].setYScaleName("y1d")
+    scales.push({
+      name: "y1d",
+      type: chart._determineScaleType(chart.y()),
+      domain: terrainLayer[0].yDim().getFilter()[0],
+      range: "height",
+      nullValue: -100
+    })
+  }
+}
+
 function genLayeredVega(chart) {
   const pixelRatio = chart._getPixelRatio()
   const width =
@@ -819,12 +1089,15 @@ function genLayeredVega(chart) {
       nullValue: -100
     }
   ]
+  // TODO(matzy): This can probably be cleaned up now that chart.y2() exists
+  checkMultiYScaleLayers(chart, scales)
 
   // NOTE(adb): When geo types are enabled, vega spatial projections are applied and the scales for the x and y properties are not being used. However, we still need the legacy scaling terms to properly size poly popups on hover, which is why _xLatLngBnds, etc are separate scales
   const projections = []
-  if (chart._useGeoTypes) {
+  const projection_name = "mercator_map_projection"
+  if (chart.useGeoTypes()) {
     projections.push({
-      name: "mercator_map_projection",
+      name: projection_name,
       type: "mercator",
       bounds: {
         x: chart.xLatLngBnds(),
@@ -835,7 +1108,21 @@ function genLayeredVega(chart) {
   const marks = []
 
   chart.getLayerNames().forEach(layerName => {
-    const layerVega = chart.getLayer(layerName).genVega(chart, layerName)
+    const raster_layer = chart.getLayer(layerName)
+    const layerVega = raster_layer.genVega(chart, layerName)
+
+    if (
+      projections.length === 1 &&
+      typeof raster_layer.useProjection === "function" &&
+      raster_layer.useProjection()
+    ) {
+      layerVega.marks.forEach(mark_json => {
+        mark_json.transform = {
+          projection: projection_name,
+          ...mark_json.transform
+        }
+      })
+    }
 
     data.push(...layerVega.data)
     scales.push(...layerVega.scales)

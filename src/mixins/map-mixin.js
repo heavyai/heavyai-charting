@@ -59,7 +59,10 @@ export default function mapMixin(
   let _clientClickX = null
   let _clientClickY = null
 
-  const _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]]
+  const _arr = [
+    [LONMIN, LATMIN],
+    [LONMAX, LATMAX]
+  ]
 
   const _llb = _mapboxgl.LngLatBounds.convert(_arr)
   let _initialBounds = _llb

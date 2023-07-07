@@ -15,11 +15,14 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
 
   _chart._xDimName = null
   _chart._yDimName = null
+  _chart._y2DimName = null
   let _xDim = null
   let _yDim = null
+  let _y2Dim = null
 
   let _xRange = null
   let _yRange = null
+  let _y2Range = null
 
   const _map = {
     remove() {
@@ -57,11 +60,14 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
   function initializeXYDimsAndRanges(chart) {
     const xDims = []
     const yDims = []
+    const y2Dims = []
     const xRanges = []
     const yRanges = []
+    const y2Ranges = []
 
     addDimAndRange(chart.xDim(), xDims, xRanges)
     addDimAndRange(chart.yDim(), yDims, yRanges)
+    addDimAndRange(chart.y2Dim(), y2Dims, y2Ranges)
 
     if (typeof chart.getLayers === "function") {
       _chart.getLayers().forEach(layer => {
@@ -69,7 +75,14 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
           addDimAndRange(layer.xDim(), xDims, xRanges)
         }
 
-        if (typeof layer.yDim === "function") {
+        if (
+          typeof layer.yDim === "function" &&
+          typeof _chart.useTwoYAxes === "function" &&
+          _chart?.useTwoYAxes() &&
+          layer.layerType() === "crossSectionTerrain"
+        ) {
+          addDimAndRange(layer.yDim(), y2Dims, y2Ranges)
+        } else if (typeof layer.yDim === "function") {
           addDimAndRange(layer.yDim(), yDims, yRanges)
         }
       })
@@ -178,6 +191,10 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
     return _yRange
   }
 
+  _chart.y2Range = function() {
+    return _y2Range
+  }
+
   _chart.xDim = function(xDim) {
     if (!arguments.length) {
       return _xDim
@@ -211,6 +228,24 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
     // query during the getDataRenderBounds()
     // function
     _yRange = null
+    return _chart
+  }
+
+  _chart.y2Dim = function(y2Dim) {
+    if (!arguments.length) {
+      return _y2Dim
+    }
+    _y2Dim = y2Dim
+    if (_y2Dim) {
+      _chart._y2DimName = _y2Dim.value()[0]
+    }
+
+    // force a refresh of the render bounds
+    // this currently doesn't improve anything.
+    // We'd want to do this if we do a min/max
+    // query during the getDataRenderBounds()
+    // function
+    _y2Range = null
     return _chart
   }
 

@@ -53,21 +53,15 @@ export { default as bubbleMixin } from "./mixins/bubble-mixin"
 export { default as capMixin } from "./mixins/cap-mixin"
 export { default as colorMixin } from "./mixins/color-mixin"
 export { default as coordinateGridMixin } from "./mixins/coordinate-grid-mixin"
-export {
-  default as coordinateGridRasterMixin
-} from "./mixins/coordinate-grid-raster-mixin"
+export { default as coordinateGridRasterMixin } from "./mixins/coordinate-grid-raster-mixin"
 export { default as stackMixin } from "./mixins/stack-mixin"
 export { default as marginMixin } from "./mixins/margin-mixin"
 export { default as mapMixin } from "./mixins/map-mixin"
-export {
-  default as rasterLayerHeatmapMixin
-} from "./mixins/raster-layer-heatmap-mixin"
-export {
-  default as rasterLayerPointMixin
-} from "./mixins/raster-layer-point-mixin"
-export {
-  default as rasterLayerPolyMixin
-} from "./mixins/raster-layer-poly-mixin"
+export { default as rasterLayerHeatmapMixin } from "./mixins/raster-layer-heatmap-mixin"
+export { default as rasterLayerPointMixin } from "./mixins/raster-layer-point-mixin"
+export { default as rasterLayerWindBarbMixin } from "./mixins/raster-layer-windbarb-mixin"
+export { default as rasterLayerMesh2dMixin } from "./mixins/raster-layer-mesh2d-mixin"
+export { default as rasterLayerPolyMixin } from "./mixins/raster-layer-poly-mixin"
 export { default as rasterLayer } from "./mixins/raster-layer"
 export { default as rasterMixin } from "./mixins/raster-mixin"
 export { default as scatterMixin } from "./mixins/scatter-mixin"
@@ -76,5 +70,7 @@ export { default as spinnerMixin } from "./mixins/spinner-mixin"
 export { default as legendContinuous } from "./chart-addons/legend-continuous"
 export { default as legend } from "./chart-addons/legend"
 export { default as legendCont } from "./chart-addons/dc-legend-cont"
+
+export { default as lassoToolSetTypes } from "./mixins/ui/lasso-tool-set-types"
 
 export { default as parseFactsFromCustomSQL } from "./utils/custom-sql-parser"
