@@ -12,6 +12,7 @@ import {
 } from "../utils/utils-vega"
 import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
 import moment from "moment"
+import { IMAGE_SIZE_LIMIT } from "../constants/dc-constants"
 
 const validLayerTypes = [
   "points",
@@ -396,68 +397,113 @@ export default function rasterLayer(layerType) {
   function filenameHasExtension(filename, extensions) {
     return extensions.some(ext => filename.toLowerCase().endsWith(ext))
   }
+
+  const getImageSize = (url) => fetch(url, {method: "HEAD"}).then((resp) => resp?.headers?.get("Content-Length") ?? 0)
+  const LinkElement = (href, content) => (
+      `<a href="${href}" target="_blank" rel="noopener noreferrer">
+      ${content}
+      </a>`
+    )
+
+  async function replaceAsync(str, regex, asyncFn) {
+    const promises = []
+    str.replace(regex, (match, ...args) => {
+        const promise = asyncFn(match, ...args)
+        promises.push(promise)
+    });
+    const data = await Promise.all(promises)
+    return str.replace(regex, () => data.shift())
+  }
+
+  const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg", ".webp"]
+
   function replaceURL(colVal) {
-    if (typeof colVal === "string") {
-      const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
-      return colVal.replace(urlRegExpr, url => {
+    const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
+    const urlMatch = typeof colVal === "string" && colVal.match(urlRegExpr)
+    if (urlMatch) {
+      return replaceAsync(colVal, urlRegExpr, async (url) => {
         let hyperlink = url
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink
         }
-        const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg"]
-        let urlContent = url
         if (filenameHasExtension(hyperlink, imageExtensions)) {
-          urlContent = `<img class="${_popup_box_image_class}" src="${hyperlink}" alt="Image Preview">`
+          // eslint-disable-next-line no-restricted-syntax
+          try {
+            const sizeBytes = await getImageSize(hyperlink)
+            let urlContent = url
+            if (sizeBytes < IMAGE_SIZE_LIMIT) {
+              urlContent = `<img class="${_popup_box_image_class}" src="${hyperlink}" alt="Image Preview">`
+            } else {
+              console.info("Image too large to preview, falling back to hyperlink", hyperlink)
+            }
+            return LinkElement(hyperlink, urlContent)
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.warn("Error creating link from column:", colVal, "Error:", e)
+            return Promise.resolve(colVal)
+          }
+        } else {
+          return Promise.resolve(colVal.replace(urlRegExpr, url => LinkElement(hyperlink, url)))
         }
-        return (
-          '<a href="' +
-          hyperlink +
-          '" target="_blank" rel="noopener noreferrer">' +
-          urlContent +
-          "</a>"
-        )
       })
     } else {
-      return colVal
+      // Return raw column value, no transformation
+      return Promise.resolve(colVal)
     }
   }
 
-  function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
-    let html =
-      '<div class="' +
-      _popup_item_copy_class +
-      '">' +
-      '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' +
-      '<path d="M10.6668 0.666748H2.66683C1.9335 0.666748 1.3335 1.26675 1.3335 2.00008V11.3334H2.66683V2.00008H10.6668V0.666748ZM10.0002 3.33341L14.0002 7.33341V14.0001C14.0002 14.7334 13.4002 15.3334 12.6668 15.3334H5.32683C4.5935 15.3334 4.00016 14.7334 4.00016 14.0001L4.00683 4.66675C4.00683 3.93341 4.60016 3.33341 5.3335 3.33341H10.0002ZM9.3335 8.00008H13.0002L9.3335 4.33341V8.00008Z"/>' +
-      "</svg>" +
-      "</div>"
-
-    html += '<div class="' + _popup_box_item_wrap_class + '">'
-
-    columnOrder.forEach(key => {
+  async function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
+    const formattedColumnPromises = columnOrder.map(key => {
       if (typeof data[key] === "undefined") {
-        return
+        return ""
       }
 
       const columnKey = columnMap && columnMap[key] ? columnMap[key] : key
       const columnKeyTrimmed = columnKey.replace(/.*\((.*)\).*/, "$1")
 
-      html =
-        html +
-        ('<div class="' +
-          _popup_box_item_class +
-          '"><span class="' +
-          _popup_item_key_class +
-          '">' +
-          columnKey +
-          ':</span><span class="' +
-          _popup_item_val_class +
-          '"> ' +
-          replaceURL(formatMeasureValue(data[key], columnKeyTrimmed)) +
-          "</span></div>")
+      return replaceURL(formatMeasureValue(data[key], columnKeyTrimmed)).then((formattedColumn) => {
+        const columnHtml = `<div class="${_popup_box_item_class}">
+            <span class="${_popup_item_key_class}">
+              ${columnKey}:
+            </span>
+            <span class="${_popup_item_val_class}">
+              ${formattedColumn}
+            </span>
+          </div>
+        `
+        return columnHtml
+      })
     })
-    html += "</div>"
-    return html
+    return Promise.all(formattedColumnPromises).then(formattedColumns => {
+      const html = `
+        <div class="${_popup_item_copy_class}">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.6668 0.666748H2.66683C1.9335 0.666748 1.3335 1.26675 1.3335 2.00008V11.3334H2.66683V2.00008H10.6668V0.666748ZM10.0002 3.33341L14.0002 7.33341V14.0001C14.0002 14.7334 13.4002 15.3334 12.6668 15.3334H5.32683C4.5935 15.3334 4.00016 14.7334 4.00016 14.0001L4.00683 4.66675C4.00683 3.93341 4.60016 3.33341 5.3335 3.33341H10.0002ZM9.3335 8.00008H13.0002L9.3335 4.33341V8.00008Z"/>
+          </svg>
+        </div>
+        <div class="${_popup_box_item_wrap_class}">
+          ${formattedColumns.join("\n")}
+        </div>
+      `
+      return html
+    })
+  }
+
+  // Copy from popup content
+  const copyPopupContent = () => {
+    const copyRange = document.createRange()
+      
+    const nodesToCopy = document
+      .getElementsByClassName(_popup_box_item_wrap_class)
+      .item(0)
+    
+    copyRange.setStartBefore(nodesToCopy[0])
+    copyRange.setEndAfter(nodesToCopy[nodesToCopy.length - 1])
+
+    window.getSelection().removeAllRanges()
+    window.getSelection().addRange(copyRange)
+    document.execCommand("copy")
+    window.getSelection().removeAllRanges()
   }
 
   _layer.displayPopup = function(
@@ -538,20 +584,24 @@ export default function rasterLayer(layerType) {
       .append("div")
       .attr("class", _popup_wrap_class)
       .style({ left: boundsCtr[0] + "px", top: boundsCtr[1] + "px" })
+      .append("div").classed("main-loading-icon", true).style("width", 200).style("height", 100)
 
-    const popupBox = popupDiv
-      .append("div")
+
+    // Plop a loader in there (on a small delay in case its synchronous)
+    const popupData = _layer.popupFunction()
+    ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
+    : renderPopupHTML(
+      filteredData,
+      popupColumns,
+      mappedColumns,
+      chart.measureValue
+    )
+    Promise.resolve(popupData).then((popupHtml) => {
+      const popupContent = parentElem.select(`.${_popup_wrap_class}`)
+      popupContent.selectAll("*").remove()
+      const popupBox = popupContent.append("div")
       .attr("class", _popup_box_class)
-      .html(
-        _layer.popupFunction()
-          ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
-          : renderPopupHTML(
-              filteredData,
-              popupColumns,
-              mappedColumns,
-              chart.measureValue
-            )
-      )
+      .html(popupHtml)
       .style("left", function() {
         const rect = d3
           .select(this)
@@ -718,39 +768,23 @@ export default function rasterLayer(layerType) {
       })
       .style("top", () => topOffset + "px")
 
-    // Copy from popup content
-    const copyPopupContent = () => {
-      const copyRange = document.createRange()
-        
-      const nodesToCopy = document
-        .getElementsByClassName(_popup_box_item_wrap_class)
+  
+      const popupCopyIcon = document
+        .getElementsByClassName(_popup_item_copy_class)
         .item(0)
-        .querySelectorAll(":not(img)")
-      
-      console.log(nodesToCopy)
-      copyRange.setStartBefore(nodesToCopy[0])
-      copyRange.setEndAfter(nodesToCopy[nodesToCopy.length - 1])
-
-      window.getSelection().removeAllRanges()
-      window.getSelection().addRange(copyRange)
-      document.execCommand("copy")
-      window.getSelection().removeAllRanges()
-    }
-
-    const popupCopyIcon = document
-      .getElementsByClassName(_popup_item_copy_class)
-      .item(0)
-
-    popupCopyIcon.addEventListener("click", () => {
-      copyPopupContent()
+  
+      popupCopyIcon.addEventListener("click", () => {
+        copyPopupContent()
+      })
+  
+      _layerPopups[chart] = popupBox
+  
+      if (animate) {
+        popupDiv.classed("showPopup", true)
+      }
     })
-
-    _layerPopups[chart] = popupBox
-
-    if (animate) {
-      popupDiv.classed("showPopup", true)
-    }
   }
+
 
   _layer.isPopupDisplayed = function(chart) {
     return _layerPopups[chart] !== undefined
