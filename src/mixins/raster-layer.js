@@ -13,6 +13,7 @@ import {
 import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
 import moment from "moment"
 import { IMAGE_SIZE_LIMIT } from "../constants/dc-constants"
+import {utils} from '../utils/utils'
 
 const validLayerTypes = [
   "points",
@@ -23,6 +24,8 @@ const validLayerTypes = [
   "mesh2d",
   "crossSectionTerrain"
 ]
+
+const  { getImageSize, replaceAsync } = utils
 
 export default function rasterLayer(layerType) {
   const _layerType = layerType
@@ -398,24 +401,32 @@ export default function rasterLayer(layerType) {
     return extensions.some(ext => filename.toLowerCase().endsWith(ext))
   }
 
-  const getImageSize = (url) => fetch(url, {method: "HEAD"}).then((resp) => resp?.headers?.get("Content-Length") ?? 0)
   const LinkElement = (href, content) => (
       `<a href="${href}" target="_blank" rel="noopener noreferrer">
       ${content}
       </a>`
     )
 
-  async function replaceAsync(str, regex, asyncFn) {
-    const promises = []
-    str.replace(regex, (match, ...args) => {
-        const promise = asyncFn(match, ...args)
-        promises.push(promise)
-    });
-    const data = await Promise.all(promises)
-    return str.replace(regex, () => data.shift())
-  }
-
   const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg", ".webp"]
+
+  async function renderImageOrLink(url, hyperlink, colVal) {
+    // eslint-disable-next-line no-restricted-syntax
+    try {
+      const sizeBytes = await getImageSize(hyperlink)
+      let urlContent = url
+      if (sizeBytes < IMAGE_SIZE_LIMIT) {
+        urlContent = `<img class="${_popup_box_image_class}" src="${hyperlink}" alt="Image Preview">`
+      } else {
+        // eslint-disable-next-line no-console
+        console.info("Image too large to preview, falling back to hyperlink", hyperlink)
+      }
+      return LinkElement(hyperlink, urlContent)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn("Error creating link from column:", colVal, "Error:", e)
+      return Promise.resolve(colVal)
+    }
+  }
 
   function replaceURL(colVal) {
     const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
@@ -427,21 +438,7 @@ export default function rasterLayer(layerType) {
           hyperlink = "http://" + hyperlink
         }
         if (filenameHasExtension(hyperlink, imageExtensions)) {
-          // eslint-disable-next-line no-restricted-syntax
-          try {
-            const sizeBytes = await getImageSize(hyperlink)
-            let urlContent = url
-            if (sizeBytes < IMAGE_SIZE_LIMIT) {
-              urlContent = `<img class="${_popup_box_image_class}" src="${hyperlink}" alt="Image Preview">`
-            } else {
-              console.info("Image too large to preview, falling back to hyperlink", hyperlink)
-            }
-            return LinkElement(hyperlink, urlContent)
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.warn("Error creating link from column:", colVal, "Error:", e)
-            return Promise.resolve(colVal)
-          }
+          return renderImageOrLink(hyperlink, url, colVal)
         } else {
           return Promise.resolve(colVal.replace(urlRegExpr, url => LinkElement(hyperlink, url)))
         }
@@ -582,12 +579,27 @@ export default function rasterLayer(layerType) {
 
     const popupDiv = parentElem
       .append("div")
-      .attr("class", _popup_wrap_class)
       .style({ left: boundsCtr[0] + "px", top: boundsCtr[1] + "px" })
-      .append("div").classed("main-loading-icon", true).style("width", 200).style("height", 100)
 
+      popupDiv.classed(_popup_wrap_class, true)
 
-    // Plop a loader in there (on a small delay in case its synchronous)
+      // Add loader while we async get the popup html
+      popupDiv.classed("popup-loading", true)
+      popupDiv
+      .append("div")
+      .attr("class", _popup_box_class)
+      .style({"min-width": "48px", "min-height": "48px"})
+      .append("div")
+      .classed("main-loading-icon", true)
+      .style({"height": "32px", "width": "32px"})
+
+    
+    _layerPopups[chart] = popupDiv
+
+    if (animate) {
+      popupDiv.classed("showPopup", true)
+    }
+
     const popupData = _layer.popupFunction()
     ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
     : renderPopupHTML(
@@ -598,6 +610,7 @@ export default function rasterLayer(layerType) {
     )
     Promise.resolve(popupData).then((popupHtml) => {
       const popupContent = parentElem.select(`.${_popup_wrap_class}`)
+      popupContent.classed("popup-loading", false)
       popupContent.selectAll("*").remove()
       const popupBox = popupContent.append("div")
       .attr("class", _popup_box_class)
@@ -773,7 +786,7 @@ export default function rasterLayer(layerType) {
         .getElementsByClassName(_popup_item_copy_class)
         .item(0)
   
-      popupCopyIcon.addEventListener("click", () => {
+      popupCopyIcon?.addEventListener("click", () => {
         copyPopupContent()
       })
   
@@ -792,7 +805,7 @@ export default function rasterLayer(layerType) {
 
   _layer.hidePopup = function(chart, hideCallback) {
     if (_layerPopups[chart]) {
-      const popup = chart.select("." + _popup_wrap_class)
+      const popup = chart.select(`.${_popup_wrap_class}:not(.popup-loading)`)
       if (popup) {
         popup.classed("removePopup", true).on("animationend", () => {
           delete _layerPopups[chart]

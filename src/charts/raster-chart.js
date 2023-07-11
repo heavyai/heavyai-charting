@@ -94,6 +94,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _minPopupShapeBoundsArea = 16 * 16
   let _popupSearchRadius = 2
   const _popupDivClassName = "map-popup"
+  const _popupLoadingClassName = "popup-loading"
   let _popupDisplayable = true
   let _legendOpen = true
 
@@ -583,7 +584,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       const y2Ranges = []
 
       for (const layer of layers) {
-        let xDim = layer.xDim(),
+        const xDim = layer.xDim(),
           yDim = layer.yDim()
         if (xDim) {
           const range = xDim.getFilter()
@@ -682,7 +683,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       const yRanges = []
 
       for (layer in layers) {
-        let xDim = layer.xDim(),
+        const xDim = layer.xDim(),
           yDim = layer.yDim(),
           viewBoxDim = layer.viewBoxDim()
         if (xDim) {
@@ -952,7 +953,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.hidePopup = function hidePopup(animate) {
     const popupElem = _chart.select("." + _popupDivClassName)
-    if (!popupElem.empty()) {
+    // Don't close it if its loading, wait for the actual popup 
+    if (!popupElem.empty() && popupElem.select(`.${_popupLoadingClassName}`).empty()) {
       for (let i = 0; i < _layers.length; ++i) {
         const layerName = _layers[i]
         const layer = _layerNames[layerName]
