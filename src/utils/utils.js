@@ -514,27 +514,30 @@ utils.compareDates = function(sorting) {
 
 /**
  * Uses a HEAD request to get headers and check the content size
- * 
+ *
  * @param {string} url - Url to check the response size of
  * @returns Number of bytes returned in the header or 0 if not present
  */
-utils.getImageSize = (url) => fetch(url, {method: "HEAD"}).then((resp) => resp?.headers?.get("Content-Length") ?? 0)
+utils.getImageSize = url =>
+  fetch(url, { method: "HEAD" }).then(
+    resp => resp?.headers?.get("Content-Length") ?? 0
+  )
 
 /**
  * An async wrapper around string replace method
  * Ripped from: https://stackoverflow.com/questions/33631041/javascript-async-await-in-replace
- * 
+ *
  * @param {string} str - String to call replace on
  * @param {RegExp} regex - Regular expression to match for replace
  * @param {Function} asyncFn - Function to run for each match
  * @returns Promise returning a string with replacements made
  */
-utils.replaceAsync = async(str, regex, asyncFn) => {
+utils.replaceAsync = async (str, regex, asyncFn) => {
   const promises = []
   str.replace(regex, (match, ...args) => {
-      const promise = asyncFn(match, ...args)
-      promises.push(promise)
-  });
+    const promise = asyncFn(match, ...args)
+    promises.push(promise)
+  })
   const data = await Promise.all(promises)
   return str.replace(regex, () => data.shift())
 }

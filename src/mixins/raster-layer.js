@@ -13,7 +13,7 @@ import {
 import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
 import moment from "moment"
 import { IMAGE_SIZE_LIMIT } from "../constants/dc-constants"
-import {utils} from '../utils/utils'
+import { utils } from "../utils/utils"
 
 const validLayerTypes = [
   "points",
@@ -25,7 +25,7 @@ const validLayerTypes = [
   "crossSectionTerrain"
 ]
 
-const  { getImageSize, replaceAsync } = utils
+const { getImageSize, replaceAsync } = utils
 
 export default function rasterLayer(layerType) {
   const _layerType = layerType
@@ -402,13 +402,20 @@ export default function rasterLayer(layerType) {
     return extensions.some(ext => filename.toLowerCase().endsWith(ext))
   }
 
-  const LinkElement = (href, content) => (
+  const LinkElement = (href, content) =>
     `<a href="${href}" target="_blank" rel="noopener noreferrer">
     ${content}
     </a>`
-  )
 
-  const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg", ".webp"]
+  const imageExtensions = [
+    ".jp2",
+    ".tif",
+    ".png",
+    ".gif",
+    ".jpeg",
+    "jpg",
+    ".webp"
+  ]
 
   async function renderImageOrLink(chart, url, hyperlink, colVal) {
     // eslint-disable-next-line no-restricted-syntax
@@ -417,7 +424,10 @@ export default function rasterLayer(layerType) {
       let urlContent = url
       if (sizeBytes > IMAGE_SIZE_LIMIT) {
         // eslint-disable-next-line no-console
-        console.info("Image too large to preview, falling back to hyperlink", hyperlink)
+        console.info(
+          "Image too large to preview, falling back to hyperlink",
+          hyperlink
+        )
       } else if (!chart.popupImageEnabled || !chart.popupImageEnabled()) {
         // eslint-disable-next-line no-console
         console.info("Images preview for popups is disabled")
@@ -427,16 +437,22 @@ export default function rasterLayer(layerType) {
       return Promise.resolve(LinkElement(hyperlink, urlContent), true)
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.warn("Error creating image preview from column:", colVal, "Error:", e)
+      console.warn(
+        "Error creating image preview from column:",
+        colVal,
+        "Error:",
+        e
+      )
       return Promise.resolve(LinkElement(hyperlink, colVal), true)
     }
   }
 
   function replaceURL(chart, columnValue) {
     const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
-    const urlMatch = typeof columnValue === "string" && columnValue.match(urlRegExpr)
+    const urlMatch =
+      typeof columnValue === "string" && columnValue.match(urlRegExpr)
     if (urlMatch) {
-      return replaceAsync(columnValue, urlRegExpr, async (url) => {
+      return replaceAsync(columnValue, urlRegExpr, async url => {
         let hyperlink = url
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink
@@ -444,7 +460,10 @@ export default function rasterLayer(layerType) {
         if (filenameHasExtension(hyperlink, imageExtensions)) {
           return renderImageOrLink(chart, hyperlink, url, columnValue)
         } else {
-          return Promise.resolve(columnValue.replace(urlRegExpr, url => LinkElement(hyperlink, url)), true)
+          return Promise.resolve(
+            columnValue.replace(urlRegExpr, url => LinkElement(hyperlink, url)),
+            true
+          )
         }
       })
     } else {
@@ -453,7 +472,13 @@ export default function rasterLayer(layerType) {
     }
   }
 
-  async function renderPopupHTML(chart, data, columnOrder, columnMap, formatMeasureValue) {
+  async function renderPopupHTML(
+    chart,
+    data,
+    columnOrder,
+    columnMap,
+    formatMeasureValue
+  ) {
     const formattedColumnPromises = columnOrder.map(key => {
       if (typeof data[key] === "undefined") {
         return ""
@@ -490,8 +515,10 @@ export default function rasterLayer(layerType) {
       return html
     })
   }
-  const getPopupContentForNode = (node) => {
-    const imageElement = node.nodeType !== 3 /* just text */ && node.getElementsByTagName("img")?.[0]
+  const getPopupContentForNode = node => {
+    const imageElement =
+      node.nodeType !== 3 /* just text */ &&
+      node.getElementsByTagName("img")?.[0]
     if (imageElement) {
       // Copy the key and value, but use the data-popupcontent attribute for the image
       const wrapperElement = document.createElement("div")
@@ -512,9 +539,10 @@ export default function rasterLayer(layerType) {
   // Copy from popup content
   const copyPopupContent = () => {
     const copyRange = document.createRange()
-    const nodesToCopy = document
-      .getElementsByClassName(_popup_box_item_wrap_class)[0]?.childNodes
-    
+    const nodesToCopy = document.getElementsByClassName(
+      _popup_box_item_wrap_class
+    )[0]?.childNodes
+
     if (!nodesToCopy || !nodesToCopy.length) {
       return
     }
@@ -615,27 +643,26 @@ export default function rasterLayer(layerType) {
       .append("div")
       .style({ left: boundsCtr[0] + "px", top: boundsCtr[1] + "px" })
 
-      popupDiv.classed(_popup_wrap_class, true)
+    popupDiv.classed(_popup_wrap_class, true)
 
-      // Puts it on a bit of a delay to avoid showing 
-      // it below a certain threshold. This flag determines if
-      // popup promises have completed before this timeout block runs
-      let alreadyLoaded = false
-      setTimeout(() => {
-        if (!alreadyLoaded) {
-          // Add loader while we async determine the popup html
-          popupDiv.classed("popup-loading", true)
-          popupDiv
+    // Puts it on a bit of a delay to avoid showing
+    // it below a certain threshold. This flag determines if
+    // popup promises have completed before this timeout block runs
+    let alreadyLoaded = false
+    setTimeout(() => {
+      if (!alreadyLoaded) {
+        // Add loader while we async determine the popup html
+        popupDiv.classed("popup-loading", true)
+        popupDiv
           .append("div")
           .attr("class", _popup_box_class)
-          .style({"min-width": "48px", "min-height": "48px"})
+          .style({ "min-width": "48px", "min-height": "48px" })
           .append("div")
           .classed("main-loading-icon", true)
-          .style({"height": "32px", "width": "32px"})
-        }
-      }, 300)
+          .style({ height: "32px", width: "32px" })
+      }
+    }, 300)
 
-    
     _layerPopups[chart] = popupDiv
 
     if (animate) {
@@ -643,209 +670,217 @@ export default function rasterLayer(layerType) {
     }
 
     const popupData = _layer.popupFunction()
-    ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
-    : renderPopupHTML(
-      chart,
-      filteredData,
-      popupColumns,
-      mappedColumns,
-      chart.measureValue
-    )
-    Promise.resolve(popupData).then((popupHtml) => {
-      alreadyLoaded = true
-      const popupContent = parentElem.select(`.${_popup_wrap_class}`)
-      popupContent.classed("popup-loading", false)
-      popupContent.selectAll("*").remove()
-      const popupBox = popupContent.append("div")
-      .attr("class", _popup_box_class)
-      .html(popupHtml)
-      .style("left", function() {
-        const rect = d3
-          .select(this)
-          .node()
-          .getBoundingClientRect()
-        const boxWidth = rect.width
-        const halfBoxWidth = boxWidth / 2
-        const boxHeight = rect.height
-        const halfBoxHeight = boxHeight / 2
+      ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
+      : renderPopupHTML(
+          chart,
+          filteredData,
+          popupColumns,
+          mappedColumns,
+          chart.measureValue
+        )
+    Promise.resolve(popupData)
+      .then(popupHtml => {
+        alreadyLoaded = true
+        const popupContent = parentElem.select(`.${_popup_wrap_class}`)
+        popupContent.classed("popup-loading", false)
+        popupContent.selectAll("*").remove()
+        const popupBox = popupContent
+          .append("div")
+          .attr("class", _popup_box_class)
+          .html(popupHtml)
+          .style("left", function() {
+            const rect = d3
+              .select(this)
+              .node()
+              .getBoundingClientRect()
+            const boxWidth = rect.width
+            const halfBoxWidth = boxWidth / 2
+            const boxHeight = rect.height
+            const halfBoxHeight = boxHeight / 2
 
-        // check top first
-        let left = 0
-        let hDiff = 0,
-          wDiff = 0
+            // check top first
+            let left = 0
+            let hDiff = 0,
+              wDiff = 0
 
-        if (
-          overlapSz[0] >= boxWidth ||
-          (boundsCtr[0] + halfBoxWidth < width &&
-            boundsCtr[0] - halfBoxWidth >= 0)
-        ) {
-          left = boundsCtr[0] - overlapCtr[0]
-          hDiff = overlapBounds[AABox2d.MINY] - boxHeight
-
-          if (hDiff >= 0) {
-            // can fit on top of shape and in the center of the shape horizontally
-            topOffset = -(
-              boundsCtr[1] -
-              overlapBounds[AABox2d.MINY] +
-              Math.min(padding, hDiff) +
-              halfBoxHeight
-            )
-            return left + "px"
-          }
-
-          hDiff = overlapBounds[AABox2d.MAXY] + boxHeight
-          if (hDiff < height) {
-            // can fit on bottom and in the center of the shape horizontally
-            topOffset =
-              overlapBounds[AABox2d.MAXY] -
-              boundsCtr[1] +
-              Math.min(padding, hDiff) +
-              halfBoxHeight
-            return left + "px"
-          }
-        }
-
-        if (
-          overlapSz[1] >= boxHeight ||
-          (boundsCtr[1] + halfBoxHeight < height &&
-            boundsCtr[1] - halfBoxHeight >= 0)
-        ) {
-          topOffset = overlapCtr[1] - boundsCtr[1]
-
-          wDiff = overlapBounds[AABox2d.MINX] - boxWidth
-          if (wDiff >= 0) {
-            // can fit on the left in the center of the shape vertically
-            left = -(
-              boundsCtr[0] -
-              overlapBounds[AABox2d.MINX] +
-              Math.min(padding, wDiff) +
-              halfBoxWidth
-            )
-            return left + "px"
-          }
-
-          wDiff = overlapBounds[AABox2d.MAXX] + boxWidth
-          if (wDiff < width) {
-            // can fit on right in the center of the shape vertically
-            left =
-              overlapBounds[AABox2d.MAXX] -
-              boundsCtr[0] +
-              Math.min(padding, wDiff) +
-              halfBoxWidth
-            return left + "px"
-          }
-        }
-
-        if (
-          width - overlapSz[0] >= boxWidth &&
-          height - overlapSz[1] >= boxHeight
-        ) {
-          // we can fit the popup box in the remaining negative space.
-          // Let's figure out where exactly
-          if (
-            Math.abs(boxHeight - overlapSz[1]) <
-            Math.abs(boxWidth - overlapSz[0])
-          ) {
-            hDiff = height - overlapSz[1] - boxHeight
             if (
-              overlapBounds[AABox2d.MINY] <
-              height - overlapBounds[AABox2d.MAXY]
+              overlapSz[0] >= boxWidth ||
+              (boundsCtr[0] + halfBoxWidth < width &&
+                boundsCtr[0] - halfBoxWidth >= 0)
             ) {
-              topOffset =
-                Math.min(padding, hDiff) + halfBoxHeight - boundsCtr[1]
-            } else {
-              topOffset =
-                height - Math.min(padding, hDiff) - halfBoxHeight - boundsCtr[1]
-            }
+              left = boundsCtr[0] - overlapCtr[0]
+              hDiff = overlapBounds[AABox2d.MINY] - boxHeight
 
-            wDiff = overlapBounds[AABox2d.MINX] - boxWidth
-            if (wDiff >= 0) {
-              // can fit on the left of the bounds
-              left = -(
-                boundsCtr[0] -
-                overlapBounds[AABox2d.MINX] +
-                Math.min(padding, wDiff) +
-                halfBoxWidth
-              )
-            } else {
-              wDiff = overlapBounds[AABox2d.MAXX] + boxWidth
-              // can fit on right right of the bounds
-              left =
-                overlapBounds[AABox2d.MAXX] -
-                boundsCtr[0] +
-                Math.min(padding, wDiff) +
-                halfBoxWidth
-            }
-            return left + "px"
-          } else {
-            wDiff = width - overlapSz[0] - boxWidth
-            if (
-              overlapBounds[AABox2d.MINX] <
-              width - overlapBounds[AABox2d.MAXX]
-            ) {
-              left = Math.min(padding, wDiff) + halfBoxWidth - boundsCtr[0]
-            } else {
-              left =
-                width - Math.min(padding, wDiff) - halfBoxWidth - boundsCtr[0]
-            }
+              if (hDiff >= 0) {
+                // can fit on top of shape and in the center of the shape horizontally
+                topOffset = -(
+                  boundsCtr[1] -
+                  overlapBounds[AABox2d.MINY] +
+                  Math.min(padding, hDiff) +
+                  halfBoxHeight
+                )
+                return left + "px"
+              }
 
-            hDiff = overlapBounds[AABox2d.MINY] - boxHeight
-            if (hDiff >= 0) {
-              // can fit on top of shape and in the center of the shape horizontally
-              topOffset = -(
-                boundsCtr[1] -
-                overlapBounds[AABox2d.MINY] +
-                Math.min(padding, hDiff) +
-                halfBoxHeight
-              )
-            } else {
               hDiff = overlapBounds[AABox2d.MAXY] + boxHeight
-              // can fit on bottom and in the center of the shape horizontally
-              topOffset =
-                overlapBounds[AABox2d.MAXY] -
-                boundsCtr[1] +
-                Math.min(padding, hDiff) +
-                halfBoxHeight
+              if (hDiff < height) {
+                // can fit on bottom and in the center of the shape horizontally
+                topOffset =
+                  overlapBounds[AABox2d.MAXY] -
+                  boundsCtr[1] +
+                  Math.min(padding, hDiff) +
+                  halfBoxHeight
+                return left + "px"
+              }
+            }
+
+            if (
+              overlapSz[1] >= boxHeight ||
+              (boundsCtr[1] + halfBoxHeight < height &&
+                boundsCtr[1] - halfBoxHeight >= 0)
+            ) {
+              topOffset = overlapCtr[1] - boundsCtr[1]
+
+              wDiff = overlapBounds[AABox2d.MINX] - boxWidth
+              if (wDiff >= 0) {
+                // can fit on the left in the center of the shape vertically
+                left = -(
+                  boundsCtr[0] -
+                  overlapBounds[AABox2d.MINX] +
+                  Math.min(padding, wDiff) +
+                  halfBoxWidth
+                )
+                return left + "px"
+              }
+
+              wDiff = overlapBounds[AABox2d.MAXX] + boxWidth
+              if (wDiff < width) {
+                // can fit on right in the center of the shape vertically
+                left =
+                  overlapBounds[AABox2d.MAXX] -
+                  boundsCtr[0] +
+                  Math.min(padding, wDiff) +
+                  halfBoxWidth
+                return left + "px"
+              }
+            }
+
+            if (
+              width - overlapSz[0] >= boxWidth &&
+              height - overlapSz[1] >= boxHeight
+            ) {
+              // we can fit the popup box in the remaining negative space.
+              // Let's figure out where exactly
+              if (
+                Math.abs(boxHeight - overlapSz[1]) <
+                Math.abs(boxWidth - overlapSz[0])
+              ) {
+                hDiff = height - overlapSz[1] - boxHeight
+                if (
+                  overlapBounds[AABox2d.MINY] <
+                  height - overlapBounds[AABox2d.MAXY]
+                ) {
+                  topOffset =
+                    Math.min(padding, hDiff) + halfBoxHeight - boundsCtr[1]
+                } else {
+                  topOffset =
+                    height -
+                    Math.min(padding, hDiff) -
+                    halfBoxHeight -
+                    boundsCtr[1]
+                }
+
+                wDiff = overlapBounds[AABox2d.MINX] - boxWidth
+                if (wDiff >= 0) {
+                  // can fit on the left of the bounds
+                  left = -(
+                    boundsCtr[0] -
+                    overlapBounds[AABox2d.MINX] +
+                    Math.min(padding, wDiff) +
+                    halfBoxWidth
+                  )
+                } else {
+                  wDiff = overlapBounds[AABox2d.MAXX] + boxWidth
+                  // can fit on right right of the bounds
+                  left =
+                    overlapBounds[AABox2d.MAXX] -
+                    boundsCtr[0] +
+                    Math.min(padding, wDiff) +
+                    halfBoxWidth
+                }
+                return left + "px"
+              } else {
+                wDiff = width - overlapSz[0] - boxWidth
+                if (
+                  overlapBounds[AABox2d.MINX] <
+                  width - overlapBounds[AABox2d.MAXX]
+                ) {
+                  left = Math.min(padding, wDiff) + halfBoxWidth - boundsCtr[0]
+                } else {
+                  left =
+                    width -
+                    Math.min(padding, wDiff) -
+                    halfBoxWidth -
+                    boundsCtr[0]
+                }
+
+                hDiff = overlapBounds[AABox2d.MINY] - boxHeight
+                if (hDiff >= 0) {
+                  // can fit on top of shape and in the center of the shape horizontally
+                  topOffset = -(
+                    boundsCtr[1] -
+                    overlapBounds[AABox2d.MINY] +
+                    Math.min(padding, hDiff) +
+                    halfBoxHeight
+                  )
+                } else {
+                  hDiff = overlapBounds[AABox2d.MAXY] + boxHeight
+                  // can fit on bottom and in the center of the shape horizontally
+                  topOffset =
+                    overlapBounds[AABox2d.MAXY] -
+                    boundsCtr[1] +
+                    Math.min(padding, hDiff) +
+                    halfBoxHeight
+                }
+                return left + "px"
+              }
+            }
+
+            if (boxWidth * boxHeight < overlapSz[0] * overlapSz[1]) {
+              // use the center of the overlapping bounds in the case where the box
+              // can't fit anwhere on the outside
+              topOffset = overlapCtr[1] - boundsCtr[1]
+              left = overlapCtr[0] - boundsCtr[0]
+            } else {
+              // use the center of the screen
+              topOffset = height / 2 - boundsCtr[1]
+              left = width / 2 - boundsCtr[0]
             }
             return left + "px"
-          }
-        }
+          })
+          .style("top", () => topOffset + "px")
 
-        if (boxWidth * boxHeight < overlapSz[0] * overlapSz[1]) {
-          // use the center of the overlapping bounds in the case where the box
-          // can't fit anwhere on the outside
-          topOffset = overlapCtr[1] - boundsCtr[1]
-          left = overlapCtr[0] - boundsCtr[0]
-        } else {
-          // use the center of the screen
-          topOffset = height / 2 - boundsCtr[1]
-          left = width / 2 - boundsCtr[0]
-        }
-        return left + "px"
-      })
-      .style("top", () => topOffset + "px")
+        const popupCopyIcon = document
+          .getElementsByClassName(_popup_item_copy_class)
+          .item(0)
 
-      const popupCopyIcon = document
-        .getElementsByClassName(_popup_item_copy_class)
-        .item(0)
-  
-      // eslint-disable-next-line no-unused-expressions
-      popupCopyIcon?.addEventListener("click", () => {
-        copyPopupContent()
+        // eslint-disable-next-line no-unused-expressions
+        popupCopyIcon?.addEventListener("click", () => {
+          copyPopupContent()
+        })
+
+        _layerPopups[chart] = popupBox
+
+        if (animate) {
+          popupDiv.classed("showPopup", true)
+        }
       })
-  
-      _layerPopups[chart] = popupBox
-  
-      if (animate) {
-        popupDiv.classed("showPopup", true)
-      }
-    }).catch((e) => {
-      alreadyLoaded = true
-      // eslint-disable-next-line no-console
-      console.warn("Error generating popup data", e)
-    })
+      .catch(e => {
+        alreadyLoaded = true
+        // eslint-disable-next-line no-console
+        console.warn("Error generating popup data", e)
+      })
   }
-
 
   _layer.isPopupDisplayed = function(chart) {
     return _layerPopups[chart] !== undefined

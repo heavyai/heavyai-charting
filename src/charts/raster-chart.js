@@ -953,8 +953,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.hidePopup = function hidePopup(animate) {
     const popupElem = _chart.select("." + _popupDivClassName)
-    // Don't close it if its loading, wait for the actual popup 
-    if (!popupElem.empty() && popupElem.select(`.${_popupLoadingClassName}`).empty()) {
+    // Don't close it if its loading, wait for the actual popup
+    if (
+      !popupElem.empty() &&
+      popupElem.select(`.${_popupLoadingClassName}`).empty()
+    ) {
       for (let i = 0; i < _layers.length; ++i) {
         const layerName = _layers[i]
         const layer = _layerNames[layerName]

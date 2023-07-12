@@ -349,42 +349,44 @@ export default function rasterMixin(_chart) {
         .style("background", colorPopupBackground(result.row_set[0]))
 
       // Plop a loader in there (on a small delay in case its synchronous)
-      const popupPromise = Promise.resolve(_chart.popupFunction()   
-        ? _popupFunction(mappedData)
-        : renderPopupHTML(mappedData))
-     
-      popupPromise.then((popupHtml) => {
+      const popupPromise = Promise.resolve(
+        _chart.popupFunction()
+          ? _popupFunction(mappedData)
+          : renderPopupHTML(mappedData)
+      )
+
+      popupPromise.then(popupHtml => {
         mapPopup
-        .append("div")
-        .attr("class", "map-popup-wrap")
-        .style({ left: xPixel + "px", top: yPixel + "px" })
-        .append("div")
-        .attr("class", "map-popup-box")
-        .html(popupHtml)
-        .style("left", function() {
-          const boxWidth = d3
-            .select(this)
-            .node()
-            .getBoundingClientRect().width
-          const overflow =
-            _chart.width() - (xPixel + boxWidth / 2) < 0
-              ? _chart.width() - (xPixel + boxWidth / 2) - 6
-              : xPixel - boxWidth / 2 < 0
-              ? -(xPixel - boxWidth / 2) + 6
-              : 0
-          offsetBridge = boxWidth / 2 - overflow
-          return overflow + "px"
-        })
-        .classed("pop-down", function() {
-          const boxHeight = d3
-            .select(this)
-            .node()
-            .getBoundingClientRect().height
-          return yPixel - (boxHeight + 12) < 8
-        })
-        .append("div")
-        .attr("class", "map-popup-bridge")
-        .style("left", () => offsetBridge + "px")
+          .append("div")
+          .attr("class", "map-popup-wrap")
+          .style({ left: xPixel + "px", top: yPixel + "px" })
+          .append("div")
+          .attr("class", "map-popup-box")
+          .html(popupHtml)
+          .style("left", function() {
+            const boxWidth = d3
+              .select(this)
+              .node()
+              .getBoundingClientRect().width
+            const overflow =
+              _chart.width() - (xPixel + boxWidth / 2) < 0
+                ? _chart.width() - (xPixel + boxWidth / 2) - 6
+                : xPixel - boxWidth / 2 < 0
+                ? -(xPixel - boxWidth / 2) + 6
+                : 0
+            offsetBridge = boxWidth / 2 - overflow
+            return overflow + "px"
+          })
+          .classed("pop-down", function() {
+            const boxHeight = d3
+              .select(this)
+              .node()
+              .getBoundingClientRect().height
+            return yPixel - (boxHeight + 12) < 8
+          })
+          .append("div")
+          .attr("class", "map-popup-bridge")
+          .style("left", () => offsetBridge + "px")
       })
     }
   }
