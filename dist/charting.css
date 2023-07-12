@@ -986,6 +986,9 @@ body {
       font-size: 12px;
       line-height: 1.2;
       margin-bottom: 4px; }
+      .dc-chart .map-popup-box-new .map-popup-item .popup-item-val {
+        display: inline-block;
+        word-break: break-all; }
       .dc-chart .map-popup-box-new .map-popup-item .popup-item-val a {
         text-decoration: none; }
       .dc-chart .map-popup-box-new .map-popup-item .popup-item-val a:hover {
@@ -998,8 +1001,8 @@ body {
     .dc-chart .map-popup-box-new .popup-item-copy {
       display: inline-block;
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 4px;
+      right: 4px;
       cursor: pointer;
       justify-content: flex-end;
       visibility: hidden; }

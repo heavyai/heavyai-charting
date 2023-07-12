@@ -1000,9 +1000,11 @@ body {
         .map-popup-item{
             font-size: 12px;
             line-height: 1.2;
-
             margin-bottom: 4px;
-
+          .popup-item-val {
+            display: inline-block;
+            word-break: break-all;
+          }
           .popup-item-val a {
             text-decoration: none;
           }
@@ -1019,8 +1021,8 @@ body {
         .popup-item-copy {
           display: inline-block;
           position: absolute;
-          top: 0;
-          right: 0;
+          top: 4px;
+          right: 4px;
           cursor: pointer;
           justify-content: flex-end;
           visibility: hidden;

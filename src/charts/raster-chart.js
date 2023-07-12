@@ -97,7 +97,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   const _popupLoadingClassName = "popup-loading"
   let _popupDisplayable = true
   let _legendOpen = true
-
+  let _popupImageEnabled = false
   let _shiftToZoom = false
 
   _chart.on = function(event, listener) {
@@ -972,6 +972,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         }
       }
     }
+  }
+  _chart.popupImageEnabled = function(enabled) {
+    if (enabled !== undefined) {
+      _popupImageEnabled = enabled
+    }
+
+    return _popupImageEnabled
   }
 
   const anchored = _chart.anchor(parent, chartGroup)

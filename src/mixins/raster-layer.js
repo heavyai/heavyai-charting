@@ -118,6 +118,7 @@ export default function rasterLayer(layerType) {
   const _popup_box_item_class = "map-popup-item"
   const _popup_item_key_class = "popup-item-key"
   const _popup_item_val_class = "popup-item-val"
+  const _popup_content_attr = "data-copycontent"
   const _layerPopups = {}
 
   _layer.layerType = function() {
@@ -402,54 +403,57 @@ export default function rasterLayer(layerType) {
   }
 
   const LinkElement = (href, content) => (
-      `<a href="${href}" target="_blank" rel="noopener noreferrer">
-      ${content}
-      </a>`
-    )
+    `<a href="${href}" target="_blank" rel="noopener noreferrer">
+    ${content}
+    </a>`
+  )
 
   const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg", ".webp"]
 
-  async function renderImageOrLink(url, hyperlink, colVal) {
+  async function renderImageOrLink(chart, url, hyperlink, colVal) {
     // eslint-disable-next-line no-restricted-syntax
     try {
       const sizeBytes = await getImageSize(hyperlink)
       let urlContent = url
-      if (sizeBytes < IMAGE_SIZE_LIMIT) {
-        urlContent = `<img class="${_popup_box_image_class}" src="${hyperlink}" alt="Image Preview">`
-      } else {
+      if (sizeBytes > IMAGE_SIZE_LIMIT) {
         // eslint-disable-next-line no-console
         console.info("Image too large to preview, falling back to hyperlink", hyperlink)
+      } else if (!chart.popupImageEnabled || !chart.popupImageEnabled()) {
+        // eslint-disable-next-line no-console
+        console.info("Images preview for popups is disabled")
+      } else {
+        urlContent = `<img class="${_popup_box_image_class}" data-copycontent="${hyperlink}" src="${hyperlink}" alt="Image Preview">`
       }
-      return LinkElement(hyperlink, urlContent)
+      return Promise.resolve(LinkElement(hyperlink, urlContent), true)
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.warn("Error creating link from column:", colVal, "Error:", e)
-      return Promise.resolve(colVal)
+      console.warn("Error creating image preview from column:", colVal, "Error:", e)
+      return Promise.resolve(LinkElement(hyperlink, colVal), true)
     }
   }
 
-  function replaceURL(colVal) {
+  function replaceURL(chart, columnValue) {
     const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
-    const urlMatch = typeof colVal === "string" && colVal.match(urlRegExpr)
+    const urlMatch = typeof columnValue === "string" && columnValue.match(urlRegExpr)
     if (urlMatch) {
-      return replaceAsync(colVal, urlRegExpr, async (url) => {
+      return replaceAsync(columnValue, urlRegExpr, async (url) => {
         let hyperlink = url
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink
         }
         if (filenameHasExtension(hyperlink, imageExtensions)) {
-          return renderImageOrLink(hyperlink, url, colVal)
+          return renderImageOrLink(chart, hyperlink, url, columnValue)
         } else {
-          return Promise.resolve(colVal.replace(urlRegExpr, url => LinkElement(hyperlink, url)))
+          return Promise.resolve(columnValue.replace(urlRegExpr, url => LinkElement(hyperlink, url)), true)
         }
       })
     } else {
       // Return raw column value, no transformation
-      return Promise.resolve(colVal)
+      return Promise.resolve(columnValue)
     }
   }
 
-  async function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
+  async function renderPopupHTML(chart, data, columnOrder, columnMap, formatMeasureValue) {
     const formattedColumnPromises = columnOrder.map(key => {
       if (typeof data[key] === "undefined") {
         return ""
@@ -458,7 +462,8 @@ export default function rasterLayer(layerType) {
       const columnKey = columnMap && columnMap[key] ? columnMap[key] : key
       const columnKeyTrimmed = columnKey.replace(/.*\((.*)\).*/, "$1")
 
-      return replaceURL(formatMeasureValue(data[key], columnKeyTrimmed)).then((formattedColumn) => {
+      const columnValue = formatMeasureValue(data[key], columnKeyTrimmed)
+      return replaceURL(chart, columnValue).then((formattedColumn, isLink) => {
         const columnHtml = `<div class="${_popup_box_item_class}">
             <span class="${_popup_item_key_class}">
               ${columnKey}:
@@ -473,7 +478,7 @@ export default function rasterLayer(layerType) {
     })
     return Promise.all(formattedColumnPromises).then(formattedColumns => {
       const html = `
-        <div class="${_popup_item_copy_class}">
+        <div class="${_popup_item_copy_class}" title="Copy popup contents">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M10.6668 0.666748H2.66683C1.9335 0.666748 1.3335 1.26675 1.3335 2.00008V11.3334H2.66683V2.00008H10.6668V0.666748ZM10.0002 3.33341L14.0002 7.33341V14.0001C14.0002 14.7334 13.4002 15.3334 12.6668 15.3334H5.32683C4.5935 15.3334 4.00016 14.7334 4.00016 14.0001L4.00683 4.66675C4.00683 3.93341 4.60016 3.33341 5.3335 3.33341H10.0002ZM9.3335 8.00008H13.0002L9.3335 4.33341V8.00008Z"/>
           </svg>
@@ -485,21 +490,50 @@ export default function rasterLayer(layerType) {
       return html
     })
   }
-
+  const getPopupContentForNode = (node) => {
+    const imageElement = node.nodeType !== 3 /* just text */ && node.getElementsByTagName("img")?.[0]
+    if (imageElement) {
+      // Copy the key and value, but use the data-popupcontent attribute for the image
+      const wrapperElement = document.createElement("div")
+      const valElement = document.createElement("span")
+      valElement.setHTML(imageElement.getAttribute(_popup_content_attr))
+      const keyElement = node.getElementsByClassName(_popup_item_key_class)?.[0]
+      if (keyElement) {
+        wrapperElement.appendChild(keyElement.cloneNode(true))
+      }
+      wrapperElement.appendChild(valElement)
+      return wrapperElement
+    } else {
+      const textNode = document.createElement("span")
+      textNode.appendChild(node.cloneNode(true))
+      return textNode
+    }
+  }
   // Copy from popup content
   const copyPopupContent = () => {
     const copyRange = document.createRange()
-      
     const nodesToCopy = document
-      .getElementsByClassName(_popup_box_item_wrap_class)
-      .item(0)
+      .getElementsByClassName(_popup_box_item_wrap_class)[0]?.childNodes
     
-    copyRange.setStartBefore(nodesToCopy[0])
-    copyRange.setEndAfter(nodesToCopy[nodesToCopy.length - 1])
+    if (!nodesToCopy || !nodesToCopy.length) {
+      return
+    }
 
+    // Copies elements from popup to a new element, where it can grab specific
+    // attributes or other content from the nodes
+    const copyDummy = document.createElement("div")
+    copyDummy.style.position = "fixed"
+    // Copy the things
+    nodesToCopy.forEach(node => {
+      copyDummy.appendChild(getPopupContentForNode(node))
+    })
+    document.body.appendChild(copyDummy)
+    copyRange.setStartBefore(copyDummy.childNodes[0])
+    copyRange.setEndAfter(copyDummy.childNodes[copyDummy.childNodes.length - 1])
     window.getSelection().removeAllRanges()
     window.getSelection().addRange(copyRange)
     document.execCommand("copy")
+    document.body.removeChild(copyDummy)
     window.getSelection().removeAllRanges()
   }
 
@@ -583,15 +617,23 @@ export default function rasterLayer(layerType) {
 
       popupDiv.classed(_popup_wrap_class, true)
 
-      // Add loader while we async get the popup html
-      popupDiv.classed("popup-loading", true)
-      popupDiv
-      .append("div")
-      .attr("class", _popup_box_class)
-      .style({"min-width": "48px", "min-height": "48px"})
-      .append("div")
-      .classed("main-loading-icon", true)
-      .style({"height": "32px", "width": "32px"})
+      // Puts it on a bit of a delay to avoid showing 
+      // it below a certain threshold. This flag determines if
+      // popup promises have completed before this timeout block runs
+      let alreadyLoaded = false
+      setTimeout(() => {
+        if (!alreadyLoaded) {
+          // Add loader while we async determine the popup html
+          popupDiv.classed("popup-loading", true)
+          popupDiv
+          .append("div")
+          .attr("class", _popup_box_class)
+          .style({"min-width": "48px", "min-height": "48px"})
+          .append("div")
+          .classed("main-loading-icon", true)
+          .style({"height": "32px", "width": "32px"})
+        }
+      }, 300)
 
     
     _layerPopups[chart] = popupDiv
@@ -603,12 +645,14 @@ export default function rasterLayer(layerType) {
     const popupData = _layer.popupFunction()
     ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
     : renderPopupHTML(
+      chart,
       filteredData,
       popupColumns,
       mappedColumns,
       chart.measureValue
     )
     Promise.resolve(popupData).then((popupHtml) => {
+      alreadyLoaded = true
       const popupContent = parentElem.select(`.${_popup_wrap_class}`)
       popupContent.classed("popup-loading", false)
       popupContent.selectAll("*").remove()
@@ -781,11 +825,11 @@ export default function rasterLayer(layerType) {
       })
       .style("top", () => topOffset + "px")
 
-  
       const popupCopyIcon = document
         .getElementsByClassName(_popup_item_copy_class)
         .item(0)
   
+      // eslint-disable-next-line no-unused-expressions
       popupCopyIcon?.addEventListener("click", () => {
         copyPopupContent()
       })
@@ -795,6 +839,10 @@ export default function rasterLayer(layerType) {
       if (animate) {
         popupDiv.classed("showPopup", true)
       }
+    }).catch((e) => {
+      alreadyLoaded = true
+      // eslint-disable-next-line no-console
+      console.warn("Error generating popup data", e)
     })
   }
 
