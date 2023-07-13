@@ -514,7 +514,7 @@ export default function rasterLayerLineMixin(_layer) {
     _vega = _layer.__genVega({
       chart,
       layerName,
-      table: _layer.crossfilter().getTable()[0],
+      table: _layer.crossfilter().getTables()[0],
       filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),

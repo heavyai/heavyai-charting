@@ -705,7 +705,7 @@ export default function rasterLayerPointMixin(_layer) {
 
     _vega = _layer.__genVega({
       layerName,
-      table: _layer.crossfilter().getTable()[0],
+      table: _layer.crossfilter().getTables()[0],
       filter: _layer.crossfilter().getFilterString(realLayerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),

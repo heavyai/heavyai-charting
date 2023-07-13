@@ -190,7 +190,7 @@ export default function rasterLayer(layerType) {
 
   function genHeatConfigFromChart(chart, layerName) {
     return {
-      table: _layer.crossfilter().getTable()[0],
+      table: _layer.crossfilter().getTables()[0],
       width: Math.round(chart.width() * chart._getPixelRatio()),
       height: Math.round(chart.height() * chart._getPixelRatio()),
       min: chart.conv4326To900913(chart._minCoord),
