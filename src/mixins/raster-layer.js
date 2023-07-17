@@ -14,6 +14,7 @@ import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
 import moment from "moment"
 import { IMAGE_SIZE_LIMIT } from "../constants/dc-constants"
 import { utils } from "../utils/utils"
+import { IMAGE_EXTENSIONS } from "../constants/file-types"
 
 const validLayerTypes = [
   "points",
@@ -407,16 +408,6 @@ export default function rasterLayer(layerType) {
     ${content}
     </a>`
 
-  const imageExtensions = [
-    ".jp2",
-    ".tif",
-    ".png",
-    ".gif",
-    ".jpeg",
-    "jpg",
-    ".webp"
-  ]
-
   async function renderImageOrLink(chart, url, hyperlink, colVal) {
     // eslint-disable-next-line no-restricted-syntax
     try {
@@ -457,7 +448,7 @@ export default function rasterLayer(layerType) {
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink
         }
-        if (filenameHasExtension(hyperlink, imageExtensions)) {
+        if (filenameHasExtension(hyperlink, IMAGE_EXTENSIONS)) {
           return renderImageOrLink(chart, hyperlink, url, columnValue)
         } else {
           return Promise.resolve(
