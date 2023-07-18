@@ -26,7 +26,7 @@ const validLayerTypes = [
   "crossSectionTerrain"
 ]
 
-const { getImageSize, replaceAsync } = utils
+const { getImageSize, replaceAsync, parseUrlParts } = utils
 
 export default function rasterLayer(layerType) {
   const _layerType = layerType
@@ -399,8 +399,10 @@ export default function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0])
   }
 
-  function filenameHasExtension(filename, extensions) {
-    return extensions.some(ext => filename.toLowerCase().endsWith(ext))
+  function filenameHasExtension(url = "", extensions) {
+    const urlParts = parseUrlParts(url)
+    const hostAndPath = urlParts?.[5]
+    return extensions.some(ext => hostAndPath?.toLowerCase()?.endsWith(ext))
   }
 
   const LinkElement = (href, content) =>
@@ -448,7 +450,7 @@ export default function rasterLayer(layerType) {
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink
         }
-        if (filenameHasExtension(hyperlink, IMAGE_EXTENSIONS)) {
+        if (filenameHasExtension(hyperlink, Object.values(IMAGE_EXTENSIONS))) {
           return renderImageOrLink(chart, hyperlink, url, columnValue)
         } else {
           return Promise.resolve(

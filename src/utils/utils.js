@@ -541,3 +541,30 @@ utils.replaceAsync = async (str, regex, asyncFn) => {
   const data = await Promise.all(promises)
   return str.replace(regex, () => data.shift())
 }
+
+/**
+ * Parses the major url parts from a string based on
+ * https://www.rfc-editor.org/rfc/rfc3986#appendix-B
+ *
+ * eg.
+ * "https://localhost:8002/things/image.png?with=query&string=params#plusoneofthese"
+ * [
+ *   'https://localhost:8002/things/image.png?with=query&string=params#plusoneofthese',  [0] Full url param
+ *   'https:', [1] protocol raw
+ *   'https', [2] protocol
+ *   '//localhost:8002',  [3] host+port raw
+ *   'localhost:8002',    [4] host + port
+ *   '/things/image.png', [5] path
+ *   '?with=query&string=params', [6] query string params raw
+ *   'with=query&string=params',  [7] query string params
+ *   '#plusoneofthese',   [8] anchor link raw
+ *   'plusoneofthese'  [8] anchor link
+ * ]
+ *
+ * @param {*} url
+ * @returns Array of url parts (regex groups), see above
+ */
+utils.parseUrlParts = url => {
+  const urlParser = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/
+  return url.match(urlParser)
+}
