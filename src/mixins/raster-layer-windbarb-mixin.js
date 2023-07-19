@@ -348,7 +348,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
     _vega = _layer.__genVega({
       chart,
       layerName,
-      table: _layer.crossfilter().getTables()[0],
+      table: _layer.crossfilter().getDatasource(),
       filter: _layer.crossfilter().getFilterString(realLayerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
