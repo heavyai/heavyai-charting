@@ -1029,7 +1029,7 @@ export default function mapMixin(
       !isNaN(sw[1]) &&
       !isNaN(ne[1]) &&
       sw[0] <= ne[0] &&
-      sw[1] < ne[1] &&
+      sw[1] <= ne[1] &&
       sw[0] >= LONMIN &&
       sw[0] <= LONMAX &&
       sw[1] >= LATMIN &&
@@ -1050,7 +1050,9 @@ export default function mapMixin(
       if (validateBounds(data)) {
         _map.fitBounds([data.bounds.sw, data.bounds.ne], {
           linear: true,
-          duration: EASE_DURATION_MS
+          duration: EASE_DURATION_MS,
+          maxZoom: data?.maxZoom ?? 22,
+          padding: data?.padding ?? 0
         })
       }
     } else {
