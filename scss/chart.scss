@@ -920,7 +920,6 @@ body {
 
     .map-popup-wrap-new {
         position: absolute;
-        z-index: 11;
         width: 0;
         display: flex;
 
@@ -1001,9 +1000,11 @@ body {
         .map-popup-item{
             font-size: 12px;
             line-height: 1.2;
-
             margin-bottom: 4px;
-
+          .popup-item-val {
+            display: inline-block;
+            word-break: break-all;
+          }
           .popup-item-val a {
             text-decoration: none;
           }
@@ -1011,12 +1012,17 @@ body {
             border-bottom: 1px solid;
             color: $blue-main;
           }
+          .map-popup-image {
+            width: 95%;
+            height: 200px;
+            object-fit: contain;
+          }
         }
         .popup-item-copy {
           display: inline-block;
           position: absolute;
-          top: 0;
-          right: 0;
+          top: 4px;
+          right: 4px;
           cursor: pointer;
           justify-content: flex-end;
           visibility: hidden;

@@ -511,3 +511,60 @@ utils.compareDates = function(sorting) {
     return sorting(a, b)
   }
 }
+
+/**
+ * Uses a HEAD request to get headers and check the content size
+ *
+ * @param {string} url - Url to check the response size of
+ * @returns Number of bytes returned in the header or 0 if not present
+ */
+utils.getImageSize = url =>
+  fetch(url, { method: "HEAD" }).then(
+    resp => resp?.headers?.get("Content-Length") ?? 0
+  )
+
+/**
+ * An async wrapper around string replace method
+ * Ripped from: https://stackoverflow.com/questions/33631041/javascript-async-await-in-replace
+ *
+ * @param {string} str - String to call replace on
+ * @param {RegExp} regex - Regular expression to match for replace
+ * @param {Function} asyncFn - Function to run for each match
+ * @returns Promise returning a string with replacements made
+ */
+utils.replaceAsync = async (str, regex, asyncFn) => {
+  const promises = []
+  str.replace(regex, (match, ...args) => {
+    const promise = asyncFn(match, ...args)
+    promises.push(promise)
+  })
+  const data = await Promise.all(promises)
+  return str.replace(regex, () => data.shift())
+}
+
+/**
+ * Parses the major url parts from a string based on
+ * https://www.rfc-editor.org/rfc/rfc3986#appendix-B
+ *
+ * eg.
+ * "https://localhost:8002/things/image.png?with=query&string=params#plusoneofthese"
+ * [
+ *   'https://localhost:8002/things/image.png?with=query&string=params#plusoneofthese',  [0] Full url param
+ *   'https:', [1] protocol raw
+ *   'https', [2] protocol
+ *   '//localhost:8002',  [3] host+port raw
+ *   'localhost:8002',    [4] host + port
+ *   '/things/image.png', [5] path
+ *   '?with=query&string=params', [6] query string params raw
+ *   'with=query&string=params',  [7] query string params
+ *   '#plusoneofthese',   [8] anchor link raw
+ *   'plusoneofthese'  [8] anchor link
+ * ]
+ *
+ * @param {*} url
+ * @returns Array of url parts (regex groups), see above
+ */
+utils.parseUrlParts = url => {
+  const urlParser = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/
+  return url.match(urlParser)
+}
