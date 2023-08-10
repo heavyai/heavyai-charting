@@ -1157,10 +1157,11 @@ describe("rasterLayerPointMixin", () => {
 
   describe("popup methods", () => {
     const cf = {
-      getTable: () => ["flights"],
+      getTables: () => ["flights"],
       getFilterString: () => "",
       getGlobalFilterString: () => "",
-      getId: () => 1
+      getId: () => 1,
+      getDataSource: () => "flights"
     }
 
     const chart = {
