@@ -670,7 +670,7 @@ export default function heavyaiTable(parent, chartGroup) {
   function filterCol(expr, val) {
     const type = _retrieveFilterColType({
       expr,
-      table: _crossfilter.getTable()[0],
+      table: _crossfilter.getDataSource(),
       columns: _crossfilter.getColumns()
     })
 

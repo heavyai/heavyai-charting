@@ -1862,7 +1862,7 @@ export default function baseMixin(_chart) {
     let timeout
 
     return function() {
-      let context = this,
+      const context = this,
         args = arguments
       const later = function() {
         timeout = null
