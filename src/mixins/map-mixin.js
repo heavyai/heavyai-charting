@@ -873,12 +873,14 @@ export default function mapMixin(
 
       _map.on("styledata", () => {
         // reapplying the previous style's render layer to the new style layer when basemap gets changed
+        const firstSymbolLayerId = getFirstSymbolLayerId()
+
         if (savedLayers.length) {
           Object.entries(savedSources).forEach(([id, source]) => {
             if (!_map.getSource(source)) {
               _map.addSource(id, source)
               savedLayers.forEach(layer => {
-                _map.addLayer(layer)
+                _map.addLayer(layer, firstSymbolLayerId)
               })
               savedLayers = []
               savedSources = {}
