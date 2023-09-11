@@ -72,6 +72,7 @@ export default function mapMixin(
   const _minMaxCache = {}
   let _interactionsEnabled = true
   let _shouldRedrawAll = false
+  let _forceResize = false
 
   _chart.useLonLat = function(useLonLat) {
     if (!arguments.length) {
@@ -135,6 +136,13 @@ export default function mapMixin(
 
   _chart.setShouldRedrawAll = function(newShouldRedrawAll) {
     _shouldRedrawAll = newShouldRedrawAll
+  }
+
+  _chart.forceResize = function(forceResize) {
+    if (forceResize !== undefined) {
+      _forceResize = forceResize
+    }
+    return _forceResize
   }
 
   function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
@@ -762,7 +770,7 @@ export default function mapMixin(
     const width = chart.width()
     const height = chart.height()
 
-    if (width !== _lastWidth || height !== _lastHeight) {
+    if (width !== _lastWidth || height !== _lastHeight || _forceResize) {
       _chart
         .root()
         .select("#" + _mapId + " canvas")
@@ -772,6 +780,10 @@ export default function mapMixin(
       _lastWidth = width
       _lastHeight = height
       _map.resize()
+
+      if (_forceResize) {
+        _forceResize = false
+      }
     }
   })
 
