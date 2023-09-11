@@ -73,6 +73,7 @@ export default function mapMixin(
   let _interactionsEnabled = true
   let _shouldRedrawAll = false
   let _forceResize = false
+  let _overlayDrawerOpen = false
 
   _chart.useLonLat = function(useLonLat) {
     if (!arguments.length) {
@@ -143,6 +144,13 @@ export default function mapMixin(
       _forceResize = forceResize
     }
     return _forceResize
+  }
+
+  _chart.overlayDrawerOpen = function(overlayDrawerOpen) {
+    if (overlayDrawerOpen !== undefined) {
+      _overlayDrawerOpen = overlayDrawerOpen
+    }
+    return _overlayDrawerOpen
   }
 
   function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
@@ -779,7 +787,26 @@ export default function mapMixin(
 
       _lastWidth = width
       _lastHeight = height
-      _map.resize()
+
+      // this is a dumb hack, but it works and there doesn't seem to be another sensible way
+      // problem is, mapbox looks to the size of "mapboxgl-canvas-container" to determine the
+      // render size of the canvas, regardless of what we feed it above. if there is an overlay
+      // drawer open, even if it sits at a higher z-index, the canvas size will be calculated
+      // according to the physical space in the DOM. Thus, force the canvas container to be the
+      // size of the chart (which ignores the overlay), and reset it once mapbox is done resizing
+      if (_overlayDrawerOpen) {
+        document.getElementsByClassName(
+          "mapboxgl-canvas-container"
+        )[0].style.width = `${width}px`
+
+        _map.resize()
+
+        document.getElementsByClassName(
+          "mapboxgl-canvas-container"
+        )[0].style.width = "auto"
+      } else {
+        _map.resize()
+      }
 
       if (_forceResize) {
         _forceResize = false
