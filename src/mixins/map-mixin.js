@@ -788,11 +788,11 @@ export default function mapMixin(
       _lastWidth = width
       _lastHeight = height
 
-      // this is a dumb hack, but it works and there doesn't seem to be another sensible way
+      // this is a dumb hack, but it works and there doesn't seem to be another sensible way.
       // problem is, mapbox looks to the size of "mapboxgl-canvas-container" to determine the
       // render size of the canvas, regardless of what we feed it above. if there is an overlay
       // drawer open, even if it sits at a higher z-index, the canvas size will be calculated
-      // according to the physical space in the DOM. Thus, force the canvas container to be the
+      // according to the physical space in the DOM. thus, force the canvas container to be the
       // size of the chart (which ignores the overlay), and reset it once mapbox is done resizing
       if (_overlayDrawerOpen) {
         _chart
