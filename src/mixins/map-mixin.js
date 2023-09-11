@@ -795,15 +795,15 @@ export default function mapMixin(
       // according to the physical space in the DOM. Thus, force the canvas container to be the
       // size of the chart (which ignores the overlay), and reset it once mapbox is done resizing
       if (_overlayDrawerOpen) {
-        document.getElementsByClassName(
-          "mapboxgl-canvas-container"
-        )[0].style.width = `${width}px`
-
+        _chart
+          .root()
+          .select(`#${_mapId} .mapboxgl-canvas-container`)
+          .style("width", `${width}px`)
         _map.resize()
-
-        document.getElementsByClassName(
-          "mapboxgl-canvas-container"
-        )[0].style.width = "auto"
+        _chart
+          .root()
+          .select(`#${_mapId} .mapboxgl-canvas-container`)
+          .style("width", "auto")
       } else {
         _map.resize()
       }
