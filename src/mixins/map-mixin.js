@@ -72,6 +72,8 @@ export default function mapMixin(
   const _minMaxCache = {}
   let _interactionsEnabled = true
   let _shouldRedrawAll = false
+  let _forceResize = false
+  let _overlayDrawerOpen = false
 
   _chart.useLonLat = function(useLonLat) {
     if (!arguments.length) {
@@ -135,6 +137,20 @@ export default function mapMixin(
 
   _chart.setShouldRedrawAll = function(newShouldRedrawAll) {
     _shouldRedrawAll = newShouldRedrawAll
+  }
+
+  _chart.forceResize = function(forceResize) {
+    if (forceResize !== undefined) {
+      _forceResize = forceResize
+    }
+    return _forceResize
+  }
+
+  _chart.overlayDrawerOpen = function(overlayDrawerOpen) {
+    if (overlayDrawerOpen !== undefined) {
+      _overlayDrawerOpen = overlayDrawerOpen
+    }
+    return _overlayDrawerOpen
   }
 
   function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
@@ -762,7 +778,7 @@ export default function mapMixin(
     const width = chart.width()
     const height = chart.height()
 
-    if (width !== _lastWidth || height !== _lastHeight) {
+    if (width !== _lastWidth || height !== _lastHeight || _forceResize) {
       _chart
         .root()
         .select("#" + _mapId + " canvas")
@@ -771,7 +787,30 @@ export default function mapMixin(
 
       _lastWidth = width
       _lastHeight = height
-      _map.resize()
+
+      // this is a dumb hack, but it works and there doesn't seem to be another sensible way.
+      // problem is, mapbox looks to the size of "mapboxgl-canvas-container" to determine the
+      // render size of the canvas, regardless of what we feed it above. if there is an overlay
+      // drawer open, even if it sits at a higher z-index, the canvas size will be calculated
+      // according to the container's visible width. thus, force the canvas container to be the
+      // size of the chart (which ignores the overlay), and reset it once mapbox is done resizing
+      if (_overlayDrawerOpen) {
+        _chart
+          .root()
+          .select(`#${_mapId} .mapboxgl-canvas-container`)
+          .style("width", `${width}px`)
+        _map.resize()
+        _chart
+          .root()
+          .select(`#${_mapId} .mapboxgl-canvas-container`)
+          .style("width", "auto")
+      } else {
+        _map.resize()
+      }
+
+      if (_forceResize) {
+        _forceResize = false
+      }
     }
   })
 
