@@ -154,6 +154,11 @@ export default function rasterLayerPolyMixin(_layer) {
     isDataExport
   }) {
     /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
+    // Find a much better way to do this... set a flag in immerse
+    const isGeoJoin = state.data.find((d) => 
+      d.table.includes("JOIN")
+    )
+    
     const {
       encoding: { color, geocol, geoTable }
     } = state
@@ -161,13 +166,40 @@ export default function rasterLayerPolyMixin(_layer) {
     const transforms = []
 
     // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
-    transforms.push({
-      type: "project",
-      expr: `${
-        isDataExport && !doJoin() ? "/*+ cpu_mode */ " : ""
-      }${geoTable}.${geocol}`,
-      as: geocol
-    })
+    if (isGeoJoin) {
+        // add group by
+        const groupby = {
+          type: "project",
+          expr: `${geoTable}.rowid`,
+          as: "grouped_geom"
+        }
+
+        // Group by geometry (more of less)
+        transforms.push({
+          type: "aggregate",
+          fields: [],
+          ops: [null],
+          as: [],
+          groupby
+        })
+
+        // Select any_value
+        transforms.push({
+          type: "project",
+          expr: `ANY_VALUE(${geoTable}.${geocol})`,
+          as: "sampled_geo"
+        })
+    } else {
+
+      transforms.push({
+        type: "project",
+        expr: `${
+          isDataExport && !doJoin() ? "/*+ cpu_mode */ " : ""
+        }${geoTable}.${geocol}`,
+        as: geocol
+      })
+    }
+
 
     if (doJoin()) {
       let colorProjection = [
@@ -320,6 +352,9 @@ export default function rasterLayerPolyMixin(_layer) {
           as: "color"
         })
       }
+
+
+
       if (layerFilter.length && !isDataExport) {
         transforms.push({
           type: "project",
@@ -367,8 +402,8 @@ export default function rasterLayerPolyMixin(_layer) {
           expr: globalFilter
         })
       }
-    }
 
+    }
     if (typeof state.transform.limit === "number") {
       const doSample = state.transform.sample
       const doRowid = layerFilter.length
@@ -787,9 +822,8 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     if (
-      _vega &&
-      Array.isArray(_vega.marks) &&
-      _vega.marks.length > 0 &&
+      Array.isArray(_vega?.marks) &&
+      _vega?.marks?.length > 0 &&
       _vega.marks[0].properties
     ) {
       renderAttributes.forEach(rndrProp => {
@@ -865,9 +899,7 @@ export default function rasterLayerPolyMixin(_layer) {
       // when poly selection filter cleared, we reapply the bbox filter for the NON geo joined poly
       // For geo joined poly, we don't run crossfilter
       if (
-        _layer &&
-        _layer.getState().data &&
-        _layer.getState().data.length < 2
+        _layer?.getState?.()?.data?.length < 2
       ) {
         const viewboxdim = _layer.dimension().set(() => [geoTableCol])
         const mapBounds = chart.map().getBounds()
