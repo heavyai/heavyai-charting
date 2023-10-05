@@ -155,7 +155,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }) {
     /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
     // Find a much better way to do this... set a flag in immerse
-    const isGeoJoin = state.data.find((d) => 
+    const isJoin = state.data.find((d) => 
       d.table.includes("JOIN")
     )
     
@@ -166,7 +166,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const transforms = []
 
     // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
-    if (isGeoJoin) {
+    if (isJoin) {
         // add group by
         const groupby = {
           type: "project",
@@ -183,11 +183,11 @@ export default function rasterLayerPolyMixin(_layer) {
           groupby
         })
 
-        // Select any_value
+        // Select any_value, as the original col name
         transforms.push({
           type: "project",
           expr: `ANY_VALUE(${geoTable}.${geocol})`,
-          as: "sampled_geo"
+          as: geocol
         })
     } else {
 
@@ -202,6 +202,8 @@ export default function rasterLayerPolyMixin(_layer) {
 
 
     if (doJoin()) {
+      const joinDimension = state.data[0]
+      const geoJoin = state.data[1]
       let colorProjection = [
         color.type === "quantitative"
           ? parser.parseExpression(color.aggregate)
@@ -220,7 +222,7 @@ export default function rasterLayerPolyMixin(_layer) {
           factAliases: colorProjectionAs,
           expression: colorField
         } = parseFactsFromCustomSQL(
-          state.data[0].table,
+          joinDimension.table,
           withAlias,
           _customFetchColorAggregate(color.aggregate)
         ))
@@ -241,14 +243,14 @@ export default function rasterLayerPolyMixin(_layer) {
 
       const groupby = {
         type: "project",
-        expr: `${state.data[0].table}.${state.data[0].attr}`,
+        expr: `${joinDimension.table}.${joinDimension.attr}`,
         as: "key0"
       }
 
       transforms.push(
         {
           type: "filter",
-          expr: `${state.data[1].table}.${state.data[1].attr} = ${withAlias}.key0`
+          expr: `${geoJoin.table}.${geoJoin.attr} = ${withAlias}.key0`
         },
         { type: "project", expr: `${withAlias}.key0`, as: "key0" }
       )
@@ -334,24 +336,29 @@ export default function rasterLayerPolyMixin(_layer) {
         type: "with",
         expr: `${withAlias}`,
         fields: {
-          source: `${state.data[0].table}`,
+          source: `${joinDimension.table}`,
           type: "root",
           transform: withClauseTransforms
         }
       })
     } else {
-      const colorField =
-        color.type === "quantitative" && typeof color.aggregate === "string"
-          ? color.aggregate
-          : color.field
-
-      if (color.type !== "solid" && !layerFilter.length) {
-        transforms.push({
-          type: "project",
-          expr: colorField,
-          as: "color"
-        })
-      }
+        let colorField = null
+        if (color.type === "quantitative" && typeof color.aggregate === "string") {
+          colorField = color.aggregate
+        } else if (typeof color.aggregate === "object") {
+          colorField = parser.parseExpression(color.aggregate)
+        } else {
+          colorField = color.field
+        }
+  
+        if (color.type !== "solid" && !layerFilter.length) {
+          transforms.push({
+            type: "project",
+            expr: colorField,
+            as: "color"
+          })
+        }
+      // }
 
 
 
