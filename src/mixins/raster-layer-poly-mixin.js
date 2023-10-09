@@ -165,7 +165,6 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
-    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
     if (isJoin) {
         // add group by
         const groupby = {
@@ -180,7 +179,7 @@ export default function rasterLayerPolyMixin(_layer) {
           fields: [],
           ops: [null],
           as: [],
-          groupby
+          groupby: `${geoTable}.rowid`
         })
 
         // Select any_value, as the original col name
@@ -190,7 +189,7 @@ export default function rasterLayerPolyMixin(_layer) {
           as: geocol
         })
     } else {
-
+      // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
       transforms.push({
         type: "project",
         expr: `${
@@ -371,7 +370,7 @@ export default function rasterLayerPolyMixin(_layer) {
               [
                 {
                   type: filtersInverse ? "not in" : "in",
-                  expr: "rowid",
+                  expr: `${state.encoding.geoTable}.rowid`,
                   set: layerFilter
                 },
                 // Note: When not performing a join, there is no dimension,
@@ -391,7 +390,7 @@ export default function rasterLayerPolyMixin(_layer) {
           type: "filter",
           expr: parser.parseExpression({
             type: filtersInverse ? "not in" : "in",
-            expr: "rowid",
+            expr: `${state.encoding.geoTable}.rowid`,
             set: layerFilter
           })
         })
@@ -956,7 +955,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
-    const filterKey = "key0" in data ? "key0" : "rowid"
+    const filterKey = "key0" in data ? "key0" : `rowid`
 
     chart.hidePopup()
     events.trigger(() => {
