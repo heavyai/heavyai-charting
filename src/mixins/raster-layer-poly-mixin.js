@@ -905,7 +905,7 @@ export default function rasterLayerPolyMixin(_layer) {
       // when poly selection filter cleared, we reapply the bbox filter for the NON geo joined poly
       // For geo joined poly, we don't run crossfilter
       if (
-        _layer?.getState?.()?.data?.length < 2
+        _layer?.getState()?.data?.length ?? 0 < 2
       ) {
         const viewboxdim = _layer.dimension().set(() => [geoTableCol])
         const mapBounds = chart.map().getBounds()
