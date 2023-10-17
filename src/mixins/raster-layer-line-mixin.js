@@ -104,6 +104,11 @@ export default function rasterLayerLineMixin(_layer) {
     return state
   }
 
+
+  function doJoin() {
+    return state.data.length > 1
+  }
+
   _layer.getTransforms = function(
     table,
     filter,
@@ -121,6 +126,7 @@ export default function rasterLayerLineMixin(_layer) {
     const alias = []
     const ops = []
 
+    const isJoin = _layer.crossfilter().getTables().length > 1
     // Adds /*+ cpu_mode */ in data export query since we are limiting to some number of rows.
     const groupbyDim = state.transform.groupby
       ? state.transform.groupby.map((g, i) => ({
@@ -147,10 +153,6 @@ export default function rasterLayerLineMixin(_layer) {
         ? parser.parseExpression(color.aggregate)
         : `SAMPLE(${rowIdTable}.${color.field})`
 
-    function doJoin() {
-      return state.data.length > 1
-    }
-
     if (groupby.length > 0) {
       transforms.push({
         type: "aggregate",
@@ -169,7 +171,24 @@ export default function rasterLayerLineMixin(_layer) {
         expr: `SAMPLE(${geoTable}.${geocol})`,
         as: "sampled_geo"
       })
-    } else {
+    } else if (isJoin) {
+      // Group by geometry by assuming all rows are a unique 
+      // geometry, and grouping by rowid
+      transforms.push({
+        type: "aggregate",
+        fields: [],
+        ops: [null],
+        as: [],
+        groupby: `${geoTable}.rowid`
+      })
+
+      // Select any_value, as the original col name
+      transforms.push({
+        type: "project",
+        expr: `ANY_VALUE(${geoTable}.${geocol})`,
+        as: geocol
+      })
+    }else {
       transforms.push({
         type: "project",
         expr: `${isDataExport ? "/*+ cpu_mode */ " : ""}${geoTable}.${geocol}`
@@ -382,9 +401,10 @@ export default function rasterLayerLineMixin(_layer) {
         filterTransforms
       })
     } else {
+      const source = doJoin() ? [...new Set(state.data.map(source => source.table))].join(", ") : table
       sql = parser.writeSQL({
         type: "root",
-        source: [...new Set(state.data.map(source => source.table))].join(", "),
+        source,
         transform: _layer.getTransforms(
           table,
           filter,
