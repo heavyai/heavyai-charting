@@ -154,7 +154,10 @@ export default function rasterLayerPolyMixin(_layer) {
     isDataExport
   }) {
     /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
-    // Find a much better way to do this... set a flag in immerse?
+
+    // If crossfilter has > 1 table it is a join data source
+    // If this is true, we add an automatic group by for geometry rowid, and use
+    // ANY_VALUE to project unique geometries
     const isJoin = _layer?.dimension()?.crossfilter?.getTables()?.length > 1
 
     const {
@@ -164,14 +167,8 @@ export default function rasterLayerPolyMixin(_layer) {
     const transforms = []
 
     if (isJoin) {
-      // add group by
-      const groupby = {
-        type: "project",
-        expr: `${geoTable}.rowid`,
-        as: "grouped_geom"
-      }
-
-      // Group by geometry (more of less)
+      // Group by geometry by assuming all rows are a unique 
+      // geometry, and grouping by rowid
       transforms.push({
         type: "aggregate",
         fields: [],
