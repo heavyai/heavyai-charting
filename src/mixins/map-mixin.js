@@ -916,7 +916,7 @@ export default function mapMixin(
 
         if (savedLayers.length) {
           Object.entries(savedSources).forEach(([id, source]) => {
-            if (!_map.getSource(source)) {
+            if (!_map.getSource(source) && !_map.getSource(id)) {
               _map.addSource(id, source)
               savedLayers.forEach(layer => {
                 _map.addLayer(layer, firstSymbolLayerId)
