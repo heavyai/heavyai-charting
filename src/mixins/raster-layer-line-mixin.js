@@ -104,7 +104,6 @@ export default function rasterLayerLineMixin(_layer) {
     return state
   }
 
-
   function doJoin() {
     return state.data.length > 1
   }
@@ -172,7 +171,7 @@ export default function rasterLayerLineMixin(_layer) {
         as: "sampled_geo"
       })
     } else if (isJoin) {
-      // Group by geometry by assuming all rows are a unique 
+      // Group by geometry by assuming all rows are a unique
       // geometry, and grouping by rowid
       transforms.push({
         type: "aggregate",
@@ -188,7 +187,7 @@ export default function rasterLayerLineMixin(_layer) {
         expr: `ANY_VALUE(${geoTable}.${geocol})`,
         as: geocol
       })
-    }else {
+    } else {
       transforms.push({
         type: "project",
         expr: `${isDataExport ? "/*+ cpu_mode */ " : ""}${geoTable}.${geocol}`
@@ -401,7 +400,9 @@ export default function rasterLayerLineMixin(_layer) {
         filterTransforms
       })
     } else {
-      const source = doJoin() ? [...new Set(state.data.map(source => source.table))].join(", ") : table
+      const source = doJoin()
+        ? [...new Set(state.data.map(source => source.table))].join(", ")
+        : table
       sql = parser.writeSQL({
         type: "root",
         source,

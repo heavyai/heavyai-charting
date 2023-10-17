@@ -167,7 +167,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const transforms = []
 
     if (isJoin) {
-      // Group by geometry by assuming all rows are a unique 
+      // Group by geometry by assuming all rows are a unique
       // geometry, and grouping by rowid
       transforms.push({
         type: "aggregate",
