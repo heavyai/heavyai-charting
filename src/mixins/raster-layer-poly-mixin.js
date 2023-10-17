@@ -154,11 +154,9 @@ export default function rasterLayerPolyMixin(_layer) {
     isDataExport
   }) {
     /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
-    // Find a much better way to do this... set a flag in immerse
-    const isJoin = state.data.find((d) => 
-      d.table.includes("JOIN")
-    )
-    
+    // Find a much better way to do this... set a flag in immerse?
+    const isJoin = _layer?.dimension()?.crossfilter?.getTables()?.length > 1
+
     const {
       encoding: { color, geocol, geoTable }
     } = state
@@ -166,28 +164,28 @@ export default function rasterLayerPolyMixin(_layer) {
     const transforms = []
 
     if (isJoin) {
-        // add group by
-        const groupby = {
-          type: "project",
-          expr: `${geoTable}.rowid`,
-          as: "grouped_geom"
-        }
+      // add group by
+      const groupby = {
+        type: "project",
+        expr: `${geoTable}.rowid`,
+        as: "grouped_geom"
+      }
 
-        // Group by geometry (more of less)
-        transforms.push({
-          type: "aggregate",
-          fields: [],
-          ops: [null],
-          as: [],
-          groupby: `${geoTable}.rowid`
-        })
+      // Group by geometry (more of less)
+      transforms.push({
+        type: "aggregate",
+        fields: [],
+        ops: [null],
+        as: [],
+        groupby: `${geoTable}.rowid`
+      })
 
-        // Select any_value, as the original col name
-        transforms.push({
-          type: "project",
-          expr: `ANY_VALUE(${geoTable}.${geocol})`,
-          as: geocol
-        })
+      // Select any_value, as the original col name
+      transforms.push({
+        type: "project",
+        expr: `ANY_VALUE(${geoTable}.${geocol})`,
+        as: geocol
+      })
     } else {
       // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
       transforms.push({
@@ -198,7 +196,6 @@ export default function rasterLayerPolyMixin(_layer) {
         as: geocol
       })
     }
-
 
     if (doJoin()) {
       const joinDimension = state.data[0]
@@ -341,25 +338,26 @@ export default function rasterLayerPolyMixin(_layer) {
         }
       })
     } else {
-        let colorField = null
-        if (color.type === "quantitative" && typeof color.aggregate === "string") {
-          colorField = color.aggregate
-        } else if (typeof color.aggregate === "object") {
-          colorField = parser.parseExpression(color.aggregate)
-        } else {
-          colorField = color.field
-        }
-  
-        if (color.type !== "solid" && !layerFilter.length) {
-          transforms.push({
-            type: "project",
-            expr: colorField,
-            as: "color"
-          })
-        }
+      let colorField = null
+      if (
+        color.type === "quantitative" &&
+        typeof color.aggregate === "string"
+      ) {
+        colorField = color.aggregate
+      } else if (typeof color.aggregate === "object") {
+        colorField = parser.parseExpression(color.aggregate)
+      } else {
+        colorField = color.field
+      }
+
+      if (color.type !== "solid" && !layerFilter.length) {
+        transforms.push({
+          type: "project",
+          expr: colorField,
+          as: "color"
+        })
+      }
       // }
-
-
 
       if (layerFilter.length && !isDataExport) {
         transforms.push({
@@ -408,7 +406,6 @@ export default function rasterLayerPolyMixin(_layer) {
           expr: globalFilter
         })
       }
-
     }
     if (typeof state.transform.limit === "number") {
       const doSample = state.transform.sample
@@ -904,9 +901,7 @@ export default function rasterLayerPolyMixin(_layer) {
       const geoTableCol = `${geoTable}.${geoCol}`
       // when poly selection filter cleared, we reapply the bbox filter for the NON geo joined poly
       // For geo joined poly, we don't run crossfilter
-      if (
-        _layer?.getState()?.data?.length ?? 0 < 2
-      ) {
+      if (_layer?.getState()?.data?.length ?? 0 < 2) {
         const viewboxdim = _layer.dimension().set(() => [geoTableCol])
         const mapBounds = chart.map().getBounds()
         _layer.viewBoxDim(viewboxdim)
