@@ -354,7 +354,6 @@ export default function rasterLayerPolyMixin(_layer) {
           as: "color"
         })
       }
-      // }
 
       if (layerFilter.length && !isDataExport) {
         transforms.push({
@@ -947,7 +946,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
-    const filterKey = "key0" in data ? "key0" : `rowid`
+    const filterKey = "key0" in data ? "key0" : "rowid"
 
     chart.hidePopup()
     events.trigger(() => {
