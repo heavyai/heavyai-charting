@@ -154,22 +154,49 @@ export default function rasterLayerPolyMixin(_layer) {
     isDataExport
   }) {
     /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
+
+    // If crossfilter has > 1 table it is a join data source
+    // If this is true, we add an automatic group by for geometry rowid, and use
+    // ANY_VALUE to project unique geometries
+    const isJoin = _layer?.dimension()?.crossfilter?.getTables()?.length > 1
+
     const {
       encoding: { color, geocol, geoTable }
     } = state
 
     const transforms = []
 
-    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
-    transforms.push({
-      type: "project",
-      expr: `${
-        isDataExport && !doJoin() ? "/*+ cpu_mode */ " : ""
-      }${geoTable}.${geocol}`,
-      as: geocol
-    })
+    if (isJoin) {
+      // Group by geometry by assuming all rows are a unique
+      // geometry, and grouping by rowid
+      transforms.push({
+        type: "aggregate",
+        fields: [],
+        ops: [null],
+        as: [],
+        groupby: `${geoTable}.rowid`
+      })
+
+      // Select any_value, as the original col name
+      transforms.push({
+        type: "project",
+        expr: `ANY_VALUE(${geoTable}.${geocol})`,
+        as: geocol
+      })
+    } else {
+      // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
+      transforms.push({
+        type: "project",
+        expr: `${
+          isDataExport && !doJoin() ? "/*+ cpu_mode */ " : ""
+        }${geoTable}.${geocol}`,
+        as: geocol
+      })
+    }
 
     if (doJoin()) {
+      const joinDimension = state.data[0]
+      const geoJoin = state.data[1]
       let colorProjection = [
         color.type === "quantitative"
           ? parser.parseExpression(color.aggregate)
@@ -188,7 +215,7 @@ export default function rasterLayerPolyMixin(_layer) {
           factAliases: colorProjectionAs,
           expression: colorField
         } = parseFactsFromCustomSQL(
-          state.data[0].table,
+          joinDimension.table,
           withAlias,
           _customFetchColorAggregate(color.aggregate)
         ))
@@ -209,14 +236,14 @@ export default function rasterLayerPolyMixin(_layer) {
 
       const groupby = {
         type: "project",
-        expr: `${state.data[0].table}.${state.data[0].attr}`,
+        expr: `${joinDimension.table}.${joinDimension.attr}`,
         as: "key0"
       }
 
       transforms.push(
         {
           type: "filter",
-          expr: `${state.data[1].table}.${state.data[1].attr} = ${withAlias}.key0`
+          expr: `${geoJoin.table}.${geoJoin.attr} = ${withAlias}.key0`
         },
         { type: "project", expr: `${withAlias}.key0`, as: "key0" }
       )
@@ -302,16 +329,23 @@ export default function rasterLayerPolyMixin(_layer) {
         type: "with",
         expr: `${withAlias}`,
         fields: {
-          source: `${state.data[0].table}`,
+          source: `${joinDimension.table}`,
           type: "root",
           transform: withClauseTransforms
         }
       })
     } else {
-      const colorField =
-        color.type === "quantitative" && typeof color.aggregate === "string"
-          ? color.aggregate
-          : color.field
+      let colorField = null
+      if (
+        color.type === "quantitative" &&
+        typeof color.aggregate === "string"
+      ) {
+        colorField = color.aggregate
+      } else if (typeof color.aggregate === "object") {
+        colorField = parser.parseExpression(color.aggregate)
+      } else {
+        colorField = color.field
+      }
 
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
@@ -320,6 +354,7 @@ export default function rasterLayerPolyMixin(_layer) {
           as: "color"
         })
       }
+
       if (layerFilter.length && !isDataExport) {
         transforms.push({
           type: "project",
@@ -329,7 +364,7 @@ export default function rasterLayerPolyMixin(_layer) {
               [
                 {
                   type: filtersInverse ? "not in" : "in",
-                  expr: "rowid",
+                  expr: `${state.encoding.geoTable}.rowid`,
                   set: layerFilter
                 },
                 // Note: When not performing a join, there is no dimension,
@@ -349,7 +384,7 @@ export default function rasterLayerPolyMixin(_layer) {
           type: "filter",
           expr: parser.parseExpression({
             type: filtersInverse ? "not in" : "in",
-            expr: "rowid",
+            expr: `${state.encoding.geoTable}.rowid`,
             set: layerFilter
           })
         })
@@ -368,7 +403,6 @@ export default function rasterLayerPolyMixin(_layer) {
         })
       }
     }
-
     if (typeof state.transform.limit === "number") {
       const doSample = state.transform.sample
       const doRowid = layerFilter.length
@@ -787,9 +821,8 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     if (
-      _vega &&
-      Array.isArray(_vega.marks) &&
-      _vega.marks.length > 0 &&
+      Array.isArray(_vega?.marks) &&
+      _vega?.marks?.length > 0 &&
       _vega.marks[0].properties
     ) {
       renderAttributes.forEach(rndrProp => {
@@ -864,11 +897,7 @@ export default function rasterLayerPolyMixin(_layer) {
       const geoTableCol = `${geoTable}.${geoCol}`
       // when poly selection filter cleared, we reapply the bbox filter for the NON geo joined poly
       // For geo joined poly, we don't run crossfilter
-      if (
-        _layer &&
-        _layer.getState().data &&
-        _layer.getState().data.length < 2
-      ) {
+      if (_layer?.getState()?.data?.length ?? 0 < 2) {
         const viewboxdim = _layer.dimension().set(() => [geoTableCol])
         const mapBounds = chart.map().getBounds()
         _layer.viewBoxDim(viewboxdim)
