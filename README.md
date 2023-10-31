@@ -18,7 +18,7 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 # Examples
 
-Visit our [examples page](https://omnisci.github.io/mapd-charting/example/) for ideas of what can be created with HEAVY.AI Charting
+Visit our [examples page](https://heavyai.github.io/heavyai-charting/example/) for ideas of what can be created with HEAVY.AI Charting
 
 # Quick Start
 
@@ -43,7 +43,7 @@ Our [Tweetmap Demo](https://www.heavy.ai/demos/tweetmap/) was made only using HE
 
 # Documentation
 
-Visit our [API Docs](http://omnisci.github.io/mapd-charting/docs/) for additional information on HEAVY.AI Charting
+Visit our [API Docs](https://heavyai.github.io/heavyai-charting/docs/) for additional information on HEAVY.AI Charting
 
 # Testing
 
