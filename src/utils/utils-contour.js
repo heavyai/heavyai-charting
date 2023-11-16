@@ -15,7 +15,7 @@ const buildParamsSQL = (params = {}) =>
       const stringParams = ["agg_type", "fill_agg_type"]
       let parsedVal = val
       if (floatParams.includes(key)) {
-        parsedVal = Number.parseFloat(val).toFixed(1)
+        parsedVal = `cast(${Number.parseFloat(val).toFixed(1)} as float)`
       } else if (stringParams.includes(key)) {
         parsedVal = `'${val}'`
       } else if (typeof val === "boolean") {
@@ -76,8 +76,9 @@ export const buildOptimizedContourSQL = ({
     : ""
 
   const BASE_MULTIPLIER = 100000.0
+  const multiplierDenom = Math.round((BASE_MULTIPLIER * 2.0) / bin_dim_meters) || 1.0
   const multiplier = Number.parseFloat(
-    1 / Math.round((BASE_MULTIPLIER * 2.0) / bin_dim_meters)
+    1 / multiplierDenom
   ).toFixed(10)
 
   const latFieldParsed = is_geo_point_type ? `ST_Y(${lat_field})` : lat_field
