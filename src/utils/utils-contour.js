@@ -76,10 +76,9 @@ export const buildOptimizedContourSQL = ({
     : ""
 
   const BASE_MULTIPLIER = 100000.0
-  const multiplierDenom = Math.round((BASE_MULTIPLIER * 2.0) / bin_dim_meters) || 1.0
-  const multiplier = Number.parseFloat(
-    1 / multiplierDenom
-  ).toFixed(10)
+  const multiplierDenom =
+    Math.round((BASE_MULTIPLIER * 2.0) / bin_dim_meters) || 1.0
+  const multiplier = Number.parseFloat(1 / multiplierDenom).toFixed(10)
 
   const latFieldParsed = is_geo_point_type ? `ST_Y(${lat_field})` : lat_field
   const lonFieldParsed = is_geo_point_type ? `ST_X(${lon_field})` : lon_field
