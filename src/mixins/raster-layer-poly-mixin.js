@@ -644,13 +644,32 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     }
 
+    if (isContourType(state)) {
+      data.push({
+        name: getStatsLayerName(layerName),
+        source: layerName,
+        transform: [
+          {
+            type: "aggregate",
+            fields: ["contour_values", "contour_values"],
+            ops: ["min", "max"],
+            as: ["mincol", "maxcol"]
+          }
+        ]
+      })
+    }
+
     const scales = []
     let fillColor = "#AAAAAA"
     if (isContourType(state)) {
       scales.push({
         name: `${layerName}_contour_fill`,
-        type: state.encoding.color.type,
-        domain: state.encoding.color.domain,
+        type: "quantize",
+        // domain: state.encoding.color.domain, //
+        domain: {
+          data: getStatsLayerName(layerName),
+          fields: ["mincol", "maxcol"]
+        },
         range: state.encoding.color.range.map(c =>
           adjustOpacity(c, state.encoding.color.opacity)
         ),
