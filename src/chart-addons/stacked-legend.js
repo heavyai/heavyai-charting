@@ -380,7 +380,7 @@ function legendState_v1(state, useMap) {
       domain: state.domain,
       position: LEGEND_POSITIONS.BOTTOM_LEFT
     }
-  } else if (state.type === "quantize") {
+  } else if (state.type === "quantize" && state.domain !== "auto-contour") { // Legend not supported for contour
     const { scale } = state
     return {
       type: "gradient",
