@@ -671,11 +671,12 @@ export default function rasterLayerPolyMixin(_layer) {
       scales.push({
         name: `${layerName}_contour_fill`,
         type: "quantize",
-        // domain: state.encoding.color.domain, //
-        domain: contourAutocolors ? {
-          data: getStatsLayerName(layerName),
-          fields: ["mincol", "maxcol"]
-        } : state.encoding.color.domain,
+        domain: contourAutocolors
+          ? {
+              data: getStatsLayerName(layerName),
+              fields: ["mincol", "maxcol"]
+            }
+          : state.encoding.color.domain,
         range: state.encoding.color.range.map(c =>
           adjustOpacity(c, state.encoding.color.opacity)
         ),
