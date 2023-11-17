@@ -670,7 +670,7 @@ export default function rasterLayerPolyMixin(_layer) {
     if (isContourType(state)) {
       scales.push({
         name: `${layerName}_contour_fill`,
-        type: "quantize",
+        type: state.encoding.color.type,
         domain: contourAutocolors
           ? {
               data: getStatsLayerName(layerName),
