@@ -270,22 +270,6 @@ export default function rasterLayerPointMixin(_layer) {
         })
       }
 
-      if (typeof transform.limit === "number") {
-        transforms.push({
-          type: "limit",
-          row: transform.limit
-        })
-        if (transform.sample) {
-          transforms.push({
-            type: "sample",
-            method: "multiplicative",
-            size: lastFilteredSize || transform.tableSize,
-            limit: transform.limit,
-            sampleTable: table
-          })
-        }
-      }
-
       if (typeof size === "object" && size.type === "quantitative") {
         transforms.push({
           type: "project",
@@ -340,6 +324,22 @@ export default function rasterLayerPointMixin(_layer) {
         type: "filter",
         expr: globalFilter
       })
+    }
+
+    if (typeof transform.limit === "number") {
+      transforms.push({
+        type: "limit",
+        row: transform.limit
+      })
+      if (transform.sample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || transform.tableSize,
+          limit: transform.limit,
+          sampleTable: table
+        })
+      }
     }
 
     return transforms
@@ -477,6 +477,10 @@ export default function rasterLayerPointMixin(_layer) {
       layerName,
       markType
     )
+    console.log("SIZE")
+    console.log(size)
+    console.log("STATE")
+    console.log(state)
 
     let data = []
 
@@ -527,6 +531,40 @@ export default function rasterLayerPointMixin(_layer) {
         }
       }
     } else {
+      console.log("TRANSFORMS")
+      console.log(
+        _layer.getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          lastFilteredSize
+        )
+      )
+      const transforms = _layer.getTransforms(
+        table,
+        filter,
+        globalFilter,
+        state,
+        lastFilteredSize
+      )
+      parser.writeSQL({
+        type: "root",
+        source: table,
+        transform: transforms
+      })
+      console.log("WRITE SQL")
+      parser.writeSQL({
+        type: "root",
+        source: table,
+        transform: _layer.getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          lastFilteredSize
+        )
+      })
       data = [
         {
           name: layerName,

@@ -237,6 +237,20 @@ export default function rasterLayerLineMixin(_layer) {
       })
     }
 
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      })
+    }
+
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      })
+    }
+
     if (typeof transform.limit === "number") {
       if (transform.sample && !doJoin()) {
         // use Knuth's hash sampling on single data source chart
@@ -254,20 +268,6 @@ export default function rasterLayerLineMixin(_layer) {
           row: transform.limit
         })
       }
-    }
-
-    if (typeof filter === "string" && filter.length) {
-      transforms.push({
-        type: "filter",
-        expr: filter
-      })
-    }
-
-    if (typeof globalFilter === "string" && globalFilter.length) {
-      transforms.push({
-        type: "filter",
-        expr: globalFilter
-      })
     }
 
     return transforms
