@@ -477,10 +477,6 @@ export default function rasterLayerPointMixin(_layer) {
       layerName,
       markType
     )
-    console.log("SIZE")
-    console.log(size)
-    console.log("STATE")
-    console.log(state)
 
     let data = []
 
@@ -531,40 +527,6 @@ export default function rasterLayerPointMixin(_layer) {
         }
       }
     } else {
-      console.log("TRANSFORMS")
-      console.log(
-        _layer.getTransforms(
-          table,
-          filter,
-          globalFilter,
-          state,
-          lastFilteredSize
-        )
-      )
-      const transforms = _layer.getTransforms(
-        table,
-        filter,
-        globalFilter,
-        state,
-        lastFilteredSize
-      )
-      parser.writeSQL({
-        type: "root",
-        source: table,
-        transform: transforms
-      })
-      console.log("WRITE SQL")
-      parser.writeSQL({
-        type: "root",
-        source: table,
-        transform: _layer.getTransforms(
-          table,
-          filter,
-          globalFilter,
-          state,
-          lastFilteredSize
-        )
-      })
       data = [
         {
           name: layerName,
