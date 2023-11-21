@@ -105,7 +105,7 @@ export const buildOptimizedContourSQL = ({
   const contourParamsSQL = buildParamsSQL(contourParams)
 
   const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
-  const contourLineCase = `CASE mod(cast(contour_values as int), ${majorInterval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
+  const contourLineCase = `CASE MOD(CAST(contour_values AS BIGINT), CAST(${majorInterval} AS BIGINT)) WHEN 0 THEN 1 ELSE 0 END AS ${isMajorFieldName} `
   const contourTableFunction = isPolygons
     ? "tf_raster_contour_polygons"
     : "tf_raster_contour_lines"
@@ -178,7 +178,7 @@ export const buildContourSQL = ({
   const contourParamsSQL = buildParamsSQL(contourParams)
 
   const geometryColumn = isPolygons ? "contour_polygons" : "contour_lines"
-  const contourLineCase = `CASE mod(cast(contour_values as int), ${majorInterval}) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
+  const contourLineCase = `CASE MOD(CAST(contour_values AS BIGINT), CAST(${majorInterval} AS BIGINT)) WHEN 0 THEN 1 ELSE 0 END as ${isMajorFieldName} `
   const contourTableFunction = isPolygons
     ? "tf_raster_contour_polygons"
     : "tf_raster_contour_lines"
