@@ -270,22 +270,6 @@ export default function rasterLayerPointMixin(_layer) {
         })
       }
 
-      if (typeof transform.limit === "number") {
-        transforms.push({
-          type: "limit",
-          row: transform.limit
-        })
-        if (transform.sample) {
-          transforms.push({
-            type: "sample",
-            method: "multiplicative",
-            size: lastFilteredSize || transform.tableSize,
-            limit: transform.limit,
-            sampleTable: table
-          })
-        }
-      }
-
       if (typeof size === "object" && size.type === "quantitative") {
         transforms.push({
           type: "project",
@@ -340,6 +324,22 @@ export default function rasterLayerPointMixin(_layer) {
         type: "filter",
         expr: globalFilter
       })
+    }
+
+    if (typeof transform.limit === "number") {
+      transforms.push({
+        type: "limit",
+        row: transform.limit
+      })
+      if (transform.sample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || transform.tableSize,
+          limit: transform.limit,
+          sampleTable: table
+        })
+      }
     }
 
     return transforms
