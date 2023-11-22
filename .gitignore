@@ -51,3 +51,6 @@ example/css/chart.css
 
 .nyc_output
 *.lcov
+
+# dist
+dist
