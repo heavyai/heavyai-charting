@@ -442,6 +442,10 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.encoding.color && state.encoding.color.domain === "auto"
   }
 
+  function usesAutoContourColors() {
+    return state.encoding?.color.domain === "auto-contour"
+  }
+
   function getPolygonScale({ state, layerFilter, layerName, autocolors }) {
     const useColorScale = !(state.encoding.color.type === "solid")
     let scale
@@ -567,6 +571,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }) {
     const autocolors = usesAutoColors()
     const state = _layer.getState()
+    const contourAutocolors = isContourType(state) && usesAutoContourColors()
 
     let data
     if (isContourType(state)) {
@@ -644,13 +649,34 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     }
 
+    // Contour polys may be colored by contour value rather than a color column
+    if (contourAutocolors) {
+      data.push({
+        name: getStatsLayerName(layerName),
+        source: layerName,
+        transform: [
+          {
+            type: "aggregate",
+            fields: ["contour_values", "contour_values"],
+            ops: ["min", "max"],
+            as: ["mincol", "maxcol"]
+          }
+        ]
+      })
+    }
+
     const scales = []
     let fillColor = "#AAAAAA"
     if (isContourType(state)) {
       scales.push({
         name: `${layerName}_contour_fill`,
         type: state.encoding.color.type,
-        domain: state.encoding.color.domain,
+        domain: contourAutocolors
+          ? {
+              data: getStatsLayerName(layerName),
+              fields: ["mincol", "maxcol"]
+            }
+          : state.encoding.color.domain,
         range: state.encoding.color.range.map(c =>
           adjustOpacity(c, state.encoding.color.opacity)
         ),
