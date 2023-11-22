@@ -141,8 +141,8 @@ describe("rasterLayerPointMixin", () => {
           "SELECT conv_4326_900913_x(lon) AS x, "
           + "conv_4326_900913_y(lat) AS y "
           + "FROM tweets_nov_feb "
-          + "WHERE SAMPLE_RATIO(0.0016816902723414068) "
-          + "AND (lon = 100) LIMIT 2000000"
+          + "WHERE (lon = 100) "
+          + "AND SAMPLE_RATIO(0.0016816902723414068) LIMIT 2000000"
         )
 
       })
