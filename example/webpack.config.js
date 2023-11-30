@@ -2,7 +2,7 @@ const path = require("path")
 
 module.exports = {
   entry: {
-    "heavyai-charting": [
+    "app": [
       "script-loader!@heavyai/connector/dist/browser-connector.js",
       "script-loader!@heavyai/crossfilter/dist/mapd-crossfilter.js",
       "script-loader!@heavyai/d3-combo-chart/dist/d3ComboChart.js",
