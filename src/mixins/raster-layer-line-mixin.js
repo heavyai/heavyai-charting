@@ -199,7 +199,7 @@ export default function rasterLayerLineMixin(_layer) {
       (size.type === "quantitative" || size.type === "custom")
     ) {
       if (groupby.length > 0 && size.type === "quantitative") {
-        fields.push(size.field)
+        fields.push(`${size.table || state.data[0].table}.${size.field}`)
         alias.push("strokeWidth")
         ops.push(size.aggregate)
       } else {
