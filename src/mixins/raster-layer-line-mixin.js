@@ -199,7 +199,8 @@ export default function rasterLayerLineMixin(_layer) {
       (size.type === "quantitative" || size.type === "custom")
     ) {
       if (groupby.length > 0 && size.type === "quantitative") {
-        fields.push(`${state.data[0].table}.${size.field}`)
+        // fields.push(size.field) // doesn't work for gj
+        fields.push(`${size.table}.${size.field}`) // ah this is wrong. but there's no table on size...anywhere...? where is it on color // this works
         alias.push("strokeWidth")
         ops.push(size.aggregate)
       } else {
