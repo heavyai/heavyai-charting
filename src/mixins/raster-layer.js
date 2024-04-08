@@ -27,7 +27,7 @@ const validLayerTypes = [
 ]
 
 const { getImageSize, replaceAsync, parseUrlParts } = utils
-const missingHitTestColumnErrorStr =
+const MISSING_HIT_TEST_COLUMN_ERROR =
   "$HEAVYAI_ERROR_COLUMN_NOT_FOUND_IN_HIT_TEST_CACHE$"
 
 export default function rasterLayer(layerType) {
@@ -577,7 +577,7 @@ export default function rasterLayer(layerType) {
     // check for missing hit test cache columns and substitute readable message
     // they always come back with string $HEAVYAI_ERROR_COLUMN_NOT_FOUND_IN_HIT_TEST_CACHE$
     for (const [key, value] of Object.entries(mappedColumns)) {
-      if (value === missingHitTestColumnErrorStr) {
+      if (value === MISSING_HIT_TEST_COLUMN_ERROR) {
         mappedColumns[key] = "Column Not Found"
       }
     }
