@@ -27,6 +27,8 @@ const validLayerTypes = [
 ]
 
 const { getImageSize, replaceAsync, parseUrlParts } = utils
+const MISSING_HIT_TEST_COLUMN_ERROR =
+  "$HEAVYAI_ERROR_COLUMN_NOT_FOUND_IN_HIT_TEST_CACHE$"
 
 export default function rasterLayer(layerType) {
   const _layerType = layerType
@@ -355,7 +357,11 @@ export default function rasterLayer(layerType) {
     const columnSet = new Set(popupColumns)
     for (const key in data) {
       if (columnSet.has(key)) {
-        newData[key] = data[key]
+        // check for missing hit test cache columns and substitute readable message
+        newData[key] =
+          data[key] === MISSING_HIT_TEST_COLUMN_ERROR
+            ? "Column Not Found"
+            : data[key]
         data[key] instanceof Date ? moment(data[key]).utc() : data[key]
 
         if (typeof chart.useLonLat === "function" && chart.useLonLat()) {

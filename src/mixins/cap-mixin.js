@@ -21,7 +21,7 @@ export default function capMixin(_chart) {
   let _othersLabel = "Others"
 
   let _othersGrouper = function(topRows) {
-    let topRowsSum = d3.sum(topRows, _chart.valueAccessor()),
+    const topRowsSum = d3.sum(topRows, _chart.valueAccessor()),
       allRows = _chart.group().all(),
       allRowsSum = d3.sum(allRows, _chart.valueAccessor()),
       topKeys = topRows.map(_chart.keyAccessor()),

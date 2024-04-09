@@ -560,7 +560,7 @@ export default function rowChart(parent, chartGroup) {
   /* --------------------------------------------------------------------------*/
 
   function translateX(d) {
-    let x = _x(_chart.cappedValueAccessor(d)),
+    const x = _x(_chart.cappedValueAccessor(d)),
       x0 = rootValue(),
       s = x > x0 ? x0 : x
     return "translate(" + s + ",0)"
