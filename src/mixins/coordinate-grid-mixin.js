@@ -723,7 +723,7 @@ export default function coordinateGridMixin (_chart) {
       if (_y === undefined) {
         _y = d3.scale.linear()
       }
-      let min = _chart.yAxisMin() || 0,
+      const min = _chart.yAxisMin() || 0,
         max = _chart.yAxisMax() || 0
       _y.domain([min, max]).rangeRound([_chart.yAxisHeight(), 0])
     }
@@ -1363,7 +1363,7 @@ export default function coordinateGridMixin (_chart) {
 
   // borrowed from Crossfilter example
   _chart.resizeHandlePath = function (d) {
-    let e = Number(d === "e"),
+    const e = Number(d === "e"),
       x = e ? 1 : -1,
       y = brushHeight() / 3
     return (

@@ -17,7 +17,7 @@ import d3 from "d3"
     function box(g) {
       g.each(function(d, i) {
         d = d.map(value).sort(d3.ascending)
-        let g = d3.select(this),
+        const g = d3.select(this),
           n = d.length,
           min = d[0],
           max = d[n - 1]
@@ -26,7 +26,7 @@ import d3 from "d3"
         const quartileData = (d.quartiles = quartiles(d))
 
         // Compute whiskers. Must return exactly 2 elements, or null.
-        let whiskerIndices = whiskers && whiskers.call(this, d, i),
+        const whiskerIndices = whiskers && whiskers.call(this, d, i),
           whiskerData = whiskerIndices && whiskerIndices.map(i => d[i])
 
         // Compute outliers. If no whiskers are specified, all data are 'outliers'.

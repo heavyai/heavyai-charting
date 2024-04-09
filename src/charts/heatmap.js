@@ -492,7 +492,7 @@ export default function heatMap(parent, chartGroup) {
     rows = _rowScale.domain(rows)
     cols = _colScale.domain(cols)
     _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()))
-    let rowCount = rows.domain().length,
+    const rowCount = rows.domain().length,
       colCount = cols.domain().length,
       availWidth = _chart.width() - _dockedAxesSize.left,
       availHeight = _chart.height() - _dockedAxesSize.bottom,
