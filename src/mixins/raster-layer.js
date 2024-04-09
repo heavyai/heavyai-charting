@@ -577,7 +577,6 @@ export default function rasterLayer(layerType) {
     // popupColumns have color or size measure label
     const popupColumns = _layer.popupColumns()
     const mappedColumns = _layer.popupColumnsMapped()
-
     const filteredData = mapDataViaColumns(data, popupColumns, chart)
 
     const width =
