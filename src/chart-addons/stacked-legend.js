@@ -98,6 +98,28 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
+function getTopValues(layer) {
+  const NUM_TOP_VALUES = 10
+  const OFFSET = 0
+  const dimension = layer.getState().encoding.color.field
+  console.log(layer.crossfilter().dimension())
+  console.log(
+    layer
+      .crossfilter()
+      .dimension(dimension)
+      .group()
+      .topAsync(NUM_TOP_VALUES, OFFSET)
+      .then(results => console.log(results))
+  )
+
+  return layer
+    .crossfilter()
+    .dimension(dimension)
+    .group()
+    .topAsync(NUM_TOP_VALUES, OFFSET)
+    .then(results => results.map(result => result.key0))
+}
+
 export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // the getLegendStateFromChart in _doRender gets called from few different options
   // and some of them are calling with all layers in chart.
@@ -105,6 +127,17 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // Thus, we need to remove extra legends here
   const legends = chart.root().selectAll(".legend")
   const layers = chart.getLayerNames()
+  console.log(
+    "getLegendstatefromchart - here's the chart obj",
+    chart,
+    selectedLayer
+  )
+  const _dimOrGroup = chart.group()
+  // const _sortFuncName = chart.getQueryFunctionName()
+  console.log("group and sortfunc name", _dimOrGroup)
+  console.log(chart.dimension())
+  console.log(chart.group())
+  console.log(this)
 
   if (
     legends.size() > layers.length &&
@@ -149,8 +182,11 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
         // TODO(croot): this can be removed once all raster layer types are
         // transitioned to the getPrimaryColorScaleName/getLegendDefinitionForProperty
         // form above
+        const topValues = getTopValues(layer)
+        console.log("TOP VALUUUUUUUEEEESSSSS:", topValues)
         const layerState = layer.getState()
         const color = layer.getState().encoding.color
+        // TODO[C]: the line above is where it is getting everything for the legend, including colors, domain and range
 
         let color_legend_descriptor = null
 
@@ -196,6 +232,7 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
 }
 
 export function handleLegendToggle() {
+  console.log("toggling stacked legend")
   // when chart legend is collapsed, also collapse layer legends
   this.getLayers().forEach(l => {
     if (l.state?.encoding?.color) {
@@ -213,6 +250,8 @@ export function handleLegendToggle() {
 }
 
 export function handleLegendDoneRender() {
+  console.log("stacked legened done rendering")
+
   this.root().classed("horizontal-lasso-tools", () => {
     const legendNode = this.root()
       .select(".legendables")
@@ -337,6 +376,10 @@ function legendState_v1(state, useMap) {
     ? LEGEND_POSITIONS.BOTTOM_LEFT
     : LEGEND_POSITIONS.TOP_RIGHT
   if (state.type === "ordinal") {
+    console.log("LEGEND STATE  ----  ", state)
+    // NOTE(C):
+    // maybe if i call topAsync function here i can get back an updated domain from the cf query?
+    // TODO[C]: domain below is also incorrect
     return {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
@@ -440,6 +483,8 @@ function legendState_v2(state, useMap) {
         extra_range.push(state.default)
       }
     }
+    console.log(state.domain, extra_domain)
+    console.log(state.range, extra_range)
     return {
       type: "nominal",
       title,
