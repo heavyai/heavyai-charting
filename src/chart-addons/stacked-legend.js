@@ -124,6 +124,27 @@ async function getTopValues(layer) {
   }
 }
 
+function getUpdatedDomainRangeMapping(newDomain, oldDomain, range) {
+  const oldDomainRangeMap = new Map(
+    [...oldDomain].map((key, index) => [key, range[index]])
+  )
+  // if the newDomain has a color entry in oldDomain, grab that color and assign for the new map
+  const newDomainRangeMap = new Map(
+    [...newDomain].map((key, index) => [key, oldDomainRangeMap.get(key)])
+  )
+  console.log("newDomainRangeMap 1", newDomainRangeMap)
+  newDomainRangeMap.forEach((val, key) => {
+    if (!val) {
+      newDomainRangeMap.set(key, range[0])
+    }
+  })
+  console.log("newDomainRangeMap 2", newDomainRangeMap)
+  return {
+    newDomain: [...newDomainRangeMap.keys()],
+    newRange: [...newDomainRangeMap.values()]
+  }
+}
+
 export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // the getLegendStateFromChart in _doRender gets called from few different options
   // and some of them are calling with all layers in chart.
@@ -208,9 +229,15 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 domain: layer.colorDomain()
               }
             } else if (color.type === "ordinal") {
-              const domain = await getTopValues(layer) // Use await directly
-              color_legend_descriptor = domain
-                ? { ...color, domain }
+              const colValues = await getTopValues(layer)
+              const { newDomain, newRange } = getUpdatedDomainRangeMapping(
+                colValues,
+                color.domain,
+                color.range
+              )
+              console.log(newDomain, newRange)
+              color_legend_descriptor = newDomain
+                ? { ...color, domain: newDomain, range: newRange }
                 : { ...color }
             } else {
               color_legend_descriptor = { ...color }
