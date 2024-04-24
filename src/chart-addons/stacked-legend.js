@@ -98,46 +98,40 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-function getTopValues(layer) {
+async function getTopValues(layer) {
   const NUM_TOP_VALUES = 10
   const OFFSET = 0
-  const dimension = layer.getState().encoding.color.field
-  console.log(layer.crossfilter().dimension())
-  console.log(
-    layer
+  const dimension = layer?.getState()?.encoding?.color?.field
+  if (dimension) {
+    return layer
       .crossfilter()
       .dimension(dimension)
       .group()
       .topAsync(NUM_TOP_VALUES, OFFSET)
-      .then(results => console.log(results))
-  )
-
-  return layer
-    .crossfilter()
-    .dimension(dimension)
-    .group()
-    .topAsync(NUM_TOP_VALUES, OFFSET)
-    .then(results => results.map(result => result.key0))
+      .then(results => {
+        if (results) {
+          console.log(results)
+          return results.map(result => result.key0)
+        } else {
+          return null
+        }
+      })
+      .catch(error => {
+        return null
+      })
+  } else {
+    return Promise.resolve(null)
+  }
 }
 
-export function getLegendStateFromChart(chart, useMap, selectedLayer) {
+export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // the getLegendStateFromChart in _doRender gets called from few different options
   // and some of them are calling with all layers in chart.
   // As a result, a legend for each layer is rendered.
   // Thus, we need to remove extra legends here
   const legends = chart.root().selectAll(".legend")
   const layers = chart.getLayerNames()
-  console.log(
-    "getLegendstatefromchart - here's the chart obj",
-    chart,
-    selectedLayer
-  )
   const _dimOrGroup = chart.group()
-  // const _sortFuncName = chart.getQueryFunctionName()
-  console.log("group and sortfunc name", _dimOrGroup)
-  console.log(chart.dimension())
-  console.log(chart.group())
-  console.log(this)
 
   if (
     legends.size() > layers.length &&
@@ -152,80 +146,87 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   }
 
   return toLegendState(
-    getRealLayers(chart.getLayerNames()).map(layer_name => {
-      const layer = chart.getLayer(layer_name)
-      if (typeof layer.getPrimaryColorScaleAndLegend === "function") {
-        const vega = chart.getMaterializedVegaSpec()
-        const [
-          color_scale,
-          color_legend,
-          legend_position
-        ] = layer.getPrimaryColorScaleAndLegend()
-        if (color_scale === null) {
-          return {}
-        }
-        const color_scale_name = color_scale.name || ""
-        const materialized_color_scale = vega.scales.find(
-          scale => scale.name === color_scale_name
-        )
-        if (!materialized_color_scale) {
-          return {}
-        }
+    await Promise.all(
+      getRealLayers(chart.getLayerNames()).map(async layer_name => {
+        const layer = chart.getLayer(layer_name)
+        if (typeof layer.getPrimaryColorScaleAndLegend === "function") {
+          // ... existing logic for primary color scale and legend
+          const vega = chart.getMaterializedVegaSpec()
+          const [
+            color_scale,
+            color_legend,
+            legend_position
+          ] = layer.getPrimaryColorScaleAndLegend()
+          if (color_scale === null) {
+            return {}
+          }
+          const color_scale_name = color_scale.name || ""
+          const materialized_color_scale = vega.scales.find(
+            scale => scale.name === color_scale_name
+          )
+          if (!materialized_color_scale) {
+            return {}
+          }
 
-        return {
-          ...materialized_color_scale,
-          legend: color_legend,
-          legend_position,
-          version: 2.0
-        }
-      } else {
-        // TODO(croot): this can be removed once all raster layer types are
-        // transitioned to the getPrimaryColorScaleName/getLegendDefinitionForProperty
-        // form above
-        const topValues = getTopValues(layer)
-        console.log("TOP VALUUUUUUUEEEESSSSS:", topValues)
-        const layerState = layer.getState()
-        const color = layer.getState().encoding.color
-        // TODO[C]: the line above is where it is getting everything for the legend, including colors, domain and range
+          return {
+            ...materialized_color_scale,
+            legend: color_legend,
+            legend_position,
+            version: 2.0
+          }
+        } else {
+          // TODO(croot): this can be removed once all raster layer types are
+          // transitioned to the getPrimaryColorScaleName/getLegendDefinitionForProperty
+          // form above
+          const layerState = layer.getState()
+          const color = layer.getState().encoding.color
+          // TODO[C]: the line above is where it is getting everything for the legend, including colors, domain and range
 
-        let color_legend_descriptor = null
+          let color_legend_descriptor = null
 
-        if (
-          (layers.length > 1 || _.isEqual(selectedLayer, layerState)) &&
-          typeof color !== "undefined"
-        ) {
           if (
-            typeof color.scale === "object" &&
-            color.scale.domain === "auto"
+            (layers.length > 1 || _.isEqual(selectedLayer, layerState)) &&
+            typeof color !== "undefined"
           ) {
-            color_legend_descriptor = {
-              ...color,
-              scale: {
-                ...color.scale,
+            if (
+              typeof color.scale === "object" &&
+              color.scale.domain === "auto"
+            ) {
+              color_legend_descriptor = {
+                ...color,
+                scale: {
+                  ...color.scale,
+                  domain: layer.colorDomain()
+                }
+              }
+            } else if (
+              typeof color.scale === "undefined" &&
+              color.domain === "auto"
+            ) {
+              color_legend_descriptor = {
+                ...color,
                 domain: layer.colorDomain()
               }
-            }
-          } else if (
-            typeof color.scale === "undefined" &&
-            color.domain === "auto"
-          ) {
-            color_legend_descriptor = {
-              ...color,
-              domain: layer.colorDomain()
+            } else if (color.type === "ordinal") {
+              const domain = await getTopValues(layer) // Use await directly
+              color_legend_descriptor = domain
+                ? { ...color, domain }
+                : { ...color }
+            } else {
+              color_legend_descriptor = { ...color }
             }
           } else {
             color_legend_descriptor = { ...color }
           }
-        } else {
-          color_legend_descriptor = { ...color }
-        }
 
-        return {
-          ...color_legend_descriptor,
-          version: 1.0
+          console.log("about to return from function", color_legend_descriptor)
+          return {
+            ...color_legend_descriptor,
+            version: 1.0
+          }
         }
-      }
-    }),
+      })
+    ),
     chart,
     useMap
   )
