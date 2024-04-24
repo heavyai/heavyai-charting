@@ -133,10 +133,7 @@ function getUpdatedDomainRangeMapping(
     [...oldDomain].map((key, index) => [key, range[index]])
   )
   const newDomainRange = new Map(
-    [...newDomain].map((key, index) => [
-      key,
-      oldDomainRange.get(key) ?? defaultColor
-    ])
+    [...newDomain].map(key => [key, oldDomainRange.get(key) ?? defaultColor])
   )
   return {
     newDomain: [...newDomainRange.keys()],
