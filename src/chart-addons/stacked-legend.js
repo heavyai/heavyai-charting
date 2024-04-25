@@ -142,7 +142,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // Thus, we need to remove extra legends here
   const legends = chart.root().selectAll(".legend")
   const layers = chart.getLayerNames()
-  const _dimOrGroup = chart.group()
 
   if (
     legends.size() > layers.length &&

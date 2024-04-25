@@ -206,8 +206,6 @@ export default function heavyaiTable(parent, chartGroup) {
     }
 
     if (sortFuncName === "topAsync") {
-      // NOTE(C): this is where the magic is happening - calls topAsync, a function on the dimOrGroup obj
-      // which hits ImmerseCrossFilterGroup and then calls the query I want in ConnectorWithQueue
       return _dimOrGroup[sortFuncName](size, offset)
         .then(result => callback(null, result))
         .catch(error => callback(error))
