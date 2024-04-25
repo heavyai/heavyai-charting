@@ -224,7 +224,7 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                     color.range,
                     color.defaultOtherRange
                   )
-                : undefined
+                : {}
               color_legend_descriptor =
                 newDomain && newRange
                   ? { ...color, domain: newDomain, range: newRange }
