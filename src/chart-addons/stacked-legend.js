@@ -98,8 +98,7 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-async function getTopValues(layer) {
-  const NUM_TOP_VALUES = 10
+async function getTopValues(layer, size) {
   const OFFSET = 0
   const dimension = layer?.getState()?.encoding?.color?.field
   if (dimension) {
@@ -107,7 +106,7 @@ async function getTopValues(layer) {
       .crossfilter()
       .dimension(dimension)
       .group()
-      .topAsync(NUM_TOP_VALUES, OFFSET)
+      .topAsync(size, OFFSET)
       .then(results => {
         if (results) {
           return results.map(result => result.key0)
@@ -219,7 +218,10 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 domain: layer.colorDomain()
               }
             } else if (color.type === "ordinal") {
-              const colValues = await getTopValues(layer)
+              const colValues = await getTopValues(layer, color.domain.length)
+              console.log("old domain", color.domain)
+              console.log("old range", color.range)
+              console.log("top values (250 limit)", colValues)
               const { newDomain, newRange } = colValues
                 ? getUpdatedDomainRange(
                     colValues,
