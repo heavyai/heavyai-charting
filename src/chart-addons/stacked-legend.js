@@ -223,6 +223,14 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                     color.defaultOtherRange
                   )
                 : {}
+
+              // don't show "Other" label if our domain is less than the original domain
+              if (newDomain.length < color.domain.length) {
+                color.hideOther = true
+              } else {
+                color.hideOther = false
+              }
+
               color_legend_descriptor =
                 newDomain && newRange
                   ? { ...color, domain: newDomain, range: newRange }
