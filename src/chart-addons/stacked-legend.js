@@ -114,9 +114,7 @@ async function getTopValues(layer, size) {
           return null
         }
       })
-      .catch(error => {
-        return null
-      })
+      .catch(error => null)
   } else {
     return Promise.resolve(null)
   }
