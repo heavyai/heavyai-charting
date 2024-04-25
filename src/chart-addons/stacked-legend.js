@@ -123,12 +123,7 @@ async function getTopValues(layer) {
   }
 }
 
-function getUpdatedDomainRangeMapping(
-  newDomain,
-  oldDomain,
-  range,
-  defaultColor
-) {
+function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
   const oldDomainRange = new Map(
     [...oldDomain].map((key, index) => [key, range[index]])
   )
@@ -226,15 +221,18 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               }
             } else if (color.type === "ordinal") {
               const colValues = await getTopValues(layer)
-              const { newDomain, newRange } = getUpdatedDomainRangeMapping(
-                colValues,
-                color.domain,
-                color.range,
-                color.defaultOtherRange
-              )
-              color_legend_descriptor = newDomain
-                ? { ...color, domain: newDomain, range: newRange }
-                : { ...color }
+              const { newDomain, newRange } = colValues
+                ? getUpdatedDomainRange(
+                    colValues,
+                    color.domain,
+                    color.range,
+                    color.defaultOtherRange
+                  )
+                : undefined
+              color_legend_descriptor =
+                newDomain && newRange
+                  ? { ...color, domain: newDomain, range: newRange }
+                  : { ...color }
             } else {
               color_legend_descriptor = { ...color }
             }
