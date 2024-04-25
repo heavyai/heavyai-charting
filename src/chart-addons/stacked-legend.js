@@ -192,7 +192,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
           // form above
           const layerState = layer.getState()
           const color = layer.getState().encoding.color
-          // TODO[C]: the line above is where it is getting everything for the legend, including colors, domain and range
 
           let color_legend_descriptor = null
 
