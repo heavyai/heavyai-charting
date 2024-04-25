@@ -161,7 +161,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
       getRealLayers(chart.getLayerNames()).map(async layer_name => {
         const layer = chart.getLayer(layer_name)
         if (typeof layer.getPrimaryColorScaleAndLegend === "function") {
-          // ... existing logic for primary color scale and legend
           const vega = chart.getMaterializedVegaSpec()
           const [
             color_scale,
@@ -219,9 +218,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               }
             } else if (color.type === "ordinal") {
               const colValues = await getTopValues(layer, color.domain.length)
-              console.log("old domain", color.domain)
-              console.log("old range", color.range)
-              console.log("top values (250 limit)", colValues)
               const { newDomain, newRange } = colValues
                 ? getUpdatedDomainRange(
                     colValues,
@@ -254,7 +250,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
 }
 
 export function handleLegendToggle() {
-  console.log("toggling stacked legend")
   // when chart legend is collapsed, also collapse layer legends
   this.getLayers().forEach(l => {
     if (l.state?.encoding?.color) {
@@ -272,8 +267,6 @@ export function handleLegendToggle() {
 }
 
 export function handleLegendDoneRender() {
-  console.log("stacked legened done rendering")
-
   this.root().classed("horizontal-lasso-tools", () => {
     const legendNode = this.root()
       .select(".legendables")
@@ -398,10 +391,6 @@ function legendState_v1(state, useMap) {
     ? LEGEND_POSITIONS.BOTTOM_LEFT
     : LEGEND_POSITIONS.TOP_RIGHT
   if (state.type === "ordinal") {
-    console.log("LEGEND STATE  ----  ", state)
-    // NOTE(C):
-    // maybe if i call topAsync function here i can get back an updated domain from the cf query?
-    // TODO[C]: domain below is also incorrect
     return {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
@@ -505,8 +494,6 @@ function legendState_v2(state, useMap) {
         extra_range.push(state.default)
       }
     }
-    console.log(state.domain, extra_domain)
-    console.log(state.range, extra_range)
     return {
       type: "nominal",
       title,
