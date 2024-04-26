@@ -224,11 +224,12 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                   )
                 : {}
 
-              // don't show "Other" label if our domain is less than the original domain
-              if (newDomain.length < color.domain.length) {
-                color.hideOther = true
-              } else {
-                color.hideOther = false
+              // don't show the other category when new domain is smaller than original max
+              color.otherActive = false
+              if (!color.hideOther && newDomain.length < color.domain.length) {
+                color.otherActive = false
+              } else if (!color.hideOther) {
+                color.otherActive = true
               }
 
               color_legend_descriptor =
@@ -409,10 +410,14 @@ function legendState_v1(state, useMap) {
       range:
         !state.hideOther &&
         state.hasOwnProperty("showOther") &&
-        state.showOther === true
+        state.showOther &&
+        state.otherActive
           ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
           : state.range,
-      domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
+      domain:
+        state.hideOther || !state.otherActive
+          ? state.domain
+          : state.domain.concat(["Other"]),
       position
     }
   } else if (
