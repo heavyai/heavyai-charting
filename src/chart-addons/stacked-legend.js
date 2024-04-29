@@ -108,15 +108,11 @@ async function getTopValues(layer, size) {
       .group()
       .topAsync(size, OFFSET)
       .then(results => {
-        if (results) {
-          return results.map(result => result.key0)
-        } else {
-          return null
-        }
+        return results?.map(result => result.key0) ?? null
       })
       .catch(error => null)
   } else {
-    return Promise.resolve(null)
+    return null
   }
 }
 
@@ -297,7 +293,9 @@ export function handleLegendOpen(index = 0) {
         : false
     }))
   )
-  this.legend().setState(getLegendStateFromChart(this))
+  getLegendStateFromChart(this).then(state => {
+    this.legend().setState(state)
+  })
 }
 
 export function handleLegendLock({ locked, index = 0 }) {
@@ -341,7 +339,9 @@ export function handleLegendLock({ locked, index = 0 }) {
     if (redraw) {
       this.renderAsync() // not setting the state for the legend here because it'll happen on the redraw
     } else {
-      this.legend().setState(getLegendStateFromChart(this))
+      getLegendStateFromChart(this).then(state => {
+        this.legend().setState(state)
+      })
     }
   }
 }
@@ -371,8 +371,10 @@ export function handleLegendInput({ domain, index = 0 }) {
     )
   }
 
-  this.legend().setState(getLegendStateFromChart(this))
-  this.renderAsync()
+  getLegendStateFromChart(this).then(state => {
+    this.legend().setState(state)
+    this.renderAsync()
+  })
 }
 
 function isQuantitativeType(type_string) {
