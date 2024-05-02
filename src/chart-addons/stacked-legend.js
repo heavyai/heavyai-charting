@@ -109,9 +109,7 @@ async function getTopValues(layer, layerName, size) {
       .dimension(dimension)
       .group()
       .topAsync(size, OFFSET)
-      .then(results => {
-        return results?.map(result => result.key0) ?? null
-      })
+      .then(results => results?.map(result => result.key0) ?? null)
       .catch(error => null)
   } else {
     return null
