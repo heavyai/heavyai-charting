@@ -101,34 +101,17 @@ function setColorScaleDomain_v1(domain) {
 async function getTopValues(layer, layerName, size) {
   const OFFSET = 0
   const chartId = layer.crossfilter().chartId
-  const layerId = layer.getState().currentLayer
   const dimension = layer?.getState()?.encoding?.color?.field
-  // console.log(
-  //   `DIMENSION FOR LAYER ${layer.getState().data[0].table}:`,
-  //   dimension
-  // )
   const newCf = layer.crossfilter().cloneWithChartId(chartId, layerName)
-  console.log(newCf)
   if (dimension) {
-    return (
-      // layer
-      //   .crossfilter()
-      // .getCrossfilter(table, chartId, layerName)
-      newCf
-        .dimension(dimension)
-        .group()
-        .topAsync(size, OFFSET, null, false)
-        .then(results => {
-          // console.log(
-          //   `cf results for layer ${
-          //     layer.getState().data[0].table
-          //   } with dimension ${dimension}:`,
-          //   results
-          // )
-          return results?.map(result => result.key0) ?? null
-        })
-        .catch(error => null)
-    )
+    return newCf
+      .dimension(dimension)
+      .group()
+      .topAsync(size, OFFSET)
+      .then(results => {
+        return results?.map(result => result.key0) ?? null
+      })
+      .catch(error => null)
   } else {
     return null
   }
@@ -201,9 +184,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
           // form above
           const layerState = layer.getState()
           const color = layer.getState().encoding.color
-
-          // console.log("LAYER STATE:", layerState)
-
           let color_legend_descriptor = null
 
           if (
@@ -231,15 +211,10 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               }
             } else if (color.type === "ordinal") {
               color_legend_descriptor = { ...color }
-              // console.log(color_legend_descriptor)
               const colValues = await getTopValues(
                 layer,
                 layer_name,
                 color.domain.length
-              )
-              console.log(
-                `COL VALUES FOR ${layerState.data[0].table}:`,
-                colValues
               )
               const { newDomain, newRange } = colValues
                 ? getUpdatedDomainRange(
@@ -428,10 +403,6 @@ function legendState_v1(state, useMap) {
   const position = useMap
     ? LEGEND_POSITIONS.BOTTOM_LEFT
     : LEGEND_POSITIONS.TOP_RIGHT
-  if (state?.otherActive) {
-    state.otherActive = false
-  }
-  console.log("LAYER STATE", state)
   if (state.type === "ordinal") {
     return {
       type: "nominal",
@@ -444,10 +415,16 @@ function legendState_v1(state, useMap) {
       // 1. When the Other toggle is enabled, we show color swatch (color defined from color palette in chart editor) for the Other category range,
       // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
       range:
-        !state.hideOther && state.hasOwnProperty("showOther") && state.showOther
+        !state.hideOther &&
+        state.hasOwnProperty("showOther") &&
+        state.showOther &&
+        state.otherActive
           ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
           : state.range,
-      domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
+      domain:
+        state.hideOther || !state.otherActive
+          ? state.domain
+          : state.domain.concat(["Other"]),
       position
     }
   } else if (
