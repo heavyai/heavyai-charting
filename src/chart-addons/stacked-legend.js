@@ -100,10 +100,11 @@ function setColorScaleDomain_v1(domain) {
 
 async function getTopValues(layer, layerName, size) {
   const OFFSET = 0
-  const chartId = layer.crossfilter().chartId
+  const chartId = layer?.crossfilter()?.chartId
   const dimension = layer?.getState()?.encoding?.color?.field
-  const newCf = layer.crossfilter().cloneWithChartId(chartId, layerName)
-  if (dimension) {
+  const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
+
+  if (chartId && dimension && newCf) {
     return newCf
       .dimension(dimension)
       .group()
