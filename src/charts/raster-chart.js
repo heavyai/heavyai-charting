@@ -807,33 +807,34 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       }
     }
 
-    const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
-    _legend.setState(state)
+    getLegendStateFromChart(_chart, useMap, selectedLayer).then(state => {
+      _legend.setState(state)
 
-    if (_chart.isLoaded()) {
-      if (Object.keys(data).length) {
-        _chart._setOverlay({
-          data: data.image,
-          bounds: _renderBoundsMap[data.nonce],
-          nonce: data.nonce,
-          browser,
-          redraw: Boolean(redraw)
-        })
-        _hasBeenRendered = true
+      if (_chart.isLoaded()) {
+        if (Object.keys(data).length) {
+          _chart._setOverlay({
+            data: data.image,
+            bounds: _renderBoundsMap[data.nonce],
+            nonce: data.nonce,
+            browser,
+            redraw: Boolean(redraw)
+          })
+          _hasBeenRendered = true
+        } else {
+          _chart._setOverlay({
+            data: null,
+            bounds: null,
+            nonce: null,
+            browser,
+            redraw: Boolean(redraw)
+          })
+        }
       } else {
-        _chart._setOverlay({
-          data: null,
-          bounds: null,
-          nonce: null,
-          browser,
-          redraw: Boolean(redraw)
+        _chart.map().once("style.load", () => {
+          _chart._doRender(data, redraw, doNotForceData)
         })
       }
-    } else {
-      _chart.map().once("style.load", () => {
-        _chart._doRender(data, redraw, doNotForceData)
-      })
-    }
+    })
   }
 
   _chart._doRedraw = function(data) {

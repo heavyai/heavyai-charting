@@ -98,7 +98,38 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-export function getLegendStateFromChart(chart, useMap, selectedLayer) {
+async function getTopValues(layer, layerName, size) {
+  const OFFSET = 0
+  const chartId = layer?.crossfilter()?.chartId
+  const dimension = layer?.getState()?.encoding?.color?.field
+  const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
+
+  if (chartId && dimension && newCf) {
+    return newCf
+      .dimension(dimension)
+      .group()
+      .topAsync(size, OFFSET)
+      .then(results => results?.map(result => result.key0) ?? null)
+      .catch(error => null)
+  } else {
+    return null
+  }
+}
+
+function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
+  const oldDomainRange = new Map(
+    [...oldDomain].map((key, index) => [key, range[index]])
+  )
+  const newDomainRange = new Map(
+    [...newDomain].map(key => [key, oldDomainRange.get(key) ?? defaultColor])
+  )
+  return {
+    newDomain: [...newDomainRange.keys()],
+    newRange: [...newDomainRange.values()]
+  }
+}
+
+export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // the getLegendStateFromChart in _doRender gets called from few different options
   // and some of them are calling with all layers in chart.
   // As a result, a legend for each layer is rendered.
@@ -119,77 +150,105 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   }
 
   return toLegendState(
-    getRealLayers(chart.getLayerNames()).map(layer_name => {
-      const layer = chart.getLayer(layer_name)
-      if (typeof layer.getPrimaryColorScaleAndLegend === "function") {
-        const vega = chart.getMaterializedVegaSpec()
-        const [
-          color_scale,
-          color_legend,
-          legend_position
-        ] = layer.getPrimaryColorScaleAndLegend()
-        if (color_scale === null) {
-          return {}
-        }
-        const color_scale_name = color_scale.name || ""
-        const materialized_color_scale = vega.scales.find(
-          scale => scale.name === color_scale_name
-        )
-        if (!materialized_color_scale) {
-          return {}
-        }
+    await Promise.all(
+      getRealLayers(chart.getLayerNames()).map(async layer_name => {
+        const layer = chart.getLayer(layer_name)
+        if (typeof layer.getPrimaryColorScaleAndLegend === "function") {
+          const vega = chart.getMaterializedVegaSpec()
+          const [
+            color_scale,
+            color_legend,
+            legend_position
+          ] = layer.getPrimaryColorScaleAndLegend()
+          if (color_scale === null) {
+            return {}
+          }
+          const color_scale_name = color_scale.name || ""
+          const materialized_color_scale = vega.scales.find(
+            scale => scale.name === color_scale_name
+          )
+          if (!materialized_color_scale) {
+            return {}
+          }
 
-        return {
-          ...materialized_color_scale,
-          legend: color_legend,
-          legend_position,
-          version: 2.0
-        }
-      } else {
-        // TODO(croot): this can be removed once all raster layer types are
-        // transitioned to the getPrimaryColorScaleName/getLegendDefinitionForProperty
-        // form above
-        const layerState = layer.getState()
-        const color = layer.getState().encoding.color
+          return {
+            ...materialized_color_scale,
+            legend: color_legend,
+            legend_position,
+            version: 2.0
+          }
+        } else {
+          // TODO(croot): this can be removed once all raster layer types are
+          // transitioned to the getPrimaryColorScaleName/getLegendDefinitionForProperty
+          // form above
+          const layerState = layer.getState()
+          const color = layer.getState().encoding.color
+          let color_legend_descriptor = null
 
-        let color_legend_descriptor = null
-
-        if (
-          (layers.length > 1 || _.isEqual(selectedLayer, layerState)) &&
-          typeof color !== "undefined"
-        ) {
           if (
-            typeof color.scale === "object" &&
-            color.scale.domain === "auto"
+            (layers.length > 1 || _.isEqual(selectedLayer, layerState)) &&
+            typeof color !== "undefined"
           ) {
-            color_legend_descriptor = {
-              ...color,
-              scale: {
-                ...color.scale,
+            if (
+              typeof color.scale === "object" &&
+              color.scale.domain === "auto"
+            ) {
+              color_legend_descriptor = {
+                ...color,
+                scale: {
+                  ...color.scale,
+                  domain: layer.colorDomain()
+                }
+              }
+            } else if (
+              typeof color.scale === "undefined" &&
+              color.domain === "auto"
+            ) {
+              color_legend_descriptor = {
+                ...color,
                 domain: layer.colorDomain()
               }
-            }
-          } else if (
-            typeof color.scale === "undefined" &&
-            color.domain === "auto"
-          ) {
-            color_legend_descriptor = {
-              ...color,
-              domain: layer.colorDomain()
+            } else if (color.type === "ordinal") {
+              const colValues = await getTopValues(
+                layer,
+                layer_name,
+                color.domain.length
+              )
+              const { newDomain, newRange } = colValues
+                ? getUpdatedDomainRange(
+                    colValues,
+                    color.domain,
+                    color.range,
+                    color.defaultOtherRange
+                  )
+                : {}
+
+              // don't show the other category when new domain is smaller than original max
+              color.otherActive = false
+              if (!color.hideOther && newDomain.length < color.domain.length) {
+                color.otherActive = false
+              } else if (!color.hideOther) {
+                color.otherActive = true
+              }
+
+              color_legend_descriptor =
+                newDomain && newRange
+                  ? { ...color, domain: newDomain, range: newRange }
+                  : { ...color }
+            } else {
+              color_legend_descriptor = { ...color }
             }
           } else {
             color_legend_descriptor = { ...color }
           }
-        } else {
-          color_legend_descriptor = { ...color }
-        }
 
-        return {
-          ...color_legend_descriptor,
-          version: 1.0
+          return {
+            ...color_legend_descriptor,
+            version: 1.0
+          }
         }
-      }
-    }),
+      })
+    ),
     chart,
     useMap
   )
@@ -237,7 +296,9 @@ export function handleLegendOpen(index = 0) {
         : false
     }))
   )
-  this.legend().setState(getLegendStateFromChart(this))
+  getLegendStateFromChart(this).then(state => {
+    this.legend().setState(state)
+  })
 }
 
 export function handleLegendLock({ locked, index = 0 }) {
@@ -281,7 +342,9 @@ export function handleLegendLock({ locked, index = 0 }) {
     if (redraw) {
       this.renderAsync() // not setting the state for the legend here because it'll happen on the redraw
     } else {
-      this.legend().setState(getLegendStateFromChart(this))
+      getLegendStateFromChart(this).then(state => {
+        this.legend().setState(state)
+      })
     }
   }
 }
@@ -311,8 +374,10 @@ export function handleLegendInput({ domain, index = 0 }) {
     )
   }
 
-  this.legend().setState(getLegendStateFromChart(this))
-  this.renderAsync()
+  getLegendStateFromChart(this).then(state => {
+    this.legend().setState(state)
+    this.renderAsync()
+  })
 }
 
 function isQuantitativeType(type_string) {
@@ -350,10 +415,14 @@ function legendState_v1(state, useMap) {
       range:
         !state.hideOther &&
         state.hasOwnProperty("showOther") &&
-        state.showOther === true
+        state.showOther &&
+        state.otherActive
           ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
           : state.range,
-      domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
+      domain:
+        state.hideOther || !state.otherActive
+          ? state.domain
+          : state.domain.concat(["Other"]),
       position
     }
   } else if (
