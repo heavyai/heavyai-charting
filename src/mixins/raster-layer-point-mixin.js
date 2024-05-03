@@ -169,11 +169,6 @@ export default function rasterLayerPointMixin(_layer) {
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
 
-  /** 
-   * If provided, this query will be used in the vega spec instead of being generated from
-   */ 
-  _layer.queryOverride = createRasterLayerGetterSetter(_layer, null)
-
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -466,8 +461,7 @@ export default function rasterLayerPointMixin(_layer) {
     lastFilteredSize,
     globalFilter,
     pixelRatio,
-    layerName,
-    queryOverride
+    layerName
   }) {
     const autocolors = usesAutoColors()
     const autosize = usesAutoSize()
@@ -492,24 +486,22 @@ export default function rasterLayerPointMixin(_layer) {
       layerName !== "backendScatter"
     ) {
       for (let i = 0; i < state.encoding.color.prioritizedColor.length; i++) {
-        const transform = _layer.getTransforms(
-          table,
-          filter +
-            ` AND ${state.encoding.color.field} = '${state.encoding.color.prioritizedColor[i].value}'`,
-          globalFilter,
-          state,
-          lastFilteredSize
-        )
-        const sql = parser.writeSQL({
-          type: "root",
-          source: table,
-          transform
-        })
         if (layerName.includes(`_z${i * 2}`)) {
           data = [
             {
               name: layerName,
-              sql: queryOverride || sql,
+              sql: parser.writeSQL({
+                type: "root",
+                source: table,
+                transform: _layer.getTransforms(
+                  table,
+                  filter +
+                    ` AND ${state.encoding.color.field} != '${state.encoding.color.prioritizedColor[i].value}'`,
+                  globalFilter,
+                  state,
+                  lastFilteredSize
+                )
+              }),
               enableHitTesting: state.enableHitTesting
             }
           ]
@@ -517,28 +509,38 @@ export default function rasterLayerPointMixin(_layer) {
           data = [
             {
               name: layerName,
-              sql: queryOverride || sql,
+              sql: parser.writeSQL({
+                type: "root",
+                source: table,
+                transform: _layer.getTransforms(
+                  table,
+                  filter +
+                    ` AND ${state.encoding.color.field} = '${state.encoding.color.prioritizedColor[i].value}'`,
+                  globalFilter,
+                  state,
+                  lastFilteredSize
+                )
+              }),
               enableHitTesting: state.enableHitTesting
             }
           ]
         }
       }
     } else {
-      const sql = parser.writeSQL({
-        type: "root",
-        source: table,
-        transform: _layer.getTransforms(
-          table,
-          filter,
-          globalFilter,
-          state,
-          lastFilteredSize
-        )
-      })
       data = [
         {
           name: layerName,
-          sql: queryOverride || sql,
+          sql: parser.writeSQL({
+            type: "root",
+            source: table,
+            transform: _layer.getTransforms(
+              table,
+              filter,
+              globalFilter,
+              state,
+              lastFilteredSize
+            )
+          }),
           enableHitTesting: state.enableHitTesting
         }
       ]
@@ -707,8 +709,7 @@ export default function rasterLayerPointMixin(_layer) {
       filter: _layer.crossfilter().getFilterString(realLayerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
-      pixelRatio: chart._getPixelRatio(),
-      queryOverride: _layer.queryOverride()
+      pixelRatio: chart._getPixelRatio()
     })
 
     return _vega
