@@ -676,16 +676,23 @@ body {
     .table-header-item {
         position: relative;
         white-space: nowrap;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        border-bottom: 1px solid $gray2;
 
+        .align-btn-container {
+          display: flex;
+          align-items: center;
+        }
         .left-align-btn, .center-align-btn, .right-align-btn {
-            width: 18px;
-            height: 24px;
-            position: absolute;
+            min-width: 18px;
+            min-height: 24px;
             right: 0;
             top: 1px;
             padding: 4px 0px;
             cursor: pointer;
-            display: none;
+            visibility: hidden;
 
             &.active {
                 .svg-icon {
@@ -702,7 +709,7 @@ body {
 
         &:hover {
             .left-align-btn, .center-align-btn, .right-align-btn {
-                display: block;
+                visibility: visible;
             }
         }
 
@@ -741,13 +748,13 @@ body {
     }
 
     .table-sort {
-        border-bottom: 1px solid $gray2;
         color: $gray5;
         font-size: 13px;
-        padding: 4px 24px 4px 20px;
+        padding: 4px 4px 4px 20px;
         background: white;
         position: relative;
         cursor: text;
+        margin-right: auto;
 
         &.active {
             color: $blue-main;
