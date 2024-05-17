@@ -784,7 +784,8 @@ body {
     left: 0;
     width: 100%;
     padding: 0 12px;
-    overflow: hidden; }
+    overflow: hidden;
+    border-bottom: 1px solid #e2e2e2; }
   .dc-chart .docked-table-header {
     display: flex;
     position: relative; }
@@ -793,8 +794,7 @@ body {
     white-space: nowrap;
     display: flex;
     align-items: center;
-    flex-direction: row;
-    border-bottom: 1px solid #e2e2e2; }
+    flex-direction: row; }
     .dc-chart .table-header-item .align-btn-container {
       display: flex;
       align-items: center; }
@@ -805,7 +805,8 @@ body {
       top: 1px;
       padding: 4px 0px;
       cursor: pointer;
-      visibility: hidden; }
+      visibility: hidden;
+      display: flex; }
       .dc-chart .table-header-item .left-align-btn.active .svg-icon, .dc-chart .table-header-item .center-align-btn.active .svg-icon, .dc-chart .table-header-item .right-align-btn.active .svg-icon {
         fill: #22A7F0; }
       .dc-chart .table-header-item .left-align-btn:hover .svg-icon, .dc-chart .table-header-item .center-align-btn:hover .svg-icon, .dc-chart .table-header-item .right-align-btn:hover .svg-icon {
