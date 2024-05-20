@@ -801,8 +801,6 @@ body {
     .dc-chart .table-header-item .left-align-btn, .dc-chart .table-header-item .center-align-btn, .dc-chart .table-header-item .right-align-btn {
       min-width: 18px;
       min-height: 24px;
-      right: 0;
-      top: 1px;
       padding: 4px 0px;
       cursor: pointer;
       visibility: hidden;
