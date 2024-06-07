@@ -784,28 +784,33 @@ body {
     left: 0;
     width: 100%;
     padding: 0 12px;
-    overflow: hidden; }
+    overflow: hidden;
+    border-bottom: 1px solid #e2e2e2; }
   .dc-chart .docked-table-header {
     display: flex;
     position: relative; }
   .dc-chart .table-header-item {
     position: relative;
-    white-space: nowrap; }
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    flex-direction: row; }
+    .dc-chart .table-header-item .align-btn-container {
+      display: flex;
+      align-items: center; }
     .dc-chart .table-header-item .left-align-btn, .dc-chart .table-header-item .center-align-btn, .dc-chart .table-header-item .right-align-btn {
-      width: 18px;
-      height: 24px;
-      position: absolute;
-      right: 0;
-      top: 1px;
+      min-width: 18px;
+      min-height: 24px;
       padding: 4px 0px;
       cursor: pointer;
-      display: none; }
+      visibility: hidden;
+      display: flex; }
       .dc-chart .table-header-item .left-align-btn.active .svg-icon, .dc-chart .table-header-item .center-align-btn.active .svg-icon, .dc-chart .table-header-item .right-align-btn.active .svg-icon {
         fill: #22A7F0; }
       .dc-chart .table-header-item .left-align-btn:hover .svg-icon, .dc-chart .table-header-item .center-align-btn:hover .svg-icon, .dc-chart .table-header-item .right-align-btn:hover .svg-icon {
         fill: #22A7F0; }
     .dc-chart .table-header-item:hover .left-align-btn, .dc-chart .table-header-item:hover .center-align-btn, .dc-chart .table-header-item:hover .right-align-btn {
-      display: block; }
+      visibility: visible; }
     .dc-chart .table-header-item.isFiltered .unfilter-btn {
       display: block; }
     .dc-chart .table-header-item .unfilter-btn {
@@ -824,13 +829,13 @@ body {
   .dc-chart .null-value {
     font-style: italic; }
   .dc-chart .table-sort {
-    border-bottom: 1px solid #e2e2e2;
     color: #868686;
     font-size: 13px;
-    padding: 4px 24px 4px 20px;
+    padding: 4px 4px 4px 20px;
     background: white;
     position: relative;
-    cursor: text; }
+    cursor: text;
+    margin-right: auto; }
     .dc-chart .table-sort.active {
       color: #22A7F0; }
       .dc-chart .table-sort.active:after {

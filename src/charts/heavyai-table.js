@@ -505,6 +505,13 @@ export default function heavyaiTable(parent, chartGroup) {
         .append("div")
         .attr("class", "table-header-item")
         .classed("isFiltered", () => d.expression in _filteredColumns)
+        .style(
+          "width",
+          d3
+            .select(this)
+            .node()
+            .getBoundingClientRect().width + "px"
+        )
 
       const sortLabel = headerItem
         .append("div")
@@ -517,15 +524,6 @@ export default function heavyaiTable(parent, chartGroup) {
         })
         .classed("active", _sortColumn ? _sortColumn.index === i : false)
         .classed(_sortColumn ? _sortColumn.order : "", true)
-        .style(
-          "width",
-          d3
-            .select(this)
-            .node()
-            .getBoundingClientRect().width + "px"
-        )
-
-      const textSpan = sortLabel.append("span").text(d.label)
 
       const sortButton = sortLabel
         .append("div")
@@ -548,6 +546,8 @@ export default function heavyaiTable(parent, chartGroup) {
           _chart.redrawAsync()
         })
 
+      const textSpan = sortLabel.append("span").text(d.label)
+
       sortButton
         .append("svg")
         .attr("class", "svg-icon")
@@ -564,8 +564,12 @@ export default function heavyaiTable(parent, chartGroup) {
         .append("use")
         .attr("xlink:href", "#icon-arrow1")
 
+      const alignBtnContainer = headerItem
+        .append("div")
+        .attr("class", "align-btn-container")
+
       // left align button
-      headerItem
+      alignBtnContainer
         .append("div")
         .attr("class", "left-align-btn")
         .classed("active", () => _chart.isColLeftAligned(i))
@@ -588,7 +592,7 @@ export default function heavyaiTable(parent, chartGroup) {
         .attr("xlink:href", "#icon-caret-left")
 
       // center align button
-      headerItem
+      alignBtnContainer
         .append("div")
         .attr("class", "center-align-btn")
         .classed("active", () => _chart.isColCenterAligned(i))
@@ -611,7 +615,7 @@ export default function heavyaiTable(parent, chartGroup) {
         .attr("xlink:href", "#icon-align-center")
 
       // right align button
-      headerItem
+      alignBtnContainer
         .append("div")
         .attr("class", "right-align-btn")
         .classed("active", () => _chart.isColRightAligned(i))
