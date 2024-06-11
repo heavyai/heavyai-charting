@@ -13,6 +13,7 @@ import {
   LassoGlobalEventConstants
 } from "./lasso-event-constants"
 import LassoToolSetTypes from "./lasso-tool-set-types"
+import { buttonSvg } from "./lasso-tool-button-svg.js"
 
 const { AABox2d, Mat2, Point2d, Vec2d } = Draw
 const MathExt = Draw.Math
@@ -1361,6 +1362,11 @@ export default class LassoButtonGroupController {
       e.preventDefault()
     })
 
+    const svgContainer = document.createElement("div")
+    svgContainer.innerHTML = buttonSvg(options.buttonType)
+    console.log(svgContainer)
+    button.appendChild(svgContainer)
+
     return button
   }
 
@@ -1383,6 +1389,7 @@ export default class LassoButtonGroupController {
     this._buttonElements[id] = this._createControlButton(id, {
       className: `heavyai-draw-button-${id}`,
       title: `Create a ${id}${keybindingStr ? ` [${keybindingStr}]` : ""}`,
+      buttonType: id,
       onActivate: () => {
         this._drawEngine.disableInteractions()
         this._activeShape = shapeHandler
