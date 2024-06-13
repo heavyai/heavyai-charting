@@ -1364,7 +1364,6 @@ export default class LassoButtonGroupController {
 
     const svgContainer = document.createElement("div")
     svgContainer.innerHTML = buttonSvg(options.buttonType)
-    console.log(svgContainer)
     button.appendChild(svgContainer)
 
     return button
