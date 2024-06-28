@@ -9,7 +9,7 @@ import {
   getColorScaleName,
   adjustOpacity
 } from "../utils/utils-vega"
-import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
+import { lastFilteredSize } from "../core/core-async"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import {
@@ -85,15 +85,6 @@ export default function rasterLayerLineMixin(_layer) {
   let state = null
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
-  _layer.lastFilteredSize = 0
-
-  _layer.getLastFilteredSize = function () {
-    return _layer.lastFilteredSize
-  }
-
-  _layer.setLastFilteredSize = function (value) {
-    _layer.lastFilteredSize = value
-  }
 
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
@@ -289,7 +280,8 @@ export default function rasterLayerLineMixin(_layer) {
         "",
         "",
         state,
-          _layer.lastFilteredSize()
+        // Contour doesn't seem to go through any of the charting sampling logic, so using the group size should be fine, ostensibly
+        isContourType(state) ? lastFilteredSize(_layer.crossfilter().getId()) : _layer.lastFilteredSize()
       )
       .filter(
         transform =>

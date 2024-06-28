@@ -36,6 +36,8 @@ export default function rasterLayer(layerType) {
   let _dimension = null
   let _group = null
   let _mandatoryAttributes = []
+  let _lastFilteredSize = 0
+
 
   let _layer = capMixin({
     setDataAsync(callback) {
@@ -262,6 +264,14 @@ export default function rasterLayer(layerType) {
       return measureBlock.label
     }
     return measureBlock
+  }
+
+  _layer.getLastFilteredSize = function () {
+    return _lastFilteredSize
+  }
+
+  _layer.setLastFilteredSize = function (value) {
+    _lastFilteredSize = value
   }
 
   function isMeasureCol(colAttr) {

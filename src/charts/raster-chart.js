@@ -460,20 +460,16 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       ? _.filter(layers, layer => layer.getState().mark.type === "poly")
       : null
 
-    const setFilteredSizePromises = layers.map((l) => {
-      if (typeof l.viewBoxDim === "function") {
-        return l
-            .viewBoxDim()
-            .groupAll()
-            .valueAsync()
-            .then(value => {
-              console.log({value})
-              l.setLastFilteredSize(value)
-            })
-      }
-
-      return Promise.resolve()
-    })
+    // For charts with sampling, we need to get the filtered size for the layer, not the group, so that chart level filters are applied
+    const setFilteredSizePromises = layers.map((l) => (
+       l
+          .crossfilter()
+          .groupAll()
+          .valueAsync()
+          .then(value => {
+            l.setLastFilteredSize(value)
+          })
+  ))
 
     await Promise.all(setFilteredSizePromises)
 
