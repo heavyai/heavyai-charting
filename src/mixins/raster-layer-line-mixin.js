@@ -281,7 +281,9 @@ export default function rasterLayerLineMixin(_layer) {
         "",
         state,
         // Contour doesn't seem to go through any of the charting sampling logic, so using the group size should be fine, ostensibly
-        isContourType(state) ? lastFilteredSize(_layer.crossfilter().getId()) : _layer.lastFilteredSize()
+        isContourType(state)
+          ? lastFilteredSize(_layer.crossfilter().getId())
+          : _layer.lastFilteredSize()
       )
       .filter(
         transform =>
@@ -376,7 +378,7 @@ export default function rasterLayerLineMixin(_layer) {
     const size = getSizing(
       state.encoding.size,
       state.transform && state.transform.limit,
-          _layer.getLastFilteredSize(),
+      _layer.getLastFilteredSize(),
       pixelRatio,
       layerName
     )
@@ -385,7 +387,13 @@ export default function rasterLayerLineMixin(_layer) {
     if (isContourType(state)) {
       validateContourState(state)
       const filterTransforms = _layer
-        .getTransforms(table, filter, globalFilter, state, _layer.getLastFilteredSize())
+        .getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          _layer.getLastFilteredSize()
+        )
         .filter(f => f.type === "filter")
       const bboxFilter = getContourBoundingBox(
         state.data[0],
@@ -411,7 +419,7 @@ export default function rasterLayerLineMixin(_layer) {
           filter,
           globalFilter,
           state,
-            _layer.getLastFilteredSize()
+          _layer.getLastFilteredSize()
         )
       })
     }

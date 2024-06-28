@@ -38,7 +38,6 @@ export default function rasterLayer(layerType) {
   let _mandatoryAttributes = []
   let _lastFilteredSize = 0
 
-
   let _layer = capMixin({
     setDataAsync(callback) {
       // noop.
@@ -266,11 +265,11 @@ export default function rasterLayer(layerType) {
     return measureBlock
   }
 
-  _layer.getLastFilteredSize = function () {
+  _layer.getLastFilteredSize = function() {
     return _lastFilteredSize
   }
 
-  _layer.setLastFilteredSize = function (value) {
+  _layer.setLastFilteredSize = function(value) {
     _lastFilteredSize = value
   }
 

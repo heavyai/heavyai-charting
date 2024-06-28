@@ -461,15 +461,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       : null
 
     // For charts with sampling, we need to get the filtered size for the layer, not the group, so that chart level filters are applied
-    const setFilteredSizePromises = layers.map((l) => (
-       l
-          .crossfilter()
-          .groupAll()
-          .valueAsync()
-          .then(value => {
-            l.setLastFilteredSize(value)
-          })
-  ))
+    const setFilteredSizePromises = layers.map(l =>
+      l
+        .crossfilter()
+        .groupAll()
+        .valueAsync()
+        .then(value => {
+          l.setLastFilteredSize(value)
+        })
+    )
 
     await Promise.all(setFilteredSizePromises)
 
@@ -504,9 +504,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _vegaSpec = genLayeredVega(
-      _chart
-    )
+    _vegaSpec = genLayeredVega(_chart)
     const result = _chart
       .con()
       .renderVega(_chart.__dcFlag__, JSON.stringify(_vegaSpec))
