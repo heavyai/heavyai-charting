@@ -505,8 +505,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._updateXAndYScales(bounds)
 
     _vegaSpec = genLayeredVega(
-      _chart,
-      group
+      _chart
     )
     const result = _chart
       .con()
