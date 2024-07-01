@@ -11,7 +11,6 @@ import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
 import scatterMixin from "../mixins/scatter-mixin"
-import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
@@ -455,11 +454,25 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       })
   }
 
-  _chart.setDataAsync((group, callback) => {
+  _chart.setDataAsync(async (group, callback) => {
     const layers = _chart.getAllLayers()
     const polyLayers = layers.length
       ? _.filter(layers, layer => layer.getState().mark.type === "poly")
       : null
+
+    // For charts with sampling, we need to get the filtered size for the layer, not the group, so that chart level filters are applied
+    const setFilteredSizePromises = layers.map(l =>
+      l
+        .crossfilter()
+        .groupAll()
+        .valueAsync()
+        .then(value => {
+          l.setLastFilteredSize(value)
+        })
+    )
+
+    await Promise.all(setFilteredSizePromises)
+
     if (polyLayers && polyLayers.length) {
       // add bboxCount to poly layers run sample
 
@@ -491,11 +504,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _vegaSpec = genLayeredVega(
-      _chart,
-      group,
-      lastFilteredSize(group.getCrossfilterId())
-    )
+    _vegaSpec = genLayeredVega(_chart)
     const result = _chart
       .con()
       .renderVega(_chart.__dcFlag__, JSON.stringify(_vegaSpec))

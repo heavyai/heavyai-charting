@@ -9,7 +9,7 @@ import {
   getColorScaleName,
   adjustOpacity
 } from "../utils/utils-vega"
-import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
+import { lastFilteredSize } from "../core/core-async"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import {
@@ -280,7 +280,10 @@ export default function rasterLayerLineMixin(_layer) {
         "",
         "",
         state,
-        lastFilteredSize(_layer.crossfilter().getId())
+        // Contour doesn't seem to go through any of the charting sampling logic, so using the group size should be fine, ostensibly
+        isContourType(state)
+          ? lastFilteredSize(_layer.crossfilter().getId())
+          : _layer.lastFilteredSize()
       )
       .filter(
         transform =>
@@ -363,7 +366,6 @@ export default function rasterLayerLineMixin(_layer) {
     chart,
     table,
     filter,
-    lastFilteredSize,
     globalFilter,
     pixelRatio,
     layerName,
@@ -376,7 +378,7 @@ export default function rasterLayerLineMixin(_layer) {
     const size = getSizing(
       state.encoding.size,
       state.transform && state.transform.limit,
-      lastFilteredSize,
+      _layer.getLastFilteredSize(),
       pixelRatio,
       layerName
     )
@@ -385,7 +387,13 @@ export default function rasterLayerLineMixin(_layer) {
     if (isContourType(state)) {
       validateContourState(state)
       const filterTransforms = _layer
-        .getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        .getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          _layer.getLastFilteredSize()
+        )
         .filter(f => f.type === "filter")
       const bboxFilter = getContourBoundingBox(
         state.data[0],
@@ -411,7 +419,7 @@ export default function rasterLayerLineMixin(_layer) {
           filter,
           globalFilter,
           state,
-          lastFilteredSize
+          _layer.getLastFilteredSize()
         )
       })
     }
@@ -530,7 +538,7 @@ export default function rasterLayerLineMixin(_layer) {
         .groupAll()
         .valueAsync()
         .then(value => {
-          setLastFilteredSize(_layer.crossfilter().getId(), value)
+          _layer.setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
     }
     _vega = _layer.__genVega({
@@ -539,7 +547,6 @@ export default function rasterLayerLineMixin(_layer) {
       table: _layer.crossfilter().getDataSource(),
       filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
-      lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio(),
       useProjection: chart.useGeoTypes()
     })
