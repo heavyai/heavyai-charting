@@ -271,6 +271,56 @@ export function handleLegendToggle() {
   })
 }
 
+export function handleLegendSort() {
+  const legendState = this.legend().state
+  if (this.legend().state?.list) {
+    for (let i = 0; i < this.legend().state.list.length; i++) {
+      const layerState = this.legend().state.list[i]
+      const layerDomain = this.legend().state.list[i].domain
+      layerState.domain =
+        layerState?.sorted === "asc"
+          ? layerDomain.sort((a, b) => b.localeCompare(a))
+          : layerDomain.sort((a, b) => a.localeCompare(b))
+      layerState.sorted = layerState?.sorted === "asc" ? "desc" : "asc"
+
+      legendState.list[i] = layerState
+    }
+  } else {
+    const legendDomain = this.legend().state.domain
+
+    legendState.domain =
+      legendState?.sorted === "asc"
+        ? legendDomain.sort((a, b) => b.localeCompare(a))
+        : legendDomain.sort((a, b) => a.localeCompare(b))
+    legendState?.sorted === "asc"
+      ? (legendState.sorted = "desc")
+      : (legendState.sorted = "asc")
+  }
+
+  this.legend().setState(legendState)
+  // this.getLayers().forEach(l => {
+  //   console.log(l)
+  //   console.log(l.getState())
+  //   const {
+  //     encoding: { color }
+  //   } = l.getState()
+  //   console.log(color)
+  //   const domain =
+  //     color?.sorted === "asc"
+  //       ? color.domain.sort((a, b) => b.localeCompare(a))
+  //       : color.domain.sort((a, b) => a.localeCompare(b))
+  //   const sorted = color?.sorted === "asc" ? "desc" : "asc"
+
+  //   l.setState(
+  //     setColorState(() => ({
+  //       domain,
+  //       sorted
+  //     }))
+  //   )
+  //   console.log(l.getState())
+  // })
+}
+
 export function handleLegendDoneRender() {
   this.root().classed("horizontal-lasso-tools", () => {
     const legendNode = this.root()

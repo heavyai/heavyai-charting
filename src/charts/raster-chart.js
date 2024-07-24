@@ -5,7 +5,8 @@ import {
   handleLegendInput,
   handleLegendLock,
   handleLegendOpen,
-  handleLegendToggle
+  handleLegendToggle,
+  handleLegendSort
 } from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
@@ -1005,6 +1006,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _legend.on("lock", handleLegendLock.bind(_chart))
   _legend.on("input", handleLegendInput.bind(_chart))
   _legend.on("toggle", handleLegendToggle.bind(_chart))
+  _legend.on("sort", handleLegendSort.bind(_chart))
   _legend.on("doneRender", handleLegendDoneRender.bind(_chart))
   _legend.on("doneRender", function(state) {
     // Sometimes the legend gets disconnected from the DOM?
