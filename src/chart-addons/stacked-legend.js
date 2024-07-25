@@ -279,7 +279,8 @@ export function handleLegendSort(index = 0) {
     ? this.legend().state.list[index]
     : null
 
-  const color = this.getLayers()[index].getState().encoding.color
+  const layer = this.getLayers()[index]
+  const color = layer.getState().encoding.color
   const domain = color.domain
   const range = color.range
   console.log(color)
@@ -314,29 +315,15 @@ export function handleLegendSort(index = 0) {
     legendState.range = newRange
   }
 
+  layer.setState(
+    setLegendState(color => ({
+      domain: newDomain,
+      range: newRange
+    }))
+  )
+  console.log(layer.getState())
+
   this.legend().setState(legendState)
-
-  // this.getLayers().forEach(l => {
-  //   console.log(l)
-  //   console.log(l.getState())
-  //   const {
-  //     encoding: { color }
-  //   } = l.getState()
-  //   console.log(color)
-  //   const domain =
-  //     color?.sorted === "asc"
-  //       ? color.domain.sort((a, b) => b.localeCompare(a))
-  //       : color.domain.sort((a, b) => a.localeCompare(b))
-  //   const sorted = color?.sorted === "asc" ? "desc" : "asc"
-
-  //   l.setState(
-  //     setColorState(() => ({
-  //       domain,
-  //       sorted
-  //     }))
-  //   )
-  //   console.log(l.getState())
-  // })
 }
 
 export function handleLegendDoneRender() {
