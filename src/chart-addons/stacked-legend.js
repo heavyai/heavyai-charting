@@ -279,8 +279,7 @@ export function handleLegendSort(index = 0) {
     ? this.legend().state.list[index]
     : null
 
-  const layer = this.getLayers()[index]
-  const color = layer.getState().encoding.color
+  const color = this.getLayers()[index].getState().encoding.color
   const domain = color.domain
   const range = color.range
   console.log(color)
@@ -298,7 +297,7 @@ export function handleLegendSort(index = 0) {
     sortedDomain,
     domain,
     range,
-    "0ab79d"
+    color.defaultOtherRange
   )
 
   if (color.otherActive) {
