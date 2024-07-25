@@ -283,6 +283,7 @@ export function handleLegendSort(index = 0) {
   const color = layer.getState().encoding.color
   const domain = color.domain
   const range = color.range
+  console.log(color)
 
   let sortedDomain = []
   if (color?.sorted === "asc") {
@@ -300,6 +301,11 @@ export function handleLegendSort(index = 0) {
     "0ab79d"
   )
 
+  if (color.otherActive) {
+    newDomain.push("Other")
+    newRange.push(color.defaultOtherRange)
+  }
+
   if (legendLayerState) {
     legendLayerState.domain = newDomain
     legendLayerState.range = newRange
@@ -308,50 +314,6 @@ export function handleLegendSort(index = 0) {
     legendState.domain = newDomain
     legendState.range = newRange
   }
-
-  // if (this.legend().state?.list) {
-  //   const layerState = this.legend().state.list[index]
-  //   console.log(layer.getState(), layerState)
-  //   const layerDomain = layerState.domain
-
-  //   let sortedDomain
-  //   if (layerState?.sorted === "asc") {
-  //     sortedDomain = layerDomain.slice().sort((a, b) => b.localeCompare(a))
-  //     layerState.sorted = "desc"
-  //   } else {
-  //     sortedDomain = layerDomain.slice().sort((a, b) => a.localeCompare(b))
-  //     layerState.sorted = "asc"
-  //   }
-
-  //   const { newDomain, newRange } = getUpdatedDomainRange(
-  //     sortedDomain,
-  //     layerDomain,
-  //     layerState.range,
-  //     "0ab79d"
-  //   )
-  //   layerState.domain = newDomain
-  //   layerState.range = newRange
-  //   legendState.list[index] = layerState
-  // } else {
-  //   const legendDomain = this.legend().state.domain
-
-  //   const sortedDomain =
-  //     legendState?.sorted === "asc"
-  //       ? legendDomain.slice().sort((a, b) => b.localeCompare(a))
-  //       : legendDomain.slice().sort((a, b) => a.localeCompare(b))
-  //   legendState?.sorted === "asc"
-  //     ? (legendState.sorted = "desc")
-  //     : (legendState.sorted = "asc")
-
-  //   const { newDomain, newRange } = getUpdatedDomainRange(
-  //     sortedDomain,
-  //     legendDomain,
-  //     legendState.range,
-  //     "0ab79d"
-  //   )
-  //   legendState.domain = newDomain
-  //   legendState.range = newRange
-  // }
 
   this.legend().setState(legendState)
 
