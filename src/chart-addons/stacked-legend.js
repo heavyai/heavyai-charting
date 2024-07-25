@@ -272,53 +272,86 @@ export function handleLegendToggle() {
 }
 
 export function handleLegendSort(index = 0) {
-  const layer = this.getLayers()[index]
   const legendState = this.legend().state
-  console.log(legendState)
+  // if stacked, pull layerState from legend
+  // if not, leave alone
+  const legendLayerState = this.legend().state.list
+    ? this.legend().state.list[index]
+    : null
 
-  if (this.legend().state?.list) {
-    const layerState = this.legend().state.list[index]
-    console.log(layer.getState(), layerState)
-    const layerDomain = layerState.domain
+  const layer = this.getLayers()[index]
+  const color = layer.getState().encoding.color
+  const domain = color.domain
+  const range = color.range
 
-    let sortedDomain
-    if (layerState?.sorted === "asc") {
-      sortedDomain = layerDomain.slice().sort((a, b) => b.localeCompare(a))
-      layerState.sorted = "desc"
-    } else {
-      sortedDomain = layerDomain.slice().sort((a, b) => a.localeCompare(b))
-      layerState.sorted = "asc"
-    }
-
-    const { newDomain, newRange } = getUpdatedDomainRange(
-      sortedDomain,
-      layerDomain,
-      layerState.range,
-      "0ab79d"
-    )
-    layerState.domain = newDomain
-    layerState.range = newRange
-    legendState.list[index] = layerState
+  let sortedDomain = []
+  if (color?.sorted === "asc") {
+    sortedDomain = domain.slice().sort((a, b) => b.localeCompare(a))
+    color.sorted = "desc"
   } else {
-    const legendDomain = this.legend().state.domain
+    sortedDomain = domain.slice().sort((a, b) => a.localeCompare(b))
+    color.sorted = "asc"
+  }
 
-    const sortedDomain =
-      legendState?.sorted === "asc"
-        ? legendDomain.slice().sort((a, b) => b.localeCompare(a))
-        : legendDomain.slice().sort((a, b) => a.localeCompare(b))
-    legendState?.sorted === "asc"
-      ? (legendState.sorted = "desc")
-      : (legendState.sorted = "asc")
+  const { newDomain, newRange } = getUpdatedDomainRange(
+    sortedDomain,
+    domain,
+    range,
+    "0ab79d"
+  )
 
-    const { newDomain, newRange } = getUpdatedDomainRange(
-      sortedDomain,
-      legendDomain,
-      legendState.range,
-      "0ab79d"
-    )
+  if (legendLayerState) {
+    legendLayerState.domain = newDomain
+    legendLayerState.range = newRange
+    legendState.list[index] = legendLayerState
+  } else {
     legendState.domain = newDomain
     legendState.range = newRange
   }
+
+  // if (this.legend().state?.list) {
+  //   const layerState = this.legend().state.list[index]
+  //   console.log(layer.getState(), layerState)
+  //   const layerDomain = layerState.domain
+
+  //   let sortedDomain
+  //   if (layerState?.sorted === "asc") {
+  //     sortedDomain = layerDomain.slice().sort((a, b) => b.localeCompare(a))
+  //     layerState.sorted = "desc"
+  //   } else {
+  //     sortedDomain = layerDomain.slice().sort((a, b) => a.localeCompare(b))
+  //     layerState.sorted = "asc"
+  //   }
+
+  //   const { newDomain, newRange } = getUpdatedDomainRange(
+  //     sortedDomain,
+  //     layerDomain,
+  //     layerState.range,
+  //     "0ab79d"
+  //   )
+  //   layerState.domain = newDomain
+  //   layerState.range = newRange
+  //   legendState.list[index] = layerState
+  // } else {
+  //   const legendDomain = this.legend().state.domain
+
+  //   const sortedDomain =
+  //     legendState?.sorted === "asc"
+  //       ? legendDomain.slice().sort((a, b) => b.localeCompare(a))
+  //       : legendDomain.slice().sort((a, b) => a.localeCompare(b))
+  //   legendState?.sorted === "asc"
+  //     ? (legendState.sorted = "desc")
+  //     : (legendState.sorted = "asc")
+
+  //   const { newDomain, newRange } = getUpdatedDomainRange(
+  //     sortedDomain,
+  //     legendDomain,
+  //     legendState.range,
+  //     "0ab79d"
+  //   )
+  //   legendState.domain = newDomain
+  //   legendState.range = newRange
+  // }
 
   this.legend().setState(legendState)
 
