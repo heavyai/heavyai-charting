@@ -271,33 +271,57 @@ export function handleLegendToggle() {
   })
 }
 
-export function handleLegendSort() {
+export function handleLegendSort(index = 0) {
+  const layer = this.getLayers()[index]
   const legendState = this.legend().state
-  if (this.legend().state?.list) {
-    for (let i = 0; i < this.legend().state.list.length; i++) {
-      const layerState = this.legend().state.list[i]
-      const layerDomain = this.legend().state.list[i].domain
-      layerState.domain =
-        layerState?.sorted === "asc"
-          ? layerDomain.sort((a, b) => b.localeCompare(a))
-          : layerDomain.sort((a, b) => a.localeCompare(b))
-      layerState.sorted = layerState?.sorted === "asc" ? "desc" : "asc"
+  console.log(legendState)
 
-      legendState.list[i] = layerState
+  if (this.legend().state?.list) {
+    const layerState = this.legend().state.list[index]
+    console.log(layer.getState(), layerState)
+    const layerDomain = layerState.domain
+
+    let sortedDomain
+    if (layerState?.sorted === "asc") {
+      sortedDomain = layerDomain.slice().sort((a, b) => b.localeCompare(a))
+      layerState.sorted = "desc"
+    } else {
+      sortedDomain = layerDomain.slice().sort((a, b) => a.localeCompare(b))
+      layerState.sorted = "asc"
     }
+
+    const { newDomain, newRange } = getUpdatedDomainRange(
+      sortedDomain,
+      layerDomain,
+      layerState.range,
+      "0ab79d"
+    )
+    layerState.domain = newDomain
+    layerState.range = newRange
+    legendState.list[index] = layerState
   } else {
     const legendDomain = this.legend().state.domain
 
-    legendState.domain =
+    const sortedDomain =
       legendState?.sorted === "asc"
-        ? legendDomain.sort((a, b) => b.localeCompare(a))
-        : legendDomain.sort((a, b) => a.localeCompare(b))
+        ? legendDomain.slice().sort((a, b) => b.localeCompare(a))
+        : legendDomain.slice().sort((a, b) => a.localeCompare(b))
     legendState?.sorted === "asc"
       ? (legendState.sorted = "desc")
       : (legendState.sorted = "asc")
+
+    const { newDomain, newRange } = getUpdatedDomainRange(
+      sortedDomain,
+      legendDomain,
+      legendState.range,
+      "0ab79d"
+    )
+    legendState.domain = newDomain
+    legendState.range = newRange
   }
 
   this.legend().setState(legendState)
+
   // this.getLayers().forEach(l => {
   //   console.log(l)
   //   console.log(l.getState())
@@ -339,6 +363,7 @@ export function handleLegendDoneRender() {
 }
 
 export function handleLegendOpen(index = 0) {
+  console.log("OPENING LEGEND; index=", index)
   this.getLayers()[index].setState(
     setLegendState(color => ({
       open: hasLegendOpenProp(color)
