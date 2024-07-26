@@ -273,8 +273,7 @@ export function handleLegendToggle() {
 
 export function handleLegendSort(index = 0) {
   const legendState = this.legend().state
-  // if stacked, pull layerState from legend
-  // if not, leave alone
+  // handles stacked legend, updates only layer being sorted
   const legendLayerState = this.legend().state.list
     ? this.legend().state.list[index]
     : null
@@ -283,7 +282,6 @@ export function handleLegendSort(index = 0) {
   const color = layer.getState().encoding.color
   const domain = color.domain
   const range = color.range
-  console.log(color)
 
   let sortedDomain = []
   if (color?.sorted === "asc") {
@@ -301,6 +299,13 @@ export function handleLegendSort(index = 0) {
     color.defaultOtherRange
   )
 
+  layer.setState(
+    setColorState(() => ({
+      domain: newDomain,
+      range: newRange
+    }))
+  )
+
   if (color.otherActive) {
     newDomain.push("Other")
     newRange.push(color.defaultOtherRange)
@@ -314,14 +319,6 @@ export function handleLegendSort(index = 0) {
     legendState.domain = newDomain
     legendState.range = newRange
   }
-
-  layer.setState(
-    setLegendState(color => ({
-      domain: newDomain,
-      range: newRange
-    }))
-  )
-  console.log(layer.getState())
 
   this.legend().setState(legendState)
 }
@@ -344,7 +341,6 @@ export function handleLegendDoneRender() {
 }
 
 export function handleLegendOpen(index = 0) {
-  console.log("OPENING LEGEND; index=", index)
   this.getLayers()[index].setState(
     setLegendState(color => ({
       open: hasLegendOpenProp(color)
