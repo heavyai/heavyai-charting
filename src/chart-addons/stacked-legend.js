@@ -9,6 +9,8 @@ export const LEGEND_POSITIONS = {
   BOTTOM_LEFT: "bottom-left"
 }
 
+const OTHER_KEY = "Other"
+
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
 const hasLegendLockedProp = color =>
@@ -284,7 +286,7 @@ export function handleLegendSort(index = 0) {
   const { domain, range, sorted, defaultOtherRange, otherActive } = color
 
   const sortedDomain = domain
-    .filter(d => d !== "Other")
+    .filter(d => d !== OTHER_KEY)
     .sort((a, b) =>
       sorted === "asc" ? b.localeCompare(a) : a.localeCompare(b)
     )
@@ -306,7 +308,7 @@ export function handleLegendSort(index = 0) {
   )
 
   if (otherActive) {
-    newDomain.push("Other")
+    newDomain.push(OTHER_KEY)
     newRange.push(defaultOtherRange)
   }
 
@@ -473,7 +475,7 @@ function legendState_v1(state, useMap) {
       domain:
         state.hideOther || !state.otherActive
           ? state.domain
-          : state.domain.concat(["Other"]),
+          : state.domain.concat([OTHER_KEY]),
       position
     }
   } else if (
@@ -547,7 +549,7 @@ function legendState_v2(state, useMap) {
       // For it's color swatch, we have two options:
       // 1. When the Other toggle is enabled, we show color swatch (color defined from color palette in chart editor) for the Other category range,
       // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
-      extra_domain.push("Other")
+      extra_domain.push(OTHER_KEY)
       extra_range.push(state.defaultOtherRange)
     } else if (state.hasOwnProperty("default")) {
       let alpha_val = 1
@@ -556,7 +558,7 @@ function legendState_v2(state, useMap) {
         alpha_val = Number(match[1])
       }
       if (alpha_val > 0) {
-        extra_domain.push("Other")
+        extra_domain.push(OTHER_KEY)
         extra_range.push(state.default)
       }
     }
