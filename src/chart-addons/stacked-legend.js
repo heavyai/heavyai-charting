@@ -272,31 +272,30 @@ export function handleLegendToggle() {
 }
 
 export function handleLegendSort(index = 0) {
-  const legendState = this.legend().state
-  // handles stacked legend, updates only layer being sorted
-  const legendLayerState = this.legend().state.list
-    ? this.legend().state.list[index]
-    : null
+  const legend = this.legend()
+  const { state: legendState } = legend
+  // handles stacked legend; only layer being sorted should be updated
+  const legendLayerState = legendState.list ? legendState.list[index] : null
 
   const layer = this.getLayers()[index]
-  const color = layer.getState().encoding.color
-  const domain = color.domain
-  const range = color.range
+  const {
+    encoding: { color }
+  } = layer.getState()
+  const { domain, range, sorted, defaultOtherRange, otherActive } = color
 
-  let sortedDomain = []
-  if (color?.sorted === "asc") {
-    sortedDomain = domain.slice().sort((a, b) => b.localeCompare(a))
-    color.sorted = "desc"
-  } else {
-    sortedDomain = domain.slice().sort((a, b) => a.localeCompare(b))
-    color.sorted = "asc"
-  }
+  const sortedDomain = domain
+    .filter(d => d !== "Other")
+    .sort((a, b) =>
+      sorted === "asc" ? b.localeCompare(a) : a.localeCompare(b)
+    )
+
+  color.sorted = sorted === "asc" ? "desc" : "asc"
 
   const { newDomain, newRange } = getUpdatedDomainRange(
     sortedDomain,
     domain,
     range,
-    color.defaultOtherRange
+    defaultOtherRange
   )
 
   layer.setState(
@@ -306,9 +305,9 @@ export function handleLegendSort(index = 0) {
     }))
   )
 
-  if (color.otherActive) {
+  if (otherActive) {
     newDomain.push("Other")
-    newRange.push(color.defaultOtherRange)
+    newRange.push(defaultOtherRange)
   }
 
   if (legendLayerState) {
