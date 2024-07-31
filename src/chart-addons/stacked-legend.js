@@ -233,6 +233,12 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 color.otherActive = true
               }
 
+              layer.setState(
+                setColorState(() => ({
+                  filteredDomain: newDomain,
+                  filteredRange: newRange
+                }))
+              )
               color_legend_descriptor =
                 newDomain && newRange
                   ? { ...color, domain: newDomain, range: newRange }
@@ -283,9 +289,19 @@ export function handleLegendSort(index = 0) {
   const {
     encoding: { color }
   } = layer.getState()
-  const { domain, range, sorted, defaultOtherRange, otherActive } = color
+  const {
+    domain,
+    filteredDomain,
+    range,
+    filteredRange,
+    sorted,
+    defaultOtherRange,
+    otherActive
+  } = color
+  const currentDomain = filteredDomain ?? domain
+  const currentRange = filteredRange ?? range
 
-  const sortedDomain = domain
+  const sortedDomain = currentDomain
     .filter(d => d !== OTHER_KEY)
     .sort((a, b) =>
       sorted === "asc" ? b.localeCompare(a) : a.localeCompare(b)
@@ -295,15 +311,15 @@ export function handleLegendSort(index = 0) {
 
   const { newDomain, newRange } = getUpdatedDomainRange(
     sortedDomain,
-    domain,
-    range,
+    currentDomain,
+    currentRange,
     defaultOtherRange
   )
 
   layer.setState(
     setColorState(() => ({
-      domain: newDomain,
-      range: newRange
+      filteredDomain: newDomain,
+      filteredRange: newRange
     }))
   )
 
