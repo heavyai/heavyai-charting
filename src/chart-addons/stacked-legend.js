@@ -9,6 +9,8 @@ export const LEGEND_POSITIONS = {
   BOTTOM_LEFT: "bottom-left"
 }
 
+const OTHER_KEY = "Other"
+
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
 const hasLegendLockedProp = color =>
@@ -231,6 +233,12 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 color.otherActive = true
               }
 
+              layer.setState(
+                setColorState(() => ({
+                  filteredDomain: newDomain,
+                  filteredRange: newRange
+                }))
+              )
               color_legend_descriptor =
                 newDomain && newRange
                   ? { ...color, domain: newDomain, range: newRange }
@@ -269,6 +277,67 @@ export function handleLegendToggle() {
     ...this.legend().state,
     open: !this.legend().state.open
   })
+}
+
+export function handleLegendSort(index = 0) {
+  const legend = this.legend()
+  const { state: legendState } = legend
+  // handles stacked legend; only layer being sorted should be updated
+  const legendLayerState = legendState.list ? legendState.list[index] : null
+
+  const layer = this.getLayers()[index]
+  const {
+    encoding: { color }
+  } = layer.getState()
+  const {
+    domain,
+    filteredDomain,
+    range,
+    filteredRange,
+    sorted,
+    defaultOtherRange,
+    otherActive
+  } = color
+  const currentDomain = filteredDomain ?? domain
+  const currentRange = filteredRange ?? range
+
+  const sortedDomain = currentDomain
+    .filter(d => d !== OTHER_KEY)
+    .sort((a, b) =>
+      sorted === "asc" ? b.localeCompare(a) : a.localeCompare(b)
+    )
+
+  color.sorted = sorted === "asc" ? "desc" : "asc"
+
+  const { newDomain, newRange } = getUpdatedDomainRange(
+    sortedDomain,
+    currentDomain,
+    currentRange,
+    defaultOtherRange
+  )
+
+  layer.setState(
+    setColorState(() => ({
+      filteredDomain: newDomain,
+      filteredRange: newRange
+    }))
+  )
+
+  if (otherActive) {
+    newDomain.push(OTHER_KEY)
+    newRange.push(defaultOtherRange)
+  }
+
+  if (legendLayerState) {
+    legendLayerState.domain = newDomain
+    legendLayerState.range = newRange
+    legendState.list[index] = legendLayerState
+  } else {
+    legendState.domain = newDomain
+    legendState.range = newRange
+  }
+
+  this.legend().setState(legendState)
 }
 
 export function handleLegendDoneRender() {
@@ -422,7 +491,7 @@ function legendState_v1(state, useMap) {
       domain:
         state.hideOther || !state.otherActive
           ? state.domain
-          : state.domain.concat(["Other"]),
+          : state.domain.concat([OTHER_KEY]),
       position
     }
   } else if (
@@ -496,7 +565,7 @@ function legendState_v2(state, useMap) {
       // For it's color swatch, we have two options:
       // 1. When the Other toggle is enabled, we show color swatch (color defined from color palette in chart editor) for the Other category range,
       // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
-      extra_domain.push("Other")
+      extra_domain.push(OTHER_KEY)
       extra_range.push(state.defaultOtherRange)
     } else if (state.hasOwnProperty("default")) {
       let alpha_val = 1
@@ -505,7 +574,7 @@ function legendState_v2(state, useMap) {
         alpha_val = Number(match[1])
       }
       if (alpha_val > 0) {
-        extra_domain.push("Other")
+        extra_domain.push(OTHER_KEY)
         extra_range.push(state.default)
       }
     }
