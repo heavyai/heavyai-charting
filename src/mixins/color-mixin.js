@@ -213,11 +213,9 @@ export default function colorMixin(_chart) {
     if (typeof measureColor === "string") {
       const hash = cyrb53(measureColor)
       const colorIndex = hash % colors.length
-      console.log(colors[colorIndex])
       return colors[colorIndex]
     }
     const colorIndex = measureColor % colors.length
-    console.log(colors[colorIndex])
     return colors[colorIndex]
   }
 
