@@ -12,6 +12,8 @@ import d3 from "d3"
 export default function colorMixin(_chart) {
   let _colors = d3.scale.category20c()
   let _defaultAccessor = true
+  let _customDomain = []
+  let _customRange = []
 
   let _colorAccessor = function(d) {
     return _chart.keyAccessor()(d)
@@ -168,9 +170,31 @@ export default function colorMixin(_chart) {
 
     const value = _colorAccessor.call(this, data, index)
 
-    return typeof value === "string"
-      ? _chart.determineColorByValue(value, range)
-      : _colors(_colorAccessor.call(this, data, index)) || middleColor
+    const color =
+      typeof value === "string"
+        ? _chart.determineColorByValue(value, range)
+        : _colors(_colorAccessor.call(this, data, index)) || middleColor
+
+    _chart.customDomain(value)
+    _chart.customRange(color)
+
+    return color
+  }
+
+  _chart.customDomain = function(domain) {
+    if (!arguments.length) {
+      return _customDomain
+    }
+    _customDomain = domain
+    return _chart
+  }
+
+  _chart.customRange = function(range) {
+    if (!arguments.length) {
+      return _customRange
+    }
+    _customRange = range
+    return _chart
   }
 
   /**

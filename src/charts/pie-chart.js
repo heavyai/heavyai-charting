@@ -467,6 +467,15 @@ export default function pieChart(parent, chartGroup) {
     updateSlicePaths(pieData, arc)
     updateLabels(pieData, arc)
     updateTitles(pieData)
+
+    let domain = []
+    let range = []
+    for (let [i, d] of pieData.entries()) {
+      domain.push(d.data.key0)
+      range.push(_chart.getColor(d.data, i))
+    }
+    _chart.customDomain(domain)
+    _chart.customRange(range)
   }
 
   function updateSlicePaths(pieData, arc) {
