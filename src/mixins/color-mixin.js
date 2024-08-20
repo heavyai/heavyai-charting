@@ -175,10 +175,10 @@ export default function colorMixin(_chart) {
         ? _chart.determineColorByValue(value, range)
         : _colors(_colorAccessor.call(this, data, index)) || middleColor
 
-    _chart.customDomain(value)
-    _chart.customRange(color)
+    const customColor =
+      _chart.customRange().length > 0 ? _chart.customRange()[index] : null
 
-    return color
+    return customColor ?? color
   }
 
   _chart.customDomain = function(domain) {

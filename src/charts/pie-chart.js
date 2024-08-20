@@ -471,6 +471,7 @@ export default function pieChart(parent, chartGroup) {
     let domain = []
     let range = []
     for (let [i, d] of pieData.entries()) {
+      console.log("UPDATING RANGE")
       domain.push(d.data.key0)
       range.push(_chart.getColor(d.data, i))
     }
