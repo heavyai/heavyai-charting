@@ -464,6 +464,16 @@ export default function bubbleChart(parent, chartGroup) {
       const radiusAccessor = _chart.radiusValueAccessor()
       data.sort((a, b) => d3.descending(radiusAccessor(a), radiusAccessor(b)))
     }
+
+    let domain = []
+    let range = []
+    for (let [i, d] of data.entries()) {
+      domain.push(d.key0)
+      range.push(_chart.getColor(d, i))
+    }
+    _chart.customDomain(domain)
+    _chart.customRange(range)
+
     const bubbleG = _chart
       .chartBodyG()
       .selectAll("g." + _chart.BUBBLE_NODE_CLASS)
