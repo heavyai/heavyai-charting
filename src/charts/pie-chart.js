@@ -468,12 +468,8 @@ export default function pieChart(parent, chartGroup) {
     updateLabels(pieData, arc)
     updateTitles(pieData)
 
-    let domain = []
-    let range = []
-    for (let [i, d] of pieData.entries()) {
-      domain.push(d.data.key0)
-      range.push(_chart.getColor(d.data, i))
-    }
+    const domain = pieData.map(d => d.data.key0)
+    const range = pieData.map((d, i) => _chart.getColor(d.data, i))
     _chart.customDomain(domain)
     _chart.customRange(range)
   }

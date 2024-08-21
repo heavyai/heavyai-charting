@@ -465,12 +465,8 @@ export default function bubbleChart(parent, chartGroup) {
       data.sort((a, b) => d3.descending(radiusAccessor(a), radiusAccessor(b)))
     }
 
-    let domain = []
-    let range = []
-    for (let [i, d] of data.entries()) {
-      domain.push(d.key0)
-      range.push(_chart.getColor(d, i))
-    }
+    const domain = data.map(d => d.key0)
+    const range = data.map((d, i) => _chart.getColor(d, i))
     _chart.customDomain(domain)
     _chart.customRange(range)
 
