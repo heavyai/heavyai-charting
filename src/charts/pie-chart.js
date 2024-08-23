@@ -470,8 +470,13 @@ export default function pieChart(parent, chartGroup) {
 
     const domain = pieData.map(d => d.data.key0)
     const range = pieData.map((d, i) => _chart.getColor(d.data, i))
-    _chart.customDomain(domain)
-    _chart.customRange(range)
+    if (
+      _chart.useCustomDomainRange() ||
+      (!_chart.customDomain() && !_chart.customRange())
+    ) {
+      _chart.customDomain(domain)
+      _chart.customRange(range)
+    }
   }
 
   function updateSlicePaths(pieData, arc) {
