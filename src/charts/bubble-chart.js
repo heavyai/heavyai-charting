@@ -468,7 +468,7 @@ export default function bubbleChart(parent, chartGroup) {
     const domain = data.map(d => d.key0)
     const range = data.map((d, i) => _chart.getColor(d, i))
     if (
-      _chart.useCustomDomainRange() ||
+      _chart.customDomainRangeActive() ||
       (!_chart.customDomain() && !_chart.customRange())
     ) {
       _chart.customDomain(domain)

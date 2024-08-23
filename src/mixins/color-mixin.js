@@ -14,7 +14,7 @@ export default function colorMixin(_chart) {
   let _defaultAccessor = true
   let _customDomain = []
   let _customRange = []
-  let _useCustomDomainRange = false
+  let _customDomainRangeActive = false
 
   let _colorAccessor = function(d) {
     return _chart.keyAccessor()(d)
@@ -179,7 +179,7 @@ export default function colorMixin(_chart) {
     const customColor =
       _chart.customRange().length > 0 ? _chart.customRange()[index] : null
 
-    return _useCustomDomainRange && customColor ? customColor : color
+    return _customDomainRangeActive && customColor ? customColor : color
   }
 
   _chart.customDomain = function(domain) {
@@ -198,11 +198,11 @@ export default function colorMixin(_chart) {
     return _chart
   }
 
-  _chart.useCustomDomainRange = function(status) {
+  _chart.customDomainRangeActive = function(status) {
     if (!arguments.length) {
-      return _useCustomDomainRange
+      return _customDomainRangeActive
     }
-    _useCustomDomainRange = status
+    _customDomainRangeActive = status
     return _chart
   }
 

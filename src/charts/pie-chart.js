@@ -471,7 +471,7 @@ export default function pieChart(parent, chartGroup) {
     const domain = pieData.map(d => d.data.key0)
     const range = pieData.map((d, i) => _chart.getColor(d.data, i))
     if (
-      _chart.useCustomDomainRange() ||
+      _chart.customDomainRangeActive() ||
       (!_chart.customDomain() && !_chart.customRange())
     ) {
       _chart.customDomain(domain)
