@@ -482,7 +482,8 @@ export default function pieChart(parent, chartGroup) {
       _chart.customDomain(newDomain)
       _chart.customRange(newRange)
     } else if (domain.length > 0 && range.length === 0) {
-      // if we have a domain but no range, palette was changed - set new range
+      // if we have a domain but no range, palette was changed
+      // filter feched data and set new range
       filteredData = pieData.filter(d => domain.includes(d.data.key0))
       const newRange = filteredData.map((d, i) => _chart.getColor(d.data, i))
       _chart.customRange(newRange)
