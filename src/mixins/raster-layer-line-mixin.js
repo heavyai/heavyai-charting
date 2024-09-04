@@ -283,7 +283,7 @@ export default function rasterLayerLineMixin(_layer) {
         // Contour doesn't seem to go through any of the charting sampling logic, so using the group size should be fine, ostensibly
         isContourType(state)
           ? lastFilteredSize(_layer.crossfilter().getId())
-          : _layer.lastFilteredSize()
+          : _layer.getLastFilteredSize()
       )
       .filter(
         transform =>
