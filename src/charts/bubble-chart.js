@@ -465,14 +465,21 @@ export default function bubbleChart(parent, chartGroup) {
       data.sort((a, b) => d3.descending(radiusAccessor(a), radiusAccessor(b)))
     }
 
-    const domain = data.map(d => d.key0)
-    const range = data.map((d, i) => _chart.getColor(d, i))
-    if (
-      _chart.customDomainRangeActive() ||
-      (!_chart.customDomain() && !_chart.customRange())
-    ) {
-      _chart.customDomain(domain)
-      _chart.customRange(range)
+    const domain = _chart.customDomain()
+    const range = _chart.customRange()
+    let filteredData = data
+
+    if (domain.length === 0 && range.length === 0) {
+      const newDomain = data.map(d => d.key0)
+      const newRange = data.map((d, i) => _chart.getColor(d, i))
+      _chart.customDomain(newDomain)
+      _chart.customRange(newRange)
+    } else if (domain.length > 0 && range.length === 0) {
+      filteredData = data.filter(d => domain.includes(d.key0))
+      const newRange = filteredData.map((d, i) => _chart.getColor(d, i))
+      _chart.customRange(newRange)
+    } else if (domain.length > 0) {
+      filteredData = data.filter(d => domain.includes(d.key0))
     }
 
     const bubbleG = _chart
@@ -480,7 +487,7 @@ export default function bubbleChart(parent, chartGroup) {
       .selectAll("g." + _chart.BUBBLE_NODE_CLASS)
 
       /* OVERRIDE -----------------------------------------------------------------*/
-      .data(data)
+      .data(filteredData)
     /* --------------------------------------------------------------------------*/
 
     if (_sortBubbleSize) {
