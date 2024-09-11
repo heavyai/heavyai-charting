@@ -1940,7 +1940,7 @@ body {
     .legendables .open-toggle:after {
       transform: rotate(45deg) scale(0.6); }
     .legendables .open-toggle:hover:before, .legendables .open-toggle:hover:after {
-      background: #22A7F0; }
+      background: #22a7f0; }
   .legendables.show-ticks .tick {
     display: block; }
   .legendables .tick {
@@ -1963,14 +1963,22 @@ body {
       top: 8px;
       left: 8px; }
     .legendables .tick:hover:after {
-      border-color: #22A7F0; }
+      border-color: #22a7f0; }
+  .legendables .sort {
+    position: absolute;
+    right: 14px;
+    top: 4px;
+    fill: #a7a7a7;
+    cursor: pointer; }
+    .legendables .sort:hover {
+      fill: #22a7f0; }
   .legendables .header {
     color: #a7a7a7;
     font-weight: bold;
     margin: 0 4px 0 4px;
     position: relative;
     height: 24px;
-    padding-right: 24px;
+    padding-right: 32px;
     border-bottom: 1px solid #e2e2e2; }
   .legendables .title-text {
     text-overflow: ellipsis;
@@ -1983,8 +1991,10 @@ body {
     border: none; }
   .legendables .legend:nth-child(2) .tick {
     right: 16px; }
+  .legendables .legend:nth-child(2) .sort {
+    right: 34px; }
   .legendables .legend:nth-child(2) .header {
-    padding-right: 36px; }
+    padding-right: 52px; }
   .legendables.nominal-legend {
     max-height: 50%; }
   .legendables.gradient-legend {
@@ -2110,7 +2120,7 @@ body {
   .gradient-legend .range:hover .block:not(:hover) .extent {
     display: none; }
   .gradient-legend .range:hover .block:not(:hover) .color {
-    opacity: .4; }
+    opacity: 0.4; }
   .gradient-legend .block input {
     display: none; }
   .gradient-legend .block:hover .extent {
