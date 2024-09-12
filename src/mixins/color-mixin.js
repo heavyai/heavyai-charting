@@ -165,7 +165,7 @@ export default function colorMixin(_chart) {
       return GREY
     }
 
-    const range = _chart.colors().range()
+    const range = _chart.colors().range() || _customRange
     const middleColor = range[Math.floor(range.length / 2)]
 
     const value = _colorAccessor.call(this, data, index)
@@ -176,7 +176,9 @@ export default function colorMixin(_chart) {
         : _colors(_colorAccessor.call(this, data, index)) || middleColor
 
     const customColor =
-      _chart.customRange().length > 0 ? _chart.customRange()[index] : null
+      _chart.customRange().length > 0
+        ? _chart.customRange()[_chart.customDomain().indexOf(value)]
+        : null
 
     return customColor ?? color
   }
