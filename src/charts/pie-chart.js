@@ -142,9 +142,6 @@ export default function pieChart(parent, chartGroup) {
   })
 
   override(_chart, "getColor", (data, index) => {
-    if (data.isAllOthers) {
-      return "#888888"
-    }
     return _chart._getColor(data, index)
   })
   /* ------------------------------------------------------------------------- */
@@ -478,7 +475,9 @@ export default function pieChart(parent, chartGroup) {
     // if custom domain is empty, generate it from the pieData
     if (domain.length === 0 && range.length === 0) {
       const newDomain = pieData.map(d => d.data.key0)
-      const newRange = pieData.map((d, i) => _chart.getColor(d.data, i))
+      const newRange = pieData.map((d, i) =>
+        d.data.key0 === "All Others" ? "#888888" : _chart.getColor(d.data, i)
+      )
       _chart.customDomain(newDomain)
       _chart.customRange(newRange)
     } else if (domain.length > 0 && range.length === 0) {
