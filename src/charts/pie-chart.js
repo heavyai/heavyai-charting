@@ -180,7 +180,9 @@ export default function pieChart(parent, chartGroup) {
 
     let pieData
     if (_chart.customDomain().length > 0 && chartData) {
-      pieData = chartData.filter(d => _chart.customDomain().includes(d.key0))
+      pieData = chartData.filter(
+        d => _chart.customDomain().includes(d.key0) || d.key0 === "All Others"
+      )
     } else if (chartData) {
       pieData = chartData
     }
@@ -487,6 +489,32 @@ export default function pieChart(parent, chartGroup) {
       const newRange = filteredData.map((d, i) => _chart.getColor(d.data, i))
       _chart.customRange(newRange)
     } else if (domain.length > 0) {
+      // if all others is present in data but not customDomain
+      if (filteredData.length > domain.length) {
+        const missingData = pieData.filter(d => !domain.includes(d.data.key0))
+        if (
+          missingData.length > 0 &&
+          missingData[0].data.key0 === "All Others"
+        ) {
+          domain.push(missingData[0].data.key0)
+          range.push("#888888")
+          _chart.customDomain(domain)
+          _chart.customRange(range)
+        }
+      } else if (domain.length > filteredData.length) {
+        // if all others is present in custom domain but not in data
+        console.log(filteredData.map(d => d.data.key0))
+        if (
+          domain.includes("All Others") &&
+          !filteredData.map(d => d.data.key0).includes("All Others")
+        ) {
+          const index = domain.indexOf("All Others")
+          domain.splice(index, 1)
+          range.splice(index, 1)
+          _chart.customDomain(domain)
+          _chart.customRange(range)
+        }
+      }
       // if we have custom domain and range, filter fetched data
       filteredData = pieData.filter(d => domain.includes(d.data.key0))
     }
