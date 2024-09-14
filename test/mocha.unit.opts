@@ -1,4 +1,0 @@
---require @babel/core
---require @babel/register
---require ./test/config.js
---require ./test/setup-unit-tests.js

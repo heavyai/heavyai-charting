@@ -50,7 +50,7 @@
     "selenium:start": "selenium-standalone start --version=3.0.0-beta4",
     "start": "webpack-dev-server --content-base ./example --config ./example/webpack.config.js",
     "test": "npm run format:check:silent && npm run lint && npm run test:unit",
-    "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --opts ./test/mocha.unit.opts"
+    "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --config ./test/.mocharc.yml"
   },
   "dependencies": {
     "@heavyai/data-layer": "npm:mapd-data-layer-2@0.0.25",
@@ -72,9 +72,6 @@
     "wellknown": "^0.5.0"
   },
   "devDependencies": {
-    "@heavyai/connector": "https://github.com/heavyai/heavyai-connector.git#a2d43593c9fa9893919c0fe955c64ed14cd8262b",
-    "@heavyai/crossfilter": "https://github.com/heavyai/heavyai-crossfilter.git#3a559bd47e0a14fe591ad9d57ae06f8c617ca0ba",
-    "@heavyai/d3-combo-chart": "https://github.com/heavyai/mapd3.git#d2bce81606000f65fda8b091809f0c78ba72e670",
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -97,6 +94,9 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.18.6",
     "@babel/register": "^7.0.0",
+    "@heavyai/connector": "https://github.com/heavyai/heavyai-connector.git#a2d43593c9fa9893919c0fe955c64ed14cd8262b",
+    "@heavyai/crossfilter": "https://github.com/heavyai/heavyai-crossfilter.git#3a559bd47e0a14fe591ad9d57ae06f8c617ca0ba",
+    "@heavyai/d3-combo-chart": "https://github.com/heavyai/mapd3.git#d2bce81606000f65fda8b091809f0c78ba72e670",
     "apache-arrow": "^7.0.0",
     "atob": "^2.0.3",
     "babel-eslint": "^9.0.0",
@@ -117,7 +117,7 @@
     "http-server": "^0.11.2",
     "jsdom": "^11.7.0",
     "lodash": "^4.17.21",
-    "mocha": "^2.5.3",
+    "mocha": "^6.2.3",
     "mocha-jenkins-reporter": "^0.1.9",
     "node-sass": "^4.14.1",
     "nyc": "^15.0.0",

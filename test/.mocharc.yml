@@ -1,0 +1,5 @@
+require:
+  - '@babel/core'
+  - './test/register-babel.js'
+  - './test/config.js'
+  - './test/setup-unit-tests.js'
