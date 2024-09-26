@@ -1,5 +1,5 @@
-const ALL_OTHERS_LABEL = "All Others"
-const ALL_OTHERS_COLOR = "#888888"
+export const ALL_OTHERS_LABEL = "All Others"
+export const ALL_OTHERS_COLOR = "#888888"
 
 export function maybeUpdateDomainRange(
   chart,

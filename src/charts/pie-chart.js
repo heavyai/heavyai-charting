@@ -9,7 +9,9 @@ import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"
 import {
   maybeUpdateDomainRange,
-  maybeUpdateAllOthers
+  maybeUpdateAllOthers,
+  ALL_OTHERS_LABEL,
+  ALL_OTHERS_COLOR
 } from "../utils/color-helpers"
 
 /**
@@ -115,7 +117,7 @@ export default function pieChart(parent, chartGroup) {
 
       // data is cached during redraw/render, so it's possible that it was
       // cached with the all other row already included
-      if (result.some(({ key0 }) => key0 === "All Others")) {
+      if (result.some(({ key0 }) => key0 === ALL_OTHERS_LABEL)) {
         callback(null, result)
         return
       }
@@ -135,7 +137,7 @@ export default function pieChart(parent, chartGroup) {
         .then(filterSize => {
           const val = filterSize - d3.sum(result, _chart.valueAccessor())
           if (val > 0) {
-            result.push({ key0: "All Others", val, isAllOthers: true })
+            result.push({ key0: ALL_OTHERS_LABEL, val, isAllOthers: true })
           }
           callback(null, result)
         })
@@ -468,7 +470,9 @@ export default function pieChart(parent, chartGroup) {
     if (domain.length === 0 && range.length === 0) {
       const newDomain = pieData.map(d => d.data.key0)
       const newRange = pieData.map((d, i) =>
-        d.data.key0 === "All Others" ? "#888888" : _chart.getColor(d.data, i)
+        d.data.key0 === ALL_OTHERS_LABEL
+          ? ALL_OTHERS_COLOR
+          : _chart.getColor(d.data, i)
       )
       _chart.customDomain(newDomain)
       _chart.customRange(newRange)
