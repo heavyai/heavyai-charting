@@ -386,18 +386,6 @@ export default function baseMixin(_chart) {
   }
 
   /**
-   * Wrapper for staticValues in crossfilter
-   */
-  _chart.staticValues = function(staticValues) {
-    if (!arguments.length) {
-      return _chart.group().staticValues()
-    }
-
-    _chart.group().staticValues(staticValues)
-    return _chart
-  }
-
-  /**
    * Get or set an accessor to order ordinal dimensions.  This uses
    * {@link https://github.com/square/crossfilter/wiki/API-Reference#quicksort_by crossfilter.quicksort.by} as the
    * sort.
