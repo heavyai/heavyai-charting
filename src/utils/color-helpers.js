@@ -1,3 +1,6 @@
+const ALL_OTHERS_LABEL = "All Others"
+const ALL_OTHERS_COLOR = "#888888"
+
 export function maybeUpdateDomainRange(
   chart,
   data,
@@ -8,7 +11,6 @@ export function maybeUpdateDomainRange(
 ) {
   const dataArr = data.map(dataAccessor)
   const domainRangeMap = new Map([...domain].map((key, i) => [key, range[i]]))
-  console.log("domainRangeMap", domainRangeMap)
   const dataMap = new Map(
     [...dataArr].map((key, i) => [
       key,
@@ -16,23 +18,22 @@ export function maybeUpdateDomainRange(
         chart.getColor(wrapKey ? { key0: key } : key, i)
     ])
   )
-  console.log("dataMap", dataMap)
   chart.customDomain([...dataMap.keys()])
   chart.customRange([...dataMap.values()])
 }
 
 export function maybeUpdateAllOthers(chart, data, domain, range) {
   if (
-    data.map(d => d.data.key0).includes("All Others") &&
-    !domain.includes("All Others")
+    data.map(d => d.data.key0).includes(ALL_OTHERS_LABEL) &&
+    !domain.includes()
   ) {
-    domain.push("All Others")
-    range.push("#888888")
+    domain.push(ALL_OTHERS_LABEL)
+    range.push(ALL_OTHERS_COLOR)
   } else if (
-    domain.includes("All Others") &&
-    !data.map(d => d.data.key0).includes("All Others")
+    domain.includes(ALL_OTHERS_LABEL) &&
+    !data.map(d => d.data.key0).includes(ALL_OTHERS_LABEL)
   ) {
-    const index = domain.indexOf("All Others")
+    const index = domain.indexOf(ALL_OTHERS_LABEL)
     domain.splice(index, 1)
     range.splice(index, 1)
   }
