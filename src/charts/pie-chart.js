@@ -7,6 +7,10 @@ import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
 import { override, transition } from "../core/core"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"
+import {
+  maybeUpdateDomainRange,
+  maybeUpdateAllOthers
+} from "../utils/color-helpers"
 
 /**
  * The pie chart implementation is usually used to visualize a small categorical distribution.  The pie
@@ -180,9 +184,10 @@ export default function pieChart(parent, chartGroup) {
 
     let pieData
     if (_chart.customDomain().length > 0 && chartData) {
-      pieData = chartData.filter(
-        d => _chart.customDomain().includes(d.key0) || d.key0 === "All Others"
-      )
+      // pieData = chartData.filter(
+      //   d => _chart.customDomain().includes(d.key0) || d.key0 === "All Others"
+      // )
+      pieData = chartData
     } else if (chartData) {
       pieData = chartData
     }
@@ -468,31 +473,9 @@ export default function pieChart(parent, chartGroup) {
       )
   }
 
-  function maybeUpdateAllOthers(data, domain, range) {
-    if (
-      data.map(d => d.data.key0).includes("All Others") &&
-      !domain.includes("All Others")
-    ) {
-      domain.push("All Others")
-      range.push("#888888")
-    } else if (
-      domain.includes("All Others") &&
-      !data.map(d => d.data.key0).includes("All Others")
-    ) {
-      const index = domain.indexOf("All Others")
-      domain.splice(index, 1)
-      range.splice(index, 1)
-    }
-
-    _chart.customDomain(domain)
-    _chart.customRange(range)
-  }
-
   function updateElements(pieData, arc) {
     const domain = _chart.customDomain()
     const range = _chart.customRange()
-
-    let filteredData = pieData
 
     // if custom domain is empty, generate it from the pieData
     if (domain.length === 0 && range.length === 0) {
@@ -504,20 +487,16 @@ export default function pieChart(parent, chartGroup) {
       _chart.customRange(newRange)
     } else if (domain.length > 0 && range.length === 0) {
       // if we have a domain but no range, palette was changed
-      // filter feched data and set new range
-      filteredData = pieData.filter(d => domain.includes(d.data.key0))
-      const newRange = filteredData.map((d, i) => _chart.getColor(d.data, i))
+      const newRange = pieData.map((d, i) => _chart.getColor(d.data, i))
       _chart.customRange(newRange)
     } else if (domain.length > 0) {
-      maybeUpdateAllOthers(pieData, domain, range)
-      const newDomain = _chart.customDomain()
-      // if we have custom domain and range, filter fetched data
-      filteredData = pieData.filter(d => newDomain.includes(d.data.key0))
+      maybeUpdateDomainRange(_chart, pieData, d => d.data.key0, domain, range)
+      maybeUpdateAllOthers(_chart, pieData, domain, range)
     }
 
-    updateSlicePaths(filteredData, arc)
-    updateLabels(filteredData, arc)
-    updateTitles(filteredData)
+    updateSlicePaths(pieData, arc)
+    updateLabels(pieData, arc)
+    updateTitles(pieData)
   }
 
   function updateSlicePaths(pieData, arc) {
