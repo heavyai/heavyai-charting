@@ -459,10 +459,6 @@ export default function bubbleChart(parent, chartGroup) {
       _chart.r().range([_chart.MIN_RADIUS, _chart.MIN_RADIUS])
     }
 
-    // chart data length > mapping domain length: get mapping data, fill rest randomly
-    // mapping domain length > chart data length: get mapping data
-    // chart data length == mapping domain length: get mapping data
-
     const data = _chart.data()
     if (_sortBubbleSize) {
       // sort descending so smaller bubbles are on top
