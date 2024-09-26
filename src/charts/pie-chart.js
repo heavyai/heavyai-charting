@@ -144,10 +144,6 @@ export default function pieChart(parent, chartGroup) {
         })
     })
   })
-
-  override(_chart, "getColor", (data, index) => {
-    return _chart._getColor(data, index)
-  })
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function() {
@@ -183,18 +179,9 @@ export default function pieChart(parent, chartGroup) {
     const chartData = _chart.data()
 
     let pieData
-    if (_chart.customDomain().length > 0 && chartData) {
-      // pieData = chartData.filter(
-      //   d => _chart.customDomain().includes(d.key0) || d.key0 === "All Others"
-      // )
-      pieData = chartData
-    } else if (chartData) {
-      pieData = chartData
-    }
-
     // if we have data...
-    if (pieData && d3.sum(pieData, _chart.valueAccessor())) {
-      pieData = pie(utils.maybeFormatInfinity(pieData))
+    if (chartData && d3.sum(chartData, _chart.valueAccessor())) {
+      pieData = pie(utils.maybeFormatInfinity(_chart.data()))
       _g.classed(_emptyCssClass, false)
     } else {
       // otherwise we'd be getting NaNs, so override
