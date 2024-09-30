@@ -175,10 +175,21 @@ export default function colorMixin(_chart) {
         ? _chart.determineColorByValue(value, range)
         : _colors(_colorAccessor.call(this, data, index)) || middleColor
 
-    const customColor =
-      _chart.customRange().length > 0
-        ? _chart.customRange()[_chart.customDomain().indexOf(value)]
-        : null
+    let customColor = null
+    if (_chart.customRange().length > 0) {
+      const customDomain = _chart.customDomain()
+      const customRange = _chart.customRange()
+      if (Array.isArray(value)) {
+        customColor =
+          customRange[
+            customDomain.findIndex(
+              arr => JSON.stringify(arr) === JSON.stringify(value)
+            )
+          ]
+      } else {
+        customColor = customRange[customDomain.indexOf(value)]
+      }
+    }
 
     return customColor ?? color
   }
