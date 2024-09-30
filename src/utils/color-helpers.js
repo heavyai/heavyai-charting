@@ -25,7 +25,7 @@ export function maybeUpdateDomainRange(
 export function maybeUpdateAllOthers(chart, data, domain, range) {
   if (
     data.map(d => d.data.key0).includes(ALL_OTHERS_LABEL) &&
-    !domain.includes()
+    !domain.includes(ALL_OTHERS_LABEL)
   ) {
     domain.push(ALL_OTHERS_LABEL)
     range.push(ALL_OTHERS_COLOR)
