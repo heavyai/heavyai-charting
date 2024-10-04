@@ -18,8 +18,8 @@ export function maybeUpdateDomainRange(
         chart.getColor(wrapKey ? { key0: key } : key, i)
     ])
   )
-  chart.customDomain(dataMap.keys())
-  chart.customRange(dataMap.values())
+  chart.customDomain([...dataMap.keys()])
+  chart.customRange([...dataMap.values()])
 }
 
 export function maybeUpdateAllOthers(chart, data, domain, range) {
