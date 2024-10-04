@@ -7,6 +7,12 @@ import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
 import { override, transition } from "../core/core"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"
+import {
+  maybeUpdateDomainRange,
+  maybeUpdateAllOthers,
+  ALL_OTHERS_LABEL,
+  ALL_OTHERS_COLOR
+} from "../utils/color-helpers"
 
 /**
  * The pie chart implementation is usually used to visualize a small categorical distribution.  The pie
@@ -111,7 +117,7 @@ export default function pieChart(parent, chartGroup) {
 
       // data is cached during redraw/render, so it's possible that it was
       // cached with the all other row already included
-      if (result.some(({ key0 }) => key0 === "All Others")) {
+      if (result.some(({ key0 }) => key0 === ALL_OTHERS_LABEL)) {
         callback(null, result)
         return
       }
@@ -131,7 +137,7 @@ export default function pieChart(parent, chartGroup) {
         .then(filterSize => {
           const val = filterSize - d3.sum(result, _chart.valueAccessor())
           if (val > 0) {
-            result.push({ key0: "All Others", val, isAllOthers: true })
+            result.push({ key0: ALL_OTHERS_LABEL, val, isAllOthers: true })
           }
           callback(null, result)
         })
@@ -139,13 +145,6 @@ export default function pieChart(parent, chartGroup) {
           callback(err)
         })
     })
-  })
-
-  override(_chart, "getColor", (data, index) => {
-    if (data.isAllOthers) {
-      return "#888888"
-    }
-    return _chart._getColor(data, index)
   })
   /* ------------------------------------------------------------------------- */
 
@@ -182,15 +181,9 @@ export default function pieChart(parent, chartGroup) {
     const chartData = _chart.data()
 
     let pieData
-    if (_chart.customDomain().length > 0 && chartData) {
-      pieData = chartData.filter(d => _chart.customDomain().includes(d.key0))
-    } else if (chartData) {
-      pieData = chartData
-    }
-
     // if we have data...
-    if (pieData && d3.sum(pieData, _chart.valueAccessor())) {
-      pieData = pie(utils.maybeFormatInfinity(pieData))
+    if (chartData && d3.sum(chartData, _chart.valueAccessor())) {
+      pieData = pie(utils.maybeFormatInfinity(_chart.data()))
       _g.classed(_emptyCssClass, false)
     } else {
       // otherwise we'd be getting NaNs, so override
@@ -473,28 +466,28 @@ export default function pieChart(parent, chartGroup) {
     const domain = _chart.customDomain()
     const range = _chart.customRange()
 
-    let filteredData = pieData
-
     // if custom domain is empty, generate it from the pieData
     if (domain.length === 0 && range.length === 0) {
       const newDomain = pieData.map(d => d.data.key0)
-      const newRange = pieData.map((d, i) => _chart.getColor(d.data, i))
+      const newRange = pieData.map((d, i) =>
+        d.data.key0 === ALL_OTHERS_LABEL
+          ? ALL_OTHERS_COLOR
+          : _chart.getColor(d.data, i)
+      )
       _chart.customDomain(newDomain)
       _chart.customRange(newRange)
     } else if (domain.length > 0 && range.length === 0) {
       // if we have a domain but no range, palette was changed
-      // filter feched data and set new range
-      filteredData = pieData.filter(d => domain.includes(d.data.key0))
-      const newRange = filteredData.map((d, i) => _chart.getColor(d.data, i))
+      const newRange = pieData.map((d, i) => _chart.getColor(d.data, i))
       _chart.customRange(newRange)
     } else if (domain.length > 0) {
-      // if we have custom domain and range, filter fetched data
-      filteredData = pieData.filter(d => domain.includes(d.data.key0))
+      maybeUpdateDomainRange(_chart, pieData, d => d.data.key0, domain, range)
+      maybeUpdateAllOthers(_chart, pieData, domain, range)
     }
 
-    updateSlicePaths(filteredData, arc)
-    updateLabels(filteredData, arc)
-    updateTitles(filteredData)
+    updateSlicePaths(pieData, arc)
+    updateLabels(pieData, arc)
+    updateTitles(pieData)
   }
 
   function updateSlicePaths(pieData, arc) {

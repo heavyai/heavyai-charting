@@ -4,6 +4,7 @@ import capMixin from "../mixins/cap-mixin"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
 import { utils } from "../utils/utils"
 import { transition } from "../core/core"
+import { maybeUpdateDomainRange } from "../utils/color-helpers"
 
 /**
  * A concrete implementation of a general purpose bubble chart that allows data visualization using the
@@ -467,7 +468,6 @@ export default function bubbleChart(parent, chartGroup) {
 
     const domain = _chart.customDomain()
     const range = _chart.customRange()
-    let filteredData = data
 
     if (domain.length === 0 && range.length === 0) {
       const newDomain = data.map(d => d.key0)
@@ -475,11 +475,11 @@ export default function bubbleChart(parent, chartGroup) {
       _chart.customDomain(newDomain)
       _chart.customRange(newRange)
     } else if (domain.length > 0 && range.length === 0) {
-      filteredData = data.filter(d => domain.includes(d.key0))
-      const newRange = filteredData.map((d, i) => _chart.getColor(d, i))
+      // if we have a domain but no range, palette was changed
+      const newRange = data.map((d, i) => _chart.getColor(d, i))
       _chart.customRange(newRange)
     } else if (domain.length > 0) {
-      filteredData = data.filter(d => domain.includes(d.key0))
+      maybeUpdateDomainRange(_chart, data, d => d.key0, domain, range, true)
     }
 
     const bubbleG = _chart
@@ -487,7 +487,7 @@ export default function bubbleChart(parent, chartGroup) {
       .selectAll("g." + _chart.BUBBLE_NODE_CLASS)
 
       /* OVERRIDE -----------------------------------------------------------------*/
-      .data(filteredData)
+      .data(data)
     /* --------------------------------------------------------------------------*/
 
     if (_sortBubbleSize) {
