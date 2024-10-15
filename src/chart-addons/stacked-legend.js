@@ -3,6 +3,7 @@ import { getRealLayers } from "../utils/utils-vega"
 import assert from "assert"
 import { format } from "d3-format"
 import { logger } from "../utils/logger"
+import { determineColorByValue } from "../utils/color-helpers"
 
 export const LEGEND_POSITIONS = {
   TOP_RIGHT: "top-right",
@@ -119,15 +120,17 @@ async function getTopValues(layer, layerName, size) {
 }
 
 function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
-  const oldDomainRange = new Map(
-    [...oldDomain].map((key, index) => [key, range[index]])
-  )
-  const newDomainRange = new Map(
-    [...newDomain].map(key => [key, oldDomainRange.get(key) ?? defaultColor])
-  )
+  // const oldDomainRange = new Map(
+  //   [...oldDomain].map((key, index) => [key, range[index]])
+  // )
+  // const newDomainRange = new Map(
+  //   [...newDomain].map(key => [key, oldDomainRange.get(key) ?? defaultColor])
+  // )
+  console.log(range)
+  const newRange = newDomain.map(d => determineColorByValue(d, range))
   return {
-    newDomain: [...newDomainRange.keys()],
-    newRange: [...newDomainRange.values()]
+    newDomain: newDomain,
+    newRange: newRange
   }
 }
 
@@ -211,19 +214,15 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 domain: layer.colorDomain()
               }
             } else if (color.type === "ordinal") {
-              const colValues = await getTopValues(
+              const newDomain = await getTopValues(
                 layer,
                 layer_name,
                 color.domain.length
               )
-              const { newDomain, newRange } = colValues
-                ? getUpdatedDomainRange(
-                    colValues,
-                    color.domain,
-                    color.range,
-                    color.defaultOtherRange
-                  )
-                : {}
+              const newRange = newDomain.map(v =>
+                determineColorByValue(v, chart.colors().range())
+              )
+              console.log(newDomain, newRange)
 
               // don't show the other category when new domain is smaller than original max
               color.otherActive = false
@@ -309,16 +308,21 @@ export function handleLegendSort(index = 0) {
 
   color.sorted = sorted === "asc" ? "desc" : "asc"
 
-  const { newDomain, newRange } = getUpdatedDomainRange(
-    sortedDomain,
-    currentDomain,
-    currentRange,
-    defaultOtherRange
+  // TODO[C]: need to pull in chart somehow
+  const newRange = sortedDomain.map(d =>
+    determineColorByValue(d, _chart.colors().range())
   )
+  console.log(sortedDomain, newRange)
+  // const { newDomain, newRange } = getUpdatedDomainRange(
+  //   sortedDomain,
+  //   currentDomain,
+  //   currentRange,
+  //   defaultOtherRange
+  // )
 
   layer.setState(
     setColorState(() => ({
-      filteredDomain: newDomain,
+      filteredDomain: sortedDomain,
       filteredRange: newRange
     }))
   )
