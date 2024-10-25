@@ -807,7 +807,11 @@ export default function rasterLayerPolyMixin(_layer) {
     const otherChartFilters = allFilters.filter(
       (f, i) =>
         !_layer.dimension() ||
-        (i !== _layer.dimension().getDimensionIndex() && f !== "" && f !== null)
+        (i !== _layer.dimension().getDimensionIndex() &&
+          f !== "" &&
+          f !== null &&
+          // Kinda hacky, we don't want to include rowId filter in vega query, but we want everything else
+          !f.includes("rowid"))
     )
 
     let firstElem = true
