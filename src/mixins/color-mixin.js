@@ -176,7 +176,7 @@ export default function colorMixin(_chart) {
         : _colors(_colorAccessor.call(this, data, index)) || middleColor
 
     let customColor = null
-    if (_chart.customRange().length > 0) {
+    if (_chart.customRange()?.length > 0) {
       const customDomain = _chart.customDomain()
       const customRange = _chart.customRange()
       if (Array.isArray(value)) {
