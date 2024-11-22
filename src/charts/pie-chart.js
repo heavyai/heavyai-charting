@@ -463,8 +463,16 @@ export default function pieChart(parent, chartGroup) {
   }
 
   function updateElements(pieData, arc) {
-    const domain = _chart.customDomain() ?? []
-    const range = _chart.customRange() ?? []
+    let domain = _chart.customDomain() ?? []
+    let range = _chart.customRange() ?? []
+
+    if (
+      _chart.colorMappingDomain.length > 0 &&
+      _chart.colorMappingRange.length > 0
+    ) {
+      domain = _chart.colorMappingDomain()
+      range = _chart.colorMappingRange()
+    }
 
     // if custom domain is empty, generate it from the pieData
     if (domain.length === 0 && range.length === 0) {
