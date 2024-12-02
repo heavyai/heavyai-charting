@@ -463,52 +463,54 @@ export default function pieChart(parent, chartGroup) {
   }
 
   function updateElements(pieData, arc) {
-    let domain = _chart.customDomain() ?? []
-    let range = _chart.customRange() ?? []
+    if (_chart.dimension().value().length === 1) {
+      let domain = _chart.customDomain() ?? []
+      let range = _chart.customRange() ?? []
 
-    if (
-      _chart.colorMappingDomain.length > 0 &&
-      _chart.colorMappingRange.length > 0
-    ) {
-      domain = _chart.colorMappingDomain()
-      range = _chart.colorMappingRange()
-    }
+      if (
+        _chart.colorMappingDomain.length > 0 &&
+        _chart.colorMappingRange.length > 0
+      ) {
+        domain = _chart.colorMappingDomain()
+        range = _chart.colorMappingRange()
+      }
 
-    // if custom domain is empty, generate it from the pieData
-    if (domain.length === 0 && range.length === 0) {
-      const newDomain = pieData.map(d => d.data.key0)
-      const newRange = pieData.map((d, i) =>
-        d.data.key0 === ALL_OTHERS_LABEL
-          ? ALL_OTHERS_COLOR
-          : _chart.getColor(d.data, i)
-      )
-      _chart.customDomain(newDomain)
-      _chart.customRange(newRange)
-    } else if (domain.length > 0 && range.length === 0) {
-      // if we have a domain but no range, palette was changed
-      const newRange = pieData.map((d, i) => {
-        if ([ALL_OTHERS_LABEL].includes(d.data.key0)) {
-          return ALL_OTHERS_COLOR
-        } else {
-          return _chart.getColor(d.data, i)
-        }
-      })
-      _chart.customRange(newRange)
-    } else if (domain.length > 0) {
-      maybeUpdateDomainRange(
-        _chart,
-        pieData,
-        d => d.data.key0,
-        domain,
-        range,
-        true
-      )
-      maybeUpdateAllOthers(
-        _chart,
-        pieData,
-        _chart.customDomain(),
-        _chart.customRange()
-      )
+      // if custom domain is empty, generate it from the pieData
+      if (domain.length === 0 && range.length === 0) {
+        const newDomain = pieData.map(d => d.data.key0)
+        const newRange = pieData.map((d, i) =>
+          d.data.key0 === ALL_OTHERS_LABEL
+            ? ALL_OTHERS_COLOR
+            : _chart.getColor(d.data, i)
+        )
+        _chart.customDomain(newDomain)
+        _chart.customRange(newRange)
+      } else if (domain.length > 0 && range.length === 0) {
+        // if we have a domain but no range, palette was changed
+        const newRange = pieData.map((d, i) => {
+          if ([ALL_OTHERS_LABEL].includes(d.data.key0)) {
+            return ALL_OTHERS_COLOR
+          } else {
+            return _chart.getColor(d.data, i)
+          }
+        })
+        _chart.customRange(newRange)
+      } else if (domain.length > 0) {
+        maybeUpdateDomainRange(
+          _chart,
+          pieData,
+          d => d.data.key0,
+          domain,
+          range,
+          true
+        )
+        maybeUpdateAllOthers(
+          _chart,
+          pieData,
+          _chart.customDomain(),
+          _chart.customRange()
+        )
+      }
     }
 
     updateSlicePaths(pieData, arc)
