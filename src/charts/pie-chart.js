@@ -467,8 +467,8 @@ export default function pieChart(parent, chartGroup) {
     let range = _chart.customRange() ?? []
 
     if (
-      _chart.colorMappingDomain.length > 0 &&
-      _chart.colorMappingRange.length > 0
+      _chart.colorMappingDomain().length > 0 &&
+      _chart.colorMappingRange().length > 0
     ) {
       domain = _chart.colorMappingDomain()
       range = _chart.colorMappingRange()
