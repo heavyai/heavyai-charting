@@ -466,7 +466,7 @@ export default function bubbleChart(parent, chartGroup) {
       data.sort((a, b) => d3.descending(radiusAccessor(a), radiusAccessor(b)))
     }
 
-    if (_chart.dimension().value().length === 1) {
+    if (_chart.getDimensionLength() === 1) {
       const domain = _chart.customDomain() ?? []
       const range = _chart.customRange() ?? []
 

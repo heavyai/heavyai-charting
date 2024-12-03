@@ -463,7 +463,7 @@ export default function pieChart(parent, chartGroup) {
   }
 
   function updateElements(pieData, arc) {
-    if (_chart.dimension().value().length === 1) {
+    if (_chart.getDimensionLength() === 1) {
       let domain = _chart.customDomain() ?? []
       let range = _chart.customRange() ?? []
 
