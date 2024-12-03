@@ -496,6 +496,8 @@ export default function pieChart(parent, chartGroup) {
         })
         _chart.customRange(newRange)
       } else if (domain.length > 0) {
+        _chart.customDomain(domain)
+        _chart.customRange(range)
         maybeUpdateDomainRange(
           _chart,
           pieData,
