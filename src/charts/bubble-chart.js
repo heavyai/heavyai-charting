@@ -466,28 +466,30 @@ export default function bubbleChart(parent, chartGroup) {
       data.sort((a, b) => d3.descending(radiusAccessor(a), radiusAccessor(b)))
     }
 
-    let domain = _chart.customDomain() ?? []
-    let range = _chart.customRange() ?? []
+    if (_chart.getDimensionLength() === 1) {
+      const domain = _chart.customDomain() ?? []
+      const range = _chart.customRange() ?? []
 
-    if (
-      _chart.colorMappingDomain.length > 0 &&
-      _chart.colorMappingRange.length > 0
-    ) {
-      domain = _chart.colorMappingDomain()
-      range = _chart.colorMappingRange()
-    }
+      if (
+        _chart.colorMappingDomain().length > 0 &&
+        _chart.colorMappingRange().length > 0
+      ) {
+        domain = _chart.colorMappingDomain()
+        range = _chart.colorMappingRange()
+      }
 
-    if (domain.length === 0 && range.length === 0) {
-      const newDomain = data.map(d => d.key0)
-      const newRange = data.map((d, i) => _chart.getColor(d, i))
-      _chart.customDomain(newDomain)
-      _chart.customRange(newRange)
-    } else if (domain.length > 0 && range.length === 0) {
-      // if we have a domain but no range, palette was changed
-      const newRange = data.map((d, i) => _chart.getColor(d, i))
-      _chart.customRange(newRange)
-    } else if (domain.length > 0) {
-      maybeUpdateDomainRange(_chart, data, d => d.key0, domain, range, true)
+      if (domain.length === 0 && range.length === 0) {
+        const newDomain = data.map(d => d.key0)
+        const newRange = data.map((d, i) => _chart.getColor(d, i))
+        _chart.customDomain(newDomain)
+        _chart.customRange(newRange)
+      } else if (domain.length > 0 && range.length === 0) {
+        // if we have a domain but no range, palette was changed
+        const newRange = data.map((d, i) => _chart.getColor(d, i))
+        _chart.customRange(newRange)
+      } else if (domain.length > 0) {
+        maybeUpdateDomainRange(_chart, data, d => d.key0, domain, range, true)
+      }
     }
 
     const bubbleG = _chart

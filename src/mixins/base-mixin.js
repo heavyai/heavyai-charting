@@ -1920,6 +1920,10 @@ export default function baseMixin(_chart) {
     return measure && measure[0] ? measure[0].measureName : null
   }
 
+  _chart.getDimensionLength = function() {
+    return _chart.dimension().value().length ?? 0
+  }
+
   _chart = chartLegendMixin(
     filterMixin(
       labelMixin(multipleKeysLabelMixin(spinnerMixin(asyncMixin(_chart))))
