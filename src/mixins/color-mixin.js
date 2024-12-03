@@ -173,7 +173,7 @@ export default function colorMixin(_chart) {
     const value = _colorAccessor.call(this, data, index)
 
     const color =
-      typeof value === "string"
+      typeof value === "string" && _chart.getDimensionLength() === 1
         ? _chart.determineColorByValue(value, range)
         : _colors(_colorAccessor.call(this, data, index)) || middleColor
 
