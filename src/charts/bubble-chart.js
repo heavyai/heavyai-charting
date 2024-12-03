@@ -467,8 +467,8 @@ export default function bubbleChart(parent, chartGroup) {
     }
 
     if (_chart.getDimensionLength() === 1) {
-      const domain = _chart.customDomain() ?? []
-      const range = _chart.customRange() ?? []
+      let domain = _chart.customDomain() ?? []
+      let range = _chart.customRange() ?? []
 
       if (
         _chart.colorMappingDomain().length > 0 &&
