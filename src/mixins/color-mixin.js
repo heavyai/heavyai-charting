@@ -246,7 +246,9 @@ export default function colorMixin(_chart) {
 
   const cyrb53 = (str, seed = 0) => {
     let h1 = 0xdeadbeef ^ seed
+    console.log("h1", h1, "seed", seed)
     let h2 = 0x41c6ce57 ^ seed
+    console.log("h2", h2, "seed", seed)
     for (let i = 0, ch; i < str.length; i++) {
       ch = str.charCodeAt(i)
       h1 = Math.imul(h1 ^ ch, 2654435761)
@@ -264,9 +266,11 @@ export default function colorMixin(_chart) {
     return 4294967296 * (2097151 & h2) + (h1 >>> 0)
   }
 
-  _chart.determineColorByValue = (measureColor, colors) => {
+  _chart.determineColorByValue = (measureColor, colors, randomize = true) => {
     if (typeof measureColor === "string") {
-      const hash = cyrb53(measureColor)
+      const seed = randomize ? Math.floor(Math.random() * 1e6) : 0
+      const hash = cyrb53(measureColor, seed)
+
       const colorIndex = hash % colors.length
       return colors[colorIndex]
     }
