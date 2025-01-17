@@ -16,6 +16,7 @@ import {
   isContourType,
   validateContourState
 } from "../utils/utils-contour"
+import { buildHashedColor } from "../utils/color-helpers"
 
 const polyDefaultScaleColor = "#d6d7d6"
 const polyNullScaleColor = "#d6d7d6"
@@ -350,8 +351,18 @@ export default function rasterLayerPolyMixin(_layer) {
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
-          expr: colorField,
+          expr: buildHashedColor(
+            color.field,
+            color.range,
+            color.palette.val.length,
+            color.customColors
+          ),
           as: "color"
+        })
+        transforms.push({
+          type: "project",
+          expr: colorField,
+          as: "color_attr"
         })
       }
 
