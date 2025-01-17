@@ -187,6 +187,27 @@ export default function rasterLayerPointMixin(_layer) {
     return state
   }
 
+  function buildHashedColor(field, range, paletteLength, customColors) {
+    // if we have custom colors
+    if (customColors?.domain?.length > 0 && customColors?.range?.length > 0) {
+      console.log("CUSTOM COLORS", customColors)
+      const domain = customColors.domain
+      // build case statement
+      // CASE WHEN color_attr = "Canada" THEN color_slot_x WHEN ... THEN ... ELSE MOD(HASH)
+      let sql = `CASE `
+      for (let i = 0; i < domain.length; i++) {
+        sql += `WHEN ${field} = '${domain[i]}' THEN ${range.indexOf(
+          customColors.range[i]
+        )} `
+      }
+      sql += `ELSE MOD(HASH(${field}), ${paletteLength -
+        customColors.range.length}) END`
+      return sql
+    } else {
+      return `MOD(HASH(${field}), ${paletteLength})`
+    }
+  }
+
   _layer.getTransforms = function(
     table,
     filter,
@@ -284,8 +305,18 @@ export default function rasterLayerPointMixin(_layer) {
       ) {
         transforms.push({
           type: "project",
-          expr: color.field,
+          expr: buildHashedColor(
+            color.field,
+            color.range,
+            color.palette.val.length,
+            color.customColors
+          ),
           as: "color"
+        })
+        transforms.push({
+          type: "project",
+          expr: color.field,
+          as: "color_attr"
         })
       }
 
@@ -527,6 +558,28 @@ export default function rasterLayerPointMixin(_layer) {
         }
       }
     } else {
+      console.log({
+        type: "root",
+        source: table,
+        transform: _layer.getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          lastFilteredSize
+        )
+      })
+      parser.writeSQL({
+        type: "root",
+        source: table,
+        transform: _layer.getTransforms(
+          table,
+          filter,
+          globalFilter,
+          state,
+          lastFilteredSize
+        )
+      })
       data = [
         {
           name: layerName,
