@@ -10,6 +10,7 @@ import {
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
+import { buildHashedColor } from "../utils/color-helpers"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -187,27 +188,6 @@ export default function rasterLayerPointMixin(_layer) {
     return state
   }
 
-  function buildHashedColor(field, range, paletteLength, customColors) {
-    // if we have custom colors
-    if (customColors?.domain?.length > 0 && customColors?.range?.length > 0) {
-      console.log("CUSTOM COLORS", customColors)
-      const domain = customColors.domain
-      // build case statement
-      // CASE WHEN color_attr = "Canada" THEN color_slot_x WHEN ... THEN ... ELSE MOD(HASH)
-      let sql = `CASE `
-      for (let i = 0; i < domain.length; i++) {
-        sql += `WHEN ${field} = '${domain[i]}' THEN ${range.indexOf(
-          customColors.range[i]
-        )} `
-      }
-      sql += `ELSE MOD(HASH(${field}), ${paletteLength -
-        customColors.range.length}) END`
-      return sql
-    } else {
-      return `MOD(HASH(${field}), ${paletteLength})`
-    }
-  }
-
   _layer.getTransforms = function(
     table,
     filter,
@@ -248,23 +228,23 @@ export default function rasterLayerPointMixin(_layer) {
         ops.push(orientation.aggregate)
       }
 
-      // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
-      // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
+      // since we use st_point for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
+      // the reason is st_point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
         type: "aggregate",
         fields,
         ops,
         as: alias,
-        // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
-        //  in heavyai-data-layer2. So, just gonna filter them out.
-        //  https://heavyai.atlassian.net/browse/FE-14213
-        groupby: [...new Set(transform.groupby)].map((g, i) => ({
+        // for some reason, we're receiving duplicate tables here, causing headaches w/ export sql generation
+        //  in heavyai-data-layer2. so, just gonna filter them out.
+        //  https://heavyai.atlassian.net/browse/fe-14213
+        groupby: [...new set(transform.groupby)].map((g, i) => ({
           type: "project",
-          expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
-          as: isDataExport ? g : `key${i}`
+          expr: `${isdataexport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
+          as: isdataexport ? g : `key${i}`
         }))
       })
-      if (isDataExport) {
+      if (isdataexport) {
         transforms.push({
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
