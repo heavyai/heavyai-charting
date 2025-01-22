@@ -1730,6 +1730,13 @@ body {
   overflow: hidden;
   box-shadow: none !important;
   border: 1px solid #e2e2e2; }
+  .mapboxgl-ctrl-group.mapbox-ctrl-ruler {
+    bottom: 86px; }
+    .mapboxgl-ctrl-group.mapbox-ctrl-ruler button {
+      width: 28px;
+      height: 28px; }
+      .mapboxgl-ctrl-group.mapbox-ctrl-ruler button svg {
+        margin-top: 3px; }
 
 .mapboxgl-ctrl-compass {
   display: none !important; }

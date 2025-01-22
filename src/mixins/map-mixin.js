@@ -3,6 +3,8 @@ import * as _ from "lodash"
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { rasterDrawMixin } from "./raster-draw-mixin"
+import RulerControl from "@mapbox-controls/ruler"
+// import "@mapbox-controls/ruler/src/index.css"
 
 function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
@@ -736,6 +738,16 @@ export default function mapMixin(
 
     _map.dragRotate.disable()
     _map.touchZoomRotate.disableRotation()
+
+    _map.addControl(
+      new RulerControl({
+        linePaint: {
+          "line-color": "#999",
+          "line-width": 2
+        }
+      }),
+      "bottom-right"
+    )
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
     _map.addControl(
