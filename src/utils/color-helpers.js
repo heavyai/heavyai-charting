@@ -39,11 +39,9 @@ export function maybeUpdateAllOthers(chart, data, domain, range) {
 }
 
 export function buildHashedColor(field, range, paletteLength, customColors) {
-  // if we have custom colors
   if (customColors?.domain?.length > 0 && customColors?.range?.length > 0) {
     const domain = customColors.domain
-    // build case statement
-    // CASE WHEN color_attr = "Canada" THEN color_slot_x WHEN ... THEN ... ELSE MOD(HASH)
+    // build SQL CASE statement
     let sql = `CASE `
     for (let i = 0; i < domain.length; i++) {
       sql += `WHEN ${field} = '${domain[i]}' THEN ${range.indexOf(

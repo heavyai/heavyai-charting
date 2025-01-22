@@ -186,7 +186,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
           const layerState = layer.getState()
           const color = layer.getState().encoding.color
           let color_legend_descriptor = null
-          console.log("LEGEND COLOR", color)
 
           if (
             (layers.length > 1 || _.isEqual(selectedLayer, layerState)) &&

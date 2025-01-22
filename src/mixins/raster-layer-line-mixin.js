@@ -221,7 +221,6 @@ export default function rasterLayerLineMixin(_layer) {
         alias.push("strokeColor")
         ops.push(null)
       } else {
-        // const expression = color.field || color.aggregate
         const expression = color.field
           ? buildHashedColor(
               color.field,
