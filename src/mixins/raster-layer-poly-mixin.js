@@ -351,12 +351,15 @@ export default function rasterLayerPolyMixin(_layer) {
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
-          expr: buildHashedColor(
-            color.field,
-            color.range,
-            color.palette.val.length,
-            color.customColors
-          ),
+          expr:
+            color.type === "ordinal"
+              ? buildHashedColor(
+                  color.field,
+                  color.range,
+                  color.palette.val.length,
+                  color.customColors
+                )
+              : colorField,
           as: "color"
         })
         transforms.push({

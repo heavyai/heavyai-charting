@@ -221,14 +221,21 @@ export default function rasterLayerLineMixin(_layer) {
         alias.push("strokeColor")
         ops.push(null)
       } else {
-        const expression = color.field
-          ? buildHashedColor(
+        let expression = ""
+        if (color.field) {
+          if (color.type === "ordinal") {
+            expression = buildHashedColor(
               color.field,
               color.range,
               color.palette.val.length,
               color.customColors
             )
-          : color.aggregate
+          } else {
+            expression = color.field
+          }
+        } else {
+          expression = color.aggregate
+        }
 
         transforms.push({
           type: "project",

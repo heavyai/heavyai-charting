@@ -216,7 +216,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 layer_name,
                 color.originalDomain.length
               )
-              console.log("COLVALUES", colValues)
               const { newDomain, newRange } = colValues
                 ? getUpdatedDomainRange(
                     colValues,

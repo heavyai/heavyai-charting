@@ -285,12 +285,15 @@ export default function rasterLayerPointMixin(_layer) {
       ) {
         transforms.push({
           type: "project",
-          expr: buildHashedColor(
-            color.field,
-            color.range,
-            color.palette.val.length,
-            color.customColors
-          ),
+          expr:
+            color.type === "ordinal"
+              ? buildHashedColor(
+                  color.field,
+                  color.range,
+                  color.palette.val.length,
+                  color.customColors
+                )
+              : color.field,
           as: "color"
         })
         transforms.push({
