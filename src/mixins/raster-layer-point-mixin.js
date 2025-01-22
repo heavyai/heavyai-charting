@@ -228,23 +228,23 @@ export default function rasterLayerPointMixin(_layer) {
         ops.push(orientation.aggregate)
       }
 
-      // since we use st_point for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
-      // the reason is st_point projections need buffer allocation to hold the coords and thus require cpu execution
+      // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
+      // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
         type: "aggregate",
         fields,
         ops,
         as: alias,
-        // for some reason, we're receiving duplicate tables here, causing headaches w/ export sql generation
-        //  in heavyai-data-layer2. so, just gonna filter them out.
-        //  https://heavyai.atlassian.net/browse/fe-14213
-        groupby: [...new set(transform.groupby)].map((g, i) => ({
+        // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
+        //  in heavyai-data-layer2. So, just gonna filter them out.
+        //  https://heavyai.atlassian.net/browse/FE-14213
+        groupby: [...new Set(transform.groupby)].map((g, i) => ({
           type: "project",
-          expr: `${isdataexport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
-          as: isdataexport ? g : `key${i}`
+          expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
+          as: isDataExport ? g : `key${i}`
         }))
       })
-      if (isdataexport) {
+      if (isDataExport) {
         transforms.push({
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
