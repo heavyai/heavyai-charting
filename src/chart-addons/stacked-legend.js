@@ -186,6 +186,7 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
           const layerState = layer.getState()
           const color = layer.getState().encoding.color
           let color_legend_descriptor = null
+          console.log("LEGEND COLOR", color)
 
           if (
             (layers.length > 1 || _.isEqual(selectedLayer, layerState)) &&
@@ -214,13 +215,14 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               const colValues = await getTopValues(
                 layer,
                 layer_name,
-                color.domain.length
+                color.originalDomain.length
               )
+              console.log("COLVALUES", colValues)
               const { newDomain, newRange } = colValues
                 ? getUpdatedDomainRange(
                     colValues,
-                    color.domain,
-                    color.range,
+                    color.originalDomain,
+                    color.originalRange,
                     color.defaultOtherRange
                   )
                 : {}
