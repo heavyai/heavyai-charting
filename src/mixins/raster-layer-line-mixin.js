@@ -223,7 +223,7 @@ export default function rasterLayerLineMixin(_layer) {
       } else {
         let expression = ""
         if (color.field) {
-          if (color.type === "ordinal") {
+          if (color.type === "ordinal" && color.fullColorHashing) {
             expression = buildHashedColor(
               color.field,
               color.range,

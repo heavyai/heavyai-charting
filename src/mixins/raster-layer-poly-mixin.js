@@ -352,7 +352,7 @@ export default function rasterLayerPolyMixin(_layer) {
         transforms.push({
           type: "project",
           expr:
-            color.type === "ordinal"
+            color.type === "ordinal" && color.fullColorHashing
               ? buildHashedColor(
                   color.field,
                   color.range,
