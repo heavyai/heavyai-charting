@@ -4,7 +4,6 @@ import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { rasterDrawMixin } from "./raster-draw-mixin"
 import RulerControl from "@mapbox-controls/ruler"
-// import "@mapbox-controls/ruler/src/index.css"
 
 function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
