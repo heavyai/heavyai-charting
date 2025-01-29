@@ -541,17 +541,6 @@ export default function rasterLayerPointMixin(_layer) {
         }
       }
     } else {
-      parser.writeSQL({
-        type: "root",
-        source: table,
-        transform: _layer.getTransforms(
-          table,
-          filter,
-          globalFilter,
-          state,
-          lastFilteredSize
-        )
-      })
       data = [
         {
           name: layerName,
