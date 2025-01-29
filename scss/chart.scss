@@ -2141,6 +2141,16 @@ body {
   overflow:hidden;
   box-shadow: none !important;
   border: 1px solid $gray2;
+
+  &.mapbox-ctrl-ruler {
+    // Just above the zoom controls, below the zoom to filters overlay
+    bottom: 86px;
+    button {
+      svg {
+        margin-top: 3px;
+      }
+    }
+  }
 }
 
 .mapboxgl-ctrl-compass {

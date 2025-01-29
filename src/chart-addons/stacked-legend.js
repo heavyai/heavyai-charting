@@ -9,6 +9,11 @@ export const LEGEND_POSITIONS = {
   BOTTOM_LEFT: "bottom-left"
 }
 
+export const SORT_DIRECTION = {
+  ASCENDING: "asc",
+  DESCENDING: "desc"
+}
+
 const OTHER_KEY = "Other"
 
 const hasLegendOpenProp = color =>
@@ -131,6 +136,10 @@ function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
   }
 }
 
+const sortDomain = (sortDirection, domain) => domain.sort((a, b) =>
+      sortDirection === SORT_DIRECTION.ASCENDING ? a.localeCompare(b) : b.localeCompare(a)
+  )
+
 export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // the getLegendStateFromChart in _doRender gets called from few different options
   // and some of them are calling with all layers in chart.
@@ -211,11 +220,16 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 domain: layer.colorDomain()
               }
             } else if (color.type === "ordinal") {
-              const colValues = await getTopValues(
+              let colValues = await getTopValues(
                 layer,
                 layer_name,
                 color.originalDomain.length
               )
+
+              if (color.sorted) {
+                colValues = sortDomain(color.sorted, colValues)
+              }
+
               const { newDomain, newRange } = colValues
                 ? getUpdatedDomainRange(
                     colValues,
@@ -301,13 +315,11 @@ export function handleLegendSort(index = 0) {
   const currentDomain = filteredDomain ?? domain
   const currentRange = filteredRange ?? range
 
-  const sortedDomain = currentDomain
-    .filter(d => d !== OTHER_KEY)
-    .sort((a, b) =>
-      sorted === "asc" ? b.localeCompare(a) : a.localeCompare(b)
-    )
+  // Toggle sort order, or set to ascending initially
+  color.sorted = sorted === SORT_DIRECTION.DESCENDING || !sorted ? SORT_DIRECTION.ASCENDING : SORT_DIRECTION.DESCENDING
 
-  color.sorted = sorted === "asc" ? "desc" : "asc"
+  const sortedDomain = sortDomain(color.sorted, currentDomain
+    .filter(d => d !== OTHER_KEY))
 
   const { newDomain, newRange } = getUpdatedDomainRange(
     sortedDomain,
