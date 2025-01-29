@@ -10,6 +10,7 @@ import {
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
+import { buildHashedColor } from "../utils/color-helpers"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -284,8 +285,21 @@ export default function rasterLayerPointMixin(_layer) {
       ) {
         transforms.push({
           type: "project",
-          expr: color.field,
+          expr:
+            color.type === "ordinal" && color.fullColorHashing
+              ? buildHashedColor(
+                  color.field,
+                  color.range,
+                  color.palette.val.length,
+                  color.customColors
+                )
+              : color.field,
           as: "color"
+        })
+        transforms.push({
+          type: "project",
+          expr: color.field,
+          as: "color_attr"
         })
       }
 

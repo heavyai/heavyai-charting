@@ -223,7 +223,7 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               let colValues = await getTopValues(
                 layer,
                 layer_name,
-                color.domain.length
+                color.originalDomain.length
               )
 
               if (color.sorted) {
@@ -233,8 +233,8 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               const { newDomain, newRange } = colValues
                 ? getUpdatedDomainRange(
                     colValues,
-                    color.domain,
-                    color.range,
+                    color.originalDomain,
+                    color.originalRange,
                     color.defaultOtherRange
                   )
                 : {}
