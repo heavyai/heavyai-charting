@@ -540,7 +540,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _x = d3.scale.linear()
     }
 
-    if (_y === null) {
+    if (
+      _y === null ||
+      // differentiate scatter from pointmap; scatter is single point layer and does not have useLonLat function
+      // need to re-render scatter scale on every run in case user changed scale type
+      (_chart.getAllLayerTypes().length === 1 &&
+        _chart.getAllLayerTypes()[0] === "points" &&
+        typeof _chart.useLonLat !== "function")
+    ) {
       if (_yScaleType === "log") {
         _y = d3.scale.log()
       } else {
