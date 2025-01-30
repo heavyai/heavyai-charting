@@ -528,6 +528,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart._updateXAndYScales = function(renderBounds) {
     // renderBounds should be in this order - top left, top-right, bottom-right, bottom-left
+    console.log("updateXandyscales", _yScaleType)
     const useRenderBounds =
       renderBounds &&
       renderBounds.length === 4 &&
