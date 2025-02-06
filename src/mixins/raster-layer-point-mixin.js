@@ -260,7 +260,7 @@ export default function rasterLayerPointMixin(_layer) {
         transforms.push({
           type: "project",
           expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`,
-          as: `'${x.field}, ${y.field}'`
+          as: `'location(${x.field}, ${y.field})'`
         })
       } else {
         transforms.push({
@@ -300,11 +300,13 @@ export default function rasterLayerPointMixin(_layer) {
               : color.field,
           as: isDataExport ? `'${color.field}'` : "color"
         })
-        transforms.push({
-          type: "project",
-          expr: color.field,
-          as: "color_attr"
-        })
+        if (!isDataExport) {
+          transforms.push({
+            type: "project",
+            expr: color.field,
+            as: "color_attr"
+          })
+        }
       }
 
       if (orientation) {
