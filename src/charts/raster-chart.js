@@ -15,7 +15,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
-import { shallowCopyVega } from "../utils/utils-vega"
+import { shallowCopyVega, calculateLogScaleMin } from "../utils/utils-vega"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -1104,6 +1104,8 @@ function genLayeredVega(chart) {
 
   const data = []
 
+  const yScale = chart._determineScaleType(chart.y())
+  const yDomain = chart.y().domain()
   const scales = [
     {
       name: chart._getXScaleName(),
@@ -1114,8 +1116,11 @@ function genLayeredVega(chart) {
     },
     {
       name: chart._getYScaleName(),
-      type: chart._determineScaleType(chart.y()),
-      domain: chart.y().domain(),
+      type: yScale,
+      domain:
+        yScale === "log"
+          ? [calculateLogScaleMin(yDomain[0], yDomain[1]), yDomain[1]]
+          : yDomain,
       range: "height",
       nullValue: -100
     }
