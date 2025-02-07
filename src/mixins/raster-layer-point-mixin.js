@@ -254,9 +254,7 @@ export default function rasterLayerPointMixin(_layer) {
         })
       }
     } else {
-      // Ending up here
       if (isDataExport && isGeo) {
-        // TODO: How to decide whether to do this, or the fields individually... yugh
         transforms.push({
           type: "project",
           expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`,
