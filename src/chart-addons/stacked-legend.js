@@ -136,8 +136,11 @@ function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
   }
 }
 
-const sortDomain = (sortDirection, domain) => domain.sort((a, b) =>
-      sortDirection === SORT_DIRECTION.ASCENDING ? a.localeCompare(b) : b.localeCompare(a)
+const sortDomain = (sortDirection, domain) =>
+  domain.sort((a, b) =>
+    sortDirection === SORT_DIRECTION.ASCENDING
+      ? a.localeCompare(b)
+      : b.localeCompare(a)
   )
 
 export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
@@ -316,10 +319,15 @@ export function handleLegendSort(index = 0) {
   const currentRange = filteredRange ?? range
 
   // Toggle sort order, or set to ascending initially
-  color.sorted = sorted === SORT_DIRECTION.DESCENDING || !sorted ? SORT_DIRECTION.ASCENDING : SORT_DIRECTION.DESCENDING
+  color.sorted =
+    sorted === SORT_DIRECTION.DESCENDING || !sorted
+      ? SORT_DIRECTION.ASCENDING
+      : SORT_DIRECTION.DESCENDING
 
-  const sortedDomain = sortDomain(color.sorted, currentDomain
-    .filter(d => d !== OTHER_KEY))
+  const sortedDomain = sortDomain(
+    color.sorted,
+    currentDomain.filter(d => d !== OTHER_KEY)
+  )
 
   const { newDomain, newRange } = getUpdatedDomainRange(
     sortedDomain,

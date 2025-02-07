@@ -194,7 +194,8 @@ export default function rasterLayerPointMixin(_layer) {
     globalFilter,
     { transform, encoding: { x, y, size, color, orientation }, postFilters },
     lastFilteredSize,
-    isDataExport
+    isDataExport,
+    isGeo = true
   ) {
     const transforms = []
 
@@ -249,25 +250,26 @@ export default function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
             AGGREGATES[y.aggregate]
-          }(${y.field})), 4326) AS location`
+          }(${y.field})), 4326) AS 'location(${x.field},${y.field})'`
         })
       }
     } else {
-      if (isDataExport) {
+      if (isDataExport && isGeo) {
         transforms.push({
           type: "project",
-          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`
+          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`,
+          as: `'location(${x.field}, ${y.field})'`
         })
       } else {
         transforms.push({
           type: "project",
           expr: x.field,
-          as: "x"
+          as: isDataExport ? `'${x.field}'` : "x"
         })
         transforms.push({
           type: "project",
           expr: y.field,
-          as: "y"
+          as: isDataExport ? `'${y.field}'` : "y"
         })
       }
 
@@ -275,7 +277,7 @@ export default function rasterLayerPointMixin(_layer) {
         transforms.push({
           type: "project",
           expr: size.field,
-          as: "size"
+          as: isDataExport ? `'${size.field}'` : "size"
         })
       }
 
@@ -294,20 +296,22 @@ export default function rasterLayerPointMixin(_layer) {
                   color.customColors
                 )
               : color.field,
-          as: "color"
+          as: isDataExport ? `'${color.field}'` : "color"
         })
-        transforms.push({
-          type: "project",
-          expr: color.field,
-          as: "color_attr"
-        })
+        if (!isDataExport) {
+          transforms.push({
+            type: "project",
+            expr: color.field,
+            as: "color_attr"
+          })
+        }
       }
 
       if (orientation) {
         transforms.push({
           type: "project",
           expr: orientation.field,
-          as: "orientation"
+          as: isDataExport ? `'${orientation.field}'` : "orientation"
         })
       }
     }
