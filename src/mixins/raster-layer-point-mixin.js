@@ -10,6 +10,7 @@ import {
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
+import { buildHashedColor } from "../utils/color-helpers"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -193,7 +194,8 @@ export default function rasterLayerPointMixin(_layer) {
     globalFilter,
     { transform, encoding: { x, y, size, color, orientation }, postFilters },
     lastFilteredSize,
-    isDataExport
+    isDataExport,
+    isGeo = true
   ) {
     const transforms = []
 
@@ -248,25 +250,26 @@ export default function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
             AGGREGATES[y.aggregate]
-          }(${y.field})), 4326) AS location`
+          }(${y.field})), 4326) AS 'location(${x.field},${y.field})'`
         })
       }
     } else {
-      if (isDataExport) {
+      if (isDataExport && isGeo) {
         transforms.push({
           type: "project",
-          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`
+          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`,
+          as: `'location(${x.field}, ${y.field})'`
         })
       } else {
         transforms.push({
           type: "project",
           expr: x.field,
-          as: "x"
+          as: isDataExport ? `'${x.field}'` : "x"
         })
         transforms.push({
           type: "project",
           expr: y.field,
-          as: "y"
+          as: isDataExport ? `'${y.field}'` : "y"
         })
       }
 
@@ -274,7 +277,7 @@ export default function rasterLayerPointMixin(_layer) {
         transforms.push({
           type: "project",
           expr: size.field,
-          as: "size"
+          as: isDataExport ? `'${size.field}'` : "size"
         })
       }
 
@@ -284,16 +287,31 @@ export default function rasterLayerPointMixin(_layer) {
       ) {
         transforms.push({
           type: "project",
-          expr: color.field,
-          as: "color"
+          expr:
+            color.type === "ordinal" && color.fullColorHashing
+              ? buildHashedColor(
+                  color.field,
+                  color.range,
+                  color.palette.val.length,
+                  color.customColors
+                )
+              : color.field,
+          as: isDataExport ? `'${color.field}'` : "color"
         })
+        if (!isDataExport) {
+          transforms.push({
+            type: "project",
+            expr: color.field,
+            as: "color_attr"
+          })
+        }
       }
 
       if (orientation) {
         transforms.push({
           type: "project",
           expr: orientation.field,
-          as: "orientation"
+          as: isDataExport ? `'${orientation.field}'` : "orientation"
         })
       }
     }

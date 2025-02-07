@@ -20,6 +20,7 @@ import {
   isContourType,
   validateContourState
 } from "../utils/utils-contour"
+import { buildHashedColor } from "../utils/color-helpers"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
@@ -220,13 +221,35 @@ export default function rasterLayerLineMixin(_layer) {
         alias.push("strokeColor")
         ops.push(null)
       } else {
-        const expression = color.field || color.aggregate
+        let expression = ""
+        if (color.field) {
+          if (color.type === "ordinal" && color.fullColorHashing) {
+            expression = buildHashedColor(
+              color.field,
+              color.range,
+              color.palette.val.length,
+              color.customColors
+            )
+          } else {
+            expression = color.field
+          }
+        } else {
+          expression = color.aggregate
+        }
 
         transforms.push({
           type: "project",
           expr: expression,
           as: "strokeColor"
         })
+
+        if (color.field) {
+          transforms.push({
+            type: "project",
+            expr: color.field,
+            as: "color_attr"
+          })
+        }
       }
     }
 
