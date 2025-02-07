@@ -11,6 +11,7 @@ import { parser } from "../utils/utils"
 import * as d3 from "d3"
 import { AABox2d, Point2d } from "@heavyai/draw/dist/draw"
 import { buildHashedColor } from "../utils/color-helpers"
+import { snakeCase } from "lodash"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -250,7 +251,8 @@ export default function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
             AGGREGATES[y.aggregate]
-          }(${y.field})), 4326) AS 'location(${x.field},${y.field})'`
+          }(${y.field})), 4326)`,
+          as: `location_${snakeCase(x.field)}_${snakeCase(y.field)}`
         })
       }
     } else {
@@ -258,18 +260,18 @@ export default function rasterLayerPointMixin(_layer) {
         transforms.push({
           type: "project",
           expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`,
-          as: `'location(${x.field}, ${y.field})'`
+          as: `location_${snakeCase(x.field)}_${snakeCase(y.field)}`
         })
       } else {
         transforms.push({
           type: "project",
           expr: x.field,
-          as: isDataExport ? `'${x.field}'` : "x"
+          as: isDataExport ? snakeCase(x.field) : "x"
         })
         transforms.push({
           type: "project",
           expr: y.field,
-          as: isDataExport ? `'${y.field}'` : "y"
+          as: isDataExport ? snakeCase(y.field) : "y"
         })
       }
 
@@ -277,7 +279,7 @@ export default function rasterLayerPointMixin(_layer) {
         transforms.push({
           type: "project",
           expr: size.field,
-          as: isDataExport ? `'${size.field}'` : "size"
+          as: isDataExport ? snakeCase(size.field) : "size"
         })
       }
 
@@ -296,7 +298,7 @@ export default function rasterLayerPointMixin(_layer) {
                   color.customColors
                 )
               : color.field,
-          as: isDataExport ? `'${color.field}'` : "color"
+          as: isDataExport ? snakeCase(color.field) : "color"
         })
         if (!isDataExport) {
           transforms.push({
@@ -311,7 +313,7 @@ export default function rasterLayerPointMixin(_layer) {
         transforms.push({
           type: "project",
           expr: orientation.field,
-          as: isDataExport ? `'${orientation.field}'` : "orientation"
+          as: isDataExport ? snakeCase(orientation.field) : "orientation"
         })
       }
     }
