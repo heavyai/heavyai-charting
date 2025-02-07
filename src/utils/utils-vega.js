@@ -217,7 +217,6 @@ export function createVegaAttrMixin(
         rtnVal = quantScale(input)
       }
     }
-
     return rtnVal
   }
 }
@@ -841,4 +840,9 @@ export function getRealLayers(layers) {
     }
   })
   return filteredLayers
+}
+
+export function calculateLogScaleMin(dataMin, dataMax, k = 1) {
+  const scaledMin = dataMax / Math.pow(10, k)
+  return dataMin <= 0 ? scaledMin : Math.max(dataMin, scaledMin)
 }
