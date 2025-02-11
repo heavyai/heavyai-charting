@@ -15,7 +15,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { Legend } from "legendables"
 import * as _ from "lodash"
 import { paused } from "../constants/paused"
-import { shallowCopyVega } from "../utils/utils-vega"
+import { shallowCopyVega, calculateLogScaleMin } from "../utils/utils-vega"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -539,7 +539,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _x = d3.scale.linear()
     }
 
-    if (_y === null) {
+    if (
+      _y === null ||
+      // differentiate scatter from pointmap; scatter is single point layer and does not have useLonLat function
+      // need to re-render scatter scale on every run in case user changed scale type
+      (_chart.getAllLayerTypes().length === 1 &&
+        _chart.getAllLayerTypes()[0] === "points" &&
+        typeof _chart.useLonLat !== "function")
+    ) {
       if (_yScaleType === "log") {
         _y = d3.scale.log()
       } else {
@@ -1097,6 +1104,8 @@ function genLayeredVega(chart) {
 
   const data = []
 
+  const yScale = chart._determineScaleType(chart.y())
+  const yDomain = chart.y().domain()
   const scales = [
     {
       name: chart._getXScaleName(),
@@ -1107,8 +1116,11 @@ function genLayeredVega(chart) {
     },
     {
       name: chart._getYScaleName(),
-      type: chart._determineScaleType(chart.y()),
-      domain: chart.y().domain(),
+      type: yScale,
+      domain:
+        yScale === "log"
+          ? [calculateLogScaleMin(yDomain[0], yDomain[1]), yDomain[1]]
+          : yDomain,
       range: "height",
       nullValue: -100
     }
