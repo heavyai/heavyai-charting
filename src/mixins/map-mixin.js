@@ -738,15 +738,21 @@ export default function mapMixin(
     _map.dragRotate.disable()
     _map.touchZoomRotate.disableRotation()
 
-    _map.addControl(
-      new RulerControl({
-        linePaint: {
-          "line-color": "#999",
-          "line-width": 2
+    const rulerControl = new RulerControl({
+      linePaint: {
+        "line-color": "#999",
+        "line-width": 2
+      }
+    })
+    _map.addControl(rulerControl, "bottom-right")
+
+    _chart.root().on("keydown", () => {
+      if (d3.event.key === "Escape" || d3.event.key === 27) {
+        if (rulerControl?.isActive) {
+          rulerControl.deactivate()
         }
-      }),
-      "bottom-right"
-    )
+      }
+    })
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
     _map.addControl(
