@@ -3,6 +3,7 @@ import { getRealLayers } from "../utils/utils-vega"
 import assert from "assert"
 import { format } from "d3-format"
 import { logger } from "../utils/logger"
+import { determineColorByValue } from "../utils/color-helpers"
 
 export const LEGEND_POSITIONS = {
   TOP_RIGHT: "top-right",
@@ -105,17 +106,35 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-async function getTopValues(layer, layerName, size) {
-  const OFFSET = 0
+const getAllValuesCount = async (layer, layerName) => {
   const chartId = layer?.crossfilter()?.chartId
   const dimension = layer?.getState()?.encoding?.color?.field
   const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
 
   if (chartId && dimension && newCf) {
+    const allValues = await newCf
+      .dimension(dimension)
+      .group()
+      .all()
+      .then(res => res)
+    return allValues.length
+  }
+}
+
+async function getTopValues(layer, layerName, size, offset = 0) {
+  const chartId = layer?.crossfilter()?.chartId
+  const dimension = layer?.getState()?.encoding?.color?.field
+  const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
+  console.log("getTopValues size:", size)
+
+  // if results < size, then the bbox has no more data
+  // if results == size, there is (most likely) more data
+  if (chartId && dimension && newCf) {
+    console.log("CALLING CROSSFILTER")
     return newCf
       .dimension(dimension)
       .group()
-      .topAsync(size, OFFSET)
+      .topAsync(size, offset)
       .then(results => results?.map(result => result.key0) ?? null)
       .catch(error => null)
   } else {
@@ -133,6 +152,20 @@ function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
   return {
     newDomain: [...newDomainRange.keys()],
     newRange: [...newDomainRange.values()]
+  }
+}
+
+const buildFullHashedDomainRange = (
+  currentDomain,
+  currentRange,
+  colValues,
+  palette
+) => {
+  const newValues = colValues.filter(v => !currentDomain.includes(v))
+  const newRange = newValues.map(v => determineColorByValue(v, palette))
+  return {
+    newDomain: currentDomain.concat(newValues),
+    newRange: currentRange.concat(newRange)
   }
 }
 
@@ -223,11 +256,22 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 domain: layer.colorDomain()
               }
             } else if (color.type === "ordinal") {
-              let colValues = await getTopValues(
+              let colValues
+              // if (color.fullColorHashing) {
+              // start with page 0, modify offset to function
+              //   colValues = await getTopValues(
+              //     layer,
+              //     layer_name,
+              //     100,
+              //     color.legendPage ? color.legendPage * 100 : 0
+              //   )
+              // } else {
+              colValues = await getTopValues(
                 layer,
                 layer_name,
                 color.originalDomain.length
               )
+              // }
 
               if (color.sorted) {
                 colValues = sortDomain(color.sorted, colValues)
@@ -241,6 +285,25 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                     color.defaultOtherRange
                   )
                 : {}
+              // let newDomain
+              // let newRange
+              // if (color.fullColorHashing) {
+              //   ;({ newDomain, newRange } = buildFullHashedDomainRange(
+              //     color.originalDomain,
+              //     color.originalRange,
+              //     colValues,
+              //     color.palette.val
+              //   ))
+              // } else {
+              //   ;({ newDomain, newRange } = colValues
+              //     ? getUpdatedDomainRange(
+              //         colValues,
+              //         color.originalDomain,
+              //         color.originalRange,
+              //         color.defaultOtherRange
+              //       )
+              //     : {})
+              // }
 
               // don't show the other category when new domain is smaller than original max
               color.otherActive = false
@@ -253,7 +316,8 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               layer.setState(
                 setColorState(() => ({
                   filteredDomain: newDomain,
-                  filteredRange: newRange
+                  filteredRange: newRange,
+                  legendPage: color.legendPage ? color.legendPage++ : 0
                 }))
               )
               color_legend_descriptor =
@@ -347,6 +411,93 @@ export function handleLegendSort(index = 0) {
     newDomain.push(OTHER_KEY)
     newRange.push(defaultOtherRange)
   }
+
+  if (legendLayerState) {
+    legendLayerState.domain = newDomain
+    legendLayerState.range = newRange
+    legendState.list[index] = legendLayerState
+  } else {
+    legendState.domain = newDomain
+    legendState.range = newRange
+  }
+
+  this.legend().setState(legendState)
+}
+
+export async function handleLegendFetchDomain(index, page) {
+  console.log("HITTING LISTENER FUNCTION")
+  const legend = this.legend()
+  const { state: legendState } = legend
+  // handles stacked legend; only layer being sorted should be updated
+  const legendLayerState = legendState.list ? legendState.list[index] : null
+
+  const layerName = this.getLayerNames()[index]
+  const layer = this.getLayers()[index]
+  const {
+    encoding: { color }
+  } = layer.getState()
+  const {
+    domain,
+    filteredDomain,
+    range,
+    filteredRange,
+    originalDomain,
+    originalRange,
+    sorted,
+    defaultOtherRange,
+    otherActive,
+    palette,
+    fullColorHashing
+  } = color
+  const currentDomain = filteredDomain ?? domain
+  const currentRange = filteredRange ?? range
+
+  // so i have a legend state with a domain
+  // i need to load additional part of the domain
+
+  // if originalDomain.length == filteredDomain.length -> check all values
+  const allValuesCount = await getAllValuesCount(layer, layerName)
+  const currentIndex = originalDomain.length
+
+  if (
+    filteredDomain.length < originalDomain.length ||
+    originalDomain.length === allValuesCount
+  ) {
+    console.log("RETURNING")
+    console.log(
+      filteredDomain.length < originalDomain.length,
+      originalDomain.length === allValuesCount
+    )
+    return
+  }
+
+  const colValues = await getTopValues(
+    layer,
+    layerName,
+    allValuesCount - currentIndex > 50 ? 50 : allValuesCount - currentIndex,
+    currentIndex
+  )
+
+  if (color.sorted) {
+    colValues = sortDomain(sorted, colValues)
+  }
+
+  const { newDomain, newRange } = buildFullHashedDomainRange(
+    originalDomain,
+    originalRange,
+    colValues,
+    palette.val
+  )
+  console.log(originalDomain, newDomain)
+
+  layer.setState(
+    setColorState(() => ({
+      originalDomain: newDomain,
+      originalRange: newRange,
+      filteredDomain: newDomain,
+      filteredRange: newRange
+    }))
+  )
 
   if (legendLayerState) {
     legendLayerState.domain = newDomain
