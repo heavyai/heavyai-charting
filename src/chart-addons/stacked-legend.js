@@ -17,6 +17,8 @@ export const SORT_DIRECTION = {
 
 const OTHER_KEY = "Other"
 
+const LEGEND_CATEGORY_SIZE = 50
+
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
 const hasLegendLockedProp = color =>
@@ -106,7 +108,7 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-const getAllValuesCount = async (layer, layerName) => {
+const getTotalValuesCount = async (layer, layerName) => {
   const chartId = layer?.crossfilter()?.chartId
   const dimension = layer?.getState()?.encoding?.color?.field
   const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
@@ -125,16 +127,20 @@ async function getTopValues(layer, layerName, size, offset = 0) {
   const chartId = layer?.crossfilter()?.chartId
   const dimension = layer?.getState()?.encoding?.color?.field
   const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
-  console.log("getTopValues size:", size)
 
-  // if results < size, then the bbox has no more data
-  // if results == size, there is (most likely) more data
   if (chartId && dimension && newCf) {
-    console.log("CALLING CROSSFILTER")
     return newCf
       .dimension(dimension)
       .group()
-      .topAsync(size, offset)
+      .topAsync(
+        size,
+        offset,
+        undefined,
+        undefined,
+        "DESC",
+        (_, res) => res,
+        `ORDER BY val DESC, key0 ASC LIMIT ${size} OFFSET ${offset}`
+      )
       .then(results => results?.map(result => result.key0) ?? null)
       .catch(error => null)
   } else {
@@ -425,10 +431,9 @@ export function handleLegendSort(index = 0) {
 }
 
 export async function handleLegendFetchDomain(index, page) {
-  console.log("HITTING LISTENER FUNCTION")
   const legend = this.legend()
   const { state: legendState } = legend
-  // handles stacked legend; only layer being sorted should be updated
+  // handles stacked legend; only layer being scrolled should be updated
   const legendLayerState = legendState.list ? legendState.list[index] : null
 
   const layerName = this.getLayerNames()[index]
@@ -447,34 +452,30 @@ export async function handleLegendFetchDomain(index, page) {
     defaultOtherRange,
     otherActive,
     palette,
-    fullColorHashing
+    fullColorHashing,
+    legendIndex
   } = color
   const currentDomain = filteredDomain ?? domain
   const currentRange = filteredRange ?? range
+  const totalValuesCount = await getTotalValuesCount(layer, layerName)
 
-  // so i have a legend state with a domain
-  // i need to load additional part of the domain
-
-  // if originalDomain.length == filteredDomain.length -> check all values
-  const allValuesCount = await getAllValuesCount(layer, layerName)
-  const currentIndex = originalDomain.length
-
+  // if we are filtering based on bbox or have pulled all values from column, return
   if (
     filteredDomain.length < originalDomain.length ||
-    originalDomain.length === allValuesCount
+    originalDomain.length === totalValuesCount
   ) {
-    console.log("RETURNING")
-    console.log(
-      filteredDomain.length < originalDomain.length,
-      originalDomain.length === allValuesCount
-    )
     return
   }
 
-  const colValues = await getTopValues(
+  const currentIndex = legendIndex
+    ? legendIndex + LEGEND_CATEGORY_SIZE
+    : originalDomain.length
+  let colValues = await getTopValues(
     layer,
     layerName,
-    allValuesCount - currentIndex > 50 ? 50 : allValuesCount - currentIndex,
+    totalValuesCount - currentIndex > LEGEND_CATEGORY_SIZE
+      ? LEGEND_CATEGORY_SIZE
+      : totalValuesCount - currentIndex,
     currentIndex
   )
 
@@ -488,14 +489,14 @@ export async function handleLegendFetchDomain(index, page) {
     colValues,
     palette.val
   )
-  console.log(originalDomain, newDomain)
 
   layer.setState(
     setColorState(() => ({
       originalDomain: newDomain,
       originalRange: newRange,
       filteredDomain: newDomain,
-      filteredRange: newRange
+      filteredRange: newRange,
+      legendIndex: currentIndex
     }))
   )
 
