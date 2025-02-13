@@ -175,7 +175,7 @@ function getUpdatedDomainRange(
     ? new Map(
         [...newDomain].map(key => [
           key,
-          customColorsDomainRange
+          customColorsDomainRange && customColorsDomainRange.get(key)
             ? customColorsDomainRange.get(key)
             : determineColorByValue(key, palette)
         ])
@@ -489,6 +489,11 @@ export async function handleLegendFetchDomain(index, page) {
     fullColorHashing,
     legendIndex
   } = color
+
+  if (!fullColorHashing) {
+    return
+  }
+
   const currentDomain = filteredDomain ?? domain
   const currentRange = filteredRange ?? range
   const totalValuesCount = await getTotalValuesCount(layer, layerName)
