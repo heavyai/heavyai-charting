@@ -506,9 +506,11 @@ export async function handleLegendFetchDomain(index, page) {
     return
   }
 
+  // controls pagination - aka what the OFFSET in the query will be
   const currentIndex = legendIndex
     ? legendIndex + LEGEND_CATEGORY_SIZE
     : originalDomain.length
+  // grab next "page" of values from database
   let colValues = await getTopValues(
     layer,
     layerName,
