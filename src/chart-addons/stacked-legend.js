@@ -148,13 +148,44 @@ async function getTopValues(layer, layerName, size, offset = 0) {
   }
 }
 
-function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
+function getUpdatedDomainRange(
+  newDomain,
+  oldDomain,
+  range,
+  defaultColor,
+  fullColorHashing,
+  palette,
+  customColors
+) {
+  const customColorsDomainRange =
+    fullColorHashing &&
+    customColors?.domain?.length > 0 &&
+    customColors?.range?.length > 0
+      ? new Map(
+          [...customColors.domain].map((key, index) => [
+            key,
+            customColors.range[index]
+          ])
+        )
+      : null
   const oldDomainRange = new Map(
     [...oldDomain].map((key, index) => [key, range[index]])
   )
-  const newDomainRange = new Map(
-    [...newDomain].map(key => [key, oldDomainRange.get(key) ?? defaultColor])
-  )
+  const newDomainRange = fullColorHashing
+    ? new Map(
+        [...newDomain].map(key => [
+          key,
+          customColorsDomainRange
+            ? customColorsDomainRange.get(key)
+            : determineColorByValue(key, palette)
+        ])
+      )
+    : new Map(
+        [...newDomain].map(key => [
+          key,
+          oldDomainRange.get(key) ?? defaultColor
+        ])
+      )
   return {
     newDomain: [...newDomainRange.keys()],
     newRange: [...newDomainRange.values()]
@@ -288,7 +319,10 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                     colValues,
                     color.originalDomain,
                     color.originalRange,
-                    color.defaultOtherRange
+                    color.defaultOtherRange,
+                    color?.fullColorHashing,
+                    color.palette.val,
+                    color?.customColors
                   )
                 : {}
               // let newDomain
