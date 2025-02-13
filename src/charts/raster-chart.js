@@ -826,9 +826,6 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     getLegendStateFromChart(_chart, useMap, selectedLayer).then(state => {
-      if (!state.pageNumber) {
-        state.pageNumber = 0
-      }
       _legend.setState(state)
 
       if (_chart.isLoaded()) {

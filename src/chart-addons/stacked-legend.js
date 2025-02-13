@@ -293,22 +293,11 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 domain: layer.colorDomain()
               }
             } else if (color.type === "ordinal") {
-              let colValues
-              // if (color.fullColorHashing) {
-              // start with page 0, modify offset to function
-              //   colValues = await getTopValues(
-              //     layer,
-              //     layer_name,
-              //     100,
-              //     color.legendPage ? color.legendPage * 100 : 0
-              //   )
-              // } else {
-              colValues = await getTopValues(
+              const colValues = await getTopValues(
                 layer,
                 layer_name,
                 color.originalDomain.length
               )
-              // }
 
               if (color.sorted) {
                 colValues = sortDomain(color.sorted, colValues)
@@ -325,25 +314,6 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                     color?.customColors
                   )
                 : {}
-              // let newDomain
-              // let newRange
-              // if (color.fullColorHashing) {
-              //   ;({ newDomain, newRange } = buildFullHashedDomainRange(
-              //     color.originalDomain,
-              //     color.originalRange,
-              //     colValues,
-              //     color.palette.val
-              //   ))
-              // } else {
-              //   ;({ newDomain, newRange } = colValues
-              //     ? getUpdatedDomainRange(
-              //         colValues,
-              //         color.originalDomain,
-              //         color.originalRange,
-              //         color.defaultOtherRange
-              //       )
-              //     : {})
-              // }
 
               // don't show the other category when new domain is smaller than original max
               color.otherActive = false
