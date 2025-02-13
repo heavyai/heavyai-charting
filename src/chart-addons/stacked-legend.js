@@ -293,7 +293,7 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                 domain: layer.colorDomain()
               }
             } else if (color.type === "ordinal") {
-              const colValues = await getTopValues(
+              let colValues = await getTopValues(
                 layer,
                 layer_name,
                 color.originalDomain.length
