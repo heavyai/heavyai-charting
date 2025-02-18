@@ -65,7 +65,7 @@
     "chevrotain": "~6.5.0",
     "d3": "^3.5.17",
     "fast-deep-equal": "^2.0.1",
-    "legendables": "git+https://github.com/heavyai/legendables.git#d3d3fc5f6dc5aae191b123256162f063edc5c9c1",
+    "legendables": "git+https://github.com/heavyai/legendables.git#7f373800a813bd4dc6fe13269155abf14326a649",
     "mapbox-gl": "1.9.1",
     "moment": "^2.29.4",
     "ramda": "0.21.0",
