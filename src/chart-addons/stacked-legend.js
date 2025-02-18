@@ -307,9 +307,9 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                     color.originalDomain,
                     color.originalRange,
                     color.defaultOtherRange,
-                    color?.fullColorHashing,
+                    color.fullColorHashing,
                     color.palette.val,
-                    color?.customColors
+                    color.customColors
                   )
                 : {}
 
