@@ -192,7 +192,7 @@ function getUpdatedDomainRange(
   }
 }
 
-const buildFullHashedDomainRange = (
+const dedupeAndAppendValuesToDomainRange = (
   currentDomain,
   currentRange,
   colValues,
@@ -494,30 +494,45 @@ export async function handleLegendFetchDomain(index, page) {
     colValues = sortDomain(sorted, colValues)
   }
 
-  const { newDomain, newRange } = buildFullHashedDomainRange(
+  // for new values fetched that did not exist previously, add to the original
+  // domain as well, so we can tell when data is filtered by bbox
+  const {
+    newDomain: updatedOriginalDomain,
+    newRange: updatedOriginalRange
+  } = dedupeAndAppendValuesToDomainRange(
     originalDomain,
     originalRange,
+    colValues,
+    palette.val
+  )
+  // add new values to filtered domain to send to legend
+  const {
+    newDomain: updatedFilteredDomain,
+    newRange: updatedFilteredRange
+  } = dedupeAndAppendValuesToDomainRange(
+    filteredDomain,
+    filteredRange,
     colValues,
     palette.val
   )
 
   layer.setState(
     setColorState(() => ({
-      originalDomain: newDomain,
-      originalRange: newRange,
-      filteredDomain: newDomain,
-      filteredRange: newRange,
+      originalDomain: updatedOriginalDomain,
+      originalRange: updatedOriginalRange,
+      filteredDomain: updatedFilteredDomain,
+      filteredRange: updatedFilteredRange,
       legendIndex: currentIndex
     }))
   )
 
   if (legendLayerState) {
-    legendLayerState.domain = newDomain
-    legendLayerState.range = newRange
+    legendLayerState.domain = updatedFilteredDomain
+    legendLayerState.range = updatedFilteredRange
     legendState.list[index] = legendLayerState
   } else {
-    legendState.domain = newDomain
-    legendState.range = newRange
+    legendState.domain = updatedFilteredDomain
+    legendState.range = updatedFilteredRange
   }
 
   this.legend().setState(legendState)
