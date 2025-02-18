@@ -118,7 +118,6 @@ const getTotalValuesCount = async (layer, layerName) => {
       .dimension(dimension)
       .group()
       .all()
-      .then(res => res)
     return allValues.length
   }
 }
@@ -175,9 +174,8 @@ function getUpdatedDomainRange(
     ? new Map(
         [...newDomain].map(key => [
           key,
-          customColorsDomainRange && customColorsDomainRange.get(key)
-            ? customColorsDomainRange.get(key)
-            : determineColorByValue(key, palette)
+          customColorsDomainRange?.get?.(key) ??
+            determineColorByValue(key, palette)
         ])
       )
     : new Map(
