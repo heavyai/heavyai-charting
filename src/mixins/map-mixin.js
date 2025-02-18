@@ -22,6 +22,10 @@ export default function mapMixin(
   const LONMIN = -180 + SMALL_AMOUNT
   const LATMAX = 85 - SMALL_AMOUNT
   const LATMIN = -85 + SMALL_AMOUNT
+  const MAP_UNITS = {
+    METRIC: "metric",
+    IMPERIAL: "imperial"
+  }
 
   var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl
   let _map = null
@@ -69,6 +73,7 @@ export default function mapMixin(
   let _initialBounds = _llb
 
   let _geocoder = null
+  let _mapUnits = MAP_UNITS.METRIC
 
   const _minMaxCache = {}
   let _interactionsEnabled = true
@@ -742,8 +747,21 @@ export default function mapMixin(
       linePaint: {
         "line-color": "#999",
         "line-width": 2
+      },
+      units: _mapUnits === MAP_UNITS.METRIC ? "kilometers" : "miles",
+      labelFormat: value => {
+        if (_mapUnits === MAP_UNITS.IMPERIAL) {
+          return value < 1
+            ? `${(value * 5280).toFixed()} ft`
+            : `${value.toFixed(2)} mi`
+        } else {
+          return value < 1
+            ? `${(value * 1000).toFixed()} m`
+            : `${value.toFixed(2)} km`
+        }
       }
     })
+
     _map.addControl(rulerControl, "bottom-right")
 
     _chart.root().on("keydown", () => {
@@ -756,7 +774,10 @@ export default function mapMixin(
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
     _map.addControl(
-      new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }),
+      new _mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: _mapUnits ?? MAP_UNITS.METRIC
+      }),
       "bottom-right"
     )
     _chart.addMapListeners()
@@ -1067,6 +1088,14 @@ export default function mapMixin(
           _geocoder.locate(this.value).then(_chart.zoomToLocation)
         }
       })
+  }
+
+  _chart.mapUnits = function(units) {
+    if (!arguments.length) {
+      return _mapUnits
+    }
+    _mapUnits = units
+    return _mapUnits
   }
 
   // Mouse position (lat and lon) container
