@@ -3,6 +3,7 @@ import { getRealLayers } from "../utils/utils-vega"
 import assert from "assert"
 import { format } from "d3-format"
 import { logger } from "../utils/logger"
+import { determineColorByValue } from "../utils/color-helpers"
 
 export const LEGEND_POSITIONS = {
   TOP_RIGHT: "top-right",
@@ -15,6 +16,8 @@ export const SORT_DIRECTION = {
 }
 
 const OTHER_KEY = "Other"
+
+const LEGEND_CATEGORY_SIZE = 50
 
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
@@ -105,8 +108,21 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-async function getTopValues(layer, layerName, size) {
-  const OFFSET = 0
+const getTotalValuesCount = async (layer, layerName) => {
+  const chartId = layer?.crossfilter()?.chartId
+  const dimension = layer?.getState()?.encoding?.color?.field
+  const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
+
+  if (chartId && dimension && newCf) {
+    const allValues = await newCf
+      .dimension(dimension)
+      .group()
+      .all()
+    return allValues.length
+  }
+}
+
+async function getTopValues(layer, layerName, size, offset = 0) {
   const chartId = layer?.crossfilter()?.chartId
   const dimension = layer?.getState()?.encoding?.color?.field
   const newCf = layer?.crossfilter()?.cloneWithChartId(chartId, layerName)
@@ -115,7 +131,15 @@ async function getTopValues(layer, layerName, size) {
     return newCf
       .dimension(dimension)
       .group()
-      .topAsync(size, OFFSET)
+      .topAsync(
+        size,
+        offset,
+        undefined,
+        undefined,
+        "DESC",
+        (_, res) => res,
+        `ORDER BY val DESC, key0 ASC LIMIT ${size} OFFSET ${offset}`
+      )
       .then(results => results?.map(result => result.key0) ?? null)
       .catch(error => null)
   } else {
@@ -123,16 +147,60 @@ async function getTopValues(layer, layerName, size) {
   }
 }
 
-function getUpdatedDomainRange(newDomain, oldDomain, range, defaultColor) {
+function getUpdatedDomainRange(
+  newDomain,
+  oldDomain,
+  range,
+  defaultColor,
+  fullColorHashing,
+  palette,
+  customColors
+) {
+  const customColorsDomainRange =
+    fullColorHashing &&
+    customColors?.domain?.length > 0 &&
+    customColors?.range?.length > 0
+      ? new Map(
+          [...customColors.domain].map((key, index) => [
+            key,
+            customColors.range[index]
+          ])
+        )
+      : null
   const oldDomainRange = new Map(
     [...oldDomain].map((key, index) => [key, range[index]])
   )
-  const newDomainRange = new Map(
-    [...newDomain].map(key => [key, oldDomainRange.get(key) ?? defaultColor])
-  )
+  const newDomainRange = fullColorHashing
+    ? new Map(
+        [...newDomain].map(key => [
+          key,
+          customColorsDomainRange?.get?.(key) ??
+            determineColorByValue(key, palette)
+        ])
+      )
+    : new Map(
+        [...newDomain].map(key => [
+          key,
+          oldDomainRange.get(key) ?? defaultColor
+        ])
+      )
   return {
     newDomain: [...newDomainRange.keys()],
     newRange: [...newDomainRange.values()]
+  }
+}
+
+const dedupeAndAppendValuesToDomainRange = (
+  currentDomain,
+  currentRange,
+  colValues,
+  palette
+) => {
+  const newValues = colValues.filter(v => !currentDomain.includes(v))
+  const newRange = newValues.map(v => determineColorByValue(v, palette))
+  return {
+    newDomain: currentDomain.concat(newValues),
+    newRange: currentRange.concat(newRange)
   }
 }
 
@@ -238,7 +306,10 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
                     colValues,
                     color.originalDomain,
                     color.originalRange,
-                    color.defaultOtherRange
+                    color.defaultOtherRange,
+                    color.fullColorHashing,
+                    color.palette.val,
+                    color.customColors
                   )
                 : {}
 
@@ -253,7 +324,8 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
               layer.setState(
                 setColorState(() => ({
                   filteredDomain: newDomain,
-                  filteredRange: newRange
+                  filteredRange: newRange,
+                  legendPage: color.legendPage ? color.legendPage++ : 0
                 }))
               )
               color_legend_descriptor =
@@ -355,6 +427,110 @@ export function handleLegendSort(index = 0) {
   } else {
     legendState.domain = newDomain
     legendState.range = newRange
+  }
+
+  this.legend().setState(legendState)
+}
+
+export async function handleLegendFetchDomain(index, page) {
+  const legend = this.legend()
+  const { state: legendState } = legend
+  // handles stacked legend; only layer being scrolled should be updated
+  const legendLayerState = legendState.list ? legendState.list[index] : null
+
+  const layerName = this.getLayerNames()[index]
+  const layer = this.getLayers()[index]
+  const {
+    encoding: { color }
+  } = layer.getState()
+  const {
+    domain,
+    filteredDomain,
+    range,
+    filteredRange,
+    originalDomain,
+    originalRange,
+    sorted,
+    defaultOtherRange,
+    otherActive,
+    palette,
+    fullColorHashing,
+    legendIndex
+  } = color
+
+  if (!fullColorHashing) {
+    return
+  }
+
+  const currentDomain = filteredDomain ?? domain
+  const currentRange = filteredRange ?? range
+  const totalValuesCount = await getTotalValuesCount(layer, layerName)
+
+  // if we are filtering based on bbox or have pulled all values from column, return
+  if (
+    filteredDomain.length < originalDomain.length ||
+    originalDomain.length === totalValuesCount
+  ) {
+    return
+  }
+
+  // controls pagination - aka what the OFFSET in the query will be
+  const currentIndex = legendIndex
+    ? legendIndex + LEGEND_CATEGORY_SIZE
+    : originalDomain.length
+  // grab next "page" of values from database
+  let colValues = await getTopValues(
+    layer,
+    layerName,
+    totalValuesCount - currentIndex > LEGEND_CATEGORY_SIZE
+      ? LEGEND_CATEGORY_SIZE
+      : totalValuesCount - currentIndex,
+    currentIndex
+  )
+
+  if (color.sorted) {
+    colValues = sortDomain(sorted, colValues)
+  }
+
+  // for new values fetched that did not exist previously, add to the original
+  // domain as well, so we can tell when data is filtered by bbox
+  const {
+    newDomain: updatedOriginalDomain,
+    newRange: updatedOriginalRange
+  } = dedupeAndAppendValuesToDomainRange(
+    originalDomain,
+    originalRange,
+    colValues,
+    palette.val
+  )
+  // add new values to filtered domain to send to legend
+  const {
+    newDomain: updatedFilteredDomain,
+    newRange: updatedFilteredRange
+  } = dedupeAndAppendValuesToDomainRange(
+    filteredDomain,
+    filteredRange,
+    colValues,
+    palette.val
+  )
+
+  layer.setState(
+    setColorState(() => ({
+      originalDomain: updatedOriginalDomain,
+      originalRange: updatedOriginalRange,
+      filteredDomain: updatedFilteredDomain,
+      filteredRange: updatedFilteredRange,
+      legendIndex: currentIndex
+    }))
+  )
+
+  if (legendLayerState) {
+    legendLayerState.domain = updatedFilteredDomain
+    legendLayerState.range = updatedFilteredRange
+    legendState.list[index] = legendLayerState
+  } else {
+    legendState.domain = updatedFilteredDomain
+    legendState.range = updatedFilteredRange
   }
 
   this.legend().setState(legendState)

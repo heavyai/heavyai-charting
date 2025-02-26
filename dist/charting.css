@@ -2021,6 +2021,9 @@ body {
   overflow-y: auto;
   padding: 0 4px 4px 4px; }
 
+.nominal-legend:not(.legendables) .body {
+  max-height: 300px; }
+
 .nominal-legend .legend-row {
   display: flex;
   align-items: center;
