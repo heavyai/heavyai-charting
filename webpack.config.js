@@ -1,11 +1,11 @@
-const webpack = require("webpack");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const path = require('path')
+const webpack = require("webpack")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const path = require("path")
 
 module.exports = {
   context: __dirname,
   entry: {
-    "charting": "./index.js"
+    charting: "./index.js"
   },
   output: {
     path: path.join(__dirname, "/dist"),
@@ -14,15 +14,15 @@ module.exports = {
     library: "charting"
   },
   externals: {
-    "d3": "d3",
-    "crossfilter": {
-      "commonjs": "crossfilter",
-      "commonjs2": "crossfilter",
-      "amd": "crossfilter",
+    d3: "d3",
+    crossfilter: {
+      commonjs: "crossfilter",
+      commonjs2: "crossfilter",
+      amd: "crossfilter"
     }
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js?$/,
         exclude: /node_modules\/(?!@mapbox-controls\/ruler)/,
@@ -30,17 +30,31 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: "css-loader"
-        })
+        use: [
+          "style-loader",
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          "css-loader"
+        ]
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: ["css-loader", "sass-loader"]
-        })
+        use: [
+          "style-loader",
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          "css-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              // eslint-disable-next-line global-require
+              implementation: require("sass-embedded"),
+              api: "modern"
+            }
+          }
+        ]
       }
     ]
   },
@@ -50,6 +64,6 @@ module.exports = {
         NODE_ENV: JSON.stringify("production")
       }
     }),
-    new ExtractTextPlugin("charting.css"),
+    new MiniCssExtractPlugin({ filename: "charting.css" })
   ]
-};
+}
