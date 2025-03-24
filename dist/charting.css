@@ -431,6 +431,9 @@ body {
   padding: 0 4px;
   text-decoration: none; }
 
+.mapboxgl-ctrl-attrib-button {
+  display: none; }
+
 .basemap-satellite .gradient-legend .block .text, .basemap-dark .gradient-legend .block .text, .basemap-odyssey .gradient-legend .block .text, .basemap-decimal .gradient-legend .block .text {
   color: #eeeeee;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;

@@ -75,6 +75,10 @@ body {
     text-decoration: none;
 }
 
+.mapboxgl-ctrl-attrib-button {
+    display: none;
+}
+
 .basemap-satellite, .basemap-dark, .basemap-odyssey, .basemap-decimal {
     .gradient-legend .block .text  {
         color: #eeeeee;
