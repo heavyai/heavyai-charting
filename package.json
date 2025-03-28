@@ -61,7 +61,7 @@
     "@mapd/crossfilter": "github:omnisci/mapd-crossfilter#6f291ac",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-clip": "^6.5.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "chevrotain": "~6.5.0",
     "d3": "^3.5.17",
     "fast-deep-equal": "^2.0.1",
