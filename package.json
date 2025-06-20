@@ -45,7 +45,7 @@
     "lint:fix": "./node_modules/.bin/eslint --fix $(find src -name \"*.js\" ! -name '*.spec.js')",
     "lint:errors": "npm run lint -- --quiet",
     "nyc": "nyc",
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "node ./scripts/preinstall-if-root.js",
     "report": "nyc report --reporter=lcov && open coverage/lcov-report/index.html",
     "selenium:install": "selenium-standalone install --version=3.0.0-beta4",
     "selenium:start": "selenium-standalone start --version=3.0.0-beta4",
