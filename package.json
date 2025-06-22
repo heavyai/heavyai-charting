@@ -4,6 +4,9 @@
   "license": "Apache-2.0",
   "copyright": "2017",
   "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js.",
+  "engines": {
+    "node": ">=6.13.4 <=12.16.1"
+  },
   "keywords": [
     "visualization",
     "svg",
@@ -49,7 +52,7 @@
     "report": "nyc report --reporter=lcov && open coverage/lcov-report/index.html",
     "selenium:install": "selenium-standalone install --version=3.0.0-beta4",
     "selenium:start": "selenium-standalone start --version=3.0.0-beta4",
-    "start": "webpack-dev-server --content-base ./example --config ./example/webpack.config.js",
+    "start": "webpack-dev-server --host 0.0.0.0 --content-base ./example --config ./example/webpack.config.js",
     "test": "npm run format:check:silent && npm run lint && npm run test:unit",
     "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --config ./test/.mocharc.yml"
   },
