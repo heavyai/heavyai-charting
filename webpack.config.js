@@ -1,8 +1,9 @@
 const webpack = require("webpack");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require('path')
 
 module.exports = {
+  mode: "production",
   context: __dirname,
   entry: {
     "charting": "./index.js"
@@ -22,7 +23,7 @@ module.exports = {
     }
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js?$/,
         exclude: /node_modules\/(?!@mapbox-controls\/ruler)/,
@@ -30,17 +31,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: "css-loader"
-        })
+        use: [MiniCssExtractPlugin.loader, "css-loader"]
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: ["css-loader", "sass-loader"]
-        })
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
       }
     ]
   },
@@ -50,6 +45,8 @@ module.exports = {
         NODE_ENV: JSON.stringify("production")
       }
     }),
-    new ExtractTextPlugin("charting.css"),
+    new MiniCssExtractPlugin({
+      filename: "charting.css"
+    }),
   ]
 };
