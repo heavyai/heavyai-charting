@@ -8,11 +8,19 @@ module.exports = {
   entry: {
     "charting": "./index.js"
   },
+  resolve: {
+    fallback: {
+      "assert": require.resolve("assert/")
+    }
+  },
   output: {
     path: path.join(__dirname, "/dist"),
     filename: "[name].js",
-    libraryTarget: "umd",
-    library: "charting"
+    library: {
+      name: "charting",
+      type: "umd"
+    },
+    globalObject: 'this'
   },
   externals: {
     "d3": "d3",

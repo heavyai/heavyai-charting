@@ -1,1 +1,1 @@
-require("expose-loader?dc!./src/index.js")
+require("expose-loader?exposes=dc!./src/index.js")
