@@ -72,7 +72,7 @@ export default function legendMixin(legend) {
 
       const bodyNode = body.node()
       if (bodyNode) {
-        // fix for #4196#issuecomment-376704328
+        // Preserve scroll position when legend is redrawn (dc.js issue #4196)
         bodyNode.scrollTop = legend._scrollPos
       }
     }

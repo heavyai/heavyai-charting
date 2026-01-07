@@ -24,7 +24,7 @@ export default class LimitDefinitionObject extends PropertiesDefinitionInterface
     }
     this.limit_ = definition_object[LimitDefinitionObject.key]
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): validate limit ranges?
+    // TODO: validate limit ranges?
 
     /**
      * @type {number}
@@ -38,7 +38,7 @@ export default class LimitDefinitionObject extends PropertiesDefinitionInterface
       }
       this.offset_ = definition_object.offset
       // eslint-disable-next-line no-warning-comments
-      // TODO(croot): validate tableSize?
+      // TODO: validate tableSize?
     }
   }
 

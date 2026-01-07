@@ -146,7 +146,7 @@ export default class DiscreteScale extends ScaleDefinitionObject {
     super._materializeExtraVegaScaleProps(prop_descriptor, vega_scale_obj)
     if (this.default_value_ !== null) {
       // eslint-disable-next-line no-warning-comments
-      // TODO(croot): should we validate the default value?
+      // TODO: should we validate the default value?
       vega_scale_obj.default = this.default_value_
     }
   }

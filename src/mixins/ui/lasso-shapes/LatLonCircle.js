@@ -434,7 +434,7 @@ function subdivideArc(
         circle_descriptor.max_segment_pixel_distance
       ) {
         // subdivde the line segment at the midpoint of the in-view line segment
-        // TODO(croot): This seems to work 99.5% of the time but could see a jump in the rare case that
+        // TODO: This seems to work 99.5% of the time but could see a jump in the rare case that
         // the line segment crosses very close to a corner.
         const line_center_lonlat = tmp_point
         Point2d.lerp(line_center_lonlat, start_lonlat_pt, end_lonlat_pt, 0.5)

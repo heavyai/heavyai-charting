@@ -590,7 +590,7 @@ class ScrollZoomHandler extends BaseHandler {
       // NOTE: the following is currently only designed
       // to work with linear scales.
 
-      // TODO(croot): come up with a generic extrapolation
+      // TODO: come up with a generic extrapolation
       // technique for any scale.
 
       const width = this._chart.effectiveWidth()
@@ -743,7 +743,7 @@ class DragPanHandler extends BaseHandler {
       this._fireEvent("movestart", e)
     }
 
-    // TODO(croot): stop other animated pans/zooms here if/when
+    // TODO: stop other animated pans/zooms here if/when
     // they're supported.
     this._drainInertiaBuffer()
     this._dragInertia.push([Date.now(), pos])
@@ -851,12 +851,12 @@ class DragPanHandler extends BaseHandler {
 
     finish()
 
-    // TODO(croot):
+    // TODO:
     // Do the animated ease-out of the pan like mapbox
   }
 
   onTouchEnd(e) {
-    // TODO(croot): check that the event is in the chart window?
+    // TODO: check that the event is in the chart window?
     if (this._ignoreEvent(e)) {
       return
     }
@@ -866,7 +866,7 @@ class DragPanHandler extends BaseHandler {
   }
 
   onMouseUp(e) {
-    // TODO(croot): check that the event is in the chart window?
+    // TODO: check that the event is in the chart window?
     if (this._ignoreEvent(e)) {
       return
     }
@@ -994,7 +994,7 @@ export default function bindEventHandlers(
   }
 
   function onMouseDown(e) {
-    // TODO(croot): if we support animated
+    // TODO: if we support animated
     // pans/zooms, we want to stop any currently
     // running animation here first:
 
@@ -1031,7 +1031,7 @@ export default function bindEventHandlers(
 
   function onTouchStart(e) {
     if (isInChart(chart, container, e)) {
-      // TODO(croot): if we support animated
+      // TODO: if we support animated
       // pans/zooms, we want to stop any currently
       // running animation here first:
       if (
@@ -1110,7 +1110,7 @@ export default function bindEventHandlers(
     const margins = chart.margins()
 
     for (let i = 0; i < e.touches.length; i = i + 1) {
-      // TODO(croot): should we only add points that are
+      // TODO: should we only add points that are
       // within the container?
       points.push(
         new mapboxglModule.Point(

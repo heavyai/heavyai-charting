@@ -260,7 +260,7 @@ export async function getLegendStateFromChart(chart, useMap, selectedLayer) {
             version: 2.0
           }
         } else {
-          // TODO(croot): this can be removed once all raster layer types are
+          // TODO: this can be removed once all raster layer types are
           // transitioned to the getPrimaryColorScaleName/getLegendDefinitionForProperty
           // form above
           const layerState = layer.getState()
@@ -845,7 +845,7 @@ function legendState_v2(state, useMap) {
       return {}
     }
     const min_size = Math.min(domain.length, range.length)
-    // TODO(croot): may want to consider filling out the auto-gradient here
+    // TODO: may want to consider filling out the auto-gradient here
     // using a max-number of stops. The best way to do this will most likely
     // be to create a d3 scale of similar type, and generate new ranges from
     // it at auto-gradient stops. Unforunately the legendables library will only

@@ -197,7 +197,7 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 
   /* OVERRIDE EXTEND ----------------------------------------------------------*/
   function accentPoly(label) {
-    const layerNameClass = geoJson(0).name // hack for now as we only allow one layer currently
+    const layerNameClass = geoJson(0).name // Currently limited to single layer support
     _chart.selectAll("g." + layerNameClass).each(function(d) {
       if (getKey(0, d) == label) {
         _chart.accentSelected(this)
@@ -206,7 +206,7 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   }
 
   function unAccentPoly(label) {
-    const layerNameClass = geoJson(0).name // hack for now as we only allow one layer currently
+    const layerNameClass = geoJson(0).name // Currently limited to single layer support
     _chart.selectAll("g." + layerNameClass).each(function(d) {
       if (getKey(0, d) == label) {
         _chart.unAccentSelected(this)

@@ -209,7 +209,7 @@ export function createVegaAttrMixin(
         }
         rtnVal = ordScale(formattedInput)
       } else if (Array.isArray(domainVals) && domainVals[0] === domainVals[1]) {
-        // handling case where domain min/max are the same (FE-7408)
+        // handling case where domain min/max are the same
         linearScale.domain(domainVals).range(capAttrObj.range)
         rtnVal = Math.round(linearScale(input))
       } else {
@@ -818,7 +818,7 @@ export function getScales(
 }
 
 /**
- * Filters z-indexed layers and returns non duplicate layer. Z-indexed layers is for temporary hack FE-13136
+ * Filters z-indexed layers and returns non duplicate layer.
  * For z-indexed layer (layer that has top color category applied), only returns the first z-index, z_0
  * @param layers
  * @returns {[]}
