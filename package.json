@@ -135,7 +135,8 @@
     "tough-cookie": "2.5.0",
     "minimist": "1.2.8",
     "follow-redirects": "1.15.9",
-    "protocol-buffers-schema": "3.6.1"
+    "protocol-buffers-schema": "3.6.1",
+    "axios": "^1.16.0"
   },
   "nyc": {
     "check-coverage": false,
