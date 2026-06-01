@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const LassoShapeEventConstants = {
   /**
    * triggered from an individual shape when a draggable edit

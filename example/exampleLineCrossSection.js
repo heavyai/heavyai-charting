@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as HeavyCharting from "../src/index.js"
 import * as HeavyConnect from "@heavyai/connector"
 import * as HeavyCrossfilter from "@heavyai/crossfilter"
@@ -40,7 +43,7 @@ function create_charts(
     Math.max(map_parent.clientHeight, window.innerHeight || 0) - 100
 
   const mapboxToken =
-    "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g"
+    "YOUR_MAPBOX_TOKEN"
 
   let cross_section_layer = null
   const cross_section_layer_state = {

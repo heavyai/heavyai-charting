@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { decrementSampledCount, incrementSampledCount } from "../core/core"
 import { lastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"

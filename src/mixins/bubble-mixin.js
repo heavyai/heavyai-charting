@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import colorMixin from "./color-mixin"
 import d3 from "d3"
 import { transition } from "../core/core"

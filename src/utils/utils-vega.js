@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import d3 from "d3"
 import wellknown from "wellknown"
 import { AABox2d, Point2d, PolyLine } from "@heavyai/draw/dist/draw"

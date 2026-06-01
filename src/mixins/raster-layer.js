@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import capMixin from "./cap-mixin"
 import rasterLayerPointMixin from "./raster-layer-point-mixin"
 import rasterLayerPolyMixin from "./raster-layer-poly-mixin"

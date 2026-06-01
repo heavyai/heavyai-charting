@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { deregisterChart, override, transition } from "../core/core"
 import { pluck, utils } from "../utils/utils"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"

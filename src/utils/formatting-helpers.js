@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"
 import d3 from "d3"
 import moment from "moment"

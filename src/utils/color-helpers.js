@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export const ALL_OTHERS_LABEL = "All Others"
 export const ALL_OTHERS_COLOR = "#888888"
 

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { autoBinParams, BIN_INPUT_OPTIONS } from "../utils/binning-helpers"
 import d3 from "d3"
 import { events } from "../core/events"

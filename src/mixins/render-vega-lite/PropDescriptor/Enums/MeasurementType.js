@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 // NOTE: need to disable no-undef due to an issue with the rather outdated
 // nature of the babel-eslint parser. The parser does to properly account
 // for static class members

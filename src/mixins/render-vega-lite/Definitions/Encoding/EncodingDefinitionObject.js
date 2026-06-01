@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import PropertiesDefinitionInterface from "../PropertiesDefinitionInterface"
 import assert from "assert"
 import FieldDefinitionObject from "./FieldDefinitionObject"

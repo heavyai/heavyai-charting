@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 /**
  * Margin is a mixin that provides margin utility functions for both the Row Chart and Coordinate Grid
  * Charts.

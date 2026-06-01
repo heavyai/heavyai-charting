@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as HeavyCharting from "../src/index.js"
 import * as HeavyConnect from "@heavyai/connector"
 import * as HeavyCrossfilter from "@heavyai/crossfilter"

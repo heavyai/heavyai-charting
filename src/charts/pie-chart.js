@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import baseMixin from "../mixins/base-mixin"
 import capMixin from "../mixins/cap-mixin"
 import colorMixin from "../mixins/color-mixin"
