@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 # This script basically just runs `prettier`, but it adds a header and footer so that people aren't
