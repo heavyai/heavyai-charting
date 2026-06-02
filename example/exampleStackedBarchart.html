@@ -134,11 +134,11 @@
   function init() {
     // A connector-js instance is used for performing raw queries on a HeavyDB GPU database.
     new DbCon()
-      .protocol("https")
-      .host("metis.mapd.com")
-      .port("443")
-      .dbName("mapd")
-      .user("mapd")
+      .protocol("http")
+      .host("localhost")
+      .port("6278")
+      .dbName("heavyai")
+      .user("heavyai")
       .password("HyperInteractive")
       .connect(function(error, con) {
         // Get a table from the database

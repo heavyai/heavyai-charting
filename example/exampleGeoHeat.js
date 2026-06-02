@@ -12,18 +12,18 @@ const shapeSize = (bins, size, gap = GAP_SIZE) => size/bins
 let HeatLayer
 
 const Connector = new DbCon()
-  .protocol("https")
-  .host("metis.mapd.com")
-  .port("443")
-  .dbName("mapd")
-  .user("mapd")
+  .protocol("http")
+  .host("localhost")
+  .port("6278")
+  .dbName("heavyai")
+  .user("heavyai")
   .password("HyperInteractive")
 
 Connector.logging(true)
 
 function connect() {
   return new Promise((resolve, reject) => {
-    Connector.connect(function(error, connector) {
+    Connector.connect((error, connector) => {
       if (error) {
         reject(error)
       } else {
@@ -104,8 +104,8 @@ const colorRange = [
 ]
 
 function rasterChart(cf) {
-  var xDim = cf.dimension("lon")
-  var yDim = cf.dimension("lat")
+  const xDim = cf.dimension("lon")
+  const yDim = cf.dimension("lat")
   const RasterChart = dc.rasterChart(document.getElementById("heatmap"), true)
   HeatLayer = dc.rasterLayer("heat")
 
@@ -161,8 +161,6 @@ function createCharts(cf) {
   return RasterChart.init().then(() => dc.renderAllAsync())
 }
 
-document.addEventListener("DOMContentLoaded", function init() {
-  return connect()
+document.addEventListener("DOMContentLoaded", () => connect()
     .then(createCrossfilter)
-    .then(createCharts)
-})
+    .then(createCharts))

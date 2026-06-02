@@ -1,18 +1,18 @@
-document.addEventListener("DOMContentLoaded", function init() {
+document.addEventListener("DOMContentLoaded", () => {
     // A connector-js instance is used for performing raw queries on a HeavyDB GPU database.
     new DbCon()
-      .protocol("https")
-      .host("metis.mapd.com")
-      .port("443")
-      .dbName("mapd")
-      .user("mapd")
+      .protocol("http")
+      .host("localhost")
+      .port("6278")
+      .dbName("heavyai")
+      .user("heavyai")
       .password("HyperInteractive")
-      .connect(function(error, con) {
+      .connect((error, con) => {
         // Get a table from the database
-        var tableName = 'tweets_nov_feb';
+        const tableName = 'tweets_nov_feb';
         // A CrossFilter instance is used for generating the raw query strings for your connector-js.
-        var crossFilter = crossfilter.crossfilter(con, tableName)
-          .then(function(cf) {
+        const crossFilter = crossfilter.crossfilter(con, tableName)
+          .then((cf) => {
             createCharts(cf, con, tableName)
           })
         // Pass instance of crossfilter into our CreateCharts.
@@ -29,26 +29,26 @@ document.addEventListener("DOMContentLoaded", function init() {
    *   https://dc-js.github.io/dc.js/docs/stock.html.
    */
   function createCharts(crossFilter, con, tableName) {
-    var w = document.documentElement.clientWidth - 30;
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+    const w = document.documentElement.clientWidth - 30;
+    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
 
-    /*---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
+    /* ---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
     /*
      *  A basic operation is getting the filtered count and total count
      *  of crossFilter. This performs that operation. It is built into DC.
      *  Note that for the count we use crossFilter itself as the dimension.
      */
-    var countGroup = crossFilter.groupAll();
-    var dataCount = dc.countWidget(".data-count")
+    const countGroup = crossFilter.groupAll();
+    const dataCount = dc.countWidget(".data-count")
       .dimension(crossFilter)
       .group(countGroup);
 
-    /*----------------BACKEND RENDERED SCATTERPLOT EXAMPLE-----------------------*/
-    var langDomain = ['en', 'pt', 'es', 'in', 'und', 'ja', 'tr', 'fr', 'tl', 'ru', 'ar', 'th', 'it', 'nl', 'sv', 'ht', 'de', 'et', 'pl', 'sl', 'ko', 'fi', 'lv', 'sk', 'uk', 'da', 'zh', 'ro', 'no', 'cy', 'iw', 'hu', 'bg', 'lt', 'bs', 'vi', 'el', 'is', 'hi', 'hr', 'fa', 'ur', 'ne', 'ta',  'sr', 'bn', 'si', 'ml', 'hy', 'lo', 'iu', 'ka', 'ps', 'te', 'pa', 'am', 'kn', 'chr', 'my', 'gu', 'ckb', 'km', 'ug', 'sd', 'bo', 'dv'];
-    var langOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
-    var langColors = [];
-    var scatterplotDim = crossFilter.dimension(null).projectOn(["goog_x as x", "goog_y as y", "followers as size", "lang as color"]);
-    var parent = document.getElementById("chart1-example");
+    /* ----------------BACKEND RENDERED SCATTERPLOT EXAMPLE-----------------------*/
+    let langDomain = ['en', 'pt', 'es', 'in', 'und', 'ja', 'tr', 'fr', 'tl', 'ru', 'ar', 'th', 'it', 'nl', 'sv', 'ht', 'de', 'et', 'pl', 'sl', 'ko', 'fi', 'lv', 'sk', 'uk', 'da', 'zh', 'ro', 'no', 'cy', 'iw', 'hu', 'bg', 'lt', 'bs', 'vi', 'el', 'is', 'hi', 'hr', 'fa', 'ur', 'ne', 'ta',  'sr', 'bn', 'si', 'ml', 'hy', 'lo', 'iu', 'ka', 'ps', 'te', 'pa', 'am', 'kn', 'chr', 'my', 'gu', 'ckb', 'km', 'ug', 'sd', 'bo', 'dv'];
+    const langOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
+    const langColors = [];
+    const scatterplotDim = crossFilter.dimension(null).projectOn(["goog_x as x", "goog_y as y", "followers as size", "lang as color"]);
+    const parent = document.getElementById("chart1-example");
     mapLangColors(40);
 
     /*
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function init() {
      * initialize. We calculate these extents first and then
      * build the scatterplot
      */
-    var extentMeasures = [
+    const extentMeasures = [
       {
         expression: "goog_x",
         agg_mode:"min",
@@ -79,18 +79,18 @@ document.addEventListener("DOMContentLoaded", function init() {
       }
     ];
 
-    var pointMapChart, dcTimeChart;
+    let pointMapChart, dcTimeChart;
 
     crossFilter
       .groupAll()
       .reduce(extentMeasures)
-      .valuesAsync(true).then(function(extents) {
+      .valuesAsync(true).then((extents) => {
 
       /*
        * Set the x/y axis dimensions, using the extents calculated above
        */
-      var xDim = crossFilter.dimension("goog_x").filter([extents.xmin,extents.xmax]);
-      var yDim = crossFilter.dimension("goog_y").filter([-8000000,8000000]);
+      const xDim = crossFilter.dimension("goog_x").filter([extents.xmin,extents.xmax]);
+      const yDim = crossFilter.dimension("goog_y").filter([-8000000,8000000]);
 
       /* Scatterplot Point Radius Size:
        * in order to calculate the radius size.  We use d3 scale and pass in a
@@ -101,9 +101,9 @@ document.addEventListener("DOMContentLoaded", function init() {
        *
        * We then pass this scale into the r function within bubbleRasterChart
        */
-      var rScale = d3.scale.linear().domain([0,5000]).range([1,5]);
+      const rScale = d3.scale.linear().domain([0,5000]).range([1,5]);
 
-      var pointLayer = dc.rasterLayer("points")
+      const pointLayer = dc.rasterLayer("points")
                         .crossfilter(crossFilter)
                         .xDim(xDim)
                         .yDim(yDim)
@@ -173,13 +173,13 @@ document.addEventListener("DOMContentLoaded", function init() {
       // custom click handler with event and nearest row data
       pointMapChart.map().on('mouseup', logClickWithData)
       function logClickWithData (event) {
-        pointMapChart.getClosestResult(event.point, function(result){
+        pointMapChart.getClosestResult(event.point, (result) => {
           console.log(result && result.row_set[0])
         })
       }
 
       // hover effect with popup
-      var debouncedPopup = _.debounce(displayPopupWithData, 250)
+      const debouncedPopup = _.debounce(displayPopupWithData, 250)
       pointMapChart.map().on('mousewheel', pointMapChart.hidePopup);
       pointMapChart.map().on('wheel', pointMapChart.hidePopup);
       pointMapChart.map().on('mousemove', pointMapChart.hidePopup);
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function init() {
         pointMapChart.getClosestResult(event.point, pointMapChart.displayPopup)
       }
 
-      /*---------------------TIME CHART EXAMPLE----------------------------------*/
+      /* ---------------------TIME CHART EXAMPLE----------------------------------*/
 
       /*
        *  First we want to determine the extent (min,max) of the time variable so we
@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function init() {
        *
        */
 
-      var timeChartMeasures = [
+      const timeChartMeasures = [
       {
         expression: "tweet_time",
         agg_mode:"min",
@@ -226,16 +226,16 @@ document.addEventListener("DOMContentLoaded", function init() {
       crossFilter
         .groupAll()
         .reduce(timeChartMeasures)
-        .valuesAsync(true).then(function(timeChartBounds) {
+        .valuesAsync(true).then((timeChartBounds) => {
 
-          var timeChartDimension = crossFilter.dimension("tweet_time");
+          const timeChartDimension = crossFilter.dimension("tweet_time");
 
           /* We would like to bin or histogram the time values.  We do this by
            * invoking setBinParams on the group.  Here we are asking for 288 equal
            * sized bins from the min to the max of the time range
            */
 
-          var timeChartGroup = timeChartDimension
+          const timeChartGroup = timeChartDimension
             .group()
             .reduceCount('*')
 
@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function init() {
             .orient('bottom');
 
 
-          /*---------------------SET UP FILTER ----------------------------------*/
+          /* ---------------------SET UP FILTER ----------------------------------*/
 
           /*  We create the filter
            *  with the following parameters:
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function init() {
            *  "Keyboard" AND "Cat"
            *
            */
-          var searchFilterTweets = crossFilter.dimension("tweet_tokens")
+          const searchFilterTweets = crossFilter.dimension("tweet_tokens")
                                               .setDrillDownFilter(true);
 
           function createMultiFilterArray(search) {
@@ -308,14 +308,12 @@ document.addEventListener("DOMContentLoaded", function init() {
               return undefined;
             }
 
-            return search.split(',').map(function(searchValue) {
-              return searchValue.trim();
-            });
+            return search.split(',').map((searchValue) => searchValue.trim());
           }
 
-          document.querySelector(".search-bar").addEventListener("keypress", function(e){
+          document.querySelector(".search-bar").addEventListener("keypress", (e) => {
             if (e.keyCode === 13) {
-              var mutipleFilterArray = createMultiFilterArray(e.target.value);
+              const mutipleFilterArray = createMultiFilterArray(e.target.value);
               if (mutipleFilterArray) {
                 searchFilterTweets.filterMulti(mutipleFilterArray);
               } else {
@@ -335,15 +333,15 @@ document.addEventListener("DOMContentLoaded", function init() {
         });
     });
 
-    /*--------------------------RESIZE EVENT------------------------------*/
+    /* --------------------------RESIZE EVENT------------------------------*/
 
     /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
     window.addEventListener("resize", _.debounce(reSizeAll, 500));
 
     function reSizeAll(){
-      var w = document.documentElement.clientWidth - 30;
-      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+      const w = document.documentElement.clientWidth - 30;
+      const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
 
       pointMapChart.map().resize();
       pointMapChart.isNodeAnimate = false;
@@ -360,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
     function mapLangColors(n) {
       langDomain = langDomain.slice(0, n);
-      for (var i = 0; i < langDomain.length; i++) {
+      for (let i = 0; i < langDomain.length; i++) {
         langColors.push(langOriginColors[i%langOriginColors.length]);
       }
     }

@@ -1,11 +1,7 @@
-# Contributing to MapD's Charting library
+# Contributing to Heavy AI's Charting library
 👍🎉 Thanks for taking the time to contribute! 🎉👍
 
 Our team welcomes and appreciates your contributions to this codebase. Every contribution helps, and our team will make sure you're given proper credit for your efforts.
-
-### Contributor License Agreement
-
-In order to clarify the intellectual property license granted with Contributions from any person or entity, MapD must have a Contributor License Agreement (“CLA”) on file that has been signed by each Contributor, indicating agreement to the [Contributor License Agreement](CONTRIBUTOR_LICENSE_AGREEMENT.md). If you have not already done so, please complete and sign, then scan and email a pdf file of this Agreement to contributors@mapd.com. Please read the agreement carefully before signing and keep a copy for your records.
 
 You can contribute in many ways:
 
@@ -19,7 +15,7 @@ You can contribute in many ways:
 
 This section guides you through submitting a bug report. Following these guidelines helps maintainers and the community understand your report :pencil:, reproduce the behavior :computer:, and find related reports. :mag_right:
 
-Before creating bug reports, look through [existing issues](https://github.com/mapd/mapd-charting/issues?q=is%3Aopen+is%3Aissue+label%3Abug) as you might find out that you don't need to create one and can just 👍 an existing issue. When you are creating a bug report, [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](ISSUE_TEMPLATE.md), the information it asks for helps us resolve issues faster.
+Before creating bug reports, look through [existing issues](https://github.com/heavyai/heavyai-charting/issues?q=is%3Aopen+is%3Aissue+label%3Abug) as you might find out that you don't need to create one and can just 👍 an existing issue. When you are creating a bug report, [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](ISSUE_TEMPLATE.md), the information it asks for helps us resolve issues faster.
 
 ### How Do I Submit A (Good) Bug Report?
 
@@ -45,7 +41,7 @@ Correcting typos and clarifying key functions and APIs are two great ways to mak
 
 This section guides you through submitting an enhancement suggestion, ranging from minor improvements for existing functionality to completely new features. Following these guidelines helps maintainers and the community understand your suggestion :pencil: and find related suggestions. :mag_right:
 
-**Perform a [cursory search](https://github.com/mapd/mapd-charting/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)** to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
+**Perform a [cursory search](https://github.com/heavyai/heavyai-charting/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)** to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
 
 When you are creating an enhancement suggestion, [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill in [the template](ISSUE_TEMPLATE.md), including the steps that you imagine you would take if the feature you're requesting existed.
 
@@ -63,7 +59,7 @@ When you are creating an enhancement suggestion, [include as many details as pos
 
 Unsure where to begin contributing? You can start by looking for issues tagged `beginner`:
 
-* [Beginner issues](https://github.com/mapd/mapd-charting/issues?utf8=%E2%9C%93&q=is%3Aopen%20is%3Aissue%20label%3A%22beginner%22%20) - issues which should only require a few lines of code, and a test or two.
+* [Beginner issues](https://github.com/heavyai/heavyai-charting/issues?utf8=%E2%9C%93&q=is%3Aopen%20is%3Aissue%20label%3A%22beginner%22%20) - issues which should only require a few lines of code, and a test or two.
 
 ### Opening Pull Requests
 0. Make sure to commit your built `dist/` files.

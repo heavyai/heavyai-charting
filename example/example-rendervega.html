@@ -79,10 +79,10 @@ var exampleVega = {
 var vegaOptions = {}
 var connector = new DbCon()
   .protocol("http")
-  .host("vega-demo.mapd.com")
-  .port("9092")
-  .dbName("mapd")
-  .user("mapd")
+  .host("localhost")
+  .port("6278")
+  .dbName("heavyai")
+  .user("heavyai")
   .password("HyperInteractive")
   .connectAsync()
   .then(function(con) {

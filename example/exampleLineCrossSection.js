@@ -175,7 +175,7 @@ function create_charts(
             // like scale/rotate are applied yet. So apply the transforms here.
             Point2d.transformMat2d(vert_copy, vert_copy, shape.globalXform)
 
-            // since mapd-draw currently only draws points in a cartesian space, the stored
+            // since heavyai-draw currently only draws points in a cartesian space, the stored
             // verts are therefore in mercator coordinates, so convert from mercator to
             // wgs84 (srid 4326) lat/lon
             LatLonUtils.conv900913To4326(vert_copy, vert_copy)

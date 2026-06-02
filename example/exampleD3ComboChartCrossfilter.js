@@ -516,7 +516,6 @@ function createCharts(crossFilter, connector) {
   // render combo chart when data is formatted
   function renderComboChart(dataTransformed) {
     // the `setConfig` method determines how a chart renders in d3-combo-chart
-    // more info on the options is available here: https://mapd.github.io/mapd3/doc/
     comboChart
       .setConfig({
         parentNode,
@@ -634,7 +633,7 @@ function createCharts(crossFilter, connector) {
 function debounce(func, wait, immediate) {
   let timeout
   return function() {
-    let context = this,
+    const context = this,
       args = arguments
     const later = function() {
       timeout = null
@@ -666,11 +665,11 @@ function init() {
   /* Before doing anything we must set up a heavyai connection, specifying
    * username, password, host, port, and database name */
   new DbCon()
-    .protocol("https")
-    .host("metis.mapd.com")
-    .port("443")
-    .dbName("mapd")
-    .user("mapd")
+    .protocol("http")
+    .host("localhost")
+    .port("6278")
+    .dbName("heavyai")
+    .user("heavyai")
     .password("HyperInteractive")
     .connect((error, con) => {
       if (error) { throw error }
