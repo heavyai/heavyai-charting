@@ -8,7 +8,6 @@ function createCharts(crossFilter, dc, config, con) {
   
   // Linemap Chart
   const parent = document.getElementById("contourChart");
-  const mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
   
   const countGroup = crossFilter.groupAll();
   
@@ -22,7 +21,7 @@ function createCharts(crossFilter, dc, config, con) {
   .width(w)
   .mapUpdateInterval(750)
   .mapStyle('mapbox://styles/mapbox/light-v8')
-  .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+  .mapboxToken("TOKEN HERE") // need a mapbox accessToken for loading the tiles
   .popupSearchRadius(2)
   .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
   

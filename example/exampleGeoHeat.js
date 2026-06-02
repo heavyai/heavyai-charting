@@ -146,7 +146,7 @@ function rasterChart(cf) {
     .width(WIDTH)
     .mapUpdateInterval(UPDATE_INTERVAL)
     .mapStyle(MAP_STYLE)
-    .mapboxToken("pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g") // need a mapbox accessToken for loading the tiles
+    .mapboxToken("TOKEN HERE") // need a mapbox accessToken for loading the tiles
 
   polyfillColorsGetter.apply(RasterChart)
   RasterChart.colors(d3.scale.linear().range(colorRange))

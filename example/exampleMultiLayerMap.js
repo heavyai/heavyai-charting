@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function createPointMap(polycfLayer1, pointcfLayer2, pointcfLayer3, con) {
     const w = document.documentElement.clientWidth - 30;
     const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 150;
-    const mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
 
     /* ---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
     /*
@@ -301,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
                           .width(w)
                           .mapUpdateInterval(750)
                           .mapStyle('mapbox://styles/mapbox/light-v8')
-                          .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+                          .mapboxToken("TOKEN HERE") // need a mapbox accessToken for loading the tiles
 
                           // add the layers to the pointmap
                           .pushLayer('polytable1', polyLayer1)

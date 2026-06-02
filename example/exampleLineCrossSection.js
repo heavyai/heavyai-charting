@@ -39,9 +39,6 @@ function create_charts(
   const map_height =
     Math.max(map_parent.clientHeight, window.innerHeight || 0) - 100
 
-  const mapboxToken =
-    "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g"
-
   let cross_section_layer = null
   const cross_section_layer_state = {
     transform: [
@@ -89,7 +86,7 @@ function create_charts(
     .height(map_height)
     .mapUpdateInterval(750)
     .mapStyle("json/dark-v8.json")
-    .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+    .mapboxToken("TOKEN HERE") // need a mapbox accessToken for loading the tiles
     .popupSearchRadius(2)
     .useGeoTypes(true)
 
