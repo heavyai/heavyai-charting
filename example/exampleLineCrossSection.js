@@ -39,9 +39,6 @@ function create_charts(
   const map_height =
     Math.max(map_parent.clientHeight, window.innerHeight || 0) - 100
 
-  const mapboxToken =
-    "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g"
-
   let cross_section_layer = null
   const cross_section_layer_state = {
     transform: [
@@ -89,7 +86,7 @@ function create_charts(
     .height(map_height)
     .mapUpdateInterval(750)
     .mapStyle("json/dark-v8.json")
-    .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+    .mapboxToken("TOKEN HERE") // need a mapbox accessToken for loading the tiles
     .popupSearchRadius(2)
     .useGeoTypes(true)
 
@@ -175,7 +172,7 @@ function create_charts(
             // like scale/rotate are applied yet. So apply the transforms here.
             Point2d.transformMat2d(vert_copy, vert_copy, shape.globalXform)
 
-            // since mapd-draw currently only draws points in a cartesian space, the stored
+            // since heavyai-draw currently only draws points in a cartesian space, the stored
             // verts are therefore in mercator coordinates, so convert from mercator to
             // wgs84 (srid 4326) lat/lon
             LatLonUtils.conv900913To4326(vert_copy, vert_copy)

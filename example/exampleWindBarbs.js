@@ -56,9 +56,6 @@ function create_charts(crossfilter, connection) {
 
   map_lang_to_color(2)
 
-  const mapbox_token =
-    "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g"
-
   const pointmap_chart = HeavyCharting.rasterChart(
     parent_div,
     true,
@@ -70,7 +67,7 @@ function create_charts(crossfilter, connection) {
     .height(height)
     .mapUpdateInterval(750)
     .mapStyle("json/dark-v8.json")
-    .mapboxToken(mapbox_token) // need a mapbox accessToken for loading the tiles
+    .mapboxToken("TOKEN HERE") // need a mapbox accessToken for loading the tiles
     .popupSearchRadius(2)
     .group(all_group)
 

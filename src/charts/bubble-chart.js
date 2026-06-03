@@ -14,7 +14,6 @@ import { maybeUpdateDomainRange } from "../utils/color-helpers"
  * - bubble radius
  * - color
  * Examples:
- * - {@link https://mapd.github.io/mapd-charting/example/example1.html Carrier Departure Delay by Arrival Delay (Minutes)
 }
  * @name bubbleChart
  * @memberof dc

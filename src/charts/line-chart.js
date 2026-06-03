@@ -10,7 +10,6 @@ import multiSeriesMixin from "../mixins/multi-series-mixin"
  * Concrete line/area chart implementation.
  *
  * Examples:
- * - {@link https://mapd.github.io/mapd-charting/example/example1.html Number of Flights by Departure Time}
  * @name lineChart
  * @memberof dc
  * @mixes dc.stackMixin

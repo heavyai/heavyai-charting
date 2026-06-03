@@ -12,7 +12,6 @@ import { formatCache } from "../utils/formatting-helpers"
  * Concrete row chart implementation.
  *
  * Examples:
- * - {@link https://mapd.github.io/mapd-charting/example/example1.html Total Number of Flights by State}
  * @name rowChart
  * @memberof dc
  * @mixes dc.capMixin
