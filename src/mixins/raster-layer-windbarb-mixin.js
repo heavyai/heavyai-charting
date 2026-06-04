@@ -114,7 +114,6 @@ export default function rasterLayerWindBarbMixin(_layer) {
         as: alias,
         // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
         //  in heavyai-data-layer2. So, just gonna filter them out.
-        //  https://heavyai.atlassian.net/browse/FE-14213
         groupby: [...new Set(transform.groupby)].map((g, i) => ({
           type: "project",
           expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
@@ -213,7 +212,7 @@ export default function rasterLayerWindBarbMixin(_layer) {
   prop_descriptors.set("y", new PositionChannelDescriptor("y"))
 
   // eslint-disable-next-line no-warning-comments
-  // TODO(croot): support geo columns
+  // TODO: support geo columns
   // prop_descriptors.set(
   //   "longitude",
   //   new GeographicChannelDescriptor("longitude", "x")
@@ -378,26 +377,26 @@ export default function rasterLayerWindBarbMixin(_layer) {
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     // currently no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support windbarb hit-testing
+    // TODO: needs to be filled in to support windbarb hit-testing
   }
 
   _layer._areResultsValidForPopup = function(results) {
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support windbarb hit-testing
+    // TODO: needs to be filled in to support windbarb hit-testing
     return true
   }
 
   _layer._displayPopup = function(svgProps) {
     // currently a no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support windbarb hit-testing
+    // TODO: needs to be filled in to support windbarb hit-testing
     return AABox2d.create()
   }
 
   _layer._hidePopup = function(chart, hideCallback) {
     // currently a no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support windbarb hit-testing
+    // TODO: needs to be filled in to support windbarb hit-testing
   }
 
   _layer._destroyLayer = function() {

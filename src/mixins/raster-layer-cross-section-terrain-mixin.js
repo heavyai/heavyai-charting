@@ -281,13 +281,13 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     // currently no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
   }
 
   // eslint-disable-next-line no-unused-vars
   _layer._areResultsValidForPopup = function(results) {
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
     return true
   }
 
@@ -295,7 +295,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   _layer._displayPopup = function(svgProps) {
     // currently a no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
     return AABox2d.create()
   }
 
@@ -303,7 +303,7 @@ export default function rasterLayerCrossSectionTerrainMixin(_layer) {
   _layer._hidePopup = function(chart, hideCallback) {
     // currently a no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
   }
 
   _layer._destroyLayer = function() {

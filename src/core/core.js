@@ -226,7 +226,7 @@ export function transition(selections, duration, callback, name) {
   return s
 }
 
-/* somewhat silly, but to avoid duplicating logic */
+/* to avoid duplicating logic */
 export function optionalTransition(enable, duration, callback, name) {
   if (enable) {
     return function(selection) {

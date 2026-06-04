@@ -235,7 +235,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (
-      // pointmap prioritized color hack
+      // Special handling for pointmap prioritized color rendering
       layer.getState().mark === "point" &&
       layerName !== "backendScatter" &&
       layer.getState().encoding.color.prioritizedColor &&
@@ -379,7 +379,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  // TODO(croot): pixel ratio should probably be configured on the backend
+  // TODO: pixel ratio should probably be configured on the backend
   // rather than here to deal with scenarios where data is used directly
   // in pixel-space.
   _chart.usePixelRatio = function(usePixelRatio) {
@@ -568,7 +568,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     // if _chart.useLonLat() is not true, the chart bounds have already been projected into mercator space
-    // TODO(adb): could probably collape this into line 353
+    // TODO: could probably collape this into line 353
     if (
       _useGeoTypes &&
       typeof _chart.useLonLat === "function" &&
@@ -800,7 +800,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       const vega_metadata = JSON.parse(data.vega_metadata)
       for (const layerName in _layerNames) {
         if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
-          // TODO(croot): I don't understand this logic. Why would the selectedLayer
+          // TODO: I don't understand this logic. Why would the selectedLayer
           // be set only on the existence of the _updateFromMetadata() method?
           // My guess is that it's an attempt to get the last layer, but there are
           // so many better ways to get at that.
@@ -931,7 +931,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.measureValue = function(value, key) {
     const customFormatter = _chart.valueFormatter()
-    // hack to undo the popup concatenation like "AVG(arrdelay)"
+    // Parse aggregation function from popup key format (e.g., "AVG(arrdelay)")
     let keyTrimmed = null
     if (key) {
       keyTrimmed = key.replace(/.*\((.*)\).*/, "$1")
@@ -981,7 +981,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         const layerName = _layers[i]
         const layer = _layerNames[layerName]
         if (layer) {
-          // TODO(croot): can this be improved? I presume only
+          // TODO: can this be improved? I presume only
           // one popup can be shown at a time
           if (animate) {
             layer.hidePopup(_chart, () => {
@@ -1078,7 +1078,7 @@ function checkMultiYScaleLayers(chart, scales) {
     mesh2dLayer.length > 0
   ) {
     // ensure the domain of the y scale is the range set from the mesh2d yDim
-    // TODO(C): need to check how multi 2-D CS's are handled to tell if this is the
+    // TODO: need to check how multi 2-D CS's are handled to tell if this is the
     // correct approach for setting the y domain or not
     scales[1].domain = mesh2dLayer[0].yDim().getFilter()[0]
     // add a new y scale for the terrain layer, updating the name in the layer and setting
@@ -1128,7 +1128,7 @@ function genLayeredVega(chart) {
       nullValue: -100
     }
   ]
-  // TODO(matzy): This can probably be cleaned up now that chart.y2() exists
+  // TODO: This can probably be cleaned up now that chart.y2() exists
   checkMultiYScaleLayers(chart, scales)
 
   // NOTE(adb): When geo types are enabled, vega spatial projections are applied and the scales for the x and y properties are not being used. However, we still need the legacy scaling terms to properly size poly popups on hover, which is why _xLatLngBnds, etc are separate scales

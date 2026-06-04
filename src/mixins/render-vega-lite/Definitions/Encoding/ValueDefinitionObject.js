@@ -15,7 +15,7 @@ export default class ValueDefinitionObject extends PropertiesDefinitionInterface
     if (Object.keys(value_definition_object).length !== 1) {
       this.error_message = `Value definitions must have only 1 property called value`
       // eslint-disable-next-line no-warning-comments
-      // TODO(croot): not sure about this early return in
+      // TODO: not sure about this early return in
       // a constructor. The caller should check for the error_message
       // pretty much immediately after.
       return

@@ -115,7 +115,7 @@ export default class ScaleDefinitionObject extends PropertiesDefinitionInterface
 
     if (this.null_value_ !== null) {
       // eslint-disable-next-line no-warning-comments
-      // TODO(croot): validate null value, at least object-wise?
+      // TODO: validate null value, at least object-wise?
       vega_scale_obj.nullValue = this.null_value_
     }
 

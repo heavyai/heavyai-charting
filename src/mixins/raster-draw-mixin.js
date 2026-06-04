@@ -514,7 +514,7 @@ export function rasterDrawMixin(chart) {
 
   chart.addDrawControl = (lassoToolSetTypes = LassoToolSetTypes.kStandard) => {
     if (drawEngine) {
-      // TODO(croot): if the requested tool set types are different,
+      // TODO: if the requested tool set types are different,
       // should we update the button group controller here?
       return chart
     }
