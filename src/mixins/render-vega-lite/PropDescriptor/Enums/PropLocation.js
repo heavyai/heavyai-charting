@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 export default class PropLocation {
   // NOTE: the below no-undef disabling is due to the outdated nature of
   // the babel-eslint package and its apparent inappropriate handling of.

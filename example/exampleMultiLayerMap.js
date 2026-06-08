@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 /*
  * This is example code that shows how to make a map widget that backend
  * renders multiple layers.
@@ -54,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function init() {
   function createPointMap(polycfLayer1, pointcfLayer2, pointcfLayer3, con) {
     var w = document.documentElement.clientWidth - 30;
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 150;
-    var mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
+    var mapboxToken = "YOUR_MAPBOX_TOKEN";
 
     /*---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
     /*

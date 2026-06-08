@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import {override, transition, units} from "../core/core"
 import baseMixin from "./base-mixin"
 import bindEventHandlers from "./ui/coordinate-grid-raster-mixin-ui"

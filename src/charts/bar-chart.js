@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { constants, deregisterChart, override, transition } from "../core/core"
 import { pluck, utils } from "../utils/utils"
 import { TIME_LABEL_TO_SECONDS } from "../constants/dates-and-times"

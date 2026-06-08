@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import VegaPropertyOutputState from "./VegaPropertyOutputState"
 import ConfigDefinitionObject from "./Definitions/Config/ConfigDefinitionObject"
 import TransformDefinitionObject from "./Definitions/Transform/TransformDefinitionObject"

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 /* global dc, d3ComboChart, d3, crossfilter, DbCon  */
 require("@heavyai/d3-combo-chart/dist/d3ComboChart.css")
 

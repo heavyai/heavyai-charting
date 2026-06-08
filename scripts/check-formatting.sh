@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 # This script basically just runs `prettier`, but it adds a header and footer so that people aren't
 # confused why their CI builds failed, since prettier's output is less-than-helpful.
 

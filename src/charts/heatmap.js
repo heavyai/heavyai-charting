@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { formatDataValue, isArrayOfObjects } from "../utils/formatting-helpers"
 import d3 from "d3"
 import colorMixin from "../mixins/color-mixin"

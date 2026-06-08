@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import assert from "assert"
 import { parser } from "../utils/utils"
 import { AABox2d } from "@heavyai/draw/dist/draw"

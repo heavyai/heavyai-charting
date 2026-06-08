@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as Draw from "@heavyai/draw/dist/draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
 

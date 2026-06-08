@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 // This implements a simple parser for custom SQL expressions. It's mostly
 // based on the postgres documentation with notes about the bits that were
 // skipped. I'm not sure how much of the postgres spec core implements; it's

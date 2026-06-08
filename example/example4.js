@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 document.addEventListener("DOMContentLoaded", function init() {
     // A connector-js instance is used for performing raw queries on a HeavyDB GPU database.
     new DbCon()

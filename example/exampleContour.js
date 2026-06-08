@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as HeavyConnect from "@heavyai/connector"
 import * as HeavyCrossfilter from "@heavyai/crossfilter"
 import * as HeavyCharting from "../src/index.js"
@@ -8,7 +11,7 @@ function createCharts(crossFilter, dc, config, con) {
   
   // Linemap Chart
   const parent = document.getElementById("contourChart");
-  const mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
+  const mapboxToken = "YOUR_MAPBOX_TOKEN";
   
   const countGroup = crossFilter.groupAll();
   

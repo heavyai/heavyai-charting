@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 /**
  * As part of the initiative to upgrade our Mapbox dependency, these
  * functions have been copied from our forked version of Mapbox so that Mapbox

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as HeavyCharting from "../src/index.js"
 import * as HeavyConnect from "@heavyai/connector"
 import * as HeavyCrossfilter from "@heavyai/crossfilter"
@@ -57,7 +60,7 @@ function create_charts(crossfilter, connection) {
   map_lang_to_color(2)
 
   const mapbox_token =
-    "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g"
+    "YOUR_MAPBOX_TOKEN"
 
   const pointmap_chart = HeavyCharting.rasterChart(
     parent_div,
