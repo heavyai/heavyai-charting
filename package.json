@@ -58,7 +58,7 @@
     "@heavyai/draw": "https://github.com/heavyai/mapd-draw.git#fc0b065",
     "@mapbox-controls/ruler": "^3.0.0",
     "@mapbox/unitbezier": "0.0.0",
-    "@mapd/connector": "github:omnisci/mapd-connector#799d40a5859dd50722d3f873cb3ff3b7095ebcb3",
+    "@heavyai/connector": "github:heavyai/heavyai-connector#35fcae1",
     "@mapd/crossfilter": "github:omnisci/mapd-crossfilter#6f291ac",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-clip": "^6.5.0",
