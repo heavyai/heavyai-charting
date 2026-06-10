@@ -12,6 +12,9 @@ module.exports = {
     "charting": "./index.js"
   },
   resolve: {
+    alias: {
+      "@heavyai/data-layer": path.resolve(__dirname, "node_modules/@heavyai/data-layer/packages/data-layer/dist/heavyai-data-layer.js")
+    },
     fallback: {
       "assert": require.resolve("assert/")
     }
