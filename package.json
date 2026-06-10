@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "assert": "^2.1.0",
-    "@heavyai/data-layer": "github:heavyai/metis#60cda37",
+    "@heavyai/data-layer": "github:heavyai/metis#f22ef58",
     "@heavyai/draw": "https://github.com/heavyai/mapd-draw.git#398087c",
     "@mapbox-controls/ruler": "^3.0.0",
     "@mapbox/unitbezier": "0.0.0",

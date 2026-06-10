@@ -13,7 +13,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      "@heavyai/data-layer": path.resolve(__dirname, "node_modules/@heavyai/data-layer/packages/data-layer/src/index.js")
+      "@heavyai/data-layer": path.resolve(__dirname, "node_modules/@heavyai/data-layer/packages/data-layer/dist/heavyai-data-layer.js")
     },
     fallback: {
       "assert": require.resolve("assert/")
@@ -40,7 +40,7 @@ module.exports = {
     rules: [
       {
         test: /\.js?$/,
-        exclude: /node_modules\/(?!(@mapbox-controls\/ruler|@heavyai\/data-layer))/,
+        exclude: /node_modules\/(?!@mapbox-controls\/ruler)/,
         use: "babel-loader"
       },
       {
