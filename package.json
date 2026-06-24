@@ -114,7 +114,6 @@
     "expose-loader": "^5.0.0",
     "http-server": "^0.11.2",
     "jsdom": "^11.7.0",
-    "license-checker": "^25.0.1",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.9.2",
     "mocha": "^9.2.2",
