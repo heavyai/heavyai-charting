@@ -87,7 +87,7 @@ The charting library uses [documentation.js](https://github.com/documentationjs/
 A full list of third-party npm packages and their licenses is maintained in [`license/THIRD_PARTY_LICENSES.md`](license/THIRD_PARTY_LICENSES.md). To regenerate it after dependency changes, run:
 
 ```sh
-npx github:heavyai/generate-third-party-licenses
+npx github:heavyai/js-license-list
 ```
 
 This requires `node_modules` to be installed (`npm install`). The script is maintained in the [heavyai/generate-third-party-licenses](https://github.com/heavyai/generate-third-party-licenses) repo.
