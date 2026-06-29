@@ -53,10 +53,10 @@
     "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --config ./test/.mocharc.yml"
   },
   "dependencies": {
-    "@heavyai/connector": "github:heavyai/heavyai-connector#9fe94c7",
-    "@heavyai/crossfilter": "github:heavyai/heavyai-crossfilter#d32ed48",
+    "@heavyai/connector": "github:heavyai/heavyai-connector#5f24cf1",
+    "@heavyai/crossfilter": "github:heavyai/heavyai-crossfilter#0813c25",
     "@heavyai/data-layer": "github:heavyai/metis#f22ef58",
-    "@heavyai/draw": "https://github.com/heavyai/mapd-draw.git#398087c",
+    "@heavyai/draw": "https://github.com/heavyai/heavyai-draw.git#4a6cc5c",
     "@mapbox-controls/ruler": "^3.0.0",
     "@mapbox/unitbezier": "0.0.0",
     "@turf/bbox": "^6.5.0",
@@ -66,7 +66,7 @@
     "chevrotain": "~6.5.0",
     "d3": "^3.5.17",
     "fast-deep-equal": "^2.0.1",
-    "legendables": "git+https://github.com/heavyai/legendables.git#3784546",
+    "legendables": "git+https://github.com/heavyai/legendables.git#7e654b5",
     "mapbox-gl": "1.9.1",
     "moment": "^2.29.4",
     "ramda": "0.21.0",
