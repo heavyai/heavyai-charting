@@ -58,7 +58,7 @@
     "@heavyai/draw": "https://github.com/heavyai/heavyai-draw.git#398087c",
     "@mapbox-controls/ruler": "^3.0.0",
     "@mapbox/unitbezier": "0.0.0",
-    "@heavyai/connector": "github:heavyai/heavyai-connector#9fe94c7",
+    "@heavyai/connector": "github:heavyai/heavyai-connector#fc5d639",
     "@heavyai/crossfilter": "github:heavyai/heavyai-crossfilter#d32ed48",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-clip": "^6.5.0",
