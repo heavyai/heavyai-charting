@@ -90,7 +90,7 @@ A full list of third-party npm packages and their licenses is maintained in [`li
 npx github:heavyai/js-license-list
 ```
 
-This requires `node_modules` to be installed (`npm install`). The script is maintained in the [heavyai/generate-third-party-licenses](https://github.com/heavyai/generate-third-party-licenses) repo.
+This requires `node_modules` to be installed (`npm install`). The script is maintained in the [heavyai/js-license-list](https://github.com/heavyai/js-license-list) repo.
 
 Every third-party module from npm that gets includes in the final, distributed bundle has its license verified and license text (if provided) or license type shipped in licenses.txt with the bundle. Licenses must be in the pre-approved list of permissive open-source licenses. If it's necessary to override a license for a module because it's missing or improperly tagged in its package.json, add an entry in license-overrides.json.
 
