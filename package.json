@@ -15,14 +15,14 @@
     "d3"
   ],
   "homepage": "http://heavy.ai",
-  "bugs": "https://github.com/mapd/mapd-charting/issues",
+  "bugs": "https://github.com/heavyai/heavyai-charting/issues",
   "author": {
     "name": "HEAVY.AI",
     "url": "http://heavy.ai"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mapd/mapd-charting.git"
+    "url": "https://github.com/heavyai/heavyai-charting.git"
   },
   "main": "src/index.js",
   "scripts": {
