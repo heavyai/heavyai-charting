@@ -84,7 +84,7 @@ The charting library uses [documentation.js](https://github.com/documentationjs/
 
 # Third-party vendor licenses
 
-A full list of third-party npm packages and their licenses is maintained in [`license/THIRD_PARTY_LICENSES.md`](license/THIRD_PARTY_LICENSES.md). To regenerate it after dependency changes, run:
+A full list of third-party npm packages and their licenses is maintained in [`third_party_licenses/THIRD_PARTY_LICENSES.md`](third_party_licenses/THIRD_PARTY_LICENSES.md). To regenerate it after dependency changes, run:
 
 ```sh
 npx github:heavyai/js-license-list
@@ -99,3 +99,5 @@ License descriptions and public license URLs are maintained in licenses.json as 
 ## Contributing
 
 Interested in contributing? We'd love for you to help! Check out [Contributing.MD](.github/CONTRIBUTING.md)
+
+*Variables and function names are used as convention and do not reference any commercial product.*
