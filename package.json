@@ -55,7 +55,7 @@
   "dependencies": {
     "@heavyai/connector": "github:heavyai/heavyai-connector#2fd480b",
     "@heavyai/crossfilter": "github:heavyai/heavyai-crossfilter#25ff4c5",
-    "@heavyai/data-layer": "github:heavyai/metis#3d1e84a",
+    "@heavyai/data-layer": "github:heavyai/metis#f1acdef",
     "@heavyai/draw": "https://github.com/heavyai/heavyai-draw.git#e841dd2",
     "@mapbox-controls/ruler": "^3.0.0",
     "@mapbox/unitbezier": "0.0.0",
