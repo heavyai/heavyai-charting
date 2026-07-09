@@ -33,7 +33,7 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
     },
     resize() {
       // noop
-      // TODO(croot): send any events to notify the user of a change?
+      // TODO: send any events to notify the user of a change?
     }
   }
 
@@ -125,7 +125,7 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
       // default to a 0-1 range
       _xRange = [0, 1]
 
-      // TODO(croot): automatically determine the min/max of the x dimension
+      // TODO: automatically determine the min/max of the x dimension
       // If we do this, we should cache the x scale and only
       // do this if the scale or dimension has changed
     } else {

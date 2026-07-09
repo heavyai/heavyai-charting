@@ -827,7 +827,7 @@ export default function rasterLayerPolyMixin(_layer) {
         (i !== _layer.dimension().getDimensionIndex() &&
           f !== "" &&
           f !== null &&
-          // Kinda hacky, we don't want to include rowId filter in vega query, but we want everything else
+          // Exclude rowId filter from vega query while including all other filters
           !f.includes("rowid"))
     )
 
@@ -969,7 +969,7 @@ export default function rasterLayerPolyMixin(_layer) {
     return __displayPopup({ ...svgProps, _vega, _layer, state })
   }
 
-  // We disabled polygon selection filter from Master layer if the chart has more than one poly layer in 4.7 release, FE-8685.
+  // We disabled polygon selection filter from Master layer if the chart has more than one poly layer in 4.7 release.
   // Since we run rowid filter on poly selection filter, it is not correct to run same rowid filter for all overlapping poly layers.
   // We need better UI/UX design for this
   function chartHasMoreThanOnePolyLayers(chart) {
@@ -988,7 +988,7 @@ export default function rasterLayerPolyMixin(_layer) {
         chartHasMoreThanOnePolyLayers(chart)) ||
       !_onClickFiltering
     ) {
-      // don't filter from Master, FE-8685
+      // don't filter from Master
       return
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))

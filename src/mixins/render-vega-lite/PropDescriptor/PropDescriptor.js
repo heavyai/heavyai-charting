@@ -157,7 +157,7 @@ export default class PropDescriptor {
   // eslint-disable-next-line no-unused-vars
   buildDefaultScaleDefinition(parent_info) {
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): move this into a scale-enabled descriptor mixin
+    // TODO: move this into a scale-enabled descriptor mixin
     return {}
   }
 }

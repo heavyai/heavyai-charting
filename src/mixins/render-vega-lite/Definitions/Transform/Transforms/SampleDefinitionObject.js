@@ -27,7 +27,7 @@ export default class SampleDefinitionObject extends PropertiesDefinitionInterfac
     }
     this.sample_ = definition_object[SampleDefinitionObject.key]
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): validate sample ranges?
+    // TODO: validate sample ranges?
 
     if (!Object.hasOwn(definition_object, "tableSize")) {
       throw new Error(
@@ -42,7 +42,7 @@ export default class SampleDefinitionObject extends PropertiesDefinitionInterfac
     }
     this.table_size_ = definition_object.tableSize
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): validate tableSize?
+    // TODO: validate tableSize?
   }
 
   /**

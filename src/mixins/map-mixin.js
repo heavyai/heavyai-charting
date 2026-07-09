@@ -699,7 +699,7 @@ export default function mapMixin(
           coordinates: boundsToUse
         })
       } else {
-        // for some reason, the source is lost some of the time, so adding it again FE-9833
+        // for some reason, the source is lost some of the time, so adding it again
         setSourceAndAddLayer(overlayName)
       }
     }
@@ -829,7 +829,6 @@ export default function mapMixin(
       _lastWidth = width
       _lastHeight = height
 
-      // this is a dumb hack, but it works and there doesn't seem to be another sensible way.
       // problem is, mapbox looks to the size of "mapboxgl-canvas-container" to determine the
       // render size of the canvas, regardless of what we feed it above. if there is an overlay
       // drawer open, even if it sits at a higher z-index, the canvas size will be calculated
