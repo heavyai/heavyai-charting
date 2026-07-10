@@ -1,4 +1,9 @@
-# HEAVY.AI Charting
+# HeavyAI Charting
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/heavyai/heavyai-charting/blob/master/LICENSE)
+[![Security](https://img.shields.io/badge/Security-Report%20a%20Vulnerability-red.svg)](https://github.com/heavyai/heavyai-charting/blob/master/SECURITY.md)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-blue?logo=github)](https://github.com/orgs/heavyai/discussions)
+
+
 
 Dimensional charting built to work natively with crossfilter rendered using d3.js.
 
@@ -18,7 +23,7 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 # Examples
 
-Visit our [examples page](https://heavyai.github.io/heavyai-charting/example/) for ideas of what can be created with HEAVY.AI Charting
+Visit our [examples page](https://heavyai.github.io/heavyai-charting/example/) for ideas of what can be created with HeavyAI Charting
 
 # Quick Start
 
@@ -37,17 +42,17 @@ npm run watch
 
 # Synopsis
 
-HEAVY.AI Charting is a superfast charting library that works natively with [crossfilter](https://github.com/square/crossfilter) that is based off [dc.js](https://github.com/dc-js/dc.js).  It is designed to work with HEAVY.AI Connector and HEAVY.AI Crossfilter to create charts instantly with our HeavyDB SQL Database.  Please see [examples](#examples) for further understanding to quickly create interactive charts.
+HeavyAI Charting is a superfast charting library that works natively with [crossfilter](https://github.com/square/crossfilter) that is based off [dc.js](https://github.com/dc-js/dc.js).  It is designed to work with HeavyAI Connector and HeavyAI Crossfilter to create charts instantly with our HeavyDB SQL Database.  Please see [examples](#examples) for further understanding to quickly create interactive charts.
 
-Our [Tweetmap Demo](https://www.heavy.ai/demos/tweetmap/) was made only using HEAVY.AI Charting.
+Our [Tweetmap Demo](https://www.heavy.ai/demos/tweetmap/) was made only using HeavyAI Charting.
 
 # Documentation
 
-Visit our [API Docs](https://heavyai.github.io/heavyai-charting/docs/) for additional information on HEAVY.AI Charting
+Visit our [API Docs](https://heavyai.github.io/heavyai-charting/docs/) for additional information on HeavyAI Charting
 
 # Testing
 
-New components in HEAVY.AI Charting should be unit-tested and linted.  All tests will be in the same folder as the new component.
+New components in HeavyAI Charting should be unit-tested and linted.  All tests will be in the same folder as the new component.
 
 ```
 +-- src
@@ -96,8 +101,15 @@ Every third-party module from npm that gets includes in the final, distributed b
 
 License descriptions and public license URLs are maintained in licenses.json as well, but they are not verified and might not be up to date.
 
-## Contributing
 
-Interested in contributing? We'd love for you to help! Check out [Contributing.MD](.github/CONTRIBUTING.md)
+# Security
+> [!WARNING]
+> **Do not report security vulnerabilities through public GitHub issues!**
 
-*Variables and function names are used as convention and do not reference any commercial product.*
+NVIDIA takes security seriously. If you discover a vulnerability in useWhisper, **DO NOT open a public issue**. Use one of the private reporting channels described in [SECURITY.md](https://github.com/heavyai/useWhisper/blob/main/SECURITY.md).
+
+# Support
+Join the [HeavyAI GitHub Discussions](https://github.com/orgs/heavyai/discussions) to ask questions, share feedback, and report issues. HeavyAI maintainers review issues, discussions, and pull requests on a best effort basis without guaranteed response timelines.
+  
+# License
+Apache 2.0. See [LICENSE](https://github.com/heavyai/useWhisper/blob/main/LICENSE).
