@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  charting:
+    container_name: charting
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src:/app/src
+      - ./example:/app/example
+      - ./scripts:/app/scripts
+      - ./dist:/app/dist
