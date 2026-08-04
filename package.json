@@ -145,8 +145,5 @@
     "exclude": [
       "**/*.spec.js"
     ]
-  },
-  "config": {
-    "puppeteer_skip_download": "true"
   }
 }
