@@ -639,10 +639,10 @@ body{font-family:"Roboto",Sans-Serif}.lock-measure{left:100%;top:0;transform:tra
   fill: #22a7f0;
 }
 
-.horizontal-lasso-tools .mapd-draw-button-control-group {
+.horizontal-lasso-tools .heavyai-draw-button-control-group {
   display: flex;
 }
-.horizontal-lasso-tools .mapd-draw-button-control-group button {
+.horizontal-lasso-tools .heavyai-draw-button-control-group button {
   flex-grow: 1;
 }
 
