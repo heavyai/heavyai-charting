@@ -53,9 +53,9 @@
     "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --config ./test/.mocharc.yml"
   },
   "dependencies": {
-    "@heavyai/connector": "github:heavyai/heavyai-connector#607d9b3",
+    "@heavyai/connector": "github:heavyai/heavyai-connector#6f77df5",
     "@heavyai/crossfilter": "github:heavyai/heavyai-crossfilter#25ff4c5",
-    "@heavyai/data-layer": "github:heavyai/metis#7bb2c34",
+    "@heavyai/data-layer": "github:heavyai/metis#fea3f38",
     "@heavyai/draw": "https://github.com/heavyai/heavyai-draw.git#e841dd2",
     "@mapbox-controls/ruler": "^3.0.0",
     "@mapbox/unitbezier": "0.0.0",
