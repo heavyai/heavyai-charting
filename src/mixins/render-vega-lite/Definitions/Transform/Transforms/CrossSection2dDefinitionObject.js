@@ -326,7 +326,7 @@ export default class CrossSection2dDefinitionObject extends PropertiesDefinition
         //   vega_mark_prop_obj[vega_prop_name].field = vega_prop_name
         // }
       }
-      // TODO(croot): may want to do a Geographic channel check here, but that would require the prop_descriptors input
+      // TODO: may want to do a Geographic channel check here, but that would require the prop_descriptors input
       // to this function to only be the prop descriptors that were "handled"
       //  else if (prop_descriptor instanceof GeographicChannelDescriptor) {
       //   throw new Error(

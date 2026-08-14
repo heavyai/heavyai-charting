@@ -137,7 +137,7 @@ export default function rowChart(parent, chartGroup) {
     const key = _chart.getMeasureName()
     // We have no good way of knowing if the valueFormatter has a formatter for the X axis in
     // particular, since that code is a black box. So we run through a test value and if it returns
-    // `null`, we know it doesn't know how to format it. It's dumb, but it works.
+    // `null`, we know it doesn't know how to format it.
     const validFormatting = numberFormatter && numberFormatter(0, key) !== null
     if (validFormatting) {
       xFormatCache.setTickFormat(d => numberFormatter(d, key))

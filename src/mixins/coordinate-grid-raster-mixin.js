@@ -205,7 +205,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       return _maxBounds
     }
 
-    // TODO(croot): verify max bounds?
+    // TODO: verify max bounds?
     if (!(maxBounds instanceof Array) || maxBounds.length !== 2 || !(maxBounds[0] instanceof Array) || maxBounds[0].length !== 2 || !(maxBounds[1] instanceof Array) || maxBounds[1].length !== 2) {
       throw new Error("Invalid bounds argument. A bounds object should be: [[xmin, ymin], [xmax, ymax]]")
     }
@@ -710,7 +710,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
 
     if (prevWidth !== _chartBody.style("width") || prevHeight !== _chartBody.style("height")) {
-      // TODO(croot): What about when the margins change?
+      // TODO: What about when the margins change?
       // That's not truly a resize event
       _chart.map().fire("resize", {
         width,
@@ -882,7 +882,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     }
     _lastXDomain = xdom
 
-    // TODO(croot): support ordinal scales?
+    // TODO: support ordinal scales?
     // If BE supports ordinal scales for X axis, use
     // rangeBands here: i.e. x.rangeBands([0, _chart.xAxisLength()], ...)
 
@@ -1080,7 +1080,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     }
 
     if (text !== "") {
-      // TODO(croot): should add the rotation and labelXPosition here
+      // TODO: should add the rotation and labelXPosition here
       // As of now (09/02/2016) the chart.css is breaking this.
 
       if (axisClass === "y2") {

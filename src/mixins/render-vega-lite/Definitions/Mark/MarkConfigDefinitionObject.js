@@ -55,7 +55,7 @@ export default class MarkConfigDefinitionObject extends ConfigDefinitionInterfac
       this.strokeOpacity_ = definition_object.strokeOpacity
     }
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): make stroke join an enum
+    // TODO: make stroke join an enum
     this.strokeJoin_ = MarkConfigDefinitionObject.defaults.strokeJoin
     if (Object.hasOwn(definition_object, "strokeJoin")) {
       this.strokeJoin_ = definition_object.strokeJoin
