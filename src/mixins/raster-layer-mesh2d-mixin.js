@@ -23,7 +23,7 @@ import VegaPropertyOutputState from "./render-vega-lite/VegaPropertyOutputState"
 import { LEGEND_POSITIONS } from "../chart-addons/stacked-legend"
 
 // eslint-disable-next-line no-warning-comments
-// TODO(croot): this seems like it is used in at least one other layer mixin. Make into a utility somewhere
+// TODO: this seems like it is used in at least one other layer mixin. Make into a utility somewhere
 function create_post_filter_transform(post_filters) {
   const post_filter =
     post_filters && Array.isArray(post_filters) ? post_filters[0] : null // may change to map when we have more than one postFilter
@@ -263,13 +263,13 @@ export default function rasterLayerMesh2dMixin(_layer) {
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     // currently no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
   }
 
   // eslint-disable-next-line no-unused-vars
   _layer._areResultsValidForPopup = function(results) {
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
     return true
   }
 
@@ -277,7 +277,7 @@ export default function rasterLayerMesh2dMixin(_layer) {
   _layer._displayPopup = function(svgProps) {
     // currently a no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
     return AABox2d.create()
   }
 
@@ -285,7 +285,7 @@ export default function rasterLayerMesh2dMixin(_layer) {
   _layer._hidePopup = function(chart, hideCallback) {
     // currently a no-op
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): needs to be filled in to support mesh2d hit-testing
+    // TODO: needs to be filled in to support mesh2d hit-testing
   }
 
   _layer._destroyLayer = function() {

@@ -17,7 +17,7 @@ const Whitespace = createToken({
 // We need to define the Identifier here, to use as a "longer_alt" for all
 // keywords. But it'll appear after keywords in the tokenizer.
 //
-// XXX:
+// TODO:
 // support for non-latin characters?
 // U&"..." identifiers?
 // U&"..." UESCAPE '?' identifiers?
@@ -33,7 +33,7 @@ const QuotedIdentifier = createToken({
   categories: [Identifier]
 })
 
-// XXX:
+// TODO:
 // Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
 // Type casts (CAST ... AS ...)
 // COLLATE
@@ -113,7 +113,7 @@ const End = createToken({
   longer_alt: UnquotedIdentifier
 })
 
-// XXX:
+// TODO:
 // E'...' string constants?
 // U&'...' string constants?
 // U&'...' UESCAPE '?' string constants?
@@ -137,7 +137,7 @@ const BooleanConstant = createToken({
   categories: [Constant]
 })
 
-// XXX:
+// TODO:
 // OVERLAPS
 // SIMILAR
 // BETWEEN SYMMETRIC
@@ -310,7 +310,7 @@ const Or = createToken({
   longer_alt: UnquotedIdentifier
 })
 
-// XXX:
+// TODO:
 // Array elements with brackets ([])
 // Array slices with :
 // Type cast with ::

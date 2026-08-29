@@ -286,7 +286,7 @@ export default class ContinuousScale extends ScaleDefinitionObject {
       // density accumulation will force on clamp
 
       // eslint-disable-next-line no-warning-comments
-      // TODO(croot): is this too heavy handed?
+      // TODO: is this too heavy handed?
       vega_scale_object.clamp = true
     }
   }

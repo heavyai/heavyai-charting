@@ -57,7 +57,7 @@ export default function stackMixin(_chart) {
       return d3.functor(true)
     }
     if (_chart.isOrdinal()) {
-      // TODO #416
+      // TODO: Handle domain set for ordinal scales
       // var domainSet = d3.set(xDomain);
       return function() {
         return true // domainSet.has(p.x);
