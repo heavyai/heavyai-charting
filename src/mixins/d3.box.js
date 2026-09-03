@@ -1,8 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-// SPDX-License-Identifier: Apache-2.0
-
 import d3 from "d3"
-// https://github.com/d3/d3-plugins/blob/master/box/box.js
 /* istanbul ignore next */
 ;(function() {
   // Inspired by http://informationandvisualization.de/blog/box-plot
