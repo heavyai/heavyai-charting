@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright (c) 2012-2015, Michael Bostock
-// SPDX-License-Identifier: BSD-3-Clause
-
 import d3 from "d3"
 /* istanbul ignore next */
 ;(function() {

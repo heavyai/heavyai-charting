@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright (c) 2016, Mapbox
-// SPDX-License-Identifier: BSD-3-Clause
-
 /**
  * As part of the initiative to upgrade our Mapbox dependency, these
  * functions have been copied from our forked version of Mapbox so that Mapbox
