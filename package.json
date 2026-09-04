@@ -96,7 +96,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.18.6",
     "@babel/register": "^7.0.0",
-    "@heavyai/d3-combo-chart": "https://github.com/heavyai/heavyai-d3.git#c01faf1",
+    "@heavyai/d3-combo-chart": "https://github.com/heavyai/heavyai-d3.git#7676155",
     "apache-arrow": "^7.0.0",
     "atob": "^2.0.3",
     "babel-eslint": "^9.0.0",
