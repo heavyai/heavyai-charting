@@ -1,0 +1,64 @@
+name: charting
+
+# Replaces the legacy Jenkins charting job.
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or SHA to test"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: charting-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  charting-pr:
+    name: charting-pr
+    runs-on: linux-amd64-cpu16
+    timeout-minutes: 60
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Upgrade npm
+        run: npm install --global npm@^11.6.1
+
+      - name: Use HTTPS for GitHub dependencies
+        run: |
+          git config --global --add \
+            url."https://github.com/".insteadOf \
+            "git@github.com:"
+          git config --global --add \
+            url."https://github.com/".insteadOf \
+            "ssh://git@github.com/"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting and lint
+        run: npm run format:check:silent && npm run lint
+
+      - name: Run unit tests
+        run: npm run test:unit
