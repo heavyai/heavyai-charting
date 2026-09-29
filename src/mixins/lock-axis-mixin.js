@@ -267,8 +267,8 @@ export default function lockAxisMixin(chart) {
       .domain()
       .slice()
 
-    // Horrible hack to ensure the inputs aren't inverted from whatever order
-    //  the Y axis decides to display.  Mea culpa.
+    //  Ensure the inputs aren't inverted from whatever order
+    //  the Y axis decides to display.
     let shouldFlipYMinMax = false
     const isHeatY = chart.isHeatMap && type === "y"
     if (isHeatY) {

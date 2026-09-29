@@ -68,7 +68,7 @@ export default function rasterLayer(layerType) {
     }
   })
 
-  _layer.othersGrouper(false) // TODO(croot): what does othersGrouper in capMixin do exactly?
+  _layer.othersGrouper(false) // TODO: what does othersGrouper in capMixin do exactly?
   // Always set to false for now, tho user can override.
 
   if (layerType === "points") {
@@ -289,13 +289,13 @@ export default function rasterLayer(layerType) {
   }
 
   function addPopupColumnToSet(colAttr, popupColSet) {
-    // TODO(croot): getProjectOn for groups requires the two arguments,
+    // TODO: getProjectOn for groups requires the two arguments,
     // dimension.getProjectOn() doesn't have any args.
     // Need to come up with a better API for group.getProjectOn()
     // and improve the api so that "as key0" are not automatically
     // added to those projection statements.
 
-    // TODO(croot): performance could be improved here with a better
+    // TODO: performance could be improved here with a better
     // data structure, but probably not an issue given the amount
     // of popup col attrs to iterate through is small
     const dim = _layer.group() || _layer.dimension()
@@ -647,7 +647,7 @@ export default function rasterLayer(layerType) {
     const overlapSz = AABox2d.getSize(Point2d.create(), overlapBounds)
     const overlapCtr = AABox2d.getCenter(Point2d.create(), overlapBounds)
 
-    const padding = 6 // in pixels TODO(croot): expose in css?
+    const padding = 6 // in pixels TODO: expose in css?
     let topOffset = 0
 
     const popupDiv = parentElem

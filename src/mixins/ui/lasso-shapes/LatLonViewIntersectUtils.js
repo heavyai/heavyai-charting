@@ -141,7 +141,7 @@ function _intersect_view_bounds(
     // Return empty object.
 
     // eslint-disable-next-line no-warning-comments
-    // TODO(croot): support other projections?
+    // TODO: support other projections?
 
     return rtn_obj
   }
@@ -193,7 +193,7 @@ function _intersect_view_bounds(
       if (denominator_t === 0) {
         // colinear
         // eslint-disable-next-line no-warning-comments
-        // TODO(croot): this needs filling out in the general case
+        // TODO: this needs filling out in the general case
         // NOTE: this should never be hit in the LonLatPoly case because of
         // the delta_x/delta_y === 0 check.
 

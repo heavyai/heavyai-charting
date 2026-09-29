@@ -242,7 +242,6 @@ export default function rasterLayerPointMixin(_layer) {
         as: alias,
         // For some reason, we're receiving duplicate tables here, causing headaches w/ export SQL generation
         //  in heavyai-data-layer2. So, just gonna filter them out.
-        //  https://heavyai.atlassian.net/browse/FE-14213
         groupby: [...new Set(transform.groupby)].map((g, i) => ({
           type: "project",
           expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
@@ -704,7 +703,7 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   _layer._genVega = function(chart, layerName, group, query) {
-    // Pointmap prioritized color hack. Need to use the real layer name for crossfilter
+    // Pointmap prioritized color handling: use the actual layer name for crossfilter operations
     let realLayerName = layerName
     if (
       layerName &&
