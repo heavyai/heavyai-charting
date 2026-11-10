@@ -710,7 +710,7 @@ Generated from the installed environment. Total packages: **1520**.
 | flatbuffers | 2.0.4 | Apache* | [https://spdx.org/licenses/Apache-2.0.html](https://spdx.org/licenses/Apache-2.0.html) |
 | flatted | 2.0.2 | ISC | [https://spdx.org/licenses/ISC.html](https://spdx.org/licenses/ISC.html) |
 | flow-bin | 0.55.0 | BSD-3-Clause | [https://spdx.org/licenses/BSD-3-Clause.html](https://spdx.org/licenses/BSD-3-Clause.html) |
-| follow-redirects | 1.15.9 | MIT | [https://spdx.org/licenses/MIT.html](https://spdx.org/licenses/MIT.html) |
+| follow-redirects | 1.16.3 | MIT | [https://spdx.org/licenses/MIT.html](https://spdx.org/licenses/MIT.html) |
 | for-each | 0.3.5 | MIT | [https://spdx.org/licenses/MIT.html](https://spdx.org/licenses/MIT.html) |
 | for-in | 1.0.2 | MIT | [https://spdx.org/licenses/MIT.html](https://spdx.org/licenses/MIT.html) |
 | for-own | 0.1.5 | MIT | [https://spdx.org/licenses/MIT.html](https://spdx.org/licenses/MIT.html) |
