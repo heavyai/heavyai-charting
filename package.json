@@ -132,7 +132,7 @@
   "overrides": {
     "tough-cookie": "2.5.0",
     "minimist": "1.2.8",
-    "follow-redirects": "1.15.9",
+    "follow-redirects": "^1.16.2",
     "protocol-buffers-schema": "3.6.1",
     "axios": "^1.21.0"
   },
